@@ -4,8 +4,9 @@
 #include "pch.h"
 #include "framework.h"
 #include "Dudrio.h"
-#include "CyanEngine\CyanEngine\framework.h"
 #include "CyanFW.h"
+
+#include "SampleScene.h"
 
 #define MAX_LOADSTRING 100
 
@@ -69,6 +70,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	HWND hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 
 	gCyanFW.OnCreate(hInst, hWnd);
+	gCyanFW.OnSetScene(new SampleScene());
 
 	if (!hWnd)
 	{

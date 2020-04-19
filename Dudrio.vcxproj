@@ -109,7 +109,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>CyanEngine\CyanEngine;CyanEngine\CyanEngine\SDK\FBX\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>CyanEngine\CyanEngine;CyanEngine\CyanEngine\SDK\FBX\include;CyanEngine\YellowProject</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

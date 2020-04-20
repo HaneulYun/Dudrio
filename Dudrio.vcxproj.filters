@@ -19,6 +19,9 @@
     <Filter Include="Assets\Scenes">
       <UniqueIdentifier>{2aaaf048-5887-4262-a196-4927e07557f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Scripts">
+      <UniqueIdentifier>{95a5485c-d925-4ab1-82f8-d9ab653be419}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -38,6 +41,18 @@
     </ClInclude>
     <ClInclude Include="SampleScene.h">
       <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="RotatingBehavior.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="scripts.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

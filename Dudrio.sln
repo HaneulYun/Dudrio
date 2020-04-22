@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dudrio", "Dudrio.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CyanEngine", "CyanEngine\CyanEngine\CyanEngine.vcxproj", "{B9408B74-0812-49C8-968A-CED06E975BF8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MagentaServer", "MagentaServer\MagentaServer.vcxproj", "{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +36,14 @@ Global
 		{B9408B74-0812-49C8-968A-CED06E975BF8}.Release|x64.Build.0 = Release|x64
 		{B9408B74-0812-49C8-968A-CED06E975BF8}.Release|x86.ActiveCfg = Release|Win32
 		{B9408B74-0812-49C8-968A-CED06E975BF8}.Release|x86.Build.0 = Release|Win32
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Debug|x64.ActiveCfg = Debug|x64
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Debug|x64.Build.0 = Debug|x64
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Debug|x86.ActiveCfg = Debug|Win32
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Debug|x86.Build.0 = Debug|Win32
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Release|x64.ActiveCfg = Release|x64
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Release|x64.Build.0 = Release|x64
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Release|x86.ActiveCfg = Release|Win32
+		{5BDA20D8-B898-4DE2-97F2-160E4CEE8E87}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

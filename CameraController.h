@@ -7,7 +7,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = 0.2f * XM_PI;
 	float mRadius = 15.0f;
-
+	
 	Vector3 lastMousePos;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
@@ -30,7 +30,7 @@ public:
 		float x = mRadius * sinf(mPhi) * cosf(mTheta);
 		float z = mRadius * sinf(mPhi) * sinf(mTheta);
 		float y = mRadius * cosf(mPhi);
-
+		
 		gameObject->GetComponent<Transform>()->position = { x, y, z };
 		gameObject->GetComponent<Transform>()->forward = (Vector3(0, 0, 0) - Vector3(x, y, z)).Normalize();
 

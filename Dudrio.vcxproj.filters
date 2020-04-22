@@ -54,6 +54,9 @@
     <ClInclude Include="scripts.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MagentaServer\protocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -64,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="SampleScene.cpp">
       <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.h">
+      <Filter>Assets\Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

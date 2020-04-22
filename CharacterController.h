@@ -12,6 +12,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	float speed = 0.0f;
 	float hori_speed = 0.0f;
 
+	bool isShowing;
+
 private:
 	friend class GameObject;
 	friend class MonoBehavior<CharacterController>;
@@ -21,9 +23,24 @@ private:
 public:
 	~CharacterController() {}
 
+	void hide()
+	{
+		isShowing = false;
+		gameObject->transform->position.y = -1000.0f;
+		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
+	}
+	
+	void show()
+	{
+		isShowing = true;
+		gameObject->transform->position.y = 0.0f;
+		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
+	}
+
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
 		anim = gameObject->GetComponent<Animator>();
+		hide();
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
@@ -115,16 +132,15 @@ public:
 	{
 		auto curPos = gameObject->transform->position;
 		
-		speed = x - curPos.x;
-		hori_speed = z - curPos.z;
-		if (fabs(speed) < FLT_EPSILON)	speed = 0.0f;
+		hori_speed = x - curPos.x;
+		speed = z - curPos.z;
 		if (fabs(hori_speed) < FLT_EPSILON)	hori_speed = 0.0f;
+		if (fabs(speed) < FLT_EPSILON)	speed = 0.0f;
 
 		gameObject->transform->position = { x, curPos.y, z };
 		anim->SetFloat("Speed", speed);
 		anim->SetFloat("HoriSpeed", hori_speed);
 		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
 	}
-
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

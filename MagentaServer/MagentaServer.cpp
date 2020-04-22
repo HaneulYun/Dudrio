@@ -255,7 +255,7 @@ int main()
 	AcceptEx(l_socket, c_socket, accept_over.io_buf, NULL, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, &accept_over.over);	// 클라이언트 접속에 사용할 소켓을 미리 만들어놔야 함
 
 	while (true) {
-
+		printf("오잉?\n");
 		DWORD io_byte;
 		ULONG key;
 		WSAOVERLAPPED* over;

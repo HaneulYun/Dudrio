@@ -159,30 +159,33 @@ void SampleScene::BuildObjects()
 		"DashForward_BowAnim",
 	};
 
-	auto ritem = CreateEmpty();
+	GameObject* ritem[MAX_USER];
+	for (int i = 0; i < MAX_USER; ++i)
 	{
-		ritem->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
-		ritem->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
-		ritem->GetComponent<Transform>()->position = { 0.0f, 0.0f, 0.0f };
-		auto mesh = ritem->AddComponent<SkinnedMeshRenderer>()->mesh = geometries["ApprenticeSK"].get();
-		auto renderer = ritem->GetComponent<SkinnedMeshRenderer>();
-		for (auto& sm : mesh->DrawArgs)
-			renderer->materials.push_back(0);
+		ritem[i] = CreateEmpty();
+		{
+			ritem[i]->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
+			ritem[i]->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
+			ritem[i]->GetComponent<Transform>()->position = { 0.0f, 0.0f, 0.0f };
+			auto mesh = ritem[i]->AddComponent<SkinnedMeshRenderer>()->mesh = geometries["ApprenticeSK"].get();
+			auto renderer = ritem[i]->GetComponent<SkinnedMeshRenderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(0);
 
-		ritem->TexTransform = MathHelper::Identity4x4();
+			ritem[i]->TexTransform = MathHelper::Identity4x4();
 
-		auto anim = ritem->AddComponent<Animator>();
-		anim->controller = controller;
-		anim->state = &controller->states[name[5]];
-		anim->TimePos = Random::Range(0.0f, anim->controller->GetClipEndTime(anim->state));
+			auto anim = ritem[i]->AddComponent<Animator>();
+			anim->controller = controller;
+			anim->state = &controller->states[name[5]];
+			anim->TimePos = Random::Range(0.0f, anim->controller->GetClipEndTime(anim->state));
 
-		anim->state = &controller->states["Idle"];
-		anim->TimePos = 0;
-		ritem->AddComponent<CharacterController>();
+			anim->state = &controller->states["Idle"];
+			anim->TimePos = 0;
+			ritem[i]->AddComponent<CharacterController>();
 
-		renderObjectsLayer[(int)RenderLayer::SkinnedOpaque][mesh].gameObjects.push_back(ritem);
+			renderObjectsLayer[(int)RenderLayer::SkinnedOpaque][mesh].gameObjects.push_back(ritem[i]);
+		}
 	}
-
 
 	{
 		GameObject* grid = CreateEmpty();
@@ -194,6 +197,10 @@ void SampleScene::BuildObjects()
 
 	{
 		GameObject* network = CreateEmpty();
-		network->AddComponent<Network>()->myCharacter = ritem;
+		network->AddComponent<Network>()->myCharacter = ritem[0];
+		for (int i = 0; i < MAX_USER - 1; ++i)
+		{
+			network->GetComponent<Network>()->otherCharacter[i] = ritem[i + 1];
+		}
 	}
 }

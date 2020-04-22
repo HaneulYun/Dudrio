@@ -23,11 +23,8 @@ public:
 
 public:
 	GameObject* myCharacter = NULL;
-
-	//Pawn* pawns[MAX_USER - 1];
-	//GameObject* myPawn;
-	//Pawn* myPawnPtr = NULL;
-	//unordered_map<int, Pawn*> otherPawns;
+	GameObject* otherCharacter[MAX_USER - 1];
+	unordered_map<int, GameObject*> otherCharacters;
 
 private:
 	friend class GameObject;
@@ -41,15 +38,15 @@ public:
 		WSACleanup();
 	}
 
-	//Pawn* GetDisconnectedPawn()
-	//{
-	//	for (int i = 0; i < MAX_USER - 1; ++i)
-	//	{
-	//		if (!pawns[i]->show)
-	//			return pawns[i];
-	//	}
-	//	return nullptr;
-	//}
+	GameObject* GetDisconnectedCharacter()
+	{
+		for (int i = 0; i < MAX_USER - 1; ++i)
+		{
+			if (!(otherCharacter[i]->GetComponent<CharacterController>()->isShowing))
+				return otherCharacter[i];
+		}
+		return nullptr;
+	}
 
 	void ProcessPacket(char* ptr)
 	{
@@ -60,6 +57,7 @@ public:
 		{
 			sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 			myId = my_packet->id;
+			myCharacter->GetComponent<CharacterController>()->show();
 			myCharacter->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
 		}
 		break;
@@ -72,17 +70,17 @@ public:
 			if (id == myId) {
 				myCharacter->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
 			}
-			//else {
-			//	otherPawns[id] = GetDisconnectedPawn();
-			//	if (otherPawns[id] != nullptr)
-			//	{
-			//		otherPawns[id]->show = true;
-			//		//strcpy_s(otherPawnPtr->name, my_packet->name);
-			//		strcpy_s(otherPawns[id]->name, my_packet->name);
-			//		//otherPawnPtr->move(my_packet->x, my_packet->y);
-			//		otherPawns[id]->move(my_packet->x, my_packet->y);
-			//	}
-			//}
+			else {
+				otherCharacters[id] = GetDisconnectedCharacter();
+				if (otherCharacters[id] != nullptr)
+				{
+					otherCharacters[id]->GetComponent<CharacterController>()->show();
+					//strcpy_s(otherPawnPtr->name, my_packet->name);
+					strcpy_s(otherCharacters[id]->GetComponent<CharacterController>()->name, my_packet->name);
+					//otherPawnPtr->move(my_packet->x, my_packet->y);
+					otherCharacters[id]->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
+				}
+			}
 		}
 		break;
 		case S2C_MOVE:
@@ -92,10 +90,10 @@ public:
 			if (other_id == myId) {
 				myCharacter->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
 			}
-			//else {
-			//	if (0 != otherPawns.count(other_id))
-			//		otherPawns[other_id]->move(my_packet->x, my_packet->y);
-			//}
+			else {
+				if (0 != otherCharacters.count(other_id))
+					otherCharacters[other_id]->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
+			}
 		}
 		break;
 
@@ -106,13 +104,13 @@ public:
 			if (other_id == myId) {
 				DeleteObject(myCharacter);
 			}
-			//else {
-			//	if (0 != otherPawns.count(other_id))
-			//	{
-			//		otherPawns[other_id]->hide();
-			//		otherPawns.erase(other_id);
-			//	}
-			//}
+			else {
+				if (0 != otherCharacters.count(other_id))
+				{
+					otherCharacters[other_id]->GetComponent<CharacterController>()->hide();
+					otherCharacters.erase(other_id);
+				}
+			}
 		}
 		break;
 		default:

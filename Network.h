@@ -1,5 +1,7 @@
 #pragma once
 #include "CyanEngine\CyanEngine\framework.h"
+#include "MagentaServer\protocol.h"
+#include "CharacterController.h"
 #include <WS2tcpip.h>
 #pragma comment(lib, "Ws2_32.lib")
 #include <unordered_map>
@@ -20,6 +22,8 @@ public:
 	bool isConnect{ false };
 
 public:
+	GameObject* myCharacter = NULL;
+
 	//Pawn* pawns[MAX_USER - 1];
 	//GameObject* myPawn;
 	//Pawn* myPawnPtr = NULL;
@@ -56,7 +60,7 @@ public:
 		{
 			sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 			myId = my_packet->id;
-			myPawnPtr->move(my_packet->x, my_packet->y);
+			myCharacter->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
 		}
 		break;
 
@@ -66,21 +70,19 @@ public:
 			int id = my_packet->id;
 
 			if (id == myId) {
-				myPawnPtr->move(my_packet->x, my_packet->y);
+				myCharacter->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
 			}
-			else {
-				//otherPawns[id] = Instantiate(PawnPrefab);
-				//Pawn* otherPawnPtr = otherPawns[id].GetComponent<Pawn>();
-				otherPawns[id] = GetDisconnectedPawn();
-				if (otherPawns[id] != nullptr)
-				{
-					otherPawns[id]->show = true;
-					//strcpy_s(otherPawnPtr->name, my_packet->name);
-					strcpy_s(otherPawns[id]->name, my_packet->name);
-					//otherPawnPtr->move(my_packet->x, my_packet->y);
-					otherPawns[id]->move(my_packet->x, my_packet->y);
-				}
-			}
+			//else {
+			//	otherPawns[id] = GetDisconnectedPawn();
+			//	if (otherPawns[id] != nullptr)
+			//	{
+			//		otherPawns[id]->show = true;
+			//		//strcpy_s(otherPawnPtr->name, my_packet->name);
+			//		strcpy_s(otherPawns[id]->name, my_packet->name);
+			//		//otherPawnPtr->move(my_packet->x, my_packet->y);
+			//		otherPawns[id]->move(my_packet->x, my_packet->y);
+			//	}
+			//}
 		}
 		break;
 		case S2C_MOVE:
@@ -88,12 +90,12 @@ public:
 			sc_packet_move* my_packet = reinterpret_cast<sc_packet_move*>(ptr);
 			int other_id = my_packet->id;
 			if (other_id == myId) {
-				myPawnPtr->move(my_packet->x, my_packet->y);
+				myCharacter->GetComponent<CharacterController>()->move(my_packet->x, my_packet->z);
 			}
-			else {
-				if (0 != otherPawns.count(other_id))
-					otherPawns[other_id]->move(my_packet->x, my_packet->y);
-			}
+			//else {
+			//	if (0 != otherPawns.count(other_id))
+			//		otherPawns[other_id]->move(my_packet->x, my_packet->y);
+			//}
 		}
 		break;
 
@@ -102,16 +104,15 @@ public:
 			sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
 			int other_id = my_packet->id;
 			if (other_id == myId) {
-				myPawnPtr->hide();
-				DeleteObject(myPawn);
+				DeleteObject(myCharacter);
 			}
-			else {
-				if (0 != otherPawns.count(other_id))
-				{
-					otherPawns[other_id]->hide();
-					otherPawns.erase(other_id);
-				}
-			}
+			//else {
+			//	if (0 != otherPawns.count(other_id))
+			//	{
+			//		otherPawns[other_id]->hide();
+			//		otherPawns.erase(other_id);
+			//	}
+			//}
 		}
 		break;
 		default:
@@ -164,7 +165,6 @@ public:
 		m_packet.type = C2S_MOVE;
 		m_packet.size = sizeof(m_packet);
 		m_packet.direction = dir;
-		//	m_packet.curLatency = 
 		send_packet(&m_packet);
 	}
 
@@ -175,9 +175,7 @@ public:
 		l_packet.type = C2S_LOGIN;
 		int t_id = GetCurrentProcessId();
 		sprintf_s(l_packet.name, "P%03d", t_id % 1000);
-		//myPawn = Instantiate(PawnPrefab);
-		myPawnPtr = myPawn->GetComponent<Pawn>();
-		strcpy_s(myPawnPtr->name, l_packet.name);
+		strcpy_s(myCharacter->GetComponent<CharacterController>()->name, l_packet.name);
 		send_packet(&l_packet);
 	}
 

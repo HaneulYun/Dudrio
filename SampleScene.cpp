@@ -191,4 +191,9 @@ void SampleScene::BuildObjects()
 		grid->AddComponent<Renderer>()->materials.push_back(3);
 		renderObjectsLayer[(int)RenderLayer::Opaque][gridMesh].gameObjects.push_back(grid);
 	}
+
+	{
+		GameObject* network = CreateEmpty();
+		network->AddComponent<Network>()->myCharacter = ritem;
+	}
 }

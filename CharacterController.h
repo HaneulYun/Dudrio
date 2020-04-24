@@ -131,11 +131,9 @@ public:
 	void move(float x, float z)
 	{
 		auto curPos = gameObject->transform->position;
-		
-		//hori_speed = (x - curPos.x) * 60.0f;
-		//speed = (z - curPos.z) *60.0f;
-		if (fabs(hori_speed) <= FLT_EPSILON)	hori_speed = 0.0f;
-		if (fabs(speed) <= FLT_EPSILON)	speed = 0.0f;
+
+		if (IsZero(hori_speed))	hori_speed = 0.0f;
+		if (IsZero(speed))	speed = 0.0f;
 
 		gameObject->transform->position = { x, curPos.y, z };
 		anim->SetFloat("Speed", speed);

@@ -64,7 +64,7 @@ void send_login_ok_packet(int user_id)
 	p.type = S2C_LOGIN_OK;
 	p.x = g_clients[user_id].x;
 	p.z = g_clients[user_id].z;
-
+	
 	printf("Send_Packet_Login_OK\n");
 	send_packet(user_id, &p);
 }
@@ -129,6 +129,10 @@ void do_move(int user_id, float xMove, float zMove)// int direction)
 	//	DebugBreak();
 	//	exit(-1);
 	//}
+	if (xMove > 4.0f)	xMove = 4.0f;
+	else if (xMove < -4.0f)	xMove = -4.0f;
+	if (zMove > 4.0f)	zMove = 4.0f;
+	else if (zMove < -4.0f)	zMove = -4.0f;
 	x += xMove *0.01666;
 	z += zMove *0.01666;
 	u.x = x;
@@ -259,7 +263,7 @@ int main()
 	while (true) {
 		printf("¿ÀÀ×?\n");
 		DWORD io_byte;
-		ULONG key;
+		ULONG_PTR key;
 		WSAOVERLAPPED* over;
 		GetQueuedCompletionStatus(g_iocp, &io_byte, &key, &over, INFINITE);
 

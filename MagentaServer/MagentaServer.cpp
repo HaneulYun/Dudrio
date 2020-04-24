@@ -109,26 +109,28 @@ void send_move_packet(int user_id, int mover)
 	send_packet(user_id, &p);
 }
 
-void do_move(int user_id, int direction)
+void do_move(int user_id, float xMove, float zMove)// int direction)
 {
 	CLIENT& u = g_clients[user_id];
 	float x = u.x;
 	float z = u.z;
-	switch (direction)
-	{
-	case D_UP:
-		z += 1.0;	break;
-	case D_DOWN:
-		z -= 1.0;	break;
-	case D_LEFT:
-		x -= 1.0;	break;
-	case D_RIGHT:
-		x += 1.0;	break;
-	default:
-		cout << "Unknown Direction from Client move packet!\n";
-		DebugBreak();
-		exit(-1);
-	}
+	//switch (direction)
+	//{
+	//case D_UP:
+	//	z += 1.0;	break;
+	//case D_DOWN:
+	//	z -= 1.0;	break;
+	//case D_LEFT:
+	//	x -= 1.0;	break;
+	//case D_RIGHT:
+	//	x += 1.0;	break;
+	//default:
+	//	cout << "Unknown Direction from Client move packet!\n";
+	//	DebugBreak();
+	//	exit(-1);
+	//}
+	x += xMove *0.01666;
+	z += zMove *0.01666;
 	u.x = x;
 	u.z = z;
 	for (auto& cl : g_clients)
@@ -163,7 +165,7 @@ void process_packet(int user_id, char* buf)
 	case C2S_MOVE:
 	{
 		cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf);
-		do_move(user_id, packet->direction);
+		do_move(user_id, packet->xMove, packet->zMove);//packet->direction);
 	}
 	break;
 	default:

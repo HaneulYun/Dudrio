@@ -157,12 +157,14 @@ public:
 		send(serverSocket, p, p[0], 0);
 	}
 
-	void send_move_packet(unsigned char dir)
+	void send_move_packet(float xMove, float zMove)//unsigned char dir)
 	{
 		cs_packet_move m_packet;
 		m_packet.type = C2S_MOVE;
 		m_packet.size = sizeof(m_packet);
-		m_packet.direction = dir;
+		m_packet.xMove = xMove;
+		m_packet.zMove = zMove;
+		//m_packet.direction = dir;
 		send_packet(&m_packet);
 	}
 
@@ -207,21 +209,83 @@ public:
 		}
 		else
 		{
-			if (Input::GetKeyDown(KeyCode::W))
+			CharacterController* myPtr = myCharacter->GetComponent<CharacterController>();
+			if (Input::GetKey(KeyCode::W))
 			{
-				send_move_packet(D_UP);
+				if (myPtr->speed < 4.0f)
+				{
+					myPtr->speed += 1.0f * Time::deltaTime;
+					if (myPtr->speed > 1.0f)
+						myPtr->speed = 1.0f;
+				}
 			}
-			else if (Input::GetKeyDown(KeyCode::A))
+			else
 			{
-				send_move_packet(D_LEFT);
+				if (myPtr->speed > 0.0f)
+				{
+					myPtr->speed -= 2.0f * Time::deltaTime;
+					if (myPtr->speed < 0.0f)
+						myPtr->speed = 0.0f;
+				}
 			}
-			else if (Input::GetKeyDown(KeyCode::S))
+			if (Input::GetKey(KeyCode::S))
 			{
-				send_move_packet(D_DOWN);
+				if (myPtr->speed > -4.0f)
+				{
+					myPtr->speed -= 1.0f * Time::deltaTime;
+					if (myPtr->speed < -1.0f)
+						myPtr->speed = -1.0f;
+				}
 			}
-			else if (Input::GetKeyDown(KeyCode::D))
+			else
 			{
-				send_move_packet(D_RIGHT);
+				if (myPtr->speed < 0.0f)
+				{
+					myPtr->speed += 2.0f * Time::deltaTime;
+					if (myPtr->speed > 0.0f)
+						myPtr->speed = 0.0f;
+				}
+			}
+			if (Input::GetKey(KeyCode::D))
+			{
+				if (myPtr->hori_speed < 4.0f)
+				{
+					myPtr->hori_speed += 1.0f * Time::deltaTime;
+					if (myPtr->hori_speed > 1.0f)
+						myPtr->hori_speed = 1.0f;
+				}
+			}
+			else
+			{
+				if (myPtr->hori_speed > 0.0f)
+				{
+					myPtr->hori_speed -= 4.0f * Time::deltaTime;
+					if (myPtr->hori_speed < 0.0f)
+						myPtr->hori_speed = 0.0f;
+				}
+			}
+			if (Input::GetKey(KeyCode::A))
+			{
+				if (myPtr->hori_speed > -3.0f)
+				{
+					myPtr->hori_speed -= 1.0f * Time::deltaTime;
+					if (myPtr->hori_speed < -1.0f)
+						myPtr->hori_speed = -1.0f;
+				}
+			}
+			else
+			{
+				if (myPtr->hori_speed < 0.0f)
+				{
+					myPtr->hori_speed += 2.0f * Time::deltaTime;
+					if (myPtr->hori_speed > 0.0f)
+						myPtr->hori_speed = 0.0f;
+				}
+			}
+			if (myPtr->speed != 0.0f || myPtr->hori_speed != 0.0f)
+			{
+				send_move_packet(myPtr->hori_speed, myPtr->speed);
+				myPtr->move();
 			}
 			Receiver();
 		}

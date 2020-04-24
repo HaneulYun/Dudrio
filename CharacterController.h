@@ -132,14 +132,23 @@ public:
 	{
 		auto curPos = gameObject->transform->position;
 		
-		hori_speed = x - curPos.x;
-		speed = z - curPos.z;
-		if (fabs(hori_speed) < FLT_EPSILON)	hori_speed = 0.0f;
-		if (fabs(speed) < FLT_EPSILON)	speed = 0.0f;
+		//hori_speed = (x - curPos.x) * 60.0f;
+		//speed = (z - curPos.z) *60.0f;
+		if (fabs(hori_speed) <= FLT_EPSILON)	hori_speed = 0.0f;
+		if (fabs(speed) <= FLT_EPSILON)	speed = 0.0f;
 
 		gameObject->transform->position = { x, curPos.y, z };
 		anim->SetFloat("Speed", speed);
 		anim->SetFloat("HoriSpeed", hori_speed);
+		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
+	}
+
+	void move()
+	{
+		gameObject->transform->position += Vector3(hori_speed, 0, speed) * Time::deltaTime;
+		anim->SetFloat("Speed", speed);
+		anim->SetFloat("HoriSpeed", hori_speed);
+
 		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.

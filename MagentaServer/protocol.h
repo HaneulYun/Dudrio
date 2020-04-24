@@ -68,6 +68,7 @@ constexpr unsigned char D_RIGHT = 3;
 struct cs_packet_move {
 	char	size;
 	char	type;
-	char	direction;
+	//char	direction;
+	float xMove, zMove;
 };
 #pragma pack (pop)

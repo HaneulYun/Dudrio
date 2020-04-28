@@ -4,3 +4,4 @@
 #include "RotatingBehavior.h"
 #include "CharacterController.h"
 #include "TerrainPicking.h"
+#include "GuestController.h"

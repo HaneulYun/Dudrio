@@ -65,7 +65,7 @@ void send_login_ok_packet(int user_id)
 	p.x = g_clients[user_id].x;
 	p.z = g_clients[user_id].z;
 	
-	printf("Send_Packet_Login_OK\n");
+	//printf("Send_Packet_Login_OK\n");
 	send_packet(user_id, &p);
 }
 
@@ -80,7 +80,7 @@ void send_enter_packet(int user_id, int o_id)
 	strcpy_s(p.name, g_clients[o_id].name);
 	p.o_type = O_PLAYER;
 
-	printf("Send_Packet_Enter\n");
+	//printf("Send_Packet_Enter\n");
 	send_packet(user_id, &p);
 }
 
@@ -91,7 +91,7 @@ void send_leave_packet(int user_id, int o_id)
 	p.size = sizeof(p);
 	p.type = S2C_LEAVE;
 
-	printf("Send_Packet_Leave\n");
+	//printf("Send_Packet_Leave\n");
 	send_packet(user_id, &p);
 }
 
@@ -105,7 +105,7 @@ void send_move_packet(int user_id, int mover)
 	p.z = g_clients[mover].z;
 	//p.latency = chrono::high_resolution_clock::now();
 
-	printf("Send_Packet_Move\n");
+	//printf("Send_Packet_Move\n");
 	send_packet(user_id, &p);
 }
 
@@ -261,7 +261,7 @@ int main()
 	AcceptEx(l_socket, c_socket, accept_over.io_buf, NULL, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, &accept_over.over);	// 클라이언트 접속에 사용할 소켓을 미리 만들어놔야 함
 
 	while (true) {
-		printf("오잉?\n");
+		//printf("오잉?\n");
 		DWORD io_byte;
 		ULONG_PTR key;
 		WSAOVERLAPPED* over;
@@ -274,7 +274,7 @@ int main()
 		switch (exover->op) {
 		case OP_RECV:
 			// send나 recv의 경우에만 이 처리를 해줘야 함
-			printf("OP_Recv\n");
+			//printf("OP_Recv\n");
 			if (0 == io_byte)
 				disconnect(user_id);
 			else {
@@ -292,7 +292,7 @@ int main()
 			break;
 		case OP_ACCEPT:
 		{
-			printf("OP_Accept\n");
+			//printf("OP_Accept\n");
 			int user_id = g_curr_user_id++;
 
 			CreateIoCompletionPort(reinterpret_cast<HANDLE>(c_socket), g_iocp, user_id, 0);

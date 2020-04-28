@@ -1,10 +1,9 @@
 #include "pch.h"
-#include "SampleScene.h"
+#include "TerrainScene.h"
 
-void SampleScene::BuildObjects()
+void TerrainScene::BuildObjects()
 {
 	///*** Asset ***///
-
 	//*** Texture ***//
 	{
 		AddTexture(0, "none", L"Textures\\none.dds");
@@ -25,14 +24,16 @@ void SampleScene::BuildObjects()
 		for (int i = 0; i < 5; ++i)
 			AddMaterial(5 + i, "material_" + std::to_string(i), 0, 0, RANDOM_COLOR, { 0.98f, 0.97f, 0.95f }, 0.0f);
 	}
-
+	
 	//*** Mesh ***//
-	geometries["Cube"] = Mesh::CreateCube();
-	geometries["Plane"] = Mesh::CreatePlane();
-	geometries["Sphere"] = Mesh::CreateSphere();
-	geometries["Cylinder"] = Mesh::CreateCylinder();
-	geometries["Image"] = Mesh::CreateQuad();
-	AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+	{
+		geometries["Image"] = Mesh::CreateQuad();
+		geometries["Cube"] = Mesh::CreateCube();
+		geometries["Plane"] = Mesh::CreatePlane();
+		geometries["Sphere"] = Mesh::CreateSphere();
+		geometries["Cylinder"] = Mesh::CreateCylinder();
+		AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+	}
 
 	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
 	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 257, 257, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
@@ -59,7 +60,6 @@ void SampleScene::BuildObjects()
 	AnimatorController* controller = new AnimatorController();
 	//*** AnimatorController ***//
 	{
-
 		controller->AddState("Attack01_BowAnim", animationClips["Attack01_BowAnim"].get());
 		controller->AddState("Attack01Maintain_BowAnim", animationClips["Attack01Maintain_BowAnim"].get());
 		controller->AddState("Attack01RepeatFire_BowAnim", animationClips["Attack01RepeatFire_BowAnim"].get());
@@ -73,30 +73,70 @@ void SampleScene::BuildObjects()
 		controller->AddParameterFloat("Speed");
 		controller->AddParameterFloat("HoriSpeed");
 
-		controller->AddState("Idle", animationClips["Idle_BowAnim"].get());
-		controller->AddState("Walk", animationClips["Walk_BowAnim"].get());
-		controller->AddState("WalkBack", animationClips["WalkBack_BowAnim"].get());
-		controller->AddState("WalkRight", animationClips["WalkRight_BowAnim"].get());
-		controller->AddState("WalkLeft", animationClips["WalkLeft_BowAnim"].get());
+		controller->AddState("Idle",		animationClips["Idle_BowAnim"].get());
+		controller->AddState("Walk",		animationClips["Walk_BowAnim"].get());
+		controller->AddState("WalkBack",	animationClips["WalkBack_BowAnim"].get());
+		controller->AddState("WalkRight",	animationClips["WalkRight_BowAnim"].get());
+		controller->AddState("WalkLeft",	animationClips["WalkLeft_BowAnim"].get());
 
-		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("Speed", Greater, 0.1));
-		controller->AddTransition("Idle", "WalkBack", TransitionCondition::CreateFloat("Speed", Less, -0.1));
-		controller->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("Speed", Less, 0.1));
-		controller->AddTransition("WalkBack", "Idle", TransitionCondition::CreateFloat("Speed", Greater, -0.1));
+		controller->AddTransition("Idle", "Walk",		TransitionCondition::CreateFloat("Speed", Greater, 0.1));
+		controller->AddTransition("Idle", "WalkBack",	TransitionCondition::CreateFloat("Speed", Less, -0.1));
+		controller->AddTransition("Walk", "Idle",		TransitionCondition::CreateFloat("Speed", Less, 0.1));
+		controller->AddTransition("WalkBack", "Idle",	TransitionCondition::CreateFloat("Speed", Greater, -0.1));
 
-		controller->AddTransition("Idle", "WalkLeft", TransitionCondition::CreateFloat("HoriSpeed", Greater, 0.1));
-		controller->AddTransition("Idle", "WalkRight", TransitionCondition::CreateFloat("HoriSpeed", Less, -0.1));
-		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("HoriSpeed", Less, 0.1));
-		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("HoriSpeed", Greater, -0.1));
+		controller->AddTransition("Idle", "WalkLeft",	TransitionCondition::CreateFloat("HoriSpeed", Greater, 0.1));
+		controller->AddTransition("Idle", "WalkRight",	TransitionCondition::CreateFloat("HoriSpeed", Less, -0.1));
+		controller->AddTransition("WalkLeft", "Idle",	TransitionCondition::CreateFloat("HoriSpeed", Less, 0.1));
+		controller->AddTransition("WalkRight", "Idle",	TransitionCondition::CreateFloat("HoriSpeed", Greater, -0.1));
 	}
 
 	///*** Game Object ***///
 
-	auto mainCamera = CreateEmpty();
+	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
 		mainCamera->AddComponent<CameraController>();
 	}
+
+	//{
+	//	GameObject* ImageObject = CreateEmpty();
+	//	ImageObject->AddComponent<Image>();
+	//	auto mesh = ImageObject->AddComponent<MeshFilter>()->mesh = geometries["Image"].get();;
+	//	ImageObject->AddComponent<Renderer>()->materials.push_back(5);
+	//	renderObjectsLayer[(int)RenderLayer::UI][mesh].gameObjects.push_back(ImageObject);
+	//}
+	//
+	//{
+	//	GameObject* ImageObject = CreateEmpty();
+	//	auto img = ImageObject->AddComponent<Image>();
+	//	{
+	//		img->anchorMin = { 0, 0 };
+	//		img->pivot = { 0, 0 };
+	//		img->posX = 10;
+	//		img->posY = 10;
+	//		img->width = 400;
+	//		img->height = 40;
+	//	}
+	//	auto mesh = ImageObject->AddComponent<MeshFilter>()->mesh = geometries["Image"].get();;
+	//	ImageObject->AddComponent<Renderer>()->materials.push_back(5);
+	//	renderObjectsLayer[(int)RenderLayer::UI][mesh].gameObjects.push_back(ImageObject);
+	//}
+	//
+	//{
+	//	GameObject* ImageObject = CreateEmpty();
+	//	auto img = ImageObject->AddComponent<Image>();
+	//	{
+	//		img->anchorMin = { 0, 1 };
+	//		img->pivot = { 0, 1 };
+	//		img->posX = 10;
+	//		img->posY = -10;
+	//		img->width = 80;
+	//		img->height = 320;
+	//	}
+	//	auto mesh = ImageObject->AddComponent<MeshFilter>()->mesh = geometries["Image"].get();;
+	//	ImageObject->AddComponent<Renderer>()->materials.push_back(5);
+	//	renderObjectsLayer[(int)RenderLayer::UI][mesh].gameObjects.push_back(ImageObject);
+	//}
 
 	{
 		auto ritem = CreateEmpty();
@@ -105,11 +145,11 @@ void SampleScene::BuildObjects()
 		auto renderer = ritem->AddComponent<Renderer>();
 		for (auto& sm : mesh->DrawArgs)
 			renderer->materials.push_back(5);
-
+	
 		renderObjectsLayer[(int)RenderLayer::Sky][mesh].gameObjects.push_back(ritem);
 	}
 
-	std::string name[9]{
+	std::string name[9] {
 		"Attack01_BowAnim",
 		"Attack01Maintain_BowAnim",
 		"Attack01RepeatFire_BowAnim",
@@ -121,32 +161,59 @@ void SampleScene::BuildObjects()
 		"DashForward_BowAnim",
 	};
 
-	GameObject* ritem[MAX_USER];
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		ritem[i] = CreateEmpty();
+	int i = 0;
+	int count = 0;
+	float interval = 7.0f;
+	for (int x = -count; x <= count; ++x)
+		for (int z = -count; z <= count; ++z)
 		{
-			ritem[i]->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
-			ritem[i]->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
-			ritem[i]->GetComponent<Transform>()->position = { 0.0f, 0.0f, 0.0f };
-			auto mesh = ritem[i]->AddComponent<SkinnedMeshRenderer>()->mesh = geometries["ApprenticeSK"].get();
-			auto renderer = ritem[i]->GetComponent<SkinnedMeshRenderer>();
+			auto ritem = CreateEmpty();
+			ritem->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
+			ritem->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
+			ritem->GetComponent<Transform>()->position = { interval * x, 0.0f, interval * z };
+			auto mesh = ritem->AddComponent<SkinnedMeshRenderer>()->mesh = geometries["ApprenticeSK"].get();
+			auto renderer = ritem->GetComponent<SkinnedMeshRenderer>();
 			for (auto& sm : mesh->DrawArgs)
 				renderer->materials.push_back(1);
-
-			auto anim = ritem[i]->AddComponent<Animator>();
+	
+			auto anim = ritem->AddComponent<Animator>();
 			anim->controller = controller;
-			anim->state = &controller->states[name[5]];
+			anim->state = &controller->states[name[i++]];
 			anim->TimePos = Random::Range(0.0f, anim->controller->GetClipEndTime(anim->state));
-
-			anim->state = &controller->states["Idle"];
-			anim->TimePos = 0;
-			auto ref = ritem[i]->AddComponent<CharacterController>();
-
-			renderObjectsLayer[(int)RenderLayer::SkinnedOpaque][mesh].gameObjects.push_back(ritem[i]);
+	
+			if (!x && !z)
+			{
+				anim->state = &controller->states["Idle"];
+				anim->TimePos = 0;
+				auto ref = ritem->AddComponent<CharacterController>();
+			}
+	
+			renderObjectsLayer[(int)RenderLayer::SkinnedOpaque][mesh].gameObjects.push_back(ritem);
 		}
-	}
-
+	
+	
+	//{
+	//	GameObject* ImageObject = CreateImage();
+	//	{
+	//		ImageObject->AddComponent<Button>()->AddEvent(
+	//			[](void*) {
+	//				Debug::Log("이게 되네;;\n");
+	//				//SceneManager::LoadScene("materialScene");
+	//			});
+	//	}
+	//	{
+	//		GameObject* textobject = ImageObject->AddChildUI();
+	//		auto rectTransform = textobject->GetComponent<RectTransform>();
+	//		rectTransform->anchorMin = { 0, 0 };
+	//		rectTransform->anchorMax = { 1, 1 };
+	//	
+	//		Text* text = textobject->AddComponent<Text>();
+	//		text->text = L"되겟냐?ㅋㅋ";
+	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	//		textObjects.push_back(textobject);
+	//	}
+	//}
 	GameObject* prefab;
 	int xObjects = 0, yObjects = 0, zObjects = 0;
 	for (int x = -xObjects; x <= xObjects; x++)
@@ -161,13 +228,13 @@ void SampleScene::BuildObjects()
 				auto renderer = ritem->AddComponent<Renderer>();
 				for (auto& sm : mesh->DrawArgs)
 					renderer->materials.push_back(Random::Range(6, 9));
-
+	
 				ritem->AddComponent<RotatingBehavior>()->speedRotating = Random::Range(-10.0f, 10.0f) * 2;
-
+	
 				renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(ritem);
-
+				
 			}
-
+	
 	{
 		GameObject* grid = CreateEmpty();
 		grid->GetComponent<Transform>()->position -= {128, 10, 128};
@@ -180,7 +247,7 @@ void SampleScene::BuildObjects()
 		tp->heightMap = m_pHeightMapImage;
 		tp->mesh = gridMesh;
 	}
-
+	
 	for (int i = 0; i < 5; ++i)
 	{
 		GameObject* leftCylRItem = CreateEmpty();
@@ -188,33 +255,24 @@ void SampleScene::BuildObjects()
 		auto mesh = leftCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
 		leftCylRItem->AddComponent<Renderer>()->materials.push_back(2);
 		renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(leftCylRItem);
-
+	
 		GameObject* rightCylRItem = CreateEmpty();
 		rightCylRItem->GetComponent<Transform>()->position = Vector3(5.0f, 1.5f, -10.0f + i * 5.0f);
 		mesh = rightCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
 		rightCylRItem->AddComponent<Renderer>()->materials.push_back(2);
 		renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(rightCylRItem);
-
+	
 		GameObject* leftSphereRItem = CreateEmpty();
 		leftSphereRItem->GetComponent<Transform>()->position = Vector3(-5.0f, 3.5f, -10.0f + i * 5.0f);
 		mesh = leftSphereRItem->AddComponent<MeshFilter>()->mesh = geometries["Sphere"].get();
 		leftSphereRItem->AddComponent<Renderer>()->materials.push_back(3);
 		renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(leftSphereRItem);
-
+	
 		GameObject* rightSphereRItem = CreateEmpty();
 		rightSphereRItem->GetComponent<Transform>()->position = Vector3(5.0f, 3.5f, -10.0f + i * 5.0f);
 		mesh = rightSphereRItem->AddComponent<MeshFilter>()->mesh = geometries["Sphere"].get();
 		rightSphereRItem->AddComponent<Renderer>()->materials.push_back(3);
 		renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(rightSphereRItem);
-	}
-
-	{
-		GameObject* network = CreateEmpty();
-		network->AddComponent<Network>()->myCharacter = ritem[0];
-		for (int i = 0; i < MAX_USER - 1; ++i)
-		{
-			network->GetComponent<Network>()->otherCharacter[i] = ritem[i + 1];
-		}
 	}
 
 	auto menuSceneButton = CreateImage();
@@ -227,7 +285,7 @@ void SampleScene::BuildObjects()
 		rectTransform->posY = -10;
 		rectTransform->width = 150;
 		rectTransform->height = 30;
-	
+
 		menuSceneButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
 				SceneManager::LoadScene("MenuScene");
@@ -237,7 +295,7 @@ void SampleScene::BuildObjects()
 			auto rectTransform = textobject->GetComponent<RectTransform>();
 			rectTransform->anchorMin = { 0, 0 };
 			rectTransform->anchorMax = { 1, 1 };
-	
+
 			Text* text = textobject->AddComponent<Text>();
 			text->text = L"Menu Scene";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
@@ -245,5 +303,4 @@ void SampleScene::BuildObjects()
 			textObjects.push_back(textobject);
 		}
 	}
-
 }

@@ -11,3 +11,5 @@
 #include <tchar.h>
 
 #include "MenuScene.h"
+#include "SampleScene.h"
+#include "TerrainScene.h"

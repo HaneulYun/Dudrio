@@ -44,7 +44,7 @@ void MenuScene::BuildObjects()
 		sampleSceneButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
 				Debug::Log("이게 되네;;\n");
-				SceneManager::LoadScene("MainScene");
+				SceneManager::LoadScene("SampleScene");
 			});
 		{
 			auto textobject = sampleSceneButton->AddChildUI();

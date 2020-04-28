@@ -175,22 +175,27 @@
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Dudrio.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="MaterialScene.h" />
+    <ClInclude Include="MenuScene.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RotatingBehavior.h" />
-    <ClInclude Include="MenuScene.h" />
     <ClInclude Include="scripts.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TerrainPicking.h" />
+    <ClInclude Include="TerrainScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp" />
+    <ClCompile Include="MaterialScene.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="MenuScene.cpp" />
+    <ClCompile Include="TerrainScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dudrio.rc" />

@@ -51,7 +51,16 @@
     <ClInclude Include="scripts.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainPicking.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
     <ClInclude Include="MenuScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,7 +71,13 @@
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MaterialScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="MenuScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
   </ItemGroup>

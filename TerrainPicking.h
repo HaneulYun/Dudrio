@@ -1,17 +1,18 @@
 #pragma once
-#include "..\CyanEngine\framework.h"
+#include "CyanEngine\CyanEngine\framework.h"
 
 class TerrainPicking : public MonoBehavior<TerrainPicking>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
+	Mesh* model;
+	GameObject* preview{ nullptr };
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* terrain;
-	GameObject* prefab;
+	CHeightMapImage* heightMap;
+	CHeightMapGridMesh* terrainMesh;
 	float dT;
 
-	CHeightMapImage* heightMap;
-	CHeightMapGridMesh* mesh;
 
 private:
 	friend class GameObject;
@@ -67,27 +68,26 @@ public:
 
 				x = std::floor(point.x);
 				z = std::floor(point.z);
-				vertices.push_back({ x,mesh->OnGetHeight(x, z, heightMap),z });
-				vertices.push_back({ x + 1,mesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
-				vertices.push_back({ x + 1,mesh->OnGetHeight(x + 1, z, heightMap),z });
+				vertices.push_back({ x,terrainMesh->OnGetHeight(x, z, heightMap),z });
+				vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
+				vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z, heightMap),z });
 
-				vertices.push_back({ x,mesh->OnGetHeight(x, z, heightMap),z });
-				vertices.push_back({ x,mesh->OnGetHeight(x, z + 1, heightMap),z + 1 });
-				vertices.push_back({ x + 1,mesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
+				vertices.push_back({ x,terrainMesh->OnGetHeight(x, z, heightMap),z });
+				vertices.push_back({ x,terrainMesh->OnGetHeight(x, z + 1, heightMap),z + 1 });
+				vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
 
 			}
 			IntersectVertices(rayOrigin.xmf3, rayDir.xmf3, vertices);
 			point = rayOrigin + rayDir * dT;
 
 			point = point.TransformCoord(terrain->transform->localToWorldMatrix);
-
-			prefab->transform->position = { point.x, point.y, point.z };
+			preview->transform->position = { point.x, point.y + 1.0f, point.z };
 			if (Input::GetMouseButtonUp(2))
 			{
-				GameObject* go = Scene::scene->Duplicate(prefab);
-				Scene::scene->AddGameObject(go);
+				GameObject* go = Scene::scene->Duplicate(preview);
 				Mesh* mesh = static_cast<MeshFilter*>(go->meshFilter)->mesh;
 				Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(go);
+				Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][mesh].isDirty = true;
 			}
 		}
 	}
@@ -150,4 +150,25 @@ public:
 		}
 	}
 
+	void SelectModel(Mesh* mesh, int matIndex)
+	{
+		model = mesh;
+		if (preview == nullptr)
+		{
+			preview = Scene::scene->CreateEmpty();
+			preview->GetComponent<Transform>()->Scale({ 5, 5, 5 });
+			auto m = preview->AddComponent<MeshFilter>()->mesh = mesh;
+			auto renderer = preview->AddComponent<Renderer>();
+			for (auto& sm : m->DrawArgs)
+				renderer->materials.push_back(matIndex);
+			preview->AddComponent<RotatingBehavior>()->speedRotating = Random::Range(-10.0f, 10.0f) * 2;
+			Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][m].gameObjects.push_back(preview);
+		}
+		else
+		{
+			preview->GetComponent<MeshFilter>()->mesh = mesh;
+			preview->GetComponent<Renderer>()->materials[0] = matIndex;
+			Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(preview);
+		}
+	}
 };

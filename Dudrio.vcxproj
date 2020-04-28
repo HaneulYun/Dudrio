@@ -176,6 +176,7 @@
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Dudrio.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GuestController.h" />
     <ClInclude Include="MaterialScene.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="ParticleScene.h" />

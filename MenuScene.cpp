@@ -9,6 +9,7 @@ void MenuScene::BuildObjects()
 
 	//*** Material ***//
 	AddMaterial(0, "none", 0);
+	AddMaterial(1, "gray", 0, -1, { 0.5, 0.5, 0.5, 0.5 });
 
 	//*** Mesh ***//
 	geometries["Image"] = Mesh::CreateQuad();
@@ -44,7 +45,7 @@ void MenuScene::BuildObjects()
 		sampleSceneButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
 				Debug::Log("이게 되네;;\n");
-				SceneManager::LoadScene("MainScene");
+				//SceneManager::LoadScene("MainScene");
 			});
 		{
 			auto textobject = sampleSceneButton->AddChildUI();
@@ -58,6 +59,7 @@ void MenuScene::BuildObjects()
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
 		}
+		sampleSceneButton->GetComponent<Renderer>()->materials[0] = 1;
 	}
 
 	auto materialSceneButton = CreateImage();
@@ -73,7 +75,7 @@ void MenuScene::BuildObjects()
 
 		materialSceneButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				SceneManager::LoadScene("MaterialScene");
+				//SceneManager::LoadScene("MaterialScene");
 			});
 		{
 			auto textobject = materialSceneButton->AddChildUI();
@@ -87,6 +89,7 @@ void MenuScene::BuildObjects()
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
 		}
+		materialSceneButton->GetComponent<Renderer>()->materials[0] = 1;
 	}
 
 	auto terrainSceneButton = CreateImage();

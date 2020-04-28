@@ -6,20 +6,53 @@ void AnimationScene::BuildObjects()
 	///*** Asset ***///
 	//*** Texture ***//
 	AddTexture(0, "none", L"Textures\\none.dds");
+	AddTexture(1, "polyArtTex", L"Textures\\PolyArtTex.dds");
 
 	//*** Material ***//
 	AddMaterial(0, "none", 0);
+	AddMaterial(1, "PolyArt", 1, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 	//*** Mesh ***//
 	geometries["Image"] = Mesh::CreateQuad();
 	geometries["Sphere"] = Mesh::CreateSphere();
+	geometries["Plane"] = Mesh::CreatePlane();
+	AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+
+	//*** Animation ***//
+	AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
+	AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
+	AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
+	AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
+	AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
+
+	//*** AnimatorController ***//
+	AnimatorController* controller = new AnimatorController();
+	{
+		controller->AddParameterFloat("VelocityX");
+		controller->AddParameterFloat("VelocityZ");
+
+		controller->AddState("Idle", animationClips["Idle_BowAnim"].get());
+		controller->AddState("Walk", animationClips["Walk_BowAnim"].get());
+		controller->AddState("WalkBack", animationClips["WalkBack_BowAnim"].get());
+		controller->AddState("WalkRight", animationClips["WalkRight_BowAnim"].get());
+		controller->AddState("WalkLeft", animationClips["WalkLeft_BowAnim"].get());
+
+		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("VelocityZ", Greater, 0.3));
+		controller->AddTransition("Idle", "WalkBack", TransitionCondition::CreateFloat("VelocityZ", Less, -0.3));
+		controller->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("VelocityZ", Less, 0.3));
+		controller->AddTransition("WalkBack", "Idle", TransitionCondition::CreateFloat("VelocityZ", Greater, -0.3));
+
+		controller->AddTransition("Idle", "WalkLeft", TransitionCondition::CreateFloat("VelocityX", Greater, 0.3));
+		controller->AddTransition("Idle", "WalkRight", TransitionCondition::CreateFloat("VelocityX", Less, -0.3));
+		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
+		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("VelocityX", Greater, -0.3));
+	}
 
 	///*** Game Object ***///
 
 	auto mainCamera = CreateEmpty();
 	{
-		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<CameraController>();
+		
 	}
 
 	auto skyBox = CreateEmpty();
@@ -58,4 +91,39 @@ void AnimationScene::BuildObjects()
 			textObjects.push_back(textobject);
 		}
 	}
+
+	auto grid = CreateEmpty();
+	{
+		grid->AddComponent<MeshFilter>()->mesh = geometries["Plane"].get();
+		grid->AddComponent<Renderer>()->materials.push_back(0);
+		renderObjectsLayer[(int)RenderLayer::Opaque][geometries["Plane"].get()].gameObjects.push_back(grid);
+	}
+
+	auto guestPlayer = CreateEmpty();
+	{
+		auto model = guestPlayer->AddChild();
+		{
+			model->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
+			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
+			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = geometries["ApprenticeSK"].get();
+			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(1);
+			renderObjectsLayer[(int)RenderLayer::SkinnedOpaque][mesh].gameObjects.push_back(model);
+
+			auto animator = model->AddComponent<Animator>();
+			animator->controller = controller;
+			animator->state = &controller->states["Idle"];
+			animator->TimePos = 0;
+
+			guestPlayer->AddComponent<GuestController>()->animator = animator;
+		}
+		auto cameraOffset = guestPlayer->AddChild();
+		{
+			cameraOffset->transform->position = { 0, 3, -6 };
+			camera = camera->main = cameraOffset->AddComponent<Camera>();
+			cameraOffset->AddComponent<CameraController>();
+		}
+	}
+
 }

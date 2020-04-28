@@ -63,6 +63,12 @@
     <ClInclude Include="TerrainScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -78,6 +84,12 @@
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="TerrainScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
   </ItemGroup>

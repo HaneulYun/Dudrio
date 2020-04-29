@@ -51,9 +51,6 @@
     <ClInclude Include="scripts.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainPicking.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="MaterialScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
@@ -70,6 +67,9 @@
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="GuestController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="BulidManager.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
   </ItemGroup>

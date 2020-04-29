@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimationScene.h" />
+    <ClInclude Include="BulidManager.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Dudrio.h" />
@@ -185,7 +186,6 @@
     <ClInclude Include="RotatingBehavior.h" />
     <ClInclude Include="scripts.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TerrainPicking.h" />
     <ClInclude Include="TerrainScene.h" />
   </ItemGroup>
   <ItemGroup>

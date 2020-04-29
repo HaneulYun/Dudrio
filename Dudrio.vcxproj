@@ -178,6 +178,7 @@
     <ClInclude Include="Dudrio.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GuestController.h" />
+    <ClInclude Include="HostCameraController.h" />
     <ClInclude Include="MaterialScene.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="ParticleScene.h" />

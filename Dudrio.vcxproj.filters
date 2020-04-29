@@ -72,6 +72,9 @@
     <ClInclude Include="BulidManager.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="HostCameraController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">

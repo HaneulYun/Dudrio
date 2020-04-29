@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "TerrainScene.h"
 
+BuildManager* BuildManager::buildManager{ nullptr };
+
 void TerrainScene::BuildObjects()
 {
 	///*** Asset ***///
@@ -37,7 +39,6 @@ void TerrainScene::BuildObjects()
 		geometries["Plane"] = Mesh::CreatePlane();
 		geometries["Sphere"] = Mesh::CreateSphere();
 		geometries["Cylinder"] = Mesh::CreateCylinder();
-		AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 	}
 
 	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
@@ -62,17 +63,23 @@ void TerrainScene::BuildObjects()
 		renderObjectsLayer[(int)RenderLayer::Sky][mesh].gameObjects.push_back(ritem);
 	}
 
+
+	GameObject* grid = CreateEmpty();
 	{
-		GameObject* grid = CreateEmpty();
 		grid->GetComponent<Transform>()->position -= {128, 10, 128};
 		auto mesh = grid->AddComponent<MeshFilter>()->mesh = gridMesh;
 		grid->AddComponent<Renderer>()->materials.push_back(1);
 		renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(grid);
-		TerrainPicking* tp = grid->AddComponent<TerrainPicking>();
-		tp->terrain = grid;
-		tp->heightMap = m_pHeightMapImage;
-		tp->terrainMesh = gridMesh;
-		tp->SelectModel(geometries["Cube"].get(), 8);
+	}
+
+	{
+		GameObject* buildManager = CreateEmpty();
+		BuildManager* bm = buildManager->AddComponent<BuildManager>();
+		bm->terrain = grid;
+		bm->heightMap = m_pHeightMapImage;
+		bm->terrainMesh = gridMesh;
+		//bm->SelectModel(geometries["Cube"].get(), 8, 5);
+		BuildManager::buildManager = bm;
 	}
 
 	// billboard points
@@ -158,6 +165,8 @@ void TerrainScene::BuildObjects()
 		}
 	}
 
+
+	// Build Button
 	auto BuildingSelectButton01 = CreateImage();
 	{
 		auto rectTransform = BuildingSelectButton01->GetComponent<RectTransform>();
@@ -171,7 +180,7 @@ void TerrainScene::BuildObjects()
 
 		BuildingSelectButton01->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				Scene::scene->geometries["Sphere"];
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 9, 1);
 			});
 		{
 			auto textobject = BuildingSelectButton01->AddChildUI();
@@ -180,7 +189,36 @@ void TerrainScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Create 01";
+			text->text = L"Sphere";
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
+	auto BuildingSelectButton02 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton02->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 0 };
+		rectTransform->anchorMax = { 0, 0 };
+		rectTransform->pivot = { 0, 0 };
+		rectTransform->posX = 70;
+		rectTransform->posY = 10;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+	
+		BuildingSelectButton02->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 8, 5);
+			});
+		{
+			auto textobject = BuildingSelectButton02->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+	
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"Cube";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);

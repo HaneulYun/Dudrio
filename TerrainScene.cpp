@@ -49,7 +49,7 @@ void TerrainScene::BuildObjects()
 	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<CameraController>();
+		mainCamera->AddComponent<HostCameraController>();
 	}
 
 	{

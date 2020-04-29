@@ -165,7 +165,7 @@ public:
 		}
 		
 		prefab = Scene::scene->CreateEmpty();
-		prefab->AddComponent<Transform>()->Scale({ size, size, size });
+		prefab->GetComponent<Transform>()->Scale({ size, size, size });
 		prefab->AddComponent<MeshFilter>()->mesh = mesh;
 		auto renderer = prefab->AddComponent<Renderer>();
 		for (auto& sm : mesh->DrawArgs)

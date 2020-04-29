@@ -60,7 +60,7 @@ void AnimationScene::BuildObjects()
 		skyBox->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
 		skyBox->AddComponent<Renderer>()->materials.push_back(1);
 		auto mesh = skyBox->AddComponent<MeshFilter>()->mesh = geometries["Sphere"].get();
-		renderObjectsLayer[(int)RenderLayer::Sky][mesh].gameObjects.push_back(skyBox);
+		skyBox->layer = (int)RenderLayer::Sky;
 	}
 
 	auto menuSceneButton = CreateImage();
@@ -96,7 +96,6 @@ void AnimationScene::BuildObjects()
 	{
 		grid->AddComponent<MeshFilter>()->mesh = geometries["Plane"].get();
 		grid->AddComponent<Renderer>()->materials.push_back(0);
-		renderObjectsLayer[(int)RenderLayer::Opaque][geometries["Plane"].get()].gameObjects.push_back(grid);
 	}
 
 	auto guestPlayer = CreateEmpty();
@@ -109,7 +108,6 @@ void AnimationScene::BuildObjects()
 			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
 			for (auto& sm : mesh->DrawArgs)
 				renderer->materials.push_back(1);
-			renderObjectsLayer[(int)RenderLayer::SkinnedOpaque][mesh].gameObjects.push_back(model);
 
 			auto animator = model->AddComponent<Animator>();
 			animator->controller = controller;

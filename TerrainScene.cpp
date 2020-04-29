@@ -60,7 +60,7 @@ void TerrainScene::BuildObjects()
 		for (auto& sm : mesh->DrawArgs)
 			renderer->materials.push_back(5);
 
-		renderObjectsLayer[(int)RenderLayer::Sky][mesh].gameObjects.push_back(ritem);
+		ritem->layer = (int)RenderLayer::Sky;
 	}
 
 
@@ -69,7 +69,6 @@ void TerrainScene::BuildObjects()
 		grid->GetComponent<Transform>()->position -= {128, 10, 128};
 		auto mesh = grid->AddComponent<MeshFilter>()->mesh = gridMesh;
 		grid->AddComponent<Renderer>()->materials.push_back(1);
-		renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(grid);
 	}
 
 	{
@@ -133,7 +132,7 @@ void TerrainScene::BuildObjects()
 		billboards->GetComponent<Transform>()->position -= {128, 10, 128};
 		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = geometries["Grass"].get();
 		billboards->AddComponent<Renderer>()->materials.push_back(7);
-		renderObjectsLayer[(int)RenderLayer::Grass][mesh].gameObjects.push_back(billboards);
+		billboards->layer = (int)RenderLayer::Grass;
 	}
 
 	auto menuSceneButton = CreateImage();

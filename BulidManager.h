@@ -84,13 +84,9 @@ public:
 
 			point = point.TransformCoord(terrain->transform->localToWorldMatrix);
 			prefab->transform->position = { point.x, point.y + 1.0f, point.z };
-			prefab->NumFramesDirty = NUM_FRAME_RESOURCES;
 			if (Input::GetMouseButtonUp(2))
 			{
 				GameObject* go = Scene::scene->Duplicate(prefab);
-				Mesh* mesh = static_cast<MeshFilter*>(go->meshFilter)->mesh;
-				Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(go);
-				Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][mesh].isDirty = true;
 				DeletePrefab();
 			}
 		}
@@ -171,17 +167,11 @@ public:
 		for (auto& sm : mesh->DrawArgs)
 			renderer->materials.push_back(matIndex);
 		prefab->AddComponent<RotatingBehavior>()->speedRotating = Random::Range(-10.0f, 10.0f) * 2;
-		Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][mesh].gameObjects.push_back(prefab);
-		Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][mesh].isDirty = true;
 	}
 
 	void DeletePrefab()
 	{
 		Scene::scene->PushDelete(prefab);
-		auto m = prefab->GetComponent<MeshFilter>()->mesh;
-		std::vector<GameObject*>& v = Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][m].gameObjects;
-		v.erase(std::find(v.begin(), v.end(), prefab));
-		Scene::scene->renderObjectsLayer[(int)RenderLayer::Opaque][m].isDirty = true;
 		prefab = nullptr;
 	}
 };

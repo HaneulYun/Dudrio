@@ -25,9 +25,6 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		if(gameObject->children.size())
-			gameObject->children[0]->NumFramesDirty = NUM_FRAME_RESOURCES;
-
 		accel = { 0, 0, 0 };
 		if (Input::GetKey(KeyCode::W))
 			accel += gameObject->transform->forward * 2 * Time::deltaTime;

@@ -105,8 +105,6 @@ public:
 		gameObject->transform->position += Vector3(hori_speed, 0, speed) * Time::deltaTime;
 		anim->SetFloat("Speed", speed);
 		anim->SetFloat("HoriSpeed", hori_speed);
-
-		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
 	}
 
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.

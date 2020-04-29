@@ -163,7 +163,18 @@ void TerrainScene::BuildObjects()
 			textObjects.push_back(textobject);
 		}
 	}
+	for (int i = 0; i < 5; ++i)
+	{
+		GameObject* leftCylRItem = CreateEmpty();
+		leftCylRItem->GetComponent<Transform>()->position = Vector3(-5.0f, 1.5f, -10.0f + i * 5.0f);
+		auto mesh = leftCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
+		leftCylRItem->AddComponent<Renderer>()->materials.push_back(2);
 
+		GameObject* rightCylRItem = CreateEmpty();
+		rightCylRItem->GetComponent<Transform>()->position = Vector3(5.0f, 1.5f, -10.0f + i * 5.0f);
+		mesh = rightCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
+		rightCylRItem->AddComponent<Renderer>()->materials.push_back(2);
+	}
 
 	// Build Button
 	auto BuildingSelectButton01 = CreateImage();

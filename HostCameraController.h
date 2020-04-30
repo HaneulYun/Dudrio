@@ -1,5 +1,6 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
+#include "BulidManager.h"
 
 class HostCameraController : public MonoBehavior<HostCameraController>
 {
@@ -39,7 +40,7 @@ public:
 		{
 			lastMousePos = Input::mousePosition;
 		}
-		else if (Input::GetMouseButton(2))
+		else if (Input::GetMouseButton(2) && BuildManager::buildManager->prefab == nullptr)
 		{
 			Vector3 currMousePos = Input::mousePosition;
 			Vector3 delta = (currMousePos - lastMousePos) * 0.25f * (XM_PI / 180.0f);

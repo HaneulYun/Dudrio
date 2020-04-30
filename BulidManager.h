@@ -4,15 +4,16 @@
 class BuildManager : public MonoBehavior<BuildManager>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
-	//Mesh* model;
-	GameObject* prefab{ nullptr };
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
+	GameObject* prefab{ nullptr };
 	GameObject* terrain;
 	CHeightMapImage* heightMap;
 	CHeightMapGridMesh* terrainMesh;
 	float dT;
 
+	bool rotationToggle{ false };
+	Vector3 lastMousePos;
 	static BuildManager* buildManager;
 
 private:
@@ -82,13 +83,35 @@ public:
 			IntersectVertices(rayOrigin.xmf3, rayDir.xmf3, vertices);
 			point = rayOrigin + rayDir * dT;
 			point = point.TransformCoord(terrain->transform->localToWorldMatrix);
-			prefab->transform->position = { point.x, point.y + 1.0f, point.z };
-			if (Input::GetMouseButtonUp(2))
+			if (Input::GetKey(KeyCode::T))
+				rotationToggle = rotationToggle ? false : true;
+			if (Input::GetMouseButtonDown(2))
+				lastMousePos = Input::mousePosition;
+			else if (Input::GetMouseButton(2))
+			{
+				if (rotationToggle)
+				{
+					if (abs(lastMousePos.y - Input::mousePosition.y) > 30)
+					{
+						prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y)/ abs(lastMousePos.y - Input::mousePosition.y) * 30.0f);
+						lastMousePos = Input::mousePosition;
+					}
+				}
+				else
+				{
+					prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) * Time::deltaTime * 60.0f);
+					lastMousePos = Input::mousePosition;
+				}
+
+			}
+			else if (Input::GetMouseButtonUp(0))
 			{
 				prefab->layer = (int)RenderLayer::Opaque;
 				GameObject* go = Scene::scene->Duplicate(prefab);
 				DeletePrefab();
 			}
+			else
+				prefab->transform->position = { point.x, point.y + 1.0f, point.z };
 		}
 	}
 

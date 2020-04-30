@@ -190,7 +190,7 @@ void TerrainScene::BuildObjects()
 
 		BuildingSelectButton01->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 9, 1);
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 2, 1);
 			});
 		{
 			auto textobject = BuildingSelectButton01->AddChildUI();
@@ -219,7 +219,7 @@ void TerrainScene::BuildObjects()
 	
 		BuildingSelectButton02->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 8, 5);
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 2, 5);
 			});
 		{
 			auto textobject = BuildingSelectButton02->AddChildUI();

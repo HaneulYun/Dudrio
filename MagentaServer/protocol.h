@@ -11,13 +11,13 @@ constexpr int MAX_USER = 10;
 
 #define C2S_LOGIN			1
 #define C2S_MOVE			2
-#define C2S_CONSTRUCT		3
+#define C2S_CONSTRUCT		3	// Host to Server
 
 #define S2C_LOGIN_OK		1
 #define S2C_MOVE			2
 #define S2C_ENTER			3
 #define S2C_LEAVE			4
-#define S2C_CONSTRUCT		5
+#define S2C_CONSTRUCT		5	
 
 #pragma pack(push ,1)
 

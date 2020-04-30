@@ -90,6 +90,9 @@
     <ClInclude Include="GuestNetwork.h">
       <Filter>Assets\Network</Filter>
     </ClInclude>
+    <ClInclude Include="HostNetwork.h">
+      <Filter>Assets\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -117,6 +120,9 @@
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="GuestNetwork.cpp">
+      <Filter>Assets\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="HostNetwork.cpp">
       <Filter>Assets\Network</Filter>
     </ClCompile>
   </ItemGroup>

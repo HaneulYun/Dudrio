@@ -22,6 +22,9 @@
     <Filter Include="Assets\Scripts">
       <UniqueIdentifier>{95a5485c-d925-4ab1-82f8-d9ab653be419}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Network">
+      <UniqueIdentifier>{745d9efb-85c4-4d46-bf7e-6765245a03a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -57,9 +60,6 @@
     <ClInclude Include="MagentaServer\protocol.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Network.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="SampleScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
@@ -83,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="HostCameraController.h">
       <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterMovingBehavior.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Assets\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="ParticleScene.cpp">
       <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Assets\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

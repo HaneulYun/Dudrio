@@ -146,6 +146,7 @@ float4 PS(PSInput pin) : SV_Target
 
 	float4 ambient = gAmbientLight * diffuseAlbedo;
 
+
 	float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
 	shadowFactor[0] = CalcShadowFactor(pin.ShadowPosH);
 	const float shininess = 1.0f - roughness;

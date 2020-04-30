@@ -9,13 +9,15 @@ constexpr int MAX_USER = 10;
 
 #define SERVER_PORT		9000
 
-#define C2S_LOGIN	1
-#define C2S_MOVE	2
+#define C2S_LOGIN			1
+#define C2S_MOVE			2
+#define C2S_CONSTRUCT		3
 
 #define S2C_LOGIN_OK		1
 #define S2C_MOVE			2
 #define S2C_ENTER			3
 #define S2C_LEAVE			4
+#define S2C_CONSTRUCT		5
 
 #pragma pack(push ,1)
 
@@ -60,15 +62,10 @@ struct cs_packet_login {
 	char	name[MAX_ID_LEN];
 };
 
-constexpr unsigned char D_UP = 0;
-constexpr unsigned char D_DOWN = 1;
-constexpr unsigned char D_LEFT = 2;
-constexpr unsigned char D_RIGHT = 3;
-
 struct cs_packet_move {
 	char	size;
 	char	type;
-	//char	direction;
+
 	float xMove, zMove;
 };
 #pragma pack (pop)

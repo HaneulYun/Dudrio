@@ -1,5 +1,5 @@
 #pragma once
-#include "CyanEngine\CyanEngine\framework.h"
+#include "..\CyanEngine\framework.h"
 
 class BuildManager : public MonoBehavior<BuildManager>
 {
@@ -81,11 +81,11 @@ public:
 			}
 			IntersectVertices(rayOrigin.xmf3, rayDir.xmf3, vertices);
 			point = rayOrigin + rayDir * dT;
-
 			point = point.TransformCoord(terrain->transform->localToWorldMatrix);
 			prefab->transform->position = { point.x, point.y + 1.0f, point.z };
 			if (Input::GetMouseButtonUp(2))
 			{
+				prefab->layer = (int)RenderLayer::Opaque;
 				GameObject* go = Scene::scene->Duplicate(prefab);
 				DeletePrefab();
 			}
@@ -159,14 +159,15 @@ public:
 			if (meshFilter && meshFilter->mesh == mesh)
 				return;
 		}
-		
+		Scene::scene->CreateEmptyPrefab();
 		prefab = Scene::scene->CreateEmpty();
 		prefab->GetComponent<Transform>()->Scale({ size, size, size });
 		prefab->AddComponent<MeshFilter>()->mesh = mesh;
 		auto renderer = prefab->AddComponent<Renderer>();
+		prefab->layer = (int)RenderLayer::BuildPreview;
 		for (auto& sm : mesh->DrawArgs)
 			renderer->materials.push_back(matIndex);
-		prefab->AddComponent<RotatingBehavior>()->speedRotating = Random::Range(-10.0f, 10.0f) * 2;
+		prefab->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 	}
 
 	void DeletePrefab()

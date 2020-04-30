@@ -66,7 +66,22 @@
     <ClInclude Include="TerrainScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainPicking.h">
+    <ClInclude Include="AnimationScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="BulidManager.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="GuestController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="HostCameraController.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
@@ -84,6 +99,15 @@
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="TerrainScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
   </ItemGroup>

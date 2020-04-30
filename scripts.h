@@ -6,5 +6,4 @@
 #include "CharacterController.h"
 #include "BulidManager.h"
 #include "GuestController.h"
-#include "TerrainPicking.h"
 #include "Network.h"

@@ -171,12 +171,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationScene.h" />
+    <ClInclude Include="BulidManager.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Dudrio.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GuestController.h" />
+    <ClInclude Include="HostCameraController.h" />
     <ClInclude Include="MagentaServer\protocol.h" />
+    <ClInclude Include="MaterialScene.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="ParticleScene.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RotatingBehavior.h" />
@@ -184,11 +190,13 @@
     <ClInclude Include="SampleScene.h" />
     <ClInclude Include="scripts.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TerrainPicking.h" />
     <ClInclude Include="TerrainScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationScene.cpp" />
     <ClCompile Include="Dudrio.cpp" />
+    <ClCompile Include="MaterialScene.cpp" />
+    <ClCompile Include="ParticleScene.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

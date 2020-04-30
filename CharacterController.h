@@ -27,14 +27,14 @@ public:
 	{
 		isShowing = false;
 		gameObject->transform->position.y = -1000.0f;
-		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
+		//gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
 	}
 	
 	void show()
 	{
 		isShowing = true;
 		gameObject->transform->position.y = 0.0f;
-		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
+		//gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
 	}
 
 	void Start(/*초기화 코드를 작성하세요.*/)
@@ -138,7 +138,7 @@ public:
 		gameObject->transform->position = { x, curPos.y, z };
 		anim->SetFloat("Speed", speed);
 		anim->SetFloat("HoriSpeed", hori_speed);
-		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
+		//gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
 	}
 
 	void move()
@@ -146,8 +146,6 @@ public:
 		gameObject->transform->position += Vector3(hori_speed, 0, speed) * Time::deltaTime;
 		anim->SetFloat("Speed", speed);
 		anim->SetFloat("HoriSpeed", hori_speed);
-
-		gameObject->NumFramesDirty = NUM_FRAME_RESOURCES;
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

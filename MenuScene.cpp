@@ -9,6 +9,7 @@ void MenuScene::BuildObjects()
 
 	//*** Material ***//
 	AddMaterial(0, "none", 0);
+	AddMaterial(1, "gray", 0, -1, { 0.5, 0.5, 0.5, 0.5 });
 
 	//*** Mesh ***//
 	geometries["Image"] = Mesh::CreateQuad();
@@ -27,7 +28,7 @@ void MenuScene::BuildObjects()
 		skyBox->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
 		skyBox->AddComponent<Renderer>()->materials.push_back(1);
 		auto mesh = skyBox->AddComponent<MeshFilter>()->mesh = geometries["Sphere"].get();
-		renderObjectsLayer[(int)RenderLayer::Sky][mesh].gameObjects.push_back(skyBox);
+		skyBox->layer = (int)RenderLayer::Sky;
 	}
 
 	auto sampleSceneButton = CreateImage();
@@ -58,6 +59,7 @@ void MenuScene::BuildObjects()
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
 		}
+		sampleSceneButton->GetComponent<Renderer>()->materials[0] = 1;
 	}
 
 	auto materialSceneButton = CreateImage();
@@ -73,7 +75,7 @@ void MenuScene::BuildObjects()
 
 		materialSceneButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				SceneManager::LoadScene("MaterialScene");
+				//SceneManager::LoadScene("MaterialScene");
 			});
 		{
 			auto textobject = materialSceneButton->AddChildUI();
@@ -87,6 +89,7 @@ void MenuScene::BuildObjects()
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
 		}
+		materialSceneButton->GetComponent<Renderer>()->materials[0] = 1;
 	}
 
 	auto terrainSceneButton = CreateImage();
@@ -118,6 +121,35 @@ void MenuScene::BuildObjects()
 		}
 	}
 
+	auto animationSceneButton = CreateImage();
+	{
+		auto rectTransform = animationSceneButton->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 1, 0.5 };
+		rectTransform->anchorMax = { 1, 0.5 };
+		rectTransform->pivot = { 1, 0.5 };
+		rectTransform->posX = -10;
+		rectTransform->posY = -100;
+		rectTransform->width = 150;
+		rectTransform->height = 30;
+
+		animationSceneButton->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				SceneManager::LoadScene("AnimationScene");
+			});
+		{
+			auto textobject = animationSceneButton->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"Animation Scene";
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
 	auto particleSceneButton = CreateImage();
 	{
 		auto rectTransform = particleSceneButton->GetComponent<RectTransform>();
@@ -125,7 +157,7 @@ void MenuScene::BuildObjects()
 		rectTransform->anchorMax = { 1, 0.5 };
 		rectTransform->pivot = { 1, 0.5 };
 		rectTransform->posX = -10;
-		rectTransform->posY = -100;
+		rectTransform->posY = -140;
 		rectTransform->width = 150;
 		rectTransform->height = 30;
 

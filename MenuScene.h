@@ -5,7 +5,7 @@ class MenuScene : public Scene
 {
 public:
 	MenuScene() : Scene() {}
-	virtual ~MenuScene() {}
+	~MenuScene() {}
 
 	virtual void BuildObjects();
 };

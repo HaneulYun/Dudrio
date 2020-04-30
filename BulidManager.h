@@ -83,7 +83,7 @@ public:
 			IntersectVertices(rayOrigin.xmf3, rayDir.xmf3, vertices);
 			point = rayOrigin + rayDir * dT;
 			point = point.TransformCoord(terrain->transform->localToWorldMatrix);
-			if (Input::GetKey(KeyCode::T))
+			if (Input::GetKeyDown(KeyCode::T))
 				rotationToggle = rotationToggle ? false : true;
 			if (Input::GetMouseButtonDown(2))
 				lastMousePos = Input::mousePosition;

@@ -182,7 +182,7 @@
     <ClInclude Include="HostCameraController.h" />
     <ClInclude Include="MagentaServer\protocol.h" />
     <ClInclude Include="MaterialScene.h" />
-    <ClInclude Include="Network.h" />
+    <ClInclude Include="GuestNetwork.h" />
     <ClInclude Include="ParticleScene.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -197,7 +197,7 @@
     <ClCompile Include="AnimationScene.cpp" />
     <ClCompile Include="Dudrio.cpp" />
     <ClCompile Include="MaterialScene.cpp" />
-    <ClCompile Include="Network.cpp" />
+    <ClCompile Include="GuestNetwork.cpp" />
     <ClCompile Include="ParticleScene.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

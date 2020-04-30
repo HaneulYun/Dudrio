@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Network.h"
+#include "GuestNetwork.h"
 #include "CharacterController.h"
 #include "CharacterMovingBehavior.h"
 
-void Network::ProcessPacket(char* ptr)
+void GuestNetwork::ProcessPacket(char* ptr)
 {
 	static bool first_time = true;
 	switch (ptr[1])
@@ -67,7 +67,7 @@ void Network::ProcessPacket(char* ptr)
 	}
 }
 
-void Network::process_data(char* net_buf, size_t io_byte)
+void GuestNetwork::process_data(char* net_buf, size_t io_byte)
 {
 	char* ptr = net_buf;
 	static size_t in_packet_size = 0;
@@ -92,7 +92,7 @@ void Network::process_data(char* net_buf, size_t io_byte)
 	}
 }
 
-void Network::Receiver()
+void GuestNetwork::Receiver()
 {
 	char net_buf[BUFSIZE];
 	auto retval = recv(serverSocket, net_buf, BUFSIZE, 0);
@@ -100,13 +100,13 @@ void Network::Receiver()
 	if (retval > 0)	process_data(net_buf, retval);
 }
 
-void Network::send_packet(void* packet)
+void GuestNetwork::send_packet(void* packet)
 {
 	char* p = reinterpret_cast<char*>(packet);
 	send(serverSocket, p, p[0], 0);
 }
 
-void Network::send_move_packet(float xMove, float zMove)//unsigned char dir)
+void GuestNetwork::send_move_packet(float xMove, float zMove)//unsigned char dir)
 {
 	cs_packet_move m_packet;
 	m_packet.type = C2S_MOVE;
@@ -117,7 +117,7 @@ void Network::send_move_packet(float xMove, float zMove)//unsigned char dir)
 	send_packet(&m_packet);
 }
 
-void Network::Login()
+void GuestNetwork::Login()
 {
 	cs_packet_login l_packet;
 	l_packet.size = sizeof(l_packet);

@@ -136,7 +136,7 @@ void SampleScene::BuildObjects()
 
 	auto network = CreateEmpty();
 	{
-		network->AddComponent<Network>()->simsPrefab = SimsPrefab;
+		network->AddComponent<GuestNetwork>()->simsPrefab = SimsPrefab;
 	}
 
 	// billboard points

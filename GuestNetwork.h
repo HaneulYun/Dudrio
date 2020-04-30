@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class Network : public MonoBehavior<Network>
+class GuestNetwork : public MonoBehavior<GuestNetwork>
 {
 private:
 
@@ -27,12 +27,12 @@ public:
 
 private:
 	friend class GameObject;
-	friend class MonoBehavior<Network>;
-	Network() = default;
-	Network(Network&) = default;
+	friend class MonoBehavior<GuestNetwork>;
+	GuestNetwork() = default;
+	GuestNetwork(GuestNetwork&) = default;
 
 public:
-	~Network() {
+	~GuestNetwork() {
 		closesocket(serverSocket);
 		WSACleanup();
 	}

@@ -87,7 +87,7 @@
     <ClInclude Include="CharacterMovingBehavior.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="Network.h">
+    <ClInclude Include="GuestNetwork.h">
       <Filter>Assets\Network</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,7 +116,7 @@
     <ClCompile Include="ParticleScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Network.cpp">
+    <ClCompile Include="GuestNetwork.cpp">
       <Filter>Assets\Network</Filter>
     </ClCompile>
   </ItemGroup>

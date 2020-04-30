@@ -1,7 +1,7 @@
 #pragma once
 #include "CyanEngine\CyanEngine\framework.h"
 #include "MagentaServer\protocol.h"
-#include "Network.h"
+#include "GuestNetwork.h"
 
 class CharacterController : public MonoBehavior<CharacterController>
 {
@@ -9,7 +9,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	Network* network;
+	GuestNetwork* network;
 
 private:
 	friend class GameObject;

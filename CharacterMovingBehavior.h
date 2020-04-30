@@ -1,7 +1,5 @@
 #pragma once
-#pragma once
 #include "CyanEngine\CyanEngine\framework.h"
-#include "MagentaServer\protocol.h"
 
 class CharacterMovingBehavior : public MonoBehavior<CharacterMovingBehavior>
 {

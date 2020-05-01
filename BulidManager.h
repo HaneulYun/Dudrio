@@ -12,6 +12,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	CHeightMapImage* heightMap;
 	CHeightMapGridMesh* terrainMesh;
 	float dT;
+	float dotp;
 
 	bool rotationToggle{ false };
 	Vector3 lastMousePos;
@@ -110,17 +111,17 @@ public:
 				prefab->layer = (int)RenderLayer::Opaque;
 				GameObject* go = Scene::scene->Duplicate(prefab);
 				
+				if(HostNetwork::network->isConnect)
 				{	// Networking
 					BuildingInform b_inform;
 					if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Sphere"].get())
 						b_inform.buildingType = B_SPHERE;
-					else if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Cube"].get())
+					if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Cube"].get())
 						b_inform.buildingType = B_CUBE;
-					XMFLOAT3 prefabForward;
-					prefabForward.x = prefab->transform->localToWorldMatrix.forward.x;
-					prefabForward.y = prefab->transform->localToWorldMatrix.forward.y;
-					prefabForward.z = prefab->transform->localToWorldMatrix.forward.z;
-					b_inform.rotAngle = acos(NS_Vector3::DotProduct(XMFLOAT3{ 0.0f, 0.0f, 1.0f }, prefabForward));
+					Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
+				
+					dotp = NS_Vector3::DotProduct(XMFLOAT3{ 0.0f, 0.0f, 1.0f }, prefabForward.xmf3);
+					b_inform.rotAngle = XMConvertToDegrees(acos(dotp));
 					b_inform.xPos = prefab->transform->position.x;
 					b_inform.yPos = prefab->transform->position.y;
 					b_inform.zPos = prefab->transform->position.z;

@@ -119,6 +119,8 @@ void send_construct_packet(int user_id, BuildingInform b_inform)
 	p.type = S2C_CONSTRUCT;
 	p.b_inform = b_inform;
 
+	printf("buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
+
 	send_packet(user_id, &p);
 }
 
@@ -230,11 +232,11 @@ void initialize_clients()
 
 void disconnect(int user_id)
 {
-	if (user_id == g_host_user_id)
-	{
-		// 모든 클라이언트 연결 해제 시키기
-	}
-	else
+	//if (user_id == g_host_user_id)
+	//{
+	//	// 모든 클라이언트 연결 해제 시키기
+	//}
+	//else
 	{
 		g_clients[user_id].m_connected = false;
 		for (auto& cl : g_clients)

@@ -18,6 +18,7 @@ public:
 	std::wstring wserverIp;
 	SOCKET serverSocket;
 	int myId;
+	int hostId;
 	bool isConnect{ false };
 
 public:

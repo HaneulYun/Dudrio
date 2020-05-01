@@ -20,15 +20,20 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_enter* my_packet = reinterpret_cast<sc_packet_enter*>(ptr);
 		int id = my_packet->id;
+		int o_type = my_packet->o_type;
 
 		if (id == myId) {
 			myCharacter->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 		}
-		else {
+		else if (o_type == O_GUEST){
 			otherCharacters[id] = gameObject->scene->Duplicate(simsPrefab);
 			strcpy_s(otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
 			otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
-
+		}
+		else
+		{
+			// HOST일 경우 처리
+			hostId = id;
 		}
 	}
 	break;
@@ -36,10 +41,12 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_move* my_packet = reinterpret_cast<sc_packet_move*>(ptr);
 		int other_id = my_packet->id;
+
+
 		if (other_id == myId) {
 			myCharacter->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 		}
-		else {
+		else if(other_id != hostId) {
 			if (0 != otherCharacters.count(other_id))
 				otherCharacters[other_id]->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 		}
@@ -50,14 +57,24 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
 		int other_id = my_packet->id;
+	
 		if (other_id == myId) {
 			Scene::scene->PushDelete(myCharacter);
 		}
-		else {
+		else if(other_id != hostId) {
 			if (0 != otherCharacters.count(other_id))
 			{
 				Scene::scene->PushDelete(otherCharacters[other_id]);
 				otherCharacters.erase(other_id);
+			}
+		}
+		else 
+		{
+			// HOST라면 모든 건물 삭제 및 모든 캐릭터 삭제
+			for (auto& others : otherCharacters)
+			{
+				Scene::scene->PushDelete(others.second);
+				otherCharacters.erase(others.first);
 			}
 		}
 	}

@@ -11,7 +11,8 @@ constexpr int MAX_USER = 10;
 
 #define C2S_LOGIN			1
 #define C2S_MOVE			2
-#define C2S_CONSTRUCT		3	// Host to Server
+#define C2S_LOGIN_HOST		3	// Host to Server
+#define C2S_CONSTRUCT		4	// Host to Server
 
 #define S2C_LOGIN_OK		1
 #define S2C_MOVE			2
@@ -38,8 +39,8 @@ struct sc_packet_move {
 	float x, z;
 };
 
-constexpr unsigned char O_PLAYER = 0;
-constexpr unsigned char O_NPC = 1;
+constexpr unsigned char O_GUEST = 0;
+constexpr unsigned char O_HOST = 1;
 
 struct sc_packet_enter {
 	char size;

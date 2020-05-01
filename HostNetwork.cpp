@@ -113,7 +113,7 @@ void HostNetwork::Login()
 {
 	cs_packet_login l_packet;
 	l_packet.size = sizeof(l_packet);
-	l_packet.type = C2S_LOGIN;
+	l_packet.type = C2S_LOGIN_HOST;
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
 	strcpy_s(name, l_packet.name);

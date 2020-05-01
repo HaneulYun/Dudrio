@@ -27,7 +27,7 @@ struct CLIENT {
 	EXOVER	m_recv_over;
 	int		m_prev_size;
 	char	m_packet_buf[MAX_PACKET_SIZE];
-	bool m_connected;
+	bool	m_connected;
 
 	float	x, z;
 	char name[MAX_ID_LEN];
@@ -35,6 +35,7 @@ struct CLIENT {
 
 CLIENT g_clients[MAX_USER];
 int g_curr_user_id = 0;
+int g_host_user_id = -1;
 HANDLE g_iocp;
 
 void send_packet(int user_id, void* p)
@@ -78,7 +79,10 @@ void send_enter_packet(int user_id, int o_id)
 	p.x = g_clients[o_id].x;
 	p.z = g_clients[o_id].z;
 	strcpy_s(p.name, g_clients[o_id].name);
-	p.o_type = O_PLAYER;
+	if (o_id == g_host_user_id)
+		p.o_type = O_HOST;
+	else
+		p.o_type = O_GUEST;
 
 	//printf("Send_Packet_Enter\n");
 	send_packet(user_id, &p);
@@ -103,9 +107,7 @@ void send_move_packet(int user_id, int mover)
 	p.type = S2C_MOVE;
 	p.x = g_clients[mover].x;
 	p.z = g_clients[mover].z;
-	//p.latency = chrono::high_resolution_clock::now();
 
-	//printf("Send_Packet_Move\n");
 	send_packet(user_id, &p);
 }
 
@@ -159,9 +161,22 @@ void process_packet(int user_id, char* buf)
 	switch (buf[1]) {
 	case C2S_LOGIN:
 	{
+		if (g_host_user_id != -1)
+		{
+			cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf);
+			strcpy_s(g_clients[user_id].name, packet->name);
+			g_clients[user_id].name[MAX_ID_LEN] = NULL;
+			send_login_ok_packet(user_id);
+			enter_game(user_id);
+		}
+	}
+	break;
+	case C2S_LOGIN_HOST:
+	{
 		cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf);
 		strcpy_s(g_clients[user_id].name, packet->name);
 		g_clients[user_id].name[MAX_ID_LEN] = NULL;
+		g_host_user_id = user_id;
 		send_login_ok_packet(user_id);
 		enter_game(user_id);
 	}
@@ -188,10 +203,17 @@ void initialize_clients()
 
 void disconnect(int user_id)
 {
-	g_clients[user_id].m_connected = false;
-	for (auto& cl : g_clients)
-		if (true == g_clients[cl.m_id].m_connected)
-			send_leave_packet(cl.m_id, user_id);
+	if (user_id == g_host_user_id)
+	{
+		// 모든 클라이언트 연결 해제 시키기
+	}
+	else
+	{
+		g_clients[user_id].m_connected = false;
+		for (auto& cl : g_clients)
+			if (true == g_clients[cl.m_id].m_connected)
+				send_leave_packet(cl.m_id, user_id);
+	}
 }
 
 // 패킷 재조립
@@ -261,7 +283,6 @@ int main()
 	AcceptEx(l_socket, c_socket, accept_over.io_buf, NULL, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, &accept_over.over);	// 클라이언트 접속에 사용할 소켓을 미리 만들어놔야 함
 
 	while (true) {
-		//printf("오잉?\n");
 		DWORD io_byte;
 		ULONG_PTR key;
 		WSAOVERLAPPED* over;

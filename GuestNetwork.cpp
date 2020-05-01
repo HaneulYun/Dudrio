@@ -51,12 +51,12 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
 		int other_id = my_packet->id;
 		if (other_id == myId) {
-			DeleteObject(myCharacter);
+			Scene::scene->PushDelete(myCharacter);
 		}
 		else {
 			if (0 != otherCharacters.count(other_id))
 			{
-				gameObject->scene->Delete(otherCharacters[other_id]);
+				Scene::scene->PushDelete(otherCharacters[other_id]);
 				otherCharacters.erase(other_id);
 			}
 		}

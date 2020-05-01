@@ -28,20 +28,19 @@ public:
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
 		// 서버에서 받은 위치 부드럽게 보간하는 식 작성하기
+
+		anim->SetFloat("VelocityZ", velocity.z);
+		anim->SetFloat("VelocityX", velocity.x);
 	}
 
 	void move(Vector3 newPos)
 	{
 		gameObject->transform->position = newPos;
-		anim->SetFloat("VelocityZ", velocity.z);
-		anim->SetFloat("VelocityX", velocity.x);
 	}
 
 	void move()
 	{
 		gameObject->transform->position += velocity * Time::deltaTime;
-		anim->SetFloat("VelocityZ", velocity.z);
-		anim->SetFloat("VelocityX", velocity.x);
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

@@ -54,7 +54,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		else {
 			if (0 != players.count(other_id))
 			{
-				gameObject->scene->Delete(players[other_id]);
+				Scene::scene->PushDelete(players[other_id]);
 				players.erase(other_id);
 			}
 		}

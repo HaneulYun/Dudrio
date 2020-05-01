@@ -5,4 +5,5 @@
 #include "RotatingBehavior.h"
 #include "CharacterController.h"
 #include "BulidManager.h"
+#include "ButtonManager.h"
 #include "GuestController.h"

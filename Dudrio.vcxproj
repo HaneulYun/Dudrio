@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationScene.h" />
     <ClInclude Include="BulidManager.h" />
+    <ClInclude Include="ButtonManager.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Dudrio.h" />

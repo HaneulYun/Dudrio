@@ -12,7 +12,6 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	CHeightMapImage* heightMap;
 	CHeightMapGridMesh* terrainMesh;
 	float dT;
-	float dotp;
 
 	bool rotationToggle{ false };
 	Vector3 lastMousePos;
@@ -119,9 +118,11 @@ public:
 					if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Cube"].get())
 						b_inform.buildingType = B_CUBE;
 					Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
-				
-					dotp = NS_Vector3::DotProduct(XMFLOAT3{ 0.0f, 0.0f, 1.0f }, prefabForward.xmf3);
-					b_inform.rotAngle = XMConvertToDegrees(acos(dotp));
+					Vector3 forward = { 0.0f, 0.0f, 1.0f };
+					float angle = NS_Vector3::DotProduct(forward.xmf3, prefabForward.xmf3);
+					XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, prefabForward.xmf3);
+					b_inform.rotAngle = XMConvertToDegrees(acos(angle));
+					b_inform.rotAngle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 					b_inform.xPos = prefab->transform->position.x;
 					b_inform.yPos = prefab->transform->position.y;
 					b_inform.zPos = prefab->transform->position.z;

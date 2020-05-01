@@ -60,6 +60,10 @@ void HostNetwork::ProcessPacket(char* ptr)
 		}
 	}
 	break;
+
+	case S2C_CONSTRUCT:
+		break;
+
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
@@ -104,9 +108,14 @@ void HostNetwork::send_packet(void* packet)
 	send(serverSocket, p, p[0], 0);
 }
 
-void HostNetwork::send_construct_packet(float xMove, float zMove)
+void HostNetwork::send_construct_packet(BuildingInform b_inform)
 {
+	cs_packet_construct m_packet;
+	m_packet.type = C2S_CONSTRUCT;
+	m_packet.size = sizeof(m_packet);
+	m_packet.b_inform = b_inform;
 
+	send_packet(&m_packet);
 }
 
 void HostNetwork::Login()

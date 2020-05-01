@@ -96,6 +96,9 @@
     <ClInclude Include="HostNetwork.h">
       <Filter>Assets\Network</Filter>
     </ClInclude>
+    <ClInclude Include="Builder.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">

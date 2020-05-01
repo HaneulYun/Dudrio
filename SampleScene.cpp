@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "SampleScene.h"
 
+Builder* Builder::builder{ nullptr };
+
 void SampleScene::BuildObjects()
 {
 	///*** Asset ***///
@@ -132,6 +134,12 @@ void SampleScene::BuildObjects()
 	
 			SimsPrefab->AddComponent<CharacterMovingBehavior>()->anim= anim;
 		}
+	}
+
+	{
+		GameObject* build = CreateEmpty();
+		Builder* bd = build->AddComponent<Builder>();
+		Builder::builder = bd;
 	}
 
 	auto network = CreateEmpty();

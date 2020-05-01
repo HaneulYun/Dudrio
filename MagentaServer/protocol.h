@@ -39,6 +39,24 @@ struct sc_packet_move {
 	float x, z;
 };
 
+constexpr unsigned char B_SPHERE = 0;
+constexpr unsigned char B_CUBE = 1;
+
+struct BuildingInform
+{
+	char buildingType;
+	float xPos, yPos, zPos;
+	float rotAngle;
+};
+
+struct sc_packet_construct
+{
+	char size;
+	char type;
+	int id;
+	BuildingInform b_inform;
+};
+
 constexpr unsigned char O_GUEST = 0;
 constexpr unsigned char O_HOST = 1;
 
@@ -69,4 +87,13 @@ struct cs_packet_move {
 
 	float xMove, zMove;
 };
+
+struct cs_packet_construct
+{
+	char size;
+	char type;
+
+	BuildingInform b_inform;
+};
+
 #pragma pack (pop)

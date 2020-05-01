@@ -111,6 +111,17 @@ void send_move_packet(int user_id, int mover)
 	send_packet(user_id, &p);
 }
 
+void send_construct_packet(int user_id, BuildingInform b_inform)
+{
+	sc_packet_construct p;
+	p.id = g_host_user_id;
+	p.size = sizeof(p);
+	p.type = S2C_CONSTRUCT;
+	p.b_inform = b_inform;
+
+	send_packet(user_id, &p);
+}
+
 void do_move(int user_id, float xMove, float zMove)// int direction)
 {
 	CLIENT& u = g_clients[user_id];
@@ -156,6 +167,15 @@ void enter_game(int user_id)
 
 }
 
+void do_construct(int user_id, BuildingInform b_inform)
+{
+	// 건물 정보를 따로 관리할 자료구조를 생각해보자...
+	// 일단은 건물 종류, 위치, 각도만 보내주는 메신저 형식
+	for (auto& cl : g_clients)
+		if (true == cl.m_connected)
+			send_construct_packet(cl.m_id, b_inform);
+}
+
 void process_packet(int user_id, char* buf)
 {
 	switch (buf[1]) {
@@ -185,6 +205,13 @@ void process_packet(int user_id, char* buf)
 	{
 		cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf);
 		do_move(user_id, packet->xMove, packet->zMove);//packet->direction);
+	}
+	break;
+	case C2S_CONSTRUCT:
+	{
+		cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf);
+		if (user_id == g_host_user_id)
+			do_construct(user_id, packet->b_inform);
 	}
 	break;
 	default:

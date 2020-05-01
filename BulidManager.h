@@ -1,5 +1,6 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
+#include "HostNetwork.h"
 
 class BuildManager : public MonoBehavior<BuildManager>
 {
@@ -108,6 +109,23 @@ public:
 			{
 				prefab->layer = (int)RenderLayer::Opaque;
 				GameObject* go = Scene::scene->Duplicate(prefab);
+				
+				{	// Networking
+					BuildingInform b_inform;
+					if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Sphere"].get())
+						b_inform.buildingType = B_SPHERE;
+					else if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Cube"].get())
+						b_inform.buildingType = B_CUBE;
+					XMFLOAT3 prefabForward;
+					prefabForward.x = prefab->transform->localToWorldMatrix.forward.x;
+					prefabForward.y = prefab->transform->localToWorldMatrix.forward.y;
+					prefabForward.z = prefab->transform->localToWorldMatrix.forward.z;
+					b_inform.rotAngle = acos(NS_Vector3::DotProduct(XMFLOAT3{ 0.0f, 0.0f, 1.0f }, prefabForward));
+					b_inform.xPos = prefab->transform->position.x;
+					b_inform.yPos = prefab->transform->position.y;
+					b_inform.zPos = prefab->transform->position.z;
+					HostNetwork::network->send_construct_packet(b_inform);
+				}
 				DeletePrefab();
 			}
 			else

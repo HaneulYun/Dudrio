@@ -45,7 +45,7 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_construct_packet(float xMove, float zMove);
+	void send_construct_packet(BuildingInform b_inform);
 
 	void Login();
 

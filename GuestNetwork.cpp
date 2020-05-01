@@ -79,6 +79,19 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		}
 	}
 	break;
+
+	case S2C_CONSTRUCT:
+	{
+		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
+		int other_id = my_packet->id;
+
+		if (other_id == hostId)
+		{
+			BuildingInform b_inform = my_packet->b_inform;
+			Builder::builder->BuildNewBuilding(b_inform.buildingType, Vector3(b_inform.xPos, b_inform.yPos, b_inform.zPos), b_inform.rotAngle);
+		}
+	}
+		break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}

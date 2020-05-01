@@ -2,6 +2,7 @@
 #include "TerrainScene.h"
 
 BuildManager* BuildManager::buildManager{ nullptr };
+ButtonManager* ButtonManager::buttonManager{ nullptr };
 
 void TerrainScene::BuildObjects()
 {
@@ -72,69 +73,73 @@ void TerrainScene::BuildObjects()
 	}
 
 	{
-		GameObject* buildManager = CreateEmpty();
-		BuildManager* bm = buildManager->AddComponent<BuildManager>();
-		bm->terrain = grid;
-		bm->heightMap = m_pHeightMapImage;
-		bm->terrainMesh = gridMesh;
+		GameObject* manager = CreateEmpty();
+		BuildManager* buildManager = manager->AddComponent<BuildManager>();
+		buildManager->terrain = grid;
+		buildManager->heightMap = m_pHeightMapImage;
+		buildManager->terrainMesh = gridMesh;
 		//bm->SelectModel(geometries["Cube"].get(), 8, 5);
-		BuildManager::buildManager = bm;
+		BuildManager::buildManager = buildManager;
+		ButtonManager* buttonManager = manager->AddComponent<ButtonManager>();
+		ButtonManager::buttonManager = buttonManager;
 	}
 
 	// billboard points
-	struct TreeSpriteVertex
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT2 Size;
-		XMFLOAT3 look;
-	};
-	std::vector<TreeSpriteVertex> vertices;
-	float sizex = 2, sizey = 2;
-	const int width = 256, length = 256;
-	vertices.reserve(width * length);
-	for (int i = 0; i < width; ++i)
-	{
-		for (int j = 0; j < length; ++j)
+		struct TreeSpriteVertex
 		{
-			TreeSpriteVertex v;
-			v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
-			v.Size = XMFLOAT2(sizex, sizey);
-			v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
-			vertices.push_back(v);
+			XMFLOAT3 Pos;
+			XMFLOAT2 Size;
+			XMFLOAT3 look;
+		};
+		std::vector<TreeSpriteVertex> vertices;
+		float sizex = 2, sizey = 2;
+		const int width = 256, length = 256;
+		vertices.reserve(width * length);
+		for (int i = 0; i < width; ++i)
+		{
+			for (int j = 0; j < length; ++j)
+			{
+				TreeSpriteVertex v;
+				v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
+				v.Size = XMFLOAT2(sizex, sizey);
+				v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
+				vertices.push_back(v);
+			}
 		}
-	}
 
-	auto geo = std::make_unique<Mesh>();
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
+		auto geo = std::make_unique<Mesh>();
+		const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
 
-	geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-	D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
-	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+		geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+		D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
+		CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
 
-	auto device = Graphics::Instance()->device;
-	auto commandList = Graphics::Instance()->commandList;
+		auto device = Graphics::Instance()->device;
+		auto commandList = Graphics::Instance()->commandList;
 
-	geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+		geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
-	geo->VertexByteStride = sizeof(TreeSpriteVertex);
-	geo->VertexBufferByteSize = vbByteSize;
+		geo->VertexByteStride = sizeof(TreeSpriteVertex);
+		geo->VertexBufferByteSize = vbByteSize;
 
-	SubmeshGeometry submesh;
-	submesh.IndexCount = vertices.size();
-	submesh.StartIndexLocation = 0;
-	submesh.BaseVertexLocation = 0;
+		SubmeshGeometry submesh;
+		submesh.IndexCount = vertices.size();
+		submesh.StartIndexLocation = 0;
+		submesh.BaseVertexLocation = 0;
 
-	geo->DrawArgs["submesh"] = submesh;
-	geometries["Grass"] = std::move(geo);
+		geo->DrawArgs["submesh"] = submesh;
+		geometries["Grass"] = std::move(geo);
 
-	{
+
 		GameObject* billboards = CreateEmpty();
 		billboards->GetComponent<Transform>()->position -= {128, 10, 128};
 		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = geometries["Grass"].get();
 		billboards->AddComponent<Renderer>()->materials.push_back(7);
 		billboards->layer = (int)RenderLayer::Grass;
-	}
 
+	}
+	
 	auto menuSceneButton = CreateImage();
 	{
 		auto rectTransform = menuSceneButton->GetComponent<RectTransform>();
@@ -176,21 +181,51 @@ void TerrainScene::BuildObjects()
 		rightCylRItem->AddComponent<Renderer>()->materials.push_back(2);
 	}
 
-	// Build Button
+	auto BSButton00 = CreateImagePrefab();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton00, false));
+	{
+		auto rectTransform = BSButton00->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -70;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton00->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 2, 1);
+			});
+		{
+			auto textobject = BSButton00->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"건물1";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
 	auto BuildingSelectButton01 = CreateImage();
 	{
 		auto rectTransform = BuildingSelectButton01->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 0 };
-		rectTransform->anchorMax = { 0, 0 };
-		rectTransform->pivot = { 0, 0 };
-		rectTransform->posX = 10;
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -70;
 		rectTransform->posY = 10;
 		rectTransform->width = 50;
 		rectTransform->height = 50;
 
 		BuildingSelectButton01->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 2, 1);
+				ButtonManager::buttonManager->SelectButton(0);
 			});
 		{
 			auto textobject = BuildingSelectButton01->AddChildUI();
@@ -199,7 +234,8 @@ void TerrainScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Sphere";
+			text->text = L"랜드마크";
+			text->fontSize = 10;
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
@@ -209,14 +245,14 @@ void TerrainScene::BuildObjects()
 	auto BuildingSelectButton02 = CreateImage();
 	{
 		auto rectTransform = BuildingSelectButton02->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 0 };
-		rectTransform->anchorMax = { 0, 0 };
-		rectTransform->pivot = { 0, 0 };
-		rectTransform->posX = 70;
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -10;
 		rectTransform->posY = 10;
 		rectTransform->width = 50;
 		rectTransform->height = 50;
-	
+
 		BuildingSelectButton02->AddComponent<Button>()->AddEvent(
 			[](void*) {
 				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 2, 5);
@@ -226,9 +262,70 @@ void TerrainScene::BuildObjects()
 			auto rectTransform = textobject->GetComponent<RectTransform>();
 			rectTransform->anchorMin = { 0, 0 };
 			rectTransform->anchorMax = { 1, 1 };
-	
+
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Cube";
+			text->text = L"주거건물";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
+	auto BuildingSelectButton03 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton03->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -70;
+		rectTransform->posY = 10;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BuildingSelectButton03->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 2, 1);
+			});
+		{
+			auto textobject = BuildingSelectButton03->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"테마건물";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
+	auto BuildingSelectButton04 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton04->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -10;
+		rectTransform->posY = 10;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BuildingSelectButton04->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 2, 5);
+			});
+		{
+			auto textobject = BuildingSelectButton04->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"조경";
+			text->fontSize = 10;
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);

@@ -30,6 +30,7 @@ struct CLIENT {
 	bool	m_connected;
 
 	float	x, z;
+	float	xMove, zMove;
 	char name[MAX_ID_LEN];
 };
 
@@ -65,7 +66,8 @@ void send_login_ok_packet(int user_id)
 	p.type = S2C_LOGIN_OK;
 	p.x = g_clients[user_id].x;
 	p.z = g_clients[user_id].z;
-	
+	p.xMove = g_clients[user_id].xMove;
+	p.zMove = g_clients[user_id].zMove;
 	//printf("Send_Packet_Login_OK\n");
 	send_packet(user_id, &p);
 }
@@ -78,6 +80,9 @@ void send_enter_packet(int user_id, int o_id)
 	p.type = S2C_ENTER;
 	p.x = g_clients[o_id].x;
 	p.z = g_clients[o_id].z;
+	p.xMove = g_clients[user_id].xMove;
+	p.zMove = g_clients[user_id].zMove;
+
 	strcpy_s(p.name, g_clients[o_id].name);
 	if (o_id == g_host_user_id)
 		p.o_type = O_HOST;
@@ -107,6 +112,8 @@ void send_move_packet(int user_id, int mover)
 	p.type = S2C_MOVE;
 	p.x = g_clients[mover].x;
 	p.z = g_clients[mover].z;
+	p.xMove = g_clients[mover].xMove;
+	p.zMove = g_clients[mover].zMove;
 
 	send_packet(user_id, &p);
 }
@@ -144,14 +151,20 @@ void do_move(int user_id, float xMove, float zMove)// int direction)
 	//	DebugBreak();
 	//	exit(-1);
 	//}
+
+	// 이 검사식 대신 Normalize 필요
 	if (xMove > 4.0f)	xMove = 4.0f;
 	else if (xMove < -4.0f)	xMove = -4.0f;
 	if (zMove > 4.0f)	zMove = 4.0f;
 	else if (zMove < -4.0f)	zMove = -4.0f;
+
 	x += xMove *0.01666;
 	z += zMove *0.01666;
 	u.x = x;
 	u.z = z;
+	u.xMove = xMove;
+	u.zMove = zMove;
+
 	for (auto& cl : g_clients)
 		if (true == cl.m_connected)
 			send_move_packet(cl.m_id, user_id);
@@ -356,8 +369,10 @@ int main()
 			nc.m_recv_over.wsabuf.buf = nc.m_recv_over.io_buf;
 			nc.m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 			nc.m_s = c_socket;
-			nc.x = 0.0;// rand() % WORLD_WIDTH;
-			nc.z = 0.0;// rand() % WORLD_HEIGHT;
+			nc.x = 0.0;
+			nc.z = 0.0;
+			nc.xMove = 0.0;
+			nc.zMove = 0.0;
 			DWORD flags = 0;
 			WSARecv(c_socket, &nc.m_recv_over.wsabuf, 1, NULL, &flags, &nc.m_recv_over.over, NULL);
 

@@ -12,7 +12,9 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
-		myCharacter->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
+		myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+		myc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 	}
 	break;
 
@@ -23,12 +25,16 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		int o_type = my_packet->o_type;
 
 		if (id == myId) {
-			myCharacter->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
+			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+			myc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 		}
 		else if (o_type == O_GUEST){
 			otherCharacters[id] = gameObject->scene->Duplicate(simsPrefab);
 			strcpy_s(otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
-			otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
+			oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+			oc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 		}
 		else
 		{
@@ -42,13 +48,18 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_move* my_packet = reinterpret_cast<sc_packet_move*>(ptr);
 		int other_id = my_packet->id;
 
-
 		if (other_id == myId) {
-			myCharacter->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
+			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+			myc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 		}
 		else if(other_id != hostId) {
 			if (0 != otherCharacters.count(other_id))
-				otherCharacters[other_id]->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			{
+				auto oc = otherCharacters[other_id]->GetComponent<CharacterMovingBehavior>();
+				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+				oc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			}
 		}
 	}
 	break;

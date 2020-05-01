@@ -27,6 +27,7 @@ struct sc_packet_login_ok {
 	char type;
 	int id;
 	float x, z;
+	float xMove, zMove;
 	short hp;
 	short level;
 	int	exp;
@@ -37,6 +38,7 @@ struct sc_packet_move {
 	char type;
 	int id;
 	float x, z;
+	float xMove, zMove;
 };
 
 constexpr unsigned char B_SPHERE = 0;
@@ -67,6 +69,7 @@ struct sc_packet_enter {
 	char name[MAX_ID_LEN];
 	char o_type;
 	float x, z;
+	float xMove, zMove;
 };
 
 struct sc_packet_leave {

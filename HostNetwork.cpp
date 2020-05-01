@@ -27,7 +27,9 @@ void HostNetwork::ProcessPacket(char* ptr)
 		else {
 			players[id] = gameObject->scene->Duplicate(simsPrefab);
 			strcpy_s(players[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
-			players[id]->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
+			p->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+			p->move(Vector3(my_packet->x, 0.0f, my_packet->z));
 		}
 	}
 	break;
@@ -40,7 +42,11 @@ void HostNetwork::ProcessPacket(char* ptr)
 		}
 		else {
 			if (0 != players.count(other_id))
-				players[other_id]->GetComponent<CharacterMovingBehavior>()->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			{
+				auto p = players[other_id]->GetComponent<CharacterMovingBehavior>();
+				p->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+				p->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			}
 		}
 	}
 	break;

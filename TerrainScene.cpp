@@ -16,6 +16,8 @@ void TerrainScene::BuildObjects()
 		AddTexture(4, "tileTex", L"Textures\\tile.dds");
 		AddTexture(6, "tree", L"Textures\\tree01S.dds");
 		AddTexture(7, "grass", L"Textures\\grass01.dds");
+		AddTexture(8, "house", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
+		//AddTexture(8, "house", L"Textures\\util-mark6.dds");
 	}
 
 
@@ -29,8 +31,9 @@ void TerrainScene::BuildObjects()
 		AddMaterial(5, "sky", 5, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 1.0f);
 		AddMaterial(6, "tree0", 6, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 		AddMaterial(7, "grass", 7, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+		AddMaterial(8, "house", 8, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		for (int i = 0; i < 5; ++i)
-			AddMaterial(8 + i, "material_" + std::to_string(i), 0, 0, RANDOM_COLOR, { 0.98f, 0.97f, 0.95f }, 0.0f);
+			AddMaterial(9 + i, "material_" + std::to_string(i), 0, 0, RANDOM_COLOR, { 0.98f, 0.97f, 0.95f }, 0.0f);
 	}
 
 	//*** Mesh ***//
@@ -40,6 +43,7 @@ void TerrainScene::BuildObjects()
 		geometries["Plane"] = Mesh::CreatePlane();
 		geometries["Sphere"] = Mesh::CreateSphere();
 		geometries["Cylinder"] = Mesh::CreateCylinder();
+		AddFbxForAnimation("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
 	}
 
 	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
@@ -196,7 +200,7 @@ void TerrainScene::BuildObjects()
 
 		BSButton00->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 2, 1);
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 8, 0.02);
 			});
 		{
 			auto textobject = BSButton00->AddChildUI();

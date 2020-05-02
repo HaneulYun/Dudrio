@@ -185,6 +185,7 @@ public:
 		Scene::scene->CreateEmptyPrefab();
 		prefab = Scene::scene->CreateEmpty();
 		prefab->GetComponent<Transform>()->Scale({ size, size, size });
+		prefab->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 		prefab->AddComponent<MeshFilter>()->mesh = mesh;
 		auto renderer = prefab->AddComponent<Renderer>();
 		prefab->layer = (int)RenderLayer::BuildPreview;

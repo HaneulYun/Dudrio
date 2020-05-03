@@ -12,7 +12,8 @@ void TerrainScene::BuildObjects()
 		AddTexture(0, "none", L"Textures\\none.dds");
 		AddTexture(1, "ground", L"Textures\\grass.dds");
 		AddTexture(2, "grass", L"Textures\\grass01.dds");
-		AddTexture(3, "house", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
+		AddTexture(3, "house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
+		AddTexture(4, "house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
 	}
 
 
@@ -21,19 +22,16 @@ void TerrainScene::BuildObjects()
 		AddMaterial(0, "none", 0);
 		AddMaterial(1, "ground", 1, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		AddMaterial(2, "grass", 2, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
-		AddMaterial(3, "house", 3, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		for (int i = 0; i < 5; ++i)
-			AddMaterial(9 + i, "material_" + std::to_string(i), 0, 0, RANDOM_COLOR, { 0.98f, 0.97f, 0.95f }, 0.0f);
+		AddMaterial(3, "house01", 3, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		AddMaterial(4, "house02", 4, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 	}
 
 	//*** Mesh ***//
 	{
 		geometries["Image"] = Mesh::CreateQuad();
-		geometries["Cube"] = Mesh::CreateCube();
-		geometries["Plane"] = Mesh::CreatePlane();
 		geometries["Sphere"] = Mesh::CreateSphere();
-		geometries["Cylinder"] = Mesh::CreateCylinder();
 		AddFbxForAnimation("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
+		AddFbxForAnimation("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
 	}
 
 	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
@@ -163,6 +161,7 @@ void TerrainScene::BuildObjects()
 	}
 
 	// Build Button
+	
 	auto BSButton00 = CreateImage();
 	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton00, false));
 	{
@@ -170,14 +169,14 @@ void TerrainScene::BuildObjects()
 		rectTransform->anchorMin = { 0.5, 0 };
 		rectTransform->anchorMax = { 0.5, 0 };
 		rectTransform->pivot = { 0.5, 0 };
-		rectTransform->posX = -70;
+		rectTransform->posX = -130;
 		rectTransform->posY = 70;
 		rectTransform->width = 50;
 		rectTransform->height = 50;
 
 		BSButton00->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02);
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02);
 			});
 		{
 			auto textobject = BSButton00->AddChildUI();
@@ -186,7 +185,7 @@ void TerrainScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"건물1";
+			text->text = L"랜드마크1";
 			text->fontSize = 10;
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
@@ -194,24 +193,87 @@ void TerrainScene::BuildObjects()
 		}
 		BSButton00->SetActive(false);
 	}
-
-	auto BuildingSelectButton01 = CreateImage();
+	auto BSButton01 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton01, false));
 	{
-		auto rectTransform = BuildingSelectButton01->GetComponent<RectTransform>();
+		auto rectTransform = BSButton01->GetComponent<RectTransform>();
 		rectTransform->anchorMin = { 0.5, 0 };
 		rectTransform->anchorMax = { 0.5, 0 };
 		rectTransform->pivot = { 0.5, 0 };
 		rectTransform->posX = -70;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton01->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+			});
+		{
+			auto textobject = BSButton01->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"랜드마크2";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton01->SetActive(false);
+	}
+	auto BSButton02 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton02, false));
+	{
+		auto rectTransform = BSButton02->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -10;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton02->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+			});
+		{
+			auto textobject = BSButton02->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"랜드마크3";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton02->SetActive(false);
+	}
+	auto BuildingSelectButton00 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton00->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -130;
 		rectTransform->posY = 10;
 		rectTransform->width = 50;
 		rectTransform->height = 50;
 
-		BuildingSelectButton01->AddComponent<Button>()->AddEvent(
+		BuildingSelectButton00->AddComponent<Button>()->AddEvent(
 			[](void*) {
 				ButtonManager::buttonManager->SelectButton(0);
+				ButtonManager::buttonManager->SelectButton(1);
+				ButtonManager::buttonManager->SelectButton(2);
 			});
 		{
-			auto textobject = BuildingSelectButton01->AddChildUI();
+			auto textobject = BuildingSelectButton00->AddChildUI();
 			auto rectTransform = textobject->GetComponent<RectTransform>();
 			rectTransform->anchorMin = { 0, 0 };
 			rectTransform->anchorMax = { 1, 1 };
@@ -225,23 +287,118 @@ void TerrainScene::BuildObjects()
 		}
 	}
 
-	auto BuildingSelectButton02 = CreateImage();
+	auto BSButton10 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton10, false));
 	{
-		auto rectTransform = BuildingSelectButton02->GetComponent<RectTransform>();
+		auto rectTransform = BSButton10->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -130;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton10->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02);
+			});
+		{
+			auto textobject = BSButton10->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"집1";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton10->SetActive(false);
+	}
+	auto BSButton11 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton11, false));
+	{
+		auto rectTransform = BSButton11->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -70;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton11->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+			});
+		{
+			auto textobject = BSButton11->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"집2";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton11->SetActive(false);
+	}
+	auto BSButton12 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton12, false));
+	{
+		auto rectTransform = BSButton12->GetComponent<RectTransform>();
 		rectTransform->anchorMin = { 0.5, 0 };
 		rectTransform->anchorMax = { 0.5, 0 };
 		rectTransform->pivot = { 0.5, 0 };
 		rectTransform->posX = -10;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton12->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				
+			});
+		{
+			auto textobject = BSButton12->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"없음";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton12->SetActive(false);
+	}
+	auto BuildingSelectButton01 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton01->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -70;
 		rectTransform->posY = 10;
 		rectTransform->width = 50;
 		rectTransform->height = 50;
 
-		BuildingSelectButton02->AddComponent<Button>()->AddEvent(
+		BuildingSelectButton01->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 2, 5);
+				ButtonManager::buttonManager->SelectButton(3);
+				ButtonManager::buttonManager->SelectButton(4);
+				ButtonManager::buttonManager->SelectButton(5);
 			});
 		{
-			auto textobject = BuildingSelectButton02->AddChildUI();
+			auto textobject = BuildingSelectButton01->AddChildUI();
 			auto rectTransform = textobject->GetComponent<RectTransform>();
 			rectTransform->anchorMin = { 0, 0 };
 			rectTransform->anchorMax = { 1, 1 };
@@ -255,23 +412,118 @@ void TerrainScene::BuildObjects()
 		}
 	}
 
-	auto BuildingSelectButton03 = CreateImage();
+	auto BSButton20 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton20, false));
 	{
-		auto rectTransform = BuildingSelectButton03->GetComponent<RectTransform>();
+		auto rectTransform = BSButton20->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -130;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton20->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02);
+			});
+		{
+			auto textobject = BSButton20->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"없음";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton20->SetActive(false);
+	}
+	auto BSButton21 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton21, false));
+	{
+		auto rectTransform = BSButton21->GetComponent<RectTransform>();
 		rectTransform->anchorMin = { 0.5, 0 };
 		rectTransform->anchorMax = { 0.5, 0 };
 		rectTransform->pivot = { 0.5, 0 };
 		rectTransform->posX = -70;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton21->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+			});
+		{
+			auto textobject = BSButton21->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"없음";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton21->SetActive(false);
+	}
+	auto BSButton22 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton22, false));
+	{
+		auto rectTransform = BSButton22->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -10;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton22->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+			});
+		{
+			auto textobject = BSButton22->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"없음";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton22->SetActive(false);
+	}
+	auto BuildingSelectButton02 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton02->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -10;
 		rectTransform->posY = 10;
 		rectTransform->width = 50;
 		rectTransform->height = 50;
 
-		BuildingSelectButton03->AddComponent<Button>()->AddEvent(
+		BuildingSelectButton02->AddComponent<Button>()->AddEvent(
 			[](void*) {
-
+				ButtonManager::buttonManager->SelectButton(6);
+				ButtonManager::buttonManager->SelectButton(7);
+				ButtonManager::buttonManager->SelectButton(8);
 			});
 		{
-			auto textobject = BuildingSelectButton03->AddChildUI();
+			auto textobject = BuildingSelectButton02->AddChildUI();
 			auto rectTransform = textobject->GetComponent<RectTransform>();
 			rectTransform->anchorMin = { 0, 0 };
 			rectTransform->anchorMax = { 1, 1 };
@@ -285,23 +537,118 @@ void TerrainScene::BuildObjects()
 		}
 	}
 
-	auto BuildingSelectButton04 = CreateImage();
+	auto BSButton30 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton30, false));
 	{
-		auto rectTransform = BuildingSelectButton04->GetComponent<RectTransform>();
+		auto rectTransform = BSButton30->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -130;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton30->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02);
+			});
+		{
+			auto textobject = BSButton30->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"없음";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton30->SetActive(false);
+	}
+	auto BSButton31 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton31, false));
+	{
+		auto rectTransform = BSButton31->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -70;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton31->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+			});
+		{
+			auto textobject = BSButton31->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"없음";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton31->SetActive(false);
+	}
+	auto BSButton32 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton32, false));
+	{
+		auto rectTransform = BSButton32->GetComponent<RectTransform>();
 		rectTransform->anchorMin = { 0.5, 0 };
 		rectTransform->anchorMax = { 0.5, 0 };
 		rectTransform->pivot = { 0.5, 0 };
 		rectTransform->posX = -10;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton32->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+			});
+		{
+			auto textobject = BSButton32->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"없음";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton32->SetActive(false);
+	}
+	auto BuildingSelectButton03 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton03->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = 50;
 		rectTransform->posY = 10;
 		rectTransform->width = 50;
 		rectTransform->height = 50;
 
-		BuildingSelectButton04->AddComponent<Button>()->AddEvent(
+		BuildingSelectButton03->AddComponent<Button>()->AddEvent(
 			[](void*) {
-
+				ButtonManager::buttonManager->SelectButton(9);
+				ButtonManager::buttonManager->SelectButton(10);
+				ButtonManager::buttonManager->SelectButton(11);
 			});
 		{
-			auto textobject = BuildingSelectButton04->AddChildUI();
+			auto textobject = BuildingSelectButton03->AddChildUI();
 			auto rectTransform = textobject->GetComponent<RectTransform>();
 			rectTransform->anchorMin = { 0, 0 };
 			rectTransform->anchorMax = { 1, 1 };

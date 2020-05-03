@@ -11,13 +11,8 @@ void TerrainScene::BuildObjects()
 	{
 		AddTexture(0, "none", L"Textures\\none.dds");
 		AddTexture(1, "ground", L"Textures\\grass.dds");
-		AddTexture(2, "bricksTex", L"Textures\\bricks2.dds");
-		AddTexture(3, "stoneTex", L"Textures\\stone.dds");
-		AddTexture(4, "tileTex", L"Textures\\tile.dds");
-		AddTexture(6, "tree", L"Textures\\tree01S.dds");
-		AddTexture(7, "grass", L"Textures\\grass01.dds");
-		AddTexture(8, "house", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
-		//AddTexture(8, "house", L"Textures\\util-mark6.dds");
+		AddTexture(2, "grass", L"Textures\\grass01.dds");
+		AddTexture(3, "house", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
 	}
 
 
@@ -25,13 +20,8 @@ void TerrainScene::BuildObjects()
 	{
 		AddMaterial(0, "none", 0);
 		AddMaterial(1, "ground", 1, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		AddMaterial(2, "bricksMat", 2, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.02f, 0.02f, 0.02f }, 0.1f);
-		AddMaterial(3, "stoneMat", 0, -1, { 0.0f, 0.0f, 0.1f, 1.0f }, { 0.98f, 0.97f, 0.95f }, 0.1f);
-		AddMaterial(4, "tile0", 4, -1, { 0.9f, 0.9f, 0.9f, 1.0f }, { 0.02f, 0.02f, 0.02f }, 0.1f, Matrix4x4::MatrixScaling(8, 8, 1));
-		AddMaterial(5, "sky", 5, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 1.0f);
-		AddMaterial(6, "tree0", 6, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
-		AddMaterial(7, "grass", 7, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
-		AddMaterial(8, "house", 8, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		AddMaterial(2, "grass", 2, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+		AddMaterial(3, "house", 3, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		for (int i = 0; i < 5; ++i)
 			AddMaterial(9 + i, "material_" + std::to_string(i), 0, 0, RANDOM_COLOR, { 0.98f, 0.97f, 0.95f }, 0.0f);
 	}
@@ -82,7 +72,6 @@ void TerrainScene::BuildObjects()
 		buildManager->terrain = grid;
 		buildManager->heightMap = m_pHeightMapImage;
 		buildManager->terrainMesh = gridMesh;
-		//bm->SelectModel(geometries["Cube"].get(), 8, 5);
 		BuildManager::buildManager = buildManager;
 		ButtonManager* buttonManager = manager->AddComponent<ButtonManager>();
 		ButtonManager::buttonManager = buttonManager;
@@ -139,7 +128,7 @@ void TerrainScene::BuildObjects()
 		GameObject* billboards = CreateEmpty();
 		billboards->GetComponent<Transform>()->position -= {128, 10, 128};
 		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = geometries["Grass"].get();
-		billboards->AddComponent<Renderer>()->materials.push_back(7);
+		billboards->AddComponent<Renderer>()->materials.push_back(2);
 		billboards->layer = (int)RenderLayer::Grass;
 
 	}
@@ -172,18 +161,6 @@ void TerrainScene::BuildObjects()
 			textObjects.push_back(textobject);
 		}
 	}
-	for (int i = 0; i < 5; ++i)
-	{
-		GameObject* leftCylRItem = CreateEmpty();
-		leftCylRItem->GetComponent<Transform>()->position = Vector3(-5.0f, 1.5f, -10.0f + i * 5.0f);
-		auto mesh = leftCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
-		leftCylRItem->AddComponent<Renderer>()->materials.push_back(2);
-
-		GameObject* rightCylRItem = CreateEmpty();
-		rightCylRItem->GetComponent<Transform>()->position = Vector3(5.0f, 1.5f, -10.0f + i * 5.0f);
-		mesh = rightCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
-		rightCylRItem->AddComponent<Renderer>()->materials.push_back(2);
-	}
 
 	// Build Button
 	auto BSButton00 = CreateImage();
@@ -200,7 +177,7 @@ void TerrainScene::BuildObjects()
 
 		BSButton00->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 8, 0.02);
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02);
 			});
 		{
 			auto textobject = BSButton00->AddChildUI();
@@ -291,7 +268,7 @@ void TerrainScene::BuildObjects()
 
 		BuildingSelectButton03->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 2, 1);
+
 			});
 		{
 			auto textobject = BuildingSelectButton03->AddChildUI();
@@ -321,7 +298,7 @@ void TerrainScene::BuildObjects()
 
 		BuildingSelectButton04->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 2, 5);
+
 			});
 		{
 			auto textobject = BuildingSelectButton04->AddChildUI();

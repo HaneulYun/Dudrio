@@ -94,7 +94,7 @@ public:
 				{
 					if (abs(lastMousePos.y - Input::mousePosition.y) > 30)
 					{
-						prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y)/ abs(lastMousePos.y - Input::mousePosition.y) * 30.0f);
+						prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) / abs(lastMousePos.y - Input::mousePosition.y) * 30.0f);
 						lastMousePos = Input::mousePosition;
 					}
 				}
@@ -105,7 +105,7 @@ public:
 				}
 
 			}
-			else if (Input::GetMouseButtonUp(0))
+			else if (Input::GetMouseButtonUp(0) && prefab->children.front()->GetComponent<Constant>()->v4.g == 1.0f)
 			{
 				prefab->children.front()->layer = (int)RenderLayer::Opaque;
 				GameObject* go = Scene::scene->Duplicate(prefab);

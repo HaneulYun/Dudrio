@@ -1,5 +1,6 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
+#include "Building.h"
 
 class BuildManager : public MonoBehavior<BuildManager>
 {
@@ -106,7 +107,7 @@ public:
 			}
 			else if (Input::GetMouseButtonUp(0))
 			{
-				prefab->layer = (int)RenderLayer::Opaque;
+				prefab->children.front()->layer = (int)RenderLayer::Opaque;
 				GameObject* go = Scene::scene->Duplicate(prefab);
 				DeletePrefab();
 			}
@@ -176,7 +177,7 @@ public:
 	void SelectModel(Mesh* mesh, int matIndex, float size)
 	{
 		if (prefab) {
-			auto meshFilter = prefab->GetComponent<MeshFilter>();
+			auto meshFilter = prefab->children.front()->GetComponent<MeshFilter>();
 			DeletePrefab();
 
 			if (meshFilter && meshFilter->mesh == mesh)
@@ -184,14 +185,17 @@ public:
 		}
 		Scene::scene->CreateEmptyPrefab();
 		prefab = Scene::scene->CreateEmpty();
-		prefab->GetComponent<Transform>()->Scale({ size, size, size });
-		prefab->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-		prefab->AddComponent<MeshFilter>()->mesh = mesh;
-		auto renderer = prefab->AddComponent<Renderer>();
-		prefab->layer = (int)RenderLayer::BuildPreview;
+		prefab->AddComponent<BoxCollider>()->extents = { 5.0f,5.0f,5.0f };
+		prefab->AddComponent<Building>();
+		auto model = prefab->AddChild();
+		model->GetComponent<Transform>()->Scale({ size, size, size });
+		model->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		model->AddComponent<MeshFilter>()->mesh = mesh;
+		auto renderer = model->AddComponent<Renderer>();
+		model->layer = (int)RenderLayer::BuildPreview;
 		for (auto& sm : mesh->DrawArgs)
 			renderer->materials.push_back(matIndex);
-		prefab->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+		model->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 	}
 
 	void DeletePrefab()

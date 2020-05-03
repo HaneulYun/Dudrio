@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimationScene.h" />
+    <ClInclude Include="Building.h" />
     <ClInclude Include="BulidManager.h" />
     <ClInclude Include="ButtonManager.h" />
     <ClInclude Include="CameraController.h" />

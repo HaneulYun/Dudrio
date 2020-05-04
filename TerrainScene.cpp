@@ -34,7 +34,6 @@ GameObject* TerrainScene::CreateTextButton()
 	return button;
 }
 
-
 GameObject* TerrainScene::CreateButtonList()
 {
 	GameObject* button = CreateImage();
@@ -48,8 +47,22 @@ GameObject* TerrainScene::CreateButtonList()
 		rectTransform->width = CyanFW::Instance()->GetWidth() - 80;
 		rectTransform->height = 60;
 	}
+	button->GetComponent<Renderer>()->materials[0] = 1;
+	button->SetActive(false);
+
+	for (int k = 0; k < 10; ++k)
+	{
+		GameObject* button_building = CreateTextButton();
+		button_building->SetActive(false);
+		auto rectTransform = button_building->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.05f + 0.1f * k, 0.1 };
+		rectTransform->anchorMax = { 0.1f * k + 0.09f, 0.9 };
+		button->AddChild(button_building);
+	}
 	return button;
 }
+
+
 
 void TerrainScene::BuildObjects()
 {
@@ -239,29 +252,16 @@ void TerrainScene::BuildObjects()
 
 	for (int i = 0; i < 5; ++i)
 	{
-		for (int j = 0; j < 2; ++j)
-		{
-			GameObject* button_list = CreateButtonList();
-			button_list->GetComponent<Renderer>()->materials[0] = 1;
-			button_list->SetActive(false);
-
-			for (int k = 0; k < 10; ++k)
-			{
-				GameObject* button_building = CreateTextButton();
-				button_building->SetActive(false);
-				auto rectTransform = button_building->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0.05f + 0.1f * k, 0.1 };
-				rectTransform->anchorMax = { 0.1f * k + 0.09f, 0.9 };
-				button_list->AddChild(button_building);
-			}
-
-			butttons_BuildingList[i].push_back(button_list);
-			ButtonManager::buttonManager->buttons_BuildingList[i].push_back(butttons_BuildingList[i][j]);
-		}
+		butttons_BuildingList[i].push_back(CreateButtonList());
+		ButtonManager::buttonManager->buttons_BuildingList[i].push_back(butttons_BuildingList[i][0]);
 	}
+	butttons_BuildingList[0][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Well";
+
 	butttons_BuildingList[1][0]->children[0]->children[0]->GetComponent<Text>()->text = L"House01";
 	butttons_BuildingList[1][0]->children[1]->children[0]->GetComponent<Text>()->text = L"House02";
 
+	butttons_BuildingList[3].push_back(CreateButtonList());
+	ButtonManager::buttonManager->buttons_BuildingList[3].push_back(butttons_BuildingList[3][1]);
 	butttons_BuildingList[3][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Tree_01";
 	butttons_BuildingList[3][0]->children[1]->children[0]->GetComponent<Text>()->text = L"Tree_02";
 	butttons_BuildingList[3][0]->children[2]->children[0]->GetComponent<Text>()->text = L"Tree_03";
@@ -272,7 +272,6 @@ void TerrainScene::BuildObjects()
 	butttons_BuildingList[3][0]->children[7]->children[0]->GetComponent<Text>()->text = L"Flower_03";
 	butttons_BuildingList[3][0]->children[8]->children[0]->GetComponent<Text>()->text = L"Flower_04";
 	butttons_BuildingList[3][0]->children[9]->children[0]->GetComponent<Text>()->text = L"Flower_05";
-
 	butttons_BuildingList[3][1]->children[0]->children[0]->GetComponent<Text>()->text = L"Stone_Big_01";
 	butttons_BuildingList[3][1]->children[1]->children[0]->GetComponent<Text>()->text = L"Stone_Big_02";
 	butttons_BuildingList[3][1]->children[2]->children[0]->GetComponent<Text>()->text = L"Stone_Big_03";
@@ -284,6 +283,28 @@ void TerrainScene::BuildObjects()
 	butttons_BuildingList[3][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_04";
 	butttons_BuildingList[3][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_05";
 
+	butttons_BuildingList[4].push_back(CreateButtonList());
+	ButtonManager::buttonManager->buttons_BuildingList[4].push_back(butttons_BuildingList[4][1]);
+	butttons_BuildingList[4][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Fence_01";
+	butttons_BuildingList[4][0]->children[1]->children[0]->GetComponent<Text>()->text = L"Fence_02";
+	butttons_BuildingList[4][0]->children[2]->children[0]->GetComponent<Text>()->text = L"Fence_03";
+	butttons_BuildingList[4][0]->children[3]->children[0]->GetComponent<Text>()->text = L"Fence_04";
+	butttons_BuildingList[4][0]->children[4]->children[0]->GetComponent<Text>()->text = L"Bucket";
+	butttons_BuildingList[4][0]->children[5]->children[0]->GetComponent<Text>()->text = L"Barrel";
+	butttons_BuildingList[4][0]->children[6]->children[0]->GetComponent<Text>()->text = L"Pitchfork";
+	butttons_BuildingList[4][0]->children[7]->children[0]->GetComponent<Text>()->text = L"Axe";
+	butttons_BuildingList[4][0]->children[8]->children[0]->GetComponent<Text>()->text = L"Ladder";
+	butttons_BuildingList[4][0]->children[9]->children[0]->GetComponent<Text>()->text = L"Spike";
+	butttons_BuildingList[4][1]->children[0]->children[0]->GetComponent<Text>()->text = L"Cart_01";
+	butttons_BuildingList[4][1]->children[1]->children[0]->GetComponent<Text>()->text = L"Cart_02";
+	butttons_BuildingList[4][1]->children[2]->children[0]->GetComponent<Text>()->text = L"Torch_01";
+	butttons_BuildingList[4][1]->children[3]->children[0]->GetComponent<Text>()->text = L"Torch_02";
+	butttons_BuildingList[4][1]->children[4]->children[0]->GetComponent<Text>()->text = L"Logs_01";
+	butttons_BuildingList[4][1]->children[5]->children[0]->GetComponent<Text>()->text = L"Logs_02";
+	butttons_BuildingList[4][1]->children[6]->children[0]->GetComponent<Text>()->text = L"Log_01";
+	butttons_BuildingList[4][1]->children[7]->children[0]->GetComponent<Text>()->text = L"Log_02";
+	butttons_BuildingList[4][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Log_03";
+	butttons_BuildingList[4][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Log_04";
 
 	GameObject* button_previouspage = CreateImage();
 	{

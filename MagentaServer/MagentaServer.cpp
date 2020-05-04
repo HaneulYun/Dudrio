@@ -212,6 +212,7 @@ void initialize_clients()
 void disconnect(int user_id)
 {
 	g_clients[user_id].m_status = ST_ALLOC;
+	printf("ID: %d님과의 연결을 종료합니다.\n");
 	send_leave_packet(user_id, user_id);
 	closesocket(g_clients[user_id].m_s);
 	if (g_host_user_id != user_id)
@@ -226,6 +227,7 @@ void disconnect(int user_id)
 	}
 	else
 	{
+		printf("호스트와 연결이 끊어졌어요!\n");
 		for (auto& cl : g_clients)
 		{
 			if (user_id == cl.m_id)

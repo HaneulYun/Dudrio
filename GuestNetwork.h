@@ -34,6 +34,7 @@ private:
 
 public:
 	~GuestNetwork() {
+		isConnect = false;
 		closesocket(serverSocket);
 		WSACleanup();
 	}
@@ -50,6 +51,7 @@ public:
 
 	void Start()
 	{
+		hostId = -1;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 		serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
 		unsigned long on = true;
@@ -72,7 +74,7 @@ public:
 			serveraddr.sin_port = htons(SERVER_PORT);
 
 			int retval = connect(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-
+			// 연결 처리 해주기
 			isConnect = true;
 			Login();
 		}

@@ -69,10 +69,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
 		int other_id = my_packet->id;
 	
-		if (other_id == myId) {
-			Scene::scene->PushDelete(myCharacter);
-		}
-		else if(other_id != hostId) {
+		if(other_id != hostId) {
 			if (0 != otherCharacters.count(other_id))
 			{
 				Scene::scene->PushDelete(otherCharacters[other_id]);
@@ -82,11 +79,15 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		else 
 		{
 			// HOST라면 모든 건물 삭제 및 모든 캐릭터 삭제
+			Scene::scene->PushDelete(myCharacter);
+			myCharacter = NULL;
+
+			hostId = -1;
 			for (auto& others : otherCharacters)
 			{
 				Scene::scene->PushDelete(others.second);
-				otherCharacters.erase(others.first);
 			}
+			otherCharacters.clear();
 		}
 	}
 	break;
@@ -153,7 +154,7 @@ void GuestNetwork::send_move_packet(float xMove, float zMove)//unsigned char dir
 	m_packet.size = sizeof(m_packet);
 	m_packet.xMove = xMove;
 	m_packet.zMove = zMove;
-	//m_packet.direction = dir;
+
 	send_packet(&m_packet);
 }
 

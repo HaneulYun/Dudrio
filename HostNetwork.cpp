@@ -56,6 +56,13 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
 		int other_id = my_packet->id;
 		if (other_id == myId) {
+			for (auto& p : players)
+			{
+				Scene::scene->PushDelete(p.second);
+			}
+			players.clear();
+			closesocket(serverSocket);
+			isConnect = false;
 		}
 		else {
 			if (0 != players.count(other_id))

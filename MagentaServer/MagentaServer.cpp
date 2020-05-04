@@ -14,12 +14,17 @@ constexpr auto MAX_BUF_SIZE = 1024;
 //constexpr auto MAX_USER = 10;
 
 enum ENUMOP { OP_RECV, OP_SEND, OP_ACCEPT };
+enum C_STATUS { ST_FREE, ST_ALLOC, ST_ACTIVE };
 
 struct EXOVER {
 	WSAOVERLAPPED	over;
 	ENUMOP			op;
 	char			io_buf[MAX_BUF_SIZE];
-	WSABUF			wsabuf;
+
+	union {	
+		WSABUF			wsabuf;
+		SOCKET			c_socket;
+	};
 };
 
 struct CLIENT {
@@ -28,17 +33,19 @@ struct CLIENT {
 	EXOVER	m_recv_over;
 	int		m_prev_size;
 	char	m_packet_buf[MAX_PACKET_SIZE];
-	bool	m_connected;
+	//bool	m_connected;
+	C_STATUS	m_status;
 
 	float	x, z;
 	float	xMove, zMove;
-	char name[MAX_ID_LEN];
+	char	m_name[MAX_ID_LEN + 1];
 };
 
 CLIENT g_clients[MAX_USER];
-int g_curr_user_id = 0;
+//int g_curr_user_id = 0;
 int g_host_user_id = -1;
 HANDLE g_iocp;
+SOCKET l_socket;
 
 vector<BuildingInform> buildings;
 
@@ -71,7 +78,7 @@ void send_login_ok_packet(int user_id)
 	p.z = g_clients[user_id].z;
 	p.xMove = g_clients[user_id].xMove;
 	p.zMove = g_clients[user_id].zMove;
-	//printf("Send_Packet_Login_OK\n");
+
 	send_packet(user_id, &p);
 }
 
@@ -86,7 +93,7 @@ void send_enter_packet(int user_id, int o_id)
 	p.xMove = g_clients[user_id].xMove;
 	p.zMove = g_clients[user_id].zMove;
 
-	strcpy_s(p.name, g_clients[o_id].name);
+	strcpy_s(p.name, g_clients[o_id].m_name);
 	if (o_id == g_host_user_id)
 		p.o_type = O_HOST;
 	else
@@ -103,7 +110,6 @@ void send_leave_packet(int user_id, int o_id)
 	p.size = sizeof(p);
 	p.type = S2C_LEAVE;
 
-	//printf("Send_Packet_Leave\n");
 	send_packet(user_id, &p);
 }
 
@@ -154,22 +160,30 @@ void do_move(int user_id, float xMove, float zMove)// int direction)
 	u.zMove = zMove;
 
 	for (auto& cl : g_clients)
-		if (true == cl.m_connected)
+		if (ST_ACTIVE == cl.m_status)
 			send_move_packet(cl.m_id, user_id);
 }
 
-void enter_game(int user_id)
+void enter_game(int user_id, char name[])
 {
-	g_clients[user_id].m_connected = true;
+	strcpy_s(g_clients[user_id].m_name, name);
+	g_clients[user_id].m_name[MAX_ID_LEN] = NULL;
+	send_login_ok_packet(user_id);
+
 	for (int i = 0; i < MAX_USER; i++)
-		if (true == g_clients[i].m_connected)
+	{
+		if (user_id == i)
+			continue;
+		if (ST_ACTIVE == g_clients[i].m_status)
 			if (user_id != i) {
 				send_enter_packet(user_id, i);
 				send_enter_packet(i, user_id);
 			}
+	}
 	for (auto& b : buildings)
 		send_construct_packet(user_id, b);
 
+	g_clients[user_id].m_status = ST_ACTIVE;
 }
 
 void do_construct(int user_id, BuildingInform b_inform)
@@ -178,8 +192,50 @@ void do_construct(int user_id, BuildingInform b_inform)
 	// 일단은 건물 종류, 위치, 각도만 보내주는 메신저 형식
 	buildings.emplace_back(b_inform);
 	for (auto& cl : g_clients)
-		if (true == cl.m_connected)
+	{
+		if (user_id == cl.m_id)
+			continue;
+		if (ST_ACTIVE == cl.m_status)
 			send_construct_packet(cl.m_id, b_inform);
+	}
+}
+
+void initialize_clients()
+{
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		g_clients[i].m_id = i;
+		g_clients[i].m_status = ST_FREE;
+	}
+}
+
+void disconnect(int user_id)
+{
+	g_clients[user_id].m_status = ST_ALLOC;
+	send_leave_packet(user_id, user_id);
+	closesocket(g_clients[user_id].m_s);
+	if (g_host_user_id != user_id)
+	{
+		for (auto& cl : g_clients)
+		{
+			if (user_id == cl.m_id)
+				continue;
+			if (ST_ACTIVE == cl.m_status)
+				send_leave_packet(cl.m_id, user_id);
+		}
+	}
+	else
+	{
+		for (auto& cl : g_clients)
+		{
+			if (user_id == cl.m_id)
+				continue;
+			if (ST_ACTIVE == cl.m_status)
+				disconnect(cl.m_id);
+		}
+		g_host_user_id = -1;
+	}
+	g_clients[user_id].m_status = ST_FREE;
 }
 
 void process_packet(int user_id, char* buf)
@@ -189,28 +245,37 @@ void process_packet(int user_id, char* buf)
 	{
 		if (g_host_user_id != -1)
 		{
+			printf("게스트가 놀러왔어요!\n");
 			cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf);
-			strcpy_s(g_clients[user_id].name, packet->name);
-			g_clients[user_id].name[MAX_ID_LEN] = NULL;
-			send_login_ok_packet(user_id);
-			enter_game(user_id);
+			enter_game(user_id, packet->name);
+		}
+		else
+		{
+			printf("호스트가 없어요!\n");
+			disconnect(user_id);
 		}
 	}
 	break;
 	case C2S_LOGIN_HOST:
 	{
-		cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf);
-		strcpy_s(g_clients[user_id].name, packet->name);
-		g_clients[user_id].name[MAX_ID_LEN] = NULL;
-		g_host_user_id = user_id;
-		send_login_ok_packet(user_id);
-		enter_game(user_id);
+		if (g_host_user_id == -1)
+		{
+			printf("호스트가 접속했어요!\n");
+			cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf);
+			g_host_user_id = user_id;
+			enter_game(user_id, packet->name);
+		}
+		else
+		{
+			printf("이미 호스트가 있어요!\n");
+			disconnect(user_id);
+		}
 	}
 	break;
 	case C2S_MOVE:
 	{
 		cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf);
-		do_move(user_id, packet->xMove, packet->zMove);//packet->direction);
+		do_move(user_id, packet->xMove, packet->zMove);
 	}
 	break;
 	case C2S_CONSTRUCT:
@@ -225,27 +290,6 @@ void process_packet(int user_id, char* buf)
 		DebugBreak();
 		exit(-1);
 		break;
-	}
-}
-
-void initialize_clients()
-{
-	for (int i = 0; i < MAX_USER; ++i)
-		g_clients[i].m_connected = false;
-}
-
-void disconnect(int user_id)
-{
-	//if (user_id == g_host_user_id)
-	//{
-	//	// 모든 클라이언트 연결 해제 시키기
-	//}
-	//else
-	{
-		g_clients[user_id].m_connected = false;
-		for (auto& cl : g_clients)
-			if (true == g_clients[cl.m_id].m_connected)
-				send_leave_packet(cl.m_id, user_id);
 	}
 }
 
@@ -288,12 +332,84 @@ void recv_packet_construct(int user_id, int io_byte)
 	}
 }
 
+void loop()
+{
+	while (true) {
+		DWORD io_byte;
+		ULONG_PTR key;
+		WSAOVERLAPPED* over;
+		GetQueuedCompletionStatus(g_iocp, &io_byte, &key, &over, INFINITE);
+
+		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
+		int user_id = static_cast<int>(key);
+		CLIENT& cl = g_clients[user_id];
+
+		switch (exover->op) {
+		case OP_RECV:
+			// send나 recv의 경우에만 이 처리를 해줘야 함
+			if (0 == io_byte)
+				disconnect(user_id);
+			else {
+				recv_packet_construct(user_id, io_byte);
+				ZeroMemory(&cl.m_recv_over.over, sizeof(cl.m_recv_over.over));
+				DWORD flags = 0;
+				WSARecv(cl.m_s, &cl.m_recv_over.wsabuf, 1, NULL, &flags, &cl.m_recv_over.over, NULL);
+			}
+			break;
+		case OP_SEND:
+			// send나 recv의 경우에만 이 처리를 해줘야 함
+			if (0 == io_byte)
+				disconnect(user_id);
+			delete exover;
+			break;
+		case OP_ACCEPT:
+		{
+			int user_id = -1;
+			for (int i = 0; i < MAX_USER; ++i)	{
+				if (ST_FREE == g_clients[i].m_status)	{
+					g_clients[i].m_status = ST_ALLOC;
+					user_id = i;
+					break;
+				}
+			}
+
+			SOCKET c_socket = exover->c_socket;
+			if (-1 == user_id)
+				closesocket(c_socket);
+			else {
+				CreateIoCompletionPort(reinterpret_cast<HANDLE>(c_socket), g_iocp, user_id, 0);
+
+				CLIENT& nc = g_clients[user_id];
+				// 안쓰이는 거 골라내는 것도 해야하지만 나중에 생각
+				nc.m_prev_size = 0;
+				nc.m_recv_over.op = OP_RECV;
+				ZeroMemory(&nc.m_recv_over.over, sizeof(nc.m_recv_over.over));
+				nc.m_recv_over.wsabuf.buf = nc.m_recv_over.io_buf;
+				nc.m_recv_over.wsabuf.len = MAX_BUF_SIZE;
+				nc.m_s = c_socket;
+				nc.x = 0.0;
+				nc.z = 0.0;
+				nc.xMove = 0.0;
+				nc.zMove = 0.0;
+				DWORD flags = 0;
+				WSARecv(c_socket, &nc.m_recv_over.wsabuf, 1, NULL, &flags, &nc.m_recv_over.over, NULL);
+			}
+			c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+			exover->c_socket = c_socket;
+			ZeroMemory(&exover->over, sizeof(exover->over));
+			AcceptEx(l_socket, c_socket, exover->io_buf, NULL, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, &exover->over);
+		}
+		break;
+		}
+	}
+}
+
 int main()
 {
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
 
-	SOCKET l_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	l_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 
 	SOCKADDR_IN s_address;
 	memset(&s_address, 0, sizeof(s_address));
@@ -313,65 +429,8 @@ int main()
 	EXOVER accept_over;
 	ZeroMemory(&accept_over.over, sizeof(accept_over.over));
 	accept_over.op = OP_ACCEPT;
+	accept_over.c_socket = c_socket;
 	AcceptEx(l_socket, c_socket, accept_over.io_buf, NULL, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, &accept_over.over);	// 클라이언트 접속에 사용할 소켓을 미리 만들어놔야 함
 
-	while (true) {
-		DWORD io_byte;
-		ULONG_PTR key;
-		WSAOVERLAPPED* over;
-		GetQueuedCompletionStatus(g_iocp, &io_byte, &key, &over, INFINITE);
-
-		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
-		int user_id = static_cast<int>(key);
-		CLIENT& cl = g_clients[user_id];
-
-		switch (exover->op) {
-		case OP_RECV:
-			// send나 recv의 경우에만 이 처리를 해줘야 함
-			//printf("OP_Recv\n");
-			if (0 == io_byte)
-				disconnect(user_id);
-			else {
-				recv_packet_construct(user_id, io_byte);
-				ZeroMemory(&cl.m_recv_over.over, sizeof(cl.m_recv_over.over));
-				DWORD flags = 0;
-				WSARecv(cl.m_s, &cl.m_recv_over.wsabuf, 1, NULL, &flags, &cl.m_recv_over.over, NULL);
-			}
-			break;
-		case OP_SEND:
-			// send나 recv의 경우에만 이 처리를 해줘야 함
-			if (0 == io_byte)
-				disconnect(user_id);
-			delete exover;
-			break;
-		case OP_ACCEPT:
-		{
-			//printf("OP_Accept\n");
-			int user_id = g_curr_user_id++;
-
-			CreateIoCompletionPort(reinterpret_cast<HANDLE>(c_socket), g_iocp, user_id, 0);
-			g_curr_user_id = g_curr_user_id % MAX_USER;
-			CLIENT& nc = g_clients[user_id];
-			// 안쓰이는 거 골라내는 것도 해야하지만 나중에 생각
-			nc.m_id = user_id;
-			nc.m_prev_size = 0;
-			nc.m_recv_over.op = OP_RECV;
-			ZeroMemory(&nc.m_recv_over.over, sizeof(nc.m_recv_over.over));
-			nc.m_recv_over.wsabuf.buf = nc.m_recv_over.io_buf;
-			nc.m_recv_over.wsabuf.len = MAX_BUF_SIZE;
-			nc.m_s = c_socket;
-			nc.x = 0.0;
-			nc.z = 0.0;
-			nc.xMove = 0.0;
-			nc.zMove = 0.0;
-			DWORD flags = 0;
-			WSARecv(c_socket, &nc.m_recv_over.wsabuf, 1, NULL, &flags, &nc.m_recv_over.over, NULL);
-
-			c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-			ZeroMemory(&accept_over.over, sizeof(accept_over.over));
-			AcceptEx(l_socket, c_socket, accept_over.io_buf, NULL, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, &accept_over.over);
-		}
-		break;
-		}
-	}
+	loop();
 }

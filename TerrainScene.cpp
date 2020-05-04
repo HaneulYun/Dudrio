@@ -14,6 +14,8 @@ void TerrainScene::BuildObjects()
 		AddTexture(2, "grass", L"Textures\\grass01.dds");
 		AddTexture(3, "house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
 		AddTexture(4, "house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
+		AddTexture(5, "material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
+
 	}
 
 
@@ -24,6 +26,7 @@ void TerrainScene::BuildObjects()
 		AddMaterial(2, "grass", 2, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 		AddMaterial(3, "house01", 3, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		AddMaterial(4, "house02", 4, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		AddMaterial(5, "material_01", 5, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 	}
 
 	//*** Mesh ***//
@@ -32,6 +35,13 @@ void TerrainScene::BuildObjects()
 		geometries["Sphere"] = Mesh::CreateSphere();
 		AddFbxForAnimation("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
 		AddFbxForAnimation("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
+		AddFbxForAnimation("SM_Cart_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var01.FBX");
+		AddFbxForAnimation("SM_Cart_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var02.FBX");
+		AddFbxForAnimation("SM_Barrel", "Assets\\AdvancedVillagePack\\Meshes\\SM_Barrel.FBX");
+		AddFbxForAnimation("SM_Fence_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
+		AddFbxForAnimation("SM_Fence_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
+		AddFbxForAnimation("SM_Fence_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
+		AddFbxForAnimation("SM_Fence_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
 	}
 
 	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
@@ -84,12 +94,12 @@ void TerrainScene::BuildObjects()
 			XMFLOAT3 look;
 		};
 		std::vector<TreeSpriteVertex> vertices;
-		float sizex = 2, sizey = 2;
+		float sizex = 1, sizey = 1;
 		const int width = 256, length = 256;
-		vertices.reserve(width * length);
-		for (int i = 0; i < width; ++i)
+		vertices.reserve(width* length * 2.0);
+		for (float i = 0; i < width; i += 0.5f)
 		{
-			for (int j = 0; j < length; ++j)
+			for (float j = 0; j < length; j += 0.5f)
 			{
 				TreeSpriteVertex v;
 				v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
@@ -551,7 +561,7 @@ void TerrainScene::BuildObjects()
 
 		BSButton30->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02);
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var01"].get(), 5, 0.02);
 			});
 		{
 			auto textobject = BSButton30->AddChildUI();
@@ -560,7 +570,7 @@ void TerrainScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"없음";
+			text->text = L"울타리1";
 			text->fontSize = 10;
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
@@ -582,7 +592,7 @@ void TerrainScene::BuildObjects()
 
 		BSButton31->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var02"].get(), 5, 0.02);
 			});
 		{
 			auto textobject = BSButton31->AddChildUI();
@@ -591,7 +601,7 @@ void TerrainScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"없음";
+			text->text = L"울타리2";
 			text->fontSize = 10;
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
@@ -613,7 +623,7 @@ void TerrainScene::BuildObjects()
 
 		BSButton32->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_House_Var02"].get(), 4, 0.02);
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var03"].get(), 5, 0.02);
 			});
 		{
 			auto textobject = BSButton32->AddChildUI();
@@ -622,13 +632,44 @@ void TerrainScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"없음";
+			text->text = L"울타리3";
 			text->fontSize = 10;
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
 		}
 		BSButton32->SetActive(false);
+	}
+	auto BSButton33 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton33, false));
+	{
+		auto rectTransform = BSButton33->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = 50;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton33->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var04"].get(), 5, 0.02);
+			});
+		{
+			auto textobject = BSButton33->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"울타리4";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton33->SetActive(false);
 	}
 	auto BuildingSelectButton03 = CreateImage();
 	{
@@ -646,6 +687,7 @@ void TerrainScene::BuildObjects()
 				ButtonManager::buttonManager->SelectButton(9);
 				ButtonManager::buttonManager->SelectButton(10);
 				ButtonManager::buttonManager->SelectButton(11);
+				ButtonManager::buttonManager->SelectButton(12);
 			});
 		{
 			auto textobject = BuildingSelectButton03->AddChildUI();
@@ -655,6 +697,163 @@ void TerrainScene::BuildObjects()
 
 			Text* text = textobject->AddComponent<Text>();
 			text->text = L"조경";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
+	auto BSButton40 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton40, false));
+	{
+		auto rectTransform = BSButton40->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -130;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton40->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var01"].get(), 5, 0.02);
+			});
+		{
+			auto textobject = BSButton40->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"울타리1";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton40->SetActive(false);
+	}
+	auto BSButton41 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton41, false));
+	{
+		auto rectTransform = BSButton41->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -70;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton41->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var02"].get(), 5, 0.02);
+			});
+		{
+			auto textobject = BSButton41->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"울타리2";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton41->SetActive(false);
+	}
+	auto BSButton42 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton42, false));
+	{
+		auto rectTransform = BSButton42->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = -10;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton42->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var03"].get(), 5, 0.02);
+			});
+		{
+			auto textobject = BSButton42->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"울타리3";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton42->SetActive(false);
+	}
+	auto BSButton43 = CreateImage();
+	ButtonManager::buttonManager->buttons.push_back(std::make_pair(BSButton43, false));
+	{
+		auto rectTransform = BSButton43->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = 50;
+		rectTransform->posY = 70;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BSButton43->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				//BuildManager::buildManager->SelectModel(Scene::scene->geometries["SM_Fence_Var04"].get(), 5, 0.02);
+			});
+		{
+			auto textobject = BSButton43->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"울타리4";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+		BSButton43->SetActive(false);
+	}
+	auto BuildingSelectButton04 = CreateImage();
+	{
+		auto rectTransform = BuildingSelectButton04->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = 110;
+		rectTransform->posY = 10;
+		rectTransform->width = 50;
+		rectTransform->height = 50;
+
+		BuildingSelectButton04->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				ButtonManager::buttonManager->SelectButton(13);
+				ButtonManager::buttonManager->SelectButton(14);
+				ButtonManager::buttonManager->SelectButton(15);
+				ButtonManager::buttonManager->SelectButton(16);
+			});
+		{
+			auto textobject = BuildingSelectButton04->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"소품";
 			text->fontSize = 10;
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;

@@ -2,10 +2,45 @@
 #include "..\CyanEngine\framework.h"
 #include "Building.h"
 
+enum class BuildingType
+{
+	/*LandMark*/
+	Well_01 = 0,
+
+	/*House*/
+	House_01 = 100, House_02,
+
+	/*Theme*/
+
+	/*landscape*/
+	Tree_01 = 300, Tree_02, Tree_03, Tree_04, Tree_05,
+	Tree_Stump_01, Tree_Stump_02,
+	Plant_01, Flower_01, Flower_02, Flower_03, Flower_04, Flower_05, Flower_06,
+	Grass_01, Grass_02, Grass_03,
+	Mushroom_01, Mushroom_02, Mushroom_03, Mushroom_04, Mushroom_05, Mushroom_06,
+	Stone_Big_01, Stone_Big_02, Stone_Big_03, Stone_Big_04, Stone_Big_05, Stone_Big_06,
+	Stone_Medium_01, Stone_Medium_02, Stone_Medium_03, Stone_Medium_04, Stone_Medium_05,
+	Stone_Small_01, Stone_Small_02, Stone_Small_03, Stone_Small_04, Stone_Small_05,
+	Stone_Flat_01, Stone_Flat_02, Stone_Flat_03, Stone_Flat_04, Stone_Flat_05,
+	StonePath_01, StonePath_02, StonePath_03,
+
+	/*Decoration*/
+	Fence_01 = 400, Fence_02, Fence_03, Fence_04,
+	Street_Light_01,
+	Bucket, Barrel, Pitchfork, Axe, Ladder, Spike, Cart_01, Cart_02,
+	Torch_01, Torch_02,
+	Logs_01, Logs_02, Log_01, Log_02, Log_03, Log_04,
+	Pot_01, Pot_02, Pot_03, Pot_04, Pot_05, Pot_06, cauldron, Crate_Open, Crate_Closed,
+	Hay_Small_01, Hay_Small_02, Hay_Stack,
+	Apple, Potato, Tomato, Fish, Watermelon,
+	Sack_Apple, Sack_Flour, Sack_Potato, Sack_Tomato,
+	Pumpkin_01, Pumpkin_02, Pumpkin_03
+};
+
 class BuildManager : public MonoBehavior<BuildManager>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
-
+	BuildingType prefabType;
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* prefab{ nullptr };
 	GameObject* terrain;
@@ -174,7 +209,37 @@ public:
 		}
 	}
 
-	void SelectModel(Mesh* mesh, int matIndex, float size)
+	void SelectBuilding(BuildingType type, Mesh* mesh = NULL, int matIndex = NULL, float scaleSize = NULL, float colliderSize = NULL)
+	{
+		if (prefab) {
+			DeletePrefab();
+
+			if (prefabType == type) return;
+		}
+
+		switch (type)
+		{
+		case BuildingType::Well_01:
+			break;
+		case BuildingType::House_02:
+			break;
+		default:
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			prefab->AddComponent<BoxCollider>()->extents = { colliderSize, colliderSize, colliderSize };
+
+			GameObject* child = prefab->AddChild();
+			child->AddComponent<MeshFilter>()->mesh = mesh;
+			child->AddComponent<Renderer>()->materials.push_back(matIndex);
+			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+			child->layer = (int)RenderLayer::BuildPreview;
+			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			break;
+		}
+	}
+
+	void SelectModel(Mesh* mesh, int matIndex, float scaleSize)
 	{
 		if (prefab) {
 			auto meshFilter = prefab->children.front()->GetComponent<MeshFilter>();
@@ -185,10 +250,10 @@ public:
 		}
 		Scene::scene->CreateEmptyPrefab();
 		prefab = Scene::scene->CreateEmpty();
-		prefab->AddComponent<BoxCollider>()->extents = { 5.0f,5.0f,5.0f };
+		prefab->AddComponent<BoxCollider>()->extents = { 5.0f, 5.0f, 5.0f };
 		prefab->AddComponent<Building>();
 		auto model = prefab->AddChild();
-		model->GetComponent<Transform>()->Scale({ size, size, size });
+		model->GetComponent<Transform>()->Scale({ scaleSize, scaleSize, scaleSize });
 		model->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 		model->AddComponent<MeshFilter>()->mesh = mesh;
 		auto renderer = model->AddComponent<Renderer>();

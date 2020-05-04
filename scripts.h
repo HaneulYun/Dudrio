@@ -7,3 +7,4 @@
 #include "BulidManager.h"
 #include "ButtonManager.h"
 #include "GuestController.h"
+#include "Building.h"

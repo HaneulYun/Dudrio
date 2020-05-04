@@ -8,4 +8,7 @@ public:
 	~TerrainScene() {}
 
 	virtual void BuildObjects();
+
+	GameObject* CreateTextButton();
+	GameObject* CreateButtonList();
 };

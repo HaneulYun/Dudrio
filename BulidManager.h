@@ -1,6 +1,7 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
 #include "Building.h"
+#include "RotatingBehavior.h"
 
 enum class BuildingType
 {
@@ -147,7 +148,7 @@ public:
 				DeletePrefab();
 			}
 			else
-				prefab->transform->position = { point.x, point.y + 1.0f, point.z };
+				prefab->transform->position = { point.x, point.y, point.z };
 		}
 	}
 
@@ -213,15 +214,69 @@ public:
 	{
 		if (prefab) {
 			DeletePrefab();
-
 			if (prefabType == type) return;
 		}
 
 		switch (type)
 		{
 		case BuildingType::Well_01:
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			prefab->AddComponent<BoxCollider>()->extents = { 3.0f, 3.0f, 3.0f };
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = gameObject->scene->geometries["SM_Well"].get();
+				child->AddComponent<Renderer>()->materials.push_back(6);
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = gameObject->scene->geometries["SM_Well_Extra02"].get();
+				child->AddComponent<Renderer>()->materials.push_back(6);
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->position = { 0.0f,3.0f,0.0f };
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = gameObject->scene->geometries["SM_Well_Extra03"].get();
+				child->AddComponent<Renderer>()->materials.push_back(6);
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->position = { 0.0f,2.0f,0.0f };
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
 			break;
 		case BuildingType::House_02:
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			prefab->AddComponent<BoxCollider>()->extents = { 5.5f, 5.5f, 5.5f };
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = gameObject->scene->geometries["SM_House_Var02"].get();;
+				child->AddComponent<Renderer>()->materials.push_back(4);
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = gameObject->scene->geometries["SM_House_Var02_Extra"].get();;
+				child->AddComponent<Renderer>()->materials.push_back(4);
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->AddComponent<RotatingBehavior>()->speedRotating = 10.0f;
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->position = { -0.5f,12.0f,5.0f };
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
 			break;
 		default:
 			prefab = Scene::scene->CreateEmpty();
@@ -230,7 +285,9 @@ public:
 
 			GameObject* child = prefab->AddChild();
 			child->AddComponent<MeshFilter>()->mesh = mesh;
-			child->AddComponent<Renderer>()->materials.push_back(matIndex);
+			Renderer* renderer = child->AddComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(matIndex);
 			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 			child->layer = (int)RenderLayer::BuildPreview;
 			child->transform->Scale({ scaleSize, scaleSize, scaleSize });

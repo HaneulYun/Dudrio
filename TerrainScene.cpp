@@ -75,6 +75,8 @@ void TerrainScene::BuildObjects()
 		AddTexture(3, "house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
 		AddTexture(4, "house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
 		AddTexture(5, "material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
+		AddTexture(6, "material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
+		AddTexture(7, "TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
 	}
 
 
@@ -86,21 +88,32 @@ void TerrainScene::BuildObjects()
 		AddMaterial(3, "house01", 3, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		AddMaterial(4, "house02", 4, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		AddMaterial(5, "material_01", 5, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		AddMaterial(6, "material_03", 6, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		AddMaterial(7, "TreeLeafs", 7, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 	}
 
 	//*** Mesh ***//
 	{
 		geometries["Image"] = Mesh::CreateQuad();
 		geometries["Sphere"] = Mesh::CreateSphere();
+		AddFbxForAnimation("SM_Well", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well.FBX");
+		AddFbxForAnimation("SM_Well_Extra02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra02.FBX");
+		AddFbxForAnimation("SM_Well_Extra03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra03.FBX");
 		AddFbxForAnimation("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
 		AddFbxForAnimation("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
+		AddFbxForAnimation("SM_House_Var02_Extra", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02_Extra.FBX");
+		AddFbxForAnimation("SM_Tree_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var01.FBX");
+		AddFbxForAnimation("SM_Tree_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var02.FBX");
+		AddFbxForAnimation("SM_Tree_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var03.FBX");
+		AddFbxForAnimation("SM_Tree_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var04.FBX");
+		AddFbxForAnimation("SM_Tree_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var05.FBX");
 		AddFbxForAnimation("SM_Cart_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var01.FBX");
 		AddFbxForAnimation("SM_Cart_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var02.FBX");
 		AddFbxForAnimation("SM_Barrel", "Assets\\AdvancedVillagePack\\Meshes\\SM_Barrel.FBX");
-		AddFbxForAnimation("SM_Fence_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
-		AddFbxForAnimation("SM_Fence_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
-		AddFbxForAnimation("SM_Fence_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
-		AddFbxForAnimation("SM_Fence_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
+		//AddFbxForAnimation("SM_Fence_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
+		//AddFbxForAnimation("SM_Fence_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
+		//AddFbxForAnimation("SM_Fence_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
+		//AddFbxForAnimation("SM_Fence_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
 	}
 
 	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
@@ -256,17 +269,32 @@ void TerrainScene::BuildObjects()
 		ButtonManager::buttonManager->buttons_BuildingList[i].push_back(butttons_BuildingList[i][0]);
 	}
 	butttons_BuildingList[0][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Well";
+	butttons_BuildingList[0][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Well_01); });
 
 	butttons_BuildingList[1][0]->children[0]->children[0]->GetComponent<Text>()->text = L"House01";
+	butttons_BuildingList[1][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::House_01, Scene::scene->geometries["SM_House_Var01"].get(), 3, 0.02f, 5.5f); });
 	butttons_BuildingList[1][0]->children[1]->children[0]->GetComponent<Text>()->text = L"House02";
+	butttons_BuildingList[1][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::House_02); });
 
+	//SM_Tree_Var04
 	butttons_BuildingList[3].push_back(CreateButtonList());
 	ButtonManager::buttonManager->buttons_BuildingList[3].push_back(butttons_BuildingList[3][1]);
 	butttons_BuildingList[3][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Tree_01";
+	butttons_BuildingList[3][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Tree_01, Scene::scene->geometries["SM_Tree_Var01"].get(), 7, 0.02f, 5.0f); });
 	butttons_BuildingList[3][0]->children[1]->children[0]->GetComponent<Text>()->text = L"Tree_02";
+	butttons_BuildingList[3][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Tree_02, Scene::scene->geometries["SM_Tree_Var02"].get(), 7, 0.02f, 5.0f); });
 	butttons_BuildingList[3][0]->children[2]->children[0]->GetComponent<Text>()->text = L"Tree_03";
+	butttons_BuildingList[3][0]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Tree_03, Scene::scene->geometries["SM_Tree_Var03"].get(), 7, 0.02f, 5.0f); });
 	butttons_BuildingList[3][0]->children[3]->children[0]->GetComponent<Text>()->text = L"Tree_04";
+	butttons_BuildingList[3][0]->children[3]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Tree_04, Scene::scene->geometries["SM_Tree_Var04"].get(), 7, 0.02f, 5.0f); });
 	butttons_BuildingList[3][0]->children[4]->children[0]->GetComponent<Text>()->text = L"Tree_05";
+	butttons_BuildingList[3][0]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Tree_05, Scene::scene->geometries["SM_Tree_Var05"].get(), 7, 0.02f, 5.0f); });
 	butttons_BuildingList[3][0]->children[5]->children[0]->GetComponent<Text>()->text = L"Flower_01";
 	butttons_BuildingList[3][0]->children[6]->children[0]->GetComponent<Text>()->text = L"Flower_02";
 	butttons_BuildingList[3][0]->children[7]->children[0]->GetComponent<Text>()->text = L"Flower_03";

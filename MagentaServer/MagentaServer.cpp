@@ -2,6 +2,7 @@
 #include <chrono>
 #include <WS2tcpip.h>
 #include <MSWSock.h>
+#include <vector>
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "mswsock.lib")
 using namespace std;
@@ -38,6 +39,8 @@ CLIENT g_clients[MAX_USER];
 int g_curr_user_id = 0;
 int g_host_user_id = -1;
 HANDLE g_iocp;
+
+vector<BuildingInform> buildings;
 
 void send_packet(int user_id, void* p)
 {
@@ -126,7 +129,7 @@ void send_construct_packet(int user_id, BuildingInform b_inform)
 	p.type = S2C_CONSTRUCT;
 	p.b_inform = b_inform;
 
-	printf("buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
+	printf("전송! buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
 
 	send_packet(user_id, &p);
 }
@@ -136,21 +139,6 @@ void do_move(int user_id, float xMove, float zMove)// int direction)
 	CLIENT& u = g_clients[user_id];
 	float x = u.x;
 	float z = u.z;
-	//switch (direction)
-	//{
-	//case D_UP:
-	//	z += 1.0;	break;
-	//case D_DOWN:
-	//	z -= 1.0;	break;
-	//case D_LEFT:
-	//	x -= 1.0;	break;
-	//case D_RIGHT:
-	//	x += 1.0;	break;
-	//default:
-	//	cout << "Unknown Direction from Client move packet!\n";
-	//	DebugBreak();
-	//	exit(-1);
-	//}
 
 	// 이 검사식 대신 Normalize 필요
 	if (xMove > 4.0f)	xMove = 4.0f;
@@ -179,6 +167,8 @@ void enter_game(int user_id)
 				send_enter_packet(user_id, i);
 				send_enter_packet(i, user_id);
 			}
+	for (auto& b : buildings)
+		send_construct_packet(user_id, b);
 
 }
 
@@ -186,6 +176,7 @@ void do_construct(int user_id, BuildingInform b_inform)
 {
 	// 건물 정보를 따로 관리할 자료구조를 생각해보자...
 	// 일단은 건물 종류, 위치, 각도만 보내주는 메신저 형식
+	buildings.emplace_back(b_inform);
 	for (auto& cl : g_clients)
 		if (true == cl.m_connected)
 			send_construct_packet(cl.m_id, b_inform);

@@ -98,8 +98,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 
 		if (other_id == hostId)
 		{
-			BuildingInform b_inform = my_packet->b_inform;
-			Builder::builder->BuildNewBuilding(b_inform.buildingType, Vector3(b_inform.xPos, b_inform.yPos, b_inform.zPos), b_inform.rotAngle);
+			Builder::builder->BuildNewBuilding(my_packet->b_inform);
 		}
 	}
 		break;

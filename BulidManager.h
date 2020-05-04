@@ -17,6 +17,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	Vector3 lastMousePos;
 	static BuildManager* buildManager;
 
+	vector<BuildingInform> buildings;
+
 private:
 	friend class GameObject;
 	friend class MonoBehavior<BuildManager>;
@@ -94,7 +96,7 @@ public:
 				{
 					if (abs(lastMousePos.y - Input::mousePosition.y) > 30)
 					{
-						prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y)/ abs(lastMousePos.y - Input::mousePosition.y) * 30.0f);
+						prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) / abs(lastMousePos.y - Input::mousePosition.y) * 30.0f);
 						lastMousePos = Input::mousePosition;
 					}
 				}
@@ -109,23 +111,24 @@ public:
 			{
 				prefab->layer = (int)RenderLayer::Opaque;
 				GameObject* go = Scene::scene->Duplicate(prefab);
-				
-				if(HostNetwork::network->isConnect)
+
+				BuildingInform b_inform;
+				if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Sphere"].get())
+					b_inform.buildingType = B_SPHERE;
+				if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Cube"].get())
+					b_inform.buildingType = B_CUBE;
+				Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
+				Vector3 forward = { 0.0f, 0.0f, 1.0f };
+				float angle = NS_Vector3::DotProduct(forward.xmf3, prefabForward.xmf3);
+				XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, prefabForward.xmf3);
+				b_inform.rotAngle = XMConvertToDegrees(acos(angle));
+				b_inform.rotAngle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+				b_inform.xPos = prefab->transform->position.x;
+				b_inform.yPos = prefab->transform->position.y;
+				b_inform.zPos = prefab->transform->position.z;
+				buildings.emplace_back(b_inform);
+				if (HostNetwork::network->isConnect)
 				{	// Networking
-					BuildingInform b_inform;
-					if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Sphere"].get())
-						b_inform.buildingType = B_SPHERE;
-					if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Cube"].get())
-						b_inform.buildingType = B_CUBE;
-					Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
-					Vector3 forward = { 0.0f, 0.0f, 1.0f };
-					float angle = NS_Vector3::DotProduct(forward.xmf3, prefabForward.xmf3);
-					XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, prefabForward.xmf3);
-					b_inform.rotAngle = XMConvertToDegrees(acos(angle));
-					b_inform.rotAngle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
-					b_inform.xPos = prefab->transform->position.x;
-					b_inform.yPos = prefab->transform->position.y;
-					b_inform.zPos = prefab->transform->position.z;
 					HostNetwork::network->send_construct_packet(b_inform);
 				}
 				DeletePrefab();

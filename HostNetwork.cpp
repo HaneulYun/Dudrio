@@ -133,4 +133,7 @@ void HostNetwork::Login()
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
 	strcpy_s(name, l_packet.name);
 	send_packet(&l_packet);
+
+	for (auto& p : BuildManager::buildManager->buildings)
+		send_construct_packet(p);
 }

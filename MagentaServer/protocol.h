@@ -22,6 +22,41 @@ constexpr int MAX_USER = 10;
 
 #pragma pack(push ,1)
 
+enum class BuildingType
+{
+	/*LandMark*/
+	Well_01 = 0,
+
+	/*House*/
+	House_01 = 100, House_02,
+
+	/*Theme*/
+
+	/*landscape*/
+	Tree_01 = 300, Tree_02, Tree_03, Tree_04, Tree_05,
+	Tree_Stump_01, Tree_Stump_02,
+	Plant_01, Flower_01, Flower_02, Flower_03, Flower_04, Flower_05, Flower_06,
+	Grass_01, Grass_02, Grass_03,
+	Mushroom_01, Mushroom_02, Mushroom_03, Mushroom_04, Mushroom_05, Mushroom_06,
+	Stone_Big_01, Stone_Big_02, Stone_Big_03, Stone_Big_04, Stone_Big_05, Stone_Big_06,
+	Stone_Medium_01, Stone_Medium_02, Stone_Medium_03, Stone_Medium_04, Stone_Medium_05,
+	Stone_Small_01, Stone_Small_02, Stone_Small_03, Stone_Small_04, Stone_Small_05,
+	Stone_Flat_01, Stone_Flat_02, Stone_Flat_03, Stone_Flat_04, Stone_Flat_05,
+	StonePath_01, StonePath_02, StonePath_03,
+
+	/*Decoration*/
+	Fence_01 = 400, Fence_02, Fence_03, Fence_04,
+	Street_Light_01,
+	Bucket, Barrel, Pitchfork, Axe, Ladder, Spike, Cart_01, Cart_02,
+	Torch_01, Torch_02,
+	Logs_01, Logs_02, Log_01, Log_02, Log_03, Log_04,
+	Pot_01, Pot_02, Pot_03, Pot_04, Pot_05, Pot_06, Cauldron, Crate_Open, Crate_Closed,
+	Hay_Small_01, Hay_Small_02, Hay_Stack,
+	Apple, Potato, Tomato, Fish, Watermellon,
+	Sack_Apple, Sack_Flour, Sack_Potato, Sack_Tomato, Sack_01, Sack_02,
+	Pumpkin_01, Pumpkin_02, Pumpkin_03
+};
+
 struct sc_packet_login_ok {
 	char size;
 	char type;
@@ -46,7 +81,7 @@ constexpr unsigned char B_CUBE = 1;
 
 struct BuildingInform
 {
-	char buildingType;
+	BuildingType buildingType;
 	float xPos, yPos, zPos;
 	float rotAngle;
 };

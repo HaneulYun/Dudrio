@@ -79,14 +79,7 @@ void TerrainScene::BuildObjects()
 		ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
 		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
 		//ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
-		AddTexture(0, "none", L"Textures\\none.dds");
-		AddTexture(1, "ground", L"Textures\\grass.dds");
-		AddTexture(2, "bricksTex", L"Textures\\bricks2.dds");
-		AddTexture(3, "stoneTex", L"Textures\\stone.dds");
-		AddTexture(4, "tileTex", L"Textures\\tile.dds");
-		AddTexture(6, "tree", L"Textures\\tree01S.dds");
-		AddTexture(7, "grass", L"Textures\\grass01.dds");
-		AddTexture(8, "polyArtTex", L"Textures\\PolyArtTex.dds");
+		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 	}
 
 
@@ -101,17 +94,8 @@ void TerrainScene::BuildObjects()
 		ASSET AddMaterial("material_01",	ASSET TEXTURE("material_01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("material_02",	ASSET TEXTURE("material_02"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("material_03",	ASSET TEXTURE("material_03"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		AddMaterial(0, "none", 0);
-		AddMaterial(1, "ground", 1, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		AddMaterial(2, "bricksMat", 2, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.02f, 0.02f, 0.02f }, 0.1f);
-		AddMaterial(3, "stoneMat", 0, -1, { 0.0f, 0.0f, 0.1f, 1.0f }, { 0.98f, 0.97f, 0.95f }, 0.1f);
-		AddMaterial(4, "tile0", 4, -1, { 0.9f, 0.9f, 0.9f, 1.0f }, { 0.02f, 0.02f, 0.02f }, 0.1f, Matrix4x4::MatrixScaling(8, 8, 1));
-		AddMaterial(5, "sky", 5, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 1.0f);
-		AddMaterial(6, "tree0", 6, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
-		AddMaterial(7, "grass", 7, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
-		AddMaterial(8, "PolyArt", 8, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		for (int i = 0; i < 5; ++i)
-			AddMaterial(9 + i, "material_" + std::to_string(i), 0, 0, RANDOM_COLOR, { 0.98f, 0.97f, 0.95f }, 0.0f);
+		ASSET AddMaterial("none", ASSET TEXTURE("none"));
+		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 	}
 
 	//*** Mesh ***//
@@ -159,35 +143,35 @@ void TerrainScene::BuildObjects()
 		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
 	}
 
-	AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
 	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
 	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 257, 257, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
 	
 	//*** Animation ***//
-	AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
-	AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
-	AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
-	AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
-	AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
+	ASSET AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
+	ASSET AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
 
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
 	{
 		controller->AddParameterFloat("VelocityX");
 		controller->AddParameterFloat("VelocityZ");
-
-		controller->AddState("Idle", animationClips["Idle_BowAnim"].get());
-		controller->AddState("Walk", animationClips["Walk_BowAnim"].get());
-		controller->AddState("WalkBack", animationClips["WalkBack_BowAnim"].get());
-		controller->AddState("WalkRight", animationClips["WalkRight_BowAnim"].get());
-		controller->AddState("WalkLeft", animationClips["WalkLeft_BowAnim"].get());
-
+	
+		controller->AddState("Idle", ASSET animationClips["Idle_BowAnim"].get());
+		controller->AddState("Walk", ASSET animationClips["Walk_BowAnim"].get());
+		controller->AddState("WalkBack", ASSET animationClips["WalkBack_BowAnim"].get());
+		controller->AddState("WalkRight", ASSET animationClips["WalkRight_BowAnim"].get());
+		controller->AddState("WalkLeft", ASSET animationClips["WalkLeft_BowAnim"].get());
+	
 		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("VelocityZ", Greater, 0.3));
 		controller->AddTransition("Idle", "WalkBack", TransitionCondition::CreateFloat("VelocityZ", Less, -0.3));
 		controller->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("VelocityZ", Less, 0.3));
 		controller->AddTransition("WalkBack", "Idle", TransitionCondition::CreateFloat("VelocityZ", Greater, -0.3));
-
+	
 		controller->AddTransition("Idle", "WalkLeft", TransitionCondition::CreateFloat("VelocityX", Greater, 0.3));
 		controller->AddTransition("Idle", "WalkRight", TransitionCondition::CreateFloat("VelocityX", Less, -0.3));
 		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
@@ -230,16 +214,16 @@ void TerrainScene::BuildObjects()
 		{
 			model->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
-			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = geometries["ApprenticeSK"].get();
+			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
 			for (auto& sm : mesh->DrawArgs)
-				renderer->materials.push_back(8);
-
+				renderer->materials.push_back(ASSET MATERIAL("PolyArt"));
+	
 			auto anim = model->AddComponent<Animator>();
 			anim->controller = controller;
 			anim->state = &controller->states["Idle"];
 			anim->TimePos = 0;
-
+	
 			SimsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
 		}
 	}
@@ -261,62 +245,6 @@ void TerrainScene::BuildObjects()
 		ButtonManager* buttonManager = manager->AddComponent<ButtonManager>();
 		ButtonManager::buttonManager = buttonManager;
 	}
-
-	//// billboard points
-	//{
-	//	struct TreeSpriteVertex
-	//	{
-	//		XMFLOAT3 Pos;
-	//		XMFLOAT2 Size;
-	//		XMFLOAT3 look;
-	//	};
-	//	std::vector<TreeSpriteVertex> vertices;
-	//	float sizex = 1, sizey = 1;
-	//	const int width = 256, length = 256;
-	//	vertices.reserve(width* length * 2.0);
-	//	for (float i = 0; i < width; i += 0.5f)
-	//	{
-	//		for (float j = 0; j < length; j += 0.5f)
-	//		{
-	//			TreeSpriteVertex v;
-	//			v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
-	//			v.Size = XMFLOAT2(sizex, sizey);
-	//			v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
-	//			vertices.push_back(v);
-	//		}
-	//	}
-	//
-	//	auto geo = std::make_unique<Mesh>();
-	//	const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
-	//
-	//	geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-	//	D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
-	//	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-	//
-	//	auto device = Graphics::Instance()->device;
-	//	auto commandList = Graphics::Instance()->commandList;
-	//
-	//	geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	//
-	//	geo->VertexByteStride = sizeof(TreeSpriteVertex);
-	//	geo->VertexBufferByteSize = vbByteSize;
-	//
-	//	SubmeshGeometry submesh;
-	//	submesh.IndexCount = vertices.size();
-	//	submesh.StartIndexLocation = 0;
-	//	submesh.BaseVertexLocation = 0;
-	//
-	//	geo->DrawArgs["submesh"] = submesh;
-	//	geometries["Grass"] = std::move(geo);
-	//
-	//
-	//	GameObject* billboards = CreateEmpty();
-	//	billboards->GetComponent<Transform>()->position -= {128, 10, 128};
-	//	auto mesh = billboards->AddComponent<MeshFilter>()->mesh = geometries["Grass"].get();
-	//	billboards->AddComponent<Renderer>()->materials.push_back(2);
-	//	billboards->layer = (int)RenderLayer::Grass;
-	//
-	//}
 
 	auto menuSceneButton = CreateImage();
 	{
@@ -574,7 +502,7 @@ void TerrainScene::BuildObjects()
 		rectTransform->posY = -10;
 		rectTransform->width = 150;
 		rectTransform->height = 30;
-
+	
 		ServerButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
 				HostNetwork::network->PressButton();
@@ -584,7 +512,7 @@ void TerrainScene::BuildObjects()
 			auto rectTransform = textobject->GetComponent<RectTransform>();
 			rectTransform->anchorMin = { 0, 0 };
 			rectTransform->anchorMax = { 1, 1 };
-
+	
 			Text* text = textobject->AddComponent<Text>();
 			text->text = L"Connect Server";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;

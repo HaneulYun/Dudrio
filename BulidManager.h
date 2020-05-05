@@ -4,41 +4,6 @@
 #include "RotatingBehavior.h"
 #include "HostNetwork.h"
 
-enum class BuildingType
-{
-	/*LandMark*/
-	Well_01 = 0,
-
-	/*House*/
-	House_01 = 100, House_02,
-
-	/*Theme*/
-
-	/*landscape*/
-	Tree_01 = 300, Tree_02, Tree_03, Tree_04, Tree_05,
-	Tree_Stump_01, Tree_Stump_02,
-	Plant_01, Flower_01, Flower_02, Flower_03, Flower_04, Flower_05, Flower_06,
-	Grass_01, Grass_02, Grass_03,
-	Mushroom_01, Mushroom_02, Mushroom_03, Mushroom_04, Mushroom_05, Mushroom_06,
-	Stone_Big_01, Stone_Big_02, Stone_Big_03, Stone_Big_04, Stone_Big_05, Stone_Big_06,
-	Stone_Medium_01, Stone_Medium_02, Stone_Medium_03, Stone_Medium_04, Stone_Medium_05,
-	Stone_Small_01, Stone_Small_02, Stone_Small_03, Stone_Small_04, Stone_Small_05,
-	Stone_Flat_01, Stone_Flat_02, Stone_Flat_03, Stone_Flat_04, Stone_Flat_05,
-	StonePath_01, StonePath_02, StonePath_03,
-
-	/*Decoration*/
-	Fence_01 = 400, Fence_02, Fence_03, Fence_04,
-	Street_Light_01,
-	Bucket, Barrel, Pitchfork, Axe, Ladder, Spike, Cart_01, Cart_02,
-	Torch_01, Torch_02,
-	Logs_01, Logs_02, Log_01, Log_02, Log_03, Log_04,
-	Pot_01, Pot_02, Pot_03, Pot_04, Pot_05, Pot_06, Cauldron, Crate_Open, Crate_Closed,
-	Hay_Small_01, Hay_Small_02, Hay_Stack,
-	Apple, Potato, Tomato, Fish, Watermellon,
-	Sack_Apple, Sack_Flour, Sack_Potato, Sack_Tomato, Sack_01, Sack_02,
-	Pumpkin_01, Pumpkin_02, Pumpkin_03
-};
-
 class BuildManager : public MonoBehavior<BuildManager>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
@@ -150,10 +115,7 @@ public:
 				GameObject* go = Scene::scene->Duplicate(prefab);
 
 				BuildingInform b_inform;
-				if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Sphere"].get())
-					b_inform.buildingType = B_SPHERE;
-				if (prefab->GetComponent<MeshFilter>()->mesh == Scene::scene->geometries["Cube"].get())
-					b_inform.buildingType = B_CUBE;
+				b_inform.buildingType = prefabType;
 				Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
 				Vector3 forward = { 0.0f, 0.0f, 1.0f };
 				float angle = NS_Vector3::DotProduct(forward.xmf3, prefabForward.xmf3);

@@ -2,12 +2,83 @@
 #include "TerrainScene.h"
 
 BuildManager* BuildManager::buildManager{ nullptr };
+ButtonManager* ButtonManager::buttonManager{ nullptr };
+
+GameObject* TerrainScene::CreateTextButton()
+{
+	GameObject* button = CreateImage();
+	{
+		auto rectTransform = button->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.5, 0 };
+		rectTransform->anchorMax = { 0.5, 0 };
+		rectTransform->pivot = { 0.5, 0 };
+		rectTransform->posX = 0;
+		rectTransform->posY = 0;
+		rectTransform->width = 40;
+		rectTransform->height = 40;
+
+		{
+			auto textobject = button->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"X";
+			text->fontSize = 10;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+	return button;
+}
+
+GameObject* TerrainScene::CreateButtonList()
+{
+	GameObject* button = CreateImage();
+	{
+		auto rectTransform = button->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 0 };
+		rectTransform->anchorMax = { 0, 0 };
+		rectTransform->pivot = { 0, 0 };
+		rectTransform->posX = 40;
+		rectTransform->posY = 40;
+		rectTransform->width = CyanFW::Instance()->GetWidth() - 80;
+		rectTransform->height = 60;
+	}
+	button->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("grass");
+	button->SetActive(false);
+
+	for (int k = 0; k < 10; ++k)
+	{
+		GameObject* button_building = CreateTextButton();
+		button_building->SetActive(false);
+		auto rectTransform = button_building->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0.05f + 0.1f * k, 0.1 };
+		rectTransform->anchorMax = { 0.1f * k + 0.09f, 0.9 };
+		button->AddChild(button_building);
+	}
+	return button;
+}
+
+
 
 void TerrainScene::BuildObjects()
 {
 	///*** Asset ***///
 	//*** Texture ***//
+
 	{
+		//ASSET AddTexture("none", L"Textures\\none.dds");
+		ASSET AddTexture("ground", L"Textures\\grass.dds");
+		ASSET AddTexture("grass", L"Textures\\grass01.dds");
+		ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
+		ASSET AddTexture("house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
+		ASSET AddTexture("material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
+		ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
+		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
+		//ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
 		AddTexture(0, "none", L"Textures\\none.dds");
 		AddTexture(1, "ground", L"Textures\\grass.dds");
 		AddTexture(2, "bricksTex", L"Textures\\bricks2.dds");
@@ -21,6 +92,15 @@ void TerrainScene::BuildObjects()
 
 	//*** Material ***//
 	{
+		//ASSET AddMaterial("none",			ASSET TEXTURE("none"));
+		//ASSET AddMaterial("yellow",			ASSET TEXTURE("none"), -1, { 0.8f, 0.7f, 0.1f, 1.0f });
+		ASSET AddMaterial("ground",			ASSET TEXTURE("ground"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("grass",			ASSET TEXTURE("grass"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+		ASSET AddMaterial("house01",		ASSET TEXTURE("house01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("house02",		ASSET TEXTURE("house02"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("material_01",	ASSET TEXTURE("material_01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("material_02",	ASSET TEXTURE("material_02"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("material_03",	ASSET TEXTURE("material_03"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		AddMaterial(0, "none", 0);
 		AddMaterial(1, "ground", 1, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		AddMaterial(2, "bricksMat", 2, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.02f, 0.02f, 0.02f }, 0.1f);
@@ -36,11 +116,47 @@ void TerrainScene::BuildObjects()
 
 	//*** Mesh ***//
 	{
-		geometries["Image"] = Mesh::CreateQuad();
-		geometries["Cube"] = Mesh::CreateCube();
-		geometries["Plane"] = Mesh::CreatePlane();
-		geometries["Sphere"] = Mesh::CreateSphere();
-		geometries["Cylinder"] = Mesh::CreateCylinder();
+		//ASSET AddMesh("Image", Mesh::CreateQuad());
+		//ASSET AddMesh("Sphere", Mesh::CreateSphere());
+		ASSET AddFbxForMesh("SM_Well", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well.FBX");
+		ASSET AddFbxForMesh("SM_Well_Extra02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra02.FBX");
+		ASSET AddFbxForMesh("SM_Well_Extra03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra03.FBX");
+		ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
+		ASSET AddFbxForMesh("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
+		ASSET AddFbxForMesh("SM_House_Var02_Extra", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02_Extra.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var05.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var06.FBX");
+		ASSET AddFbxForMesh("SM_Cart_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Cart_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Barrel", "Assets\\AdvancedVillagePack\\Meshes\\SM_Barrel.FBX");
+		ASSET AddFbxForMesh("SM_Bucket", "Assets\\AdvancedVillagePack\\Meshes\\SM_Bucket.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Cauldron", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cauldron.FBX");
+		ASSET AddFbxForMesh("SM_Spike", "Assets\\AdvancedVillagePack\\Meshes\\SM_Spike.FBX");
+		ASSET AddFbxForMesh("SM_Fish", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fish.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var05.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var06.FBX");
+		ASSET AddFbxForMesh("SM_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Apple.FBX");
+		ASSET AddFbxForMesh("SM_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Potato.FBX");
+		ASSET AddFbxForMesh("SM_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tomato.FBX");
+		ASSET AddFbxForMesh("SM_Watermellon", "Assets\\AdvancedVillagePack\\Meshes\\SM_Watermellon.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Apple.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Flour", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Flour.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Potato.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Tomato.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
 	}
 
 	AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
@@ -86,12 +202,14 @@ void TerrainScene::BuildObjects()
 		mainCamera->AddComponent<HostCameraController>();
 	}
 
-	auto skyBox = CreateEmpty();
 	{
-		skyBox->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
-		skyBox->AddComponent<Renderer>()->materials.push_back(1);
-		auto mesh = skyBox->AddComponent<MeshFilter>()->mesh = geometries["Sphere"].get();
-		skyBox->layer = (int)RenderLayer::Sky;
+		auto ritem = CreateEmpty();
+		ritem->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
+		auto mesh = ritem->AddComponent<MeshFilter>()->mesh = ASSET MESH("Sphere");
+		auto renderer = ritem->AddComponent<Renderer>();
+		for (auto& sm : mesh->DrawArgs)
+			renderer->materials.push_back(ASSET MATERIAL("none"));
+		ritem->layer = (int)RenderLayer::Sky;
 	}
 
 	std::string name[9]{
@@ -130,72 +248,75 @@ void TerrainScene::BuildObjects()
 	{
 		grid->GetComponent<Transform>()->position -= {128, 10, 128};
 		auto mesh = grid->AddComponent<MeshFilter>()->mesh = gridMesh;
-		grid->AddComponent<Renderer>()->materials.push_back(1);
+		grid->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
 
 	{
-		GameObject* buildManager = CreateEmpty();
-		BuildManager* bm = buildManager->AddComponent<BuildManager>();
-		bm->terrain = grid;
-		bm->heightMap = m_pHeightMapImage;
-		bm->terrainMesh = gridMesh;
-		//bm->SelectModel(geometries["Cube"].get(), 8, 5);
-		BuildManager::buildManager = bm;
+		GameObject* manager = CreateEmpty();
+		BuildManager* buildManager = manager->AddComponent<BuildManager>();
+		buildManager->terrain = grid;
+		buildManager->heightMap = m_pHeightMapImage;
+		buildManager->terrainMesh = gridMesh;
+		BuildManager::buildManager = buildManager;
+		ButtonManager* buttonManager = manager->AddComponent<ButtonManager>();
+		ButtonManager::buttonManager = buttonManager;
 	}
 
-	// billboard points
-	struct TreeSpriteVertex
-	{
-		XMFLOAT3 Pos;
-		XMFLOAT2 Size;
-		XMFLOAT3 look;
-	};
-	std::vector<TreeSpriteVertex> vertices;
-	float sizex = 2, sizey = 2;
-	const int width = 256, length = 256;
-	vertices.reserve(width * length);
-	for (int i = 0; i < width; ++i)
-	{
-		for (int j = 0; j < length; ++j)
-		{
-			TreeSpriteVertex v;
-			v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
-			v.Size = XMFLOAT2(sizex, sizey);
-			v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
-			vertices.push_back(v);
-		}
-	}
-
-	auto geo = std::make_unique<Mesh>();
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
-
-	geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-	D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
-	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-	auto device = Graphics::Instance()->device;
-	auto commandList = Graphics::Instance()->commandList;
-
-	geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-
-	geo->VertexByteStride = sizeof(TreeSpriteVertex);
-	geo->VertexBufferByteSize = vbByteSize;
-
-	SubmeshGeometry submesh;
-	submesh.IndexCount = vertices.size();
-	submesh.StartIndexLocation = 0;
-	submesh.BaseVertexLocation = 0;
-
-	geo->DrawArgs["submesh"] = submesh;
-	geometries["Grass"] = std::move(geo);
-
-	{
-		GameObject* billboards = CreateEmpty();
-		billboards->GetComponent<Transform>()->position -= {128, 10, 128};
-		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = geometries["Grass"].get();
-		billboards->AddComponent<Renderer>()->materials.push_back(7);
-		billboards->layer = (int)RenderLayer::Grass;
-	}
+	//// billboard points
+	//{
+	//	struct TreeSpriteVertex
+	//	{
+	//		XMFLOAT3 Pos;
+	//		XMFLOAT2 Size;
+	//		XMFLOAT3 look;
+	//	};
+	//	std::vector<TreeSpriteVertex> vertices;
+	//	float sizex = 1, sizey = 1;
+	//	const int width = 256, length = 256;
+	//	vertices.reserve(width* length * 2.0);
+	//	for (float i = 0; i < width; i += 0.5f)
+	//	{
+	//		for (float j = 0; j < length; j += 0.5f)
+	//		{
+	//			TreeSpriteVertex v;
+	//			v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
+	//			v.Size = XMFLOAT2(sizex, sizey);
+	//			v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
+	//			vertices.push_back(v);
+	//		}
+	//	}
+	//
+	//	auto geo = std::make_unique<Mesh>();
+	//	const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
+	//
+	//	geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+	//	D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
+	//	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+	//
+	//	auto device = Graphics::Instance()->device;
+	//	auto commandList = Graphics::Instance()->commandList;
+	//
+	//	geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	//
+	//	geo->VertexByteStride = sizeof(TreeSpriteVertex);
+	//	geo->VertexBufferByteSize = vbByteSize;
+	//
+	//	SubmeshGeometry submesh;
+	//	submesh.IndexCount = vertices.size();
+	//	submesh.StartIndexLocation = 0;
+	//	submesh.BaseVertexLocation = 0;
+	//
+	//	geo->DrawArgs["submesh"] = submesh;
+	//	geometries["Grass"] = std::move(geo);
+	//
+	//
+	//	GameObject* billboards = CreateEmpty();
+	//	billboards->GetComponent<Transform>()->position -= {128, 10, 128};
+	//	auto mesh = billboards->AddComponent<MeshFilter>()->mesh = geometries["Grass"].get();
+	//	billboards->AddComponent<Renderer>()->materials.push_back(2);
+	//	billboards->layer = (int)RenderLayer::Grass;
+	//
+	//}
 
 	auto menuSceneButton = CreateImage();
 	{
@@ -225,76 +346,215 @@ void TerrainScene::BuildObjects()
 			textObjects.push_back(textobject);
 		}
 	}
+
+	GameObject* buttons_BuildingType[6];
+	std::vector<GameObject*> butttons_BuildingList[6];
+
+	for (int i = 0; i < 6; ++i)
+	{
+		buttons_BuildingType[i] = CreateTextButton();
+		buttons_BuildingType[i]->GetComponent<RectTransform>()->posX = -80 + 40 * i;
+	}
+	buttons_BuildingType[0]->children.front()->GetComponent<Text>()->text = L"랜드\n마크";
+	buttons_BuildingType[0]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::LandMark); });
+	buttons_BuildingType[1]->children.front()->GetComponent<Text>()->text = L"주거\n건물";
+	buttons_BuildingType[1]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::House); });
+	buttons_BuildingType[2]->children.front()->GetComponent<Text>()->text = L"테마\n건물";
+	buttons_BuildingType[2]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Theme); });
+	buttons_BuildingType[3]->children.front()->GetComponent<Text>()->text = L"조경";
+	buttons_BuildingType[3]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::landscape); });
+	buttons_BuildingType[4]->children.front()->GetComponent<Text>()->text = L"소품";
+	buttons_BuildingType[4]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Decoration); });
+	buttons_BuildingType[5]->children.front()->GetComponent<Text>()->text = L"삭제";
+	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Delete); });
+
 	for (int i = 0; i < 5; ++i)
 	{
-		GameObject* leftCylRItem = CreateEmpty();
-		leftCylRItem->GetComponent<Transform>()->position = Vector3(-5.0f, 1.5f, -10.0f + i * 5.0f);
-		auto mesh = leftCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
-		leftCylRItem->AddComponent<Renderer>()->materials.push_back(2);
-
-		GameObject* rightCylRItem = CreateEmpty();
-		rightCylRItem->GetComponent<Transform>()->position = Vector3(5.0f, 1.5f, -10.0f + i * 5.0f);
-		mesh = rightCylRItem->AddComponent<MeshFilter>()->mesh = geometries["Cylinder"].get();
-		rightCylRItem->AddComponent<Renderer>()->materials.push_back(2);
+		butttons_BuildingList[i].push_back(CreateButtonList());
+		ButtonManager::buttonManager->buttons_BuildingList[i].push_back(butttons_BuildingList[i][0]);
 	}
+	butttons_BuildingList[0][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Well";
+	butttons_BuildingList[0][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Well_01); });
 
-	// Build Button
-	auto BuildingSelectButton01 = CreateImage();
+	butttons_BuildingList[1][0]->children[0]->children[0]->GetComponent<Text>()->text = L"House01";
+	butttons_BuildingList[1][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::House_01, ASSET MESH("SM_House_Var01"), ASSET MATERIAL("house01"), 0.02f, 5.5f); });
+	butttons_BuildingList[1][0]->children[1]->children[0]->GetComponent<Text>()->text = L"House02";
+	butttons_BuildingList[1][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::House_02); });
+
+	//SM_Tree_Var04
+	butttons_BuildingList[3].push_back(CreateButtonList());
+	butttons_BuildingList[3].push_back(CreateButtonList());
+	ButtonManager::buttonManager->buttons_BuildingList[3].push_back(butttons_BuildingList[3][1]);
+	ButtonManager::buttonManager->buttons_BuildingList[3].push_back(butttons_BuildingList[3][2]);
+	butttons_BuildingList[3][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Tree_01";
+	//butttons_BuildingList[3][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
+	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_01, ASSET MESH("SM_Tree_Var01"), ASSET MATERIAL("TreeLeafs"), 0.02f, 5.0f); });
+	butttons_BuildingList[3][0]->children[1]->children[0]->GetComponent<Text>()->text = L"Tree_02";
+	//butttons_BuildingList[3][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) {
+	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_02, ASSET MESH("SM_Tree_Var02"), ASSET MATERIAL("TreeLeafs"), 0.02f, 5.0f); });
+	butttons_BuildingList[3][0]->children[2]->children[0]->GetComponent<Text>()->text = L"Tree_03";
+	//butttons_BuildingList[3][0]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
+	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_03, ASSET MESH("SM_Tree_Var03"), ASSET MATERIAL("TreeLeafs"), 0.02f, 5.0f); });
+	butttons_BuildingList[3][0]->children[3]->children[0]->GetComponent<Text>()->text = L"Tree_04";
+	//butttons_BuildingList[3][0]->children[3]->AddComponent<Button>()->AddEvent([](void*) {
+	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_04, ASSET MESH("SM_Tree_Var04"), ASSET MATERIAL("TreeLeafs"), 0.02f, 5.0f); });
+	butttons_BuildingList[3][0]->children[4]->children[0]->GetComponent<Text>()->text = L"Tree_05";
+	//butttons_BuildingList[3][0]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
+	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_05, ASSET MESH("SM_Tree_Var05"), ASSET MATERIAL("TreeLeafs"), 0.02f, 5.0f); });
+	butttons_BuildingList[3][0]->children[5]->children[0]->GetComponent<Text>()->text = L"Flower_01";
+	butttons_BuildingList[3][0]->children[6]->children[0]->GetComponent<Text>()->text = L"Flower_02";
+	butttons_BuildingList[3][0]->children[7]->children[0]->GetComponent<Text>()->text = L"Flower_03";
+	butttons_BuildingList[3][0]->children[8]->children[0]->GetComponent<Text>()->text = L"Flower_04";
+	butttons_BuildingList[3][0]->children[9]->children[0]->GetComponent<Text>()->text = L"Flower_05";
+
+	butttons_BuildingList[3][1]->children[0]->children[0]->GetComponent<Text>()->text = L"Stone_Big_01";
+	butttons_BuildingList[3][1]->children[1]->children[0]->GetComponent<Text>()->text = L"Stone_Big_02";
+	butttons_BuildingList[3][1]->children[2]->children[0]->GetComponent<Text>()->text = L"Stone_Big_03";
+	butttons_BuildingList[3][1]->children[3]->children[0]->GetComponent<Text>()->text = L"Stone_Big_04";
+	butttons_BuildingList[3][1]->children[4]->children[0]->GetComponent<Text>()->text = L"Stone_Big_05";
+	butttons_BuildingList[3][1]->children[5]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_01";
+	butttons_BuildingList[3][1]->children[6]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_02";
+	butttons_BuildingList[3][1]->children[7]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_03";
+	butttons_BuildingList[3][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_04";
+	butttons_BuildingList[3][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_05";
+
+	butttons_BuildingList[3][2]->children[0]->children[0]->GetComponent<Text>()->text = L"Mushroom_01";
+	butttons_BuildingList[3][2]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_01, ASSET MESH("SM_Mushroom_Var01"), ASSET MATERIAL("material_02"), 0.02f, 0.5f); });
+	butttons_BuildingList[3][2]->children[1]->children[0]->GetComponent<Text>()->text = L"Mushroom_02";
+	butttons_BuildingList[3][2]->children[1]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_02, ASSET MESH("SM_Mushroom_Var02"), ASSET MATERIAL("material_02"), 0.02f, 0.5f); });
+	butttons_BuildingList[3][2]->children[2]->children[0]->GetComponent<Text>()->text = L"Mushroom_03";
+	butttons_BuildingList[3][2]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_03, ASSET MESH("SM_Mushroom_Var03"), ASSET MATERIAL("material_02"), 0.02f, 0.5f); });
+	butttons_BuildingList[3][2]->children[3]->children[0]->GetComponent<Text>()->text = L"Mushroom_04";
+	butttons_BuildingList[3][2]->children[3]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_04, ASSET MESH("SM_Mushroom_Var04"), ASSET MATERIAL("material_02"), 0.02f, 0.5f); });
+	butttons_BuildingList[3][2]->children[4]->children[0]->GetComponent<Text>()->text = L"Mushroom_05";
+	butttons_BuildingList[3][2]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_05, ASSET MESH("SM_Mushroom_Var05"), ASSET MATERIAL("material_02"), 0.02f, 0.4f); });
+	butttons_BuildingList[3][2]->children[5]->children[0]->GetComponent<Text>()->text = L"Mushroom_06";
+	butttons_BuildingList[3][2]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_06, ASSET MESH("SM_Mushroom_Var06"), ASSET MATERIAL("material_02"), 0.02f, 0.4f); });
+	//butttons_BuildingList[4][1]->children[6]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_02";
+	//butttons_BuildingList[4][1]->children[7]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_03";
+	//butttons_BuildingList[4][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_04";
+	//butttons_BuildingList[4][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_05";
+
+	butttons_BuildingList[4].push_back(CreateButtonList());
+	butttons_BuildingList[4].push_back(CreateButtonList());
+	ButtonManager::buttonManager->buttons_BuildingList[4].push_back(butttons_BuildingList[4][1]);
+	ButtonManager::buttonManager->buttons_BuildingList[4].push_back(butttons_BuildingList[4][2]);
+	butttons_BuildingList[4][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Fence_01";
+	butttons_BuildingList[4][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_01); });
+	butttons_BuildingList[4][0]->children[1]->children[0]->GetComponent<Text>()->text = L"Fence_02";
+	butttons_BuildingList[4][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_02); });
+	butttons_BuildingList[4][0]->children[2]->children[0]->GetComponent<Text>()->text = L"Fence_03";
+	butttons_BuildingList[4][0]->children[2]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_03); });
+	butttons_BuildingList[4][0]->children[3]->children[0]->GetComponent<Text>()->text = L"Fence_04";
+	butttons_BuildingList[4][0]->children[3]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_04); });
+	butttons_BuildingList[4][0]->children[4]->children[0]->GetComponent<Text>()->text = L"Bucket";
+	butttons_BuildingList[4][0]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Bucket, ASSET MESH("SM_Bucket"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+	butttons_BuildingList[4][0]->children[5]->children[0]->GetComponent<Text>()->text = L"Barrel";
+	butttons_BuildingList[4][0]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Barrel, ASSET MESH("SM_Barrel"), ASSET MATERIAL("material_01"), 0.02f, 1.5f); });
+	butttons_BuildingList[4][0]->children[6]->children[0]->GetComponent<Text>()->text = L"Pitchfork";
+	butttons_BuildingList[4][0]->children[7]->children[0]->GetComponent<Text>()->text = L"Axe";
+	butttons_BuildingList[4][0]->children[8]->children[0]->GetComponent<Text>()->text = L"Ladder";
+	butttons_BuildingList[4][0]->children[9]->children[0]->GetComponent<Text>()->text = L"Spike";
+	butttons_BuildingList[4][0]->children[9]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Spike); });
+
+	butttons_BuildingList[4][1]->children[0]->children[0]->GetComponent<Text>()->text = L"Cart_01";
+	butttons_BuildingList[4][1]->children[0]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_01); });
+	butttons_BuildingList[4][1]->children[1]->children[0]->GetComponent<Text>()->text = L"Cart_02";
+	butttons_BuildingList[4][1]->children[1]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_02); });
+
+	butttons_BuildingList[4][1]->children[2]->children[0]->GetComponent<Text>()->text = L"Cauldron";
+	butttons_BuildingList[4][1]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Cauldron, ASSET MESH("SM_Cauldron"), ASSET MATERIAL("material_02"), 0.02f, 1.0f); });
+	//butttons_BuildingList[4][1]->children[3]->children[0]->GetComponent<Text>()->text = L"Torch_02";
+	butttons_BuildingList[4][1]->children[4]->children[0]->GetComponent<Text>()->text = L"Pot_01";
+	butttons_BuildingList[4][1]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_01, ASSET MESH("SM_Pot_Var01"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+	butttons_BuildingList[4][1]->children[5]->children[0]->GetComponent<Text>()->text = L"Pot_02";
+	butttons_BuildingList[4][1]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_02, ASSET MESH("SM_Pot_Var02"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+	butttons_BuildingList[4][1]->children[6]->children[0]->GetComponent<Text>()->text = L"Pot_03";
+	butttons_BuildingList[4][1]->children[6]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_03, ASSET MESH("SM_Pot_Var03"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+	butttons_BuildingList[4][1]->children[7]->children[0]->GetComponent<Text>()->text = L"Pot_04";
+	butttons_BuildingList[4][1]->children[7]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_04, ASSET MESH("SM_Pot_Var04"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+	butttons_BuildingList[4][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Pot_05";
+	butttons_BuildingList[4][1]->children[8]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_05, ASSET MESH("SM_Pot_Var05"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+	butttons_BuildingList[4][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Pot_06";
+	butttons_BuildingList[4][1]->children[9]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_06, ASSET MESH("SM_Pot_Var06"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+
+	butttons_BuildingList[4][2]->children[0]->children[0]->GetComponent<Text>()->text = L"Apple";
+	butttons_BuildingList[4][2]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Apple, ASSET MESH("SM_Apple"), ASSET MATERIAL("material_02"), 0.02f, 0.2f); });
+	butttons_BuildingList[4][2]->children[1]->children[0]->GetComponent<Text>()->text = L"Potato";
+	butttons_BuildingList[4][2]->children[1]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Potato, ASSET MESH("SM_Potato"), ASSET MATERIAL("material_02"), 0.02f, 0.2f); });
+	butttons_BuildingList[4][2]->children[2]->children[0]->GetComponent<Text>()->text = L"Tomato";
+	butttons_BuildingList[4][2]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Tomato, ASSET MESH("SM_Tomato"), ASSET MATERIAL("material_02"), 0.02f, 0.3f); });
+	butttons_BuildingList[4][2]->children[3]->children[0]->GetComponent<Text>()->text = L"Watermellon";
+	butttons_BuildingList[4][2]->children[3]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Watermellon, ASSET MESH("SM_Watermellon"), ASSET MATERIAL("material_02"), 0.02f, 0.6f); });
+	butttons_BuildingList[4][2]->children[4]->children[0]->GetComponent<Text>()->text = L"Sack_Apple";
+	butttons_BuildingList[4][2]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Apple, ASSET MESH("SM_Sack_Apple"), ASSET MATERIAL("material_02"), 0.02f, 1.0f); });
+	butttons_BuildingList[4][2]->children[5]->children[0]->GetComponent<Text>()->text = L"Sack_Flour";
+	butttons_BuildingList[4][2]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Flour, ASSET MESH("SM_Sack_Flour"), ASSET MATERIAL("material_02"), 0.02f, 0.9f); });
+	butttons_BuildingList[4][2]->children[6]->children[0]->GetComponent<Text>()->text = L"Sack_Potato";
+	butttons_BuildingList[4][2]->children[6]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Potato, ASSET MESH("SM_Sack_Potato"), ASSET MATERIAL("material_02"), 0.02f, 1.0f); });
+	butttons_BuildingList[4][2]->children[7]->children[0]->GetComponent<Text>()->text = L"Sack_Tomato";
+	butttons_BuildingList[4][2]->children[7]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Tomato, ASSET MESH("SM_Sack_Tomato"), ASSET MATERIAL("material_02"), 0.02f, 1.0f); });
+
+	butttons_BuildingList[4][2]->children[8]->children[0]->GetComponent<Text>()->text = L"Sack_01";
+	butttons_BuildingList[4][2]->children[8]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_01, ASSET MESH("SM_Sack_Var01"), ASSET MATERIAL("material_02"), 0.02f, 1.0f); });
+	butttons_BuildingList[4][2]->children[9]->children[0]->GetComponent<Text>()->text = L"Sack_02";
+	butttons_BuildingList[4][2]->children[9]->AddComponent<Button>()->AddEvent([](void*) {
+		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_02, ASSET MESH("SM_Sack_Var02"), ASSET MATERIAL("material_02"), 0.02f, 0.8f); });
+
+	GameObject* button_previouspage = CreateImage();
 	{
-		auto rectTransform = BuildingSelectButton01->GetComponent<RectTransform>();
+		auto rectTransform = button_previouspage->GetComponent<RectTransform>();
 		rectTransform->anchorMin = { 0, 0 };
 		rectTransform->anchorMax = { 0, 0 };
 		rectTransform->pivot = { 0, 0 };
 		rectTransform->posX = 10;
-		rectTransform->posY = 10;
-		rectTransform->width = 50;
-		rectTransform->height = 50;
+		rectTransform->posY = 60;
+		rectTransform->width = 20;
+		rectTransform->height = 20;
 
-		BuildingSelectButton01->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Sphere"].get(), 10, 1);
-			});
-		{
-			auto textobject = BuildingSelectButton01->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
-
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Sphere";
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
-		}
+		button_previouspage->AddComponent<Button>()->AddEvent([](void*) { ButtonManager::buttonManager->PreviousPage(); });
+		button_previouspage->SetActive(false);
+		ButtonManager::buttonManager->buttons_page[0] = button_previouspage;
 	}
-
-	auto BuildingSelectButton02 = CreateImage();
+	GameObject* button_nextpage = CreateImage();
 	{
-		auto rectTransform = BuildingSelectButton02->GetComponent<RectTransform>();
+		auto rectTransform = button_nextpage->GetComponent<RectTransform>();
 		rectTransform->anchorMin = { 0, 0 };
 		rectTransform->anchorMax = { 0, 0 };
 		rectTransform->pivot = { 0, 0 };
-		rectTransform->posX = 70;
-		rectTransform->posY = 10;
-		rectTransform->width = 50;
-		rectTransform->height = 50;
-	
-		BuildingSelectButton02->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				BuildManager::buildManager->SelectModel(Scene::scene->geometries["Cube"].get(), 9, 5);
-			});
-		{
-			auto textobject = BuildingSelectButton02->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
-	
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Cube";
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
-		}
+		rectTransform->posX = CyanFW::Instance()->GetWidth() - 30;
+		rectTransform->posY = 60;
+		rectTransform->width = 20;
+		rectTransform->height = 20;
+
+		button_nextpage->AddComponent<Button>()->AddEvent([](void*) { ButtonManager::buttonManager->NextPage(); });
+		button_nextpage->SetActive(false);
+		ButtonManager::buttonManager->buttons_page[1] = button_nextpage;
 	}
 
 	auto network = CreateEmpty();

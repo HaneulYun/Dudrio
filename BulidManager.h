@@ -281,7 +281,7 @@ public:
 		case BuildingType::Fence_01:
 			mesh = ASSET MESH("SM_Fence_Var01");
 		case BuildingType::Fence_02:
-			mesh = ASSET MESH("SM_Fence_Var02");
+			if (mesh == NULL) mesh = ASSET MESH("SM_Fence_Var02");
 			mat = ASSET MATERIAL("material_01");
 		{
 			prefab = Scene::scene->CreateEmpty();
@@ -304,7 +304,7 @@ public:
 		case BuildingType::Fence_03:
 			mesh = ASSET MESH("SM_Fence_Var03");
 		case BuildingType::Fence_04:
-			mesh = ASSET MESH("SM_Fence_Var04");
+			if (mesh == NULL) mesh = ASSET MESH("SM_Fence_Var04");
 			mat = ASSET MATERIAL("material_01");
 		{
 			prefab = Scene::scene->CreateEmpty();

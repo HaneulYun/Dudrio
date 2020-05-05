@@ -29,13 +29,15 @@ public:
 	void OnTriggerEnter(GameObject* collision) 
 	{
 		if (collision->GetComponent<Building>())
-			gameObject->children.front()->GetComponent<Constant>()->v4 = { 1.0f,0.0f,0.0f,1.0f };
+			for (auto& d : gameObject->children)
+				d->GetComponent<Constant>()->v4 = { 1.0f,0.0f,0.0f,1.0f };
 	}
 
 	void OnTriggerExit(GameObject* collision) 
 	{
-		if (collision->GetComponent<Building>())
-			gameObject->children.front()->GetComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+		if (collision->GetComponent<Building>() && gameObject->collisionType.size() < 2)
+			for (auto& d : gameObject->children)
+			d->GetComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 	}
 	
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.

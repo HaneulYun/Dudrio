@@ -1,6 +1,7 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
 #include "Building.h"
+#include "RotatingBehavior.h"
 
 enum class BuildingType
 {
@@ -30,10 +31,10 @@ enum class BuildingType
 	Bucket, Barrel, Pitchfork, Axe, Ladder, Spike, Cart_01, Cart_02,
 	Torch_01, Torch_02,
 	Logs_01, Logs_02, Log_01, Log_02, Log_03, Log_04,
-	Pot_01, Pot_02, Pot_03, Pot_04, Pot_05, Pot_06, cauldron, Crate_Open, Crate_Closed,
+	Pot_01, Pot_02, Pot_03, Pot_04, Pot_05, Pot_06, Cauldron, Crate_Open, Crate_Closed,
 	Hay_Small_01, Hay_Small_02, Hay_Stack,
-	Apple, Potato, Tomato, Fish, Watermelon,
-	Sack_Apple, Sack_Flour, Sack_Potato, Sack_Tomato,
+	Apple, Potato, Tomato, Fish, Watermellon,
+	Sack_Apple, Sack_Flour, Sack_Potato, Sack_Tomato, Sack_01, Sack_02,
 	Pumpkin_01, Pumpkin_02, Pumpkin_03
 };
 
@@ -147,7 +148,7 @@ public:
 				DeletePrefab();
 			}
 			else
-				prefab->transform->position = { point.x, point.y + 1.0f, point.z };
+				prefab->transform->position = { point.x, point.y, point.z };
 		}
 	}
 
@@ -209,20 +210,176 @@ public:
 		}
 	}
 
-	void SelectBuilding(BuildingType type, Mesh* mesh = NULL, int matIndex = NULL, float scaleSize = NULL, float colliderSize = NULL)
+	void SelectBuilding(BuildingType type, Mesh* mesh = NULL, Material* mat = NULL, float scaleSize = 0.02f, float colliderSize = NULL)
 	{
 		if (prefab) {
 			DeletePrefab();
-
 			if (prefabType == type) return;
 		}
 
 		switch (type)
 		{
 		case BuildingType::Well_01:
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			prefab->AddComponent<BoxCollider>()->extents = { 3.0f, 3.0f, 3.0f };
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well");
+				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well_Extra02");
+				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->position = { 0.0f,3.0f,0.0f };
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well_Extra03");
+				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->position = { 0.0f,2.0f,0.0f };
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
 			break;
 		case BuildingType::House_02:
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			prefab->AddComponent<BoxCollider>()->extents = { 5.5f, 5.5f, 5.5f };
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
+				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02_Extra");
+				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->AddComponent<RotatingBehavior>()->speedRotating = -10.0f;
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->position = { 0.5f,12.0f,5.0f };
+				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
 			break;
+		case BuildingType::Fence_01:
+			mesh = ASSET MESH("SM_Fence_Var01");
+		case BuildingType::Fence_02:
+			mesh = ASSET MESH("SM_Fence_Var02");
+			mat = ASSET MATERIAL("material_01");
+		{
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { 3.2f, 1.0f, 0.8f };
+			collider->obb = true;
+
+			GameObject* child = prefab->AddChild();
+			child->AddComponent<MeshFilter>()->mesh = mesh;
+			Renderer* renderer = child->AddComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(mat);
+			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+			child->layer = (int)RenderLayer::BuildPreview;
+			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		}	
+			break;
+		case BuildingType::Fence_03:
+			mesh = ASSET MESH("SM_Fence_Var03");
+		case BuildingType::Fence_04:
+			mesh = ASSET MESH("SM_Fence_Var04");
+			mat = ASSET MATERIAL("material_01");
+		{
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { 3.0f, 1.0f, 0.8f };
+			collider->obb = true;
+
+			GameObject* child = prefab->AddChild();
+			child->AddComponent<MeshFilter>()->mesh = mesh;
+			Renderer* renderer = child->AddComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(mat);
+			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+			child->layer = (int)RenderLayer::BuildPreview;
+			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		}
+		break;
+		case BuildingType::Spike:
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+		{
+			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { 2.8f, 1.0f, 0.8f };
+			collider->obb = true;
+			mesh = ASSET MESH("SM_Spike");
+			mat = ASSET MATERIAL("material_02");
+			GameObject* child = prefab->AddChild();
+			child->AddComponent<MeshFilter>()->mesh = mesh;
+			Renderer* renderer = child->AddComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(mat);
+			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+			child->layer = (int)RenderLayer::BuildPreview;
+			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		}
+		{
+			mesh = ASSET MESH("SM_Fish");
+			GameObject* child = prefab->AddChild();
+			child->AddComponent<MeshFilter>()->mesh = mesh;
+			Renderer* renderer = child->AddComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(mat);
+			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+			child->layer = (int)RenderLayer::BuildPreview;
+			child->transform->position = { -0.2f,1.5f,0.0f };
+			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		}
+			break;
+		case BuildingType::Cart_01:
+			mesh = ASSET MESH("SM_Cart_Var01");
+		case BuildingType::Cart_02:
+			mesh = ASSET MESH("SM_Cart_Var02");
+			mat = ASSET MATERIAL("material_01");
+		{
+			prefab = Scene::scene->CreateEmpty();
+			prefab->AddComponent<Building>();
+			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { 4.0f, 3.0f, 2.2f };
+			collider->obb = true;
+
+			GameObject* child = prefab->AddChild();
+			child->AddComponent<MeshFilter>()->mesh = mesh;
+			Renderer* renderer = child->AddComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(mat);
+			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+			child->layer = (int)RenderLayer::BuildPreview;
+			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		}
+		break;
 		default:
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
@@ -230,37 +387,17 @@ public:
 
 			GameObject* child = prefab->AddChild();
 			child->AddComponent<MeshFilter>()->mesh = mesh;
-			child->AddComponent<Renderer>()->materials.push_back(matIndex);
+			Renderer* renderer = child->AddComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(mat);
 			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 			child->layer = (int)RenderLayer::BuildPreview;
 			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			break;
 		}
-	}
-
-	void SelectModel(Mesh* mesh, int matIndex, float scaleSize)
-	{
-		if (prefab) {
-			auto meshFilter = prefab->children.front()->GetComponent<MeshFilter>();
-			DeletePrefab();
-
-			if (meshFilter && meshFilter->mesh == mesh)
-				return;
-		}
-		Scene::scene->CreateEmptyPrefab();
-		prefab = Scene::scene->CreateEmpty();
-		prefab->AddComponent<BoxCollider>()->extents = { 5.0f, 5.0f, 5.0f };
-		prefab->AddComponent<Building>();
-		auto model = prefab->AddChild();
-		model->GetComponent<Transform>()->Scale({ scaleSize, scaleSize, scaleSize });
-		model->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-		model->AddComponent<MeshFilter>()->mesh = mesh;
-		auto renderer = model->AddComponent<Renderer>();
-		model->layer = (int)RenderLayer::BuildPreview;
-		for (auto& sm : mesh->DrawArgs)
-			renderer->materials.push_back(matIndex);
-		model->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+	
+		prefabType = type;
 	}
 
 	void DeletePrefab()

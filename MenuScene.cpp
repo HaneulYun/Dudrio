@@ -9,7 +9,7 @@ void MenuScene::BuildObjects()
 
 	//*** Material ***//
 	ASSET AddMaterial("none", ASSET TEXTURE("none"));
-	ASSET AddMaterial("gray", ASSET TEXTURE("none"), -1, { 0.5, 0.5, 0.5, 0.5 });
+	//ASSET AddMaterial("gray", ASSET TEXTURE("none"), -1, { 0.5, 0.5, 0.5, 0.5 });
 
 	//*** Mesh ***//
 	ASSET AddMesh("Image", Mesh::CreateQuad());
@@ -26,7 +26,7 @@ void MenuScene::BuildObjects()
 	auto skyBox = CreateEmpty();
 	{
 		skyBox->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
-		skyBox->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("gray"));
+		skyBox->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 		auto mesh = skyBox->AddComponent<MeshFilter>()->mesh = ASSET MESH("Sphere");
 		skyBox->layer = (int)RenderLayer::Sky;
 	}
@@ -59,7 +59,7 @@ void MenuScene::BuildObjects()
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
 		}
-		sampleSceneButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("gray");
+		sampleSceneButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("none");
 	}
 
 	auto materialSceneButton = CreateImage();
@@ -89,7 +89,7 @@ void MenuScene::BuildObjects()
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);
 		}
-		materialSceneButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("gray");
+		materialSceneButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("none");
 	}
 
 	auto terrainSceneButton = CreateImage();

@@ -13,9 +13,9 @@ void AnimationScene::BuildObjects()
 	ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 	//*** Mesh ***//
-	ASSET AddMesh("Image", Mesh::CreateQuad());
+	//ASSET AddMesh("Image", Mesh::CreateQuad());
 	ASSET AddMesh("Plane", Mesh::CreatePlane());
-	ASSET AddMesh("Sphere", Mesh::CreateSphere());
+	//ASSET AddMesh("Sphere", Mesh::CreateSphere());
 	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
 	//*** Animation ***//
@@ -95,7 +95,7 @@ void AnimationScene::BuildObjects()
 	auto grid = CreateEmpty();
 	{
 		grid->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
-		grid->AddComponent<Renderer>()->materials.push_back(0);
+		grid->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 	}
 
 	auto guestPlayer = CreateEmpty();

@@ -35,7 +35,7 @@ public:
 
 	void OnTriggerExit(GameObject* collision) 
 	{
-		if (collision->GetComponent<Building>())
+		if (collision->GetComponent<Building>() && gameObject->collisionType.size() < 2)
 			for (auto& d : gameObject->children)
 			d->GetComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 	}

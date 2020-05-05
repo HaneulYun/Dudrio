@@ -294,6 +294,8 @@ public:
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			break;
 		}
+	
+		prefabType = type;
 	}
 
 	void DeletePrefab()

@@ -5,25 +5,25 @@ void AnimationScene::BuildObjects()
 {
 	///*** Asset ***///
 	//*** Texture ***//
-	AddTexture(0, "none", L"Textures\\none.dds");
-	AddTexture(1, "polyArtTex", L"Textures\\PolyArtTex.dds");
+	ASSET AddTexture("none", L"Textures\\none.dds");
+	ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 
 	//*** Material ***//
-	AddMaterial(0, "none", 0);
-	AddMaterial(1, "PolyArt", 1, -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+	ASSET AddMaterial("none", ASSET TEXTURE("none"));
+	ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 	//*** Mesh ***//
-	geometries["Image"] = Mesh::CreateQuad();
-	geometries["Sphere"] = Mesh::CreateSphere();
-	geometries["Plane"] = Mesh::CreatePlane();
-	AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+	ASSET AddMesh("Image", Mesh::CreateQuad());
+	ASSET AddMesh("Plane", Mesh::CreatePlane());
+	ASSET AddMesh("Sphere", Mesh::CreateSphere());
+	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
 	//*** Animation ***//
-	AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
-	AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
-	AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
-	AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
-	AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
+	ASSET AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
+	ASSET AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
 
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
@@ -31,11 +31,11 @@ void AnimationScene::BuildObjects()
 		controller->AddParameterFloat("VelocityX");
 		controller->AddParameterFloat("VelocityZ");
 
-		controller->AddState("Idle", animationClips["Idle_BowAnim"].get());
-		controller->AddState("Walk", animationClips["Walk_BowAnim"].get());
-		controller->AddState("WalkBack", animationClips["WalkBack_BowAnim"].get());
-		controller->AddState("WalkRight", animationClips["WalkRight_BowAnim"].get());
-		controller->AddState("WalkLeft", animationClips["WalkLeft_BowAnim"].get());
+		controller->AddState("Idle", ASSET animationClips["Idle_BowAnim"].get());
+		controller->AddState("Walk", ASSET animationClips["Walk_BowAnim"].get());
+		controller->AddState("WalkBack", ASSET animationClips["WalkBack_BowAnim"].get());
+		controller->AddState("WalkRight", ASSET animationClips["WalkRight_BowAnim"].get());
+		controller->AddState("WalkLeft", ASSET animationClips["WalkLeft_BowAnim"].get());
 
 		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("VelocityZ", Greater, 0.3));
 		controller->AddTransition("Idle", "WalkBack", TransitionCondition::CreateFloat("VelocityZ", Less, -0.3));
@@ -58,8 +58,8 @@ void AnimationScene::BuildObjects()
 	auto skyBox = CreateEmpty();
 	{
 		skyBox->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
-		skyBox->AddComponent<Renderer>()->materials.push_back(1);
-		auto mesh = skyBox->AddComponent<MeshFilter>()->mesh = geometries["Sphere"].get();
+		skyBox->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+		auto mesh = skyBox->AddComponent<MeshFilter>()->mesh = ASSET MESH("Sphere");
 		skyBox->layer = (int)RenderLayer::Sky;
 	}
 
@@ -94,7 +94,7 @@ void AnimationScene::BuildObjects()
 
 	auto grid = CreateEmpty();
 	{
-		grid->AddComponent<MeshFilter>()->mesh = geometries["Plane"].get();
+		grid->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
 		grid->AddComponent<Renderer>()->materials.push_back(0);
 	}
 
@@ -104,10 +104,10 @@ void AnimationScene::BuildObjects()
 		{
 			model->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
-			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = geometries["ApprenticeSK"].get();
+			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
 			for (auto& sm : mesh->DrawArgs)
-				renderer->materials.push_back(1);
+				renderer->materials.push_back(ASSET MATERIAL("PolyArt"));
 
 			auto animator = model->AddComponent<Animator>();
 			animator->controller = controller;

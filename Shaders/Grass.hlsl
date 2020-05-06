@@ -68,7 +68,7 @@ GSInput VS(VSInput vin, uint instanceID : SV_InstanceID)
 	vout.MatIndex = gMaterialIndexData[instanceID * instData.MaterialIndexStride].MaterialIndex;
 	vout.CenterW = mul(float4(vin.PosL, 1.0f), gInstanceData[instanceID].World).xyz;
 	vout.SizeW = vin.SizeW;
-	vout.Look = mul(vin.Look, (float3x3)gInstanceData[instanceID].World);
+	vout.Look = normalize(vin.Look);
 	return vout;
 }
 
@@ -121,6 +121,7 @@ void GS(point GSInput gin[1],
 		gout.PrimID = primID;
 		gout.MatIndex = gin[0].MatIndex;
 		gout.ShadowPosH = mul(v[i], gShadowTransform);
+		if (i % 4 == 0) triStream.RestartStrip();
 		triStream.Append(gout);
 	}
 }

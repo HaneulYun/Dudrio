@@ -72,7 +72,7 @@ void TerrainScene::BuildObjects()
 	{
 		//ASSET AddTexture("none", L"Textures\\none.dds");
 		ASSET AddTexture("ground", L"Textures\\grass.dds");
-		//ASSET AddTexture("grass", L"Textures\\grass01.dds");
+		ASSET AddTexture("grass", L"Textures\\grass01.dds");
 		ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
 		ASSET AddTexture("house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
 		ASSET AddTexture("material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
@@ -87,7 +87,7 @@ void TerrainScene::BuildObjects()
 		//ASSET AddMaterial("none",			ASSET TEXTURE("none"));
 		//ASSET AddMaterial("yellow",			ASSET TEXTURE("none"), -1, { 0.8f, 0.7f, 0.1f, 1.0f });
 		ASSET AddMaterial("ground",			ASSET TEXTURE("ground"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		//ASSET AddMaterial("grass",			ASSET TEXTURE("grass"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+		ASSET AddMaterial("grass",			ASSET TEXTURE("grass"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 		ASSET AddMaterial("house01",		ASSET TEXTURE("house01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("house02",		ASSET TEXTURE("house02"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("material_01",	ASSET TEXTURE("material_01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
@@ -189,61 +189,62 @@ void TerrainScene::BuildObjects()
 		ButtonManager::buttonManager = buttonManager;
 	}
 
-	//// billboard points
-	//{
-	//	struct TreeSpriteVertex
-	//	{
-	//		XMFLOAT3 Pos;
-	//		XMFLOAT2 Size;
-	//		XMFLOAT3 look;
-	//	};
-	//	std::vector<TreeSpriteVertex> vertices;
-	//	float sizex = 1, sizey = 1;
-	//	const int width = 256, length = 256;
-	//	vertices.reserve(width* length * 2.0);
-	//	for (float i = 0; i < width; i += 0.5f)
-	//	{
-	//		for (float j = 0; j < length; j += 0.5f)
-	//		{
-	//			TreeSpriteVertex v;
-	//			v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
-	//			v.Size = XMFLOAT2(sizex, sizey);
-	//			v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
-	//			vertices.push_back(v);
-	//		}
-	//	}
-	//
-	//	auto geo = std::make_unique<Mesh>();
-	//	const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
-	//
-	//	geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-	//	D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
-	//	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-	//
-	//	auto device = Graphics::Instance()->device;
-	//	auto commandList = Graphics::Instance()->commandList;
-	//
-	//	geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	//
-	//	geo->VertexByteStride = sizeof(TreeSpriteVertex);
-	//	geo->VertexBufferByteSize = vbByteSize;
-	//
-	//	SubmeshGeometry submesh;
-	//	submesh.IndexCount = vertices.size();
-	//	submesh.StartIndexLocation = 0;
-	//	submesh.BaseVertexLocation = 0;
-	//
-	//	geo->DrawArgs["submesh"] = submesh;
-	//	geometries["Grass"] = std::move(geo);
-	//
-	//
-	//	GameObject* billboards = CreateEmpty();
-	//	billboards->GetComponent<Transform>()->position -= {128, 10, 128};
-	//	auto mesh = billboards->AddComponent<MeshFilter>()->mesh = geometries["Grass"].get();
-	//	billboards->AddComponent<Renderer>()->materials.push_back(2);
-	//	billboards->layer = (int)RenderLayer::Grass;
-	//
-	//}
+	// billboard points
+	{
+		struct TreeSpriteVertex
+		{
+			XMFLOAT3 Pos;
+			XMFLOAT2 Size;
+			XMFLOAT3 look;
+		};
+		std::vector<TreeSpriteVertex> vertices;
+		float sizex = 1, sizey = 1;
+		const int width = 1081, length = 1081;
+		vertices.reserve(width* length);
+		for (float i = 0; i < width; i += 1.0f)
+		{
+			for (float j = 0; j < length; j += 1.0f)
+			{
+				TreeSpriteVertex v;
+				v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
+				v.Size = XMFLOAT2(sizex, sizey);
+				v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
+				vertices.push_back(v);
+			}
+		}
+	
+		auto geo = std::make_unique<Mesh>();
+		const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
+	
+		geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+		D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
+		CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+	
+		auto device = Graphics::Instance()->device;
+		auto commandList = Graphics::Instance()->commandList;
+	
+		geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	
+		geo->VertexByteStride = sizeof(TreeSpriteVertex);
+		geo->VertexBufferByteSize = vbByteSize;
+	
+		SubmeshGeometry submesh;
+		submesh.IndexCount = vertices.size();
+		submesh.StartIndexLocation = 0;
+		submesh.BaseVertexLocation = 0;
+	
+		geo->DrawArgs["submesh"] = submesh;
+		ASSET AddMesh("Grass", std::move(geo));
+		//geometries["Grass"] = std::move(geo);
+	
+	
+		GameObject* billboards = CreateEmpty();
+		billboards->GetComponent<Transform>()->position -= {512, 10, 512};
+		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = ASSET MESH("Grass");
+		billboards->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("grass"));
+		billboards->layer = (int)RenderLayer::Grass;
+	
+	}
 
 	auto menuSceneButton = CreateImage();
 	{

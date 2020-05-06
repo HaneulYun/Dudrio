@@ -119,7 +119,7 @@ void SampleScene::BuildObjects()
 	auto mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<HostCameraController>();
+		mainCamera->AddComponent<HostCameraController>();	// GuestCameraController·Î ¹Ù²ã¾ßÇÔ
 	}
 
 	{

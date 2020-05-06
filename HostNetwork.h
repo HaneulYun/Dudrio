@@ -20,7 +20,8 @@ public:
 	int myId;
 	char name[MAX_ID_LEN];
 	bool isConnect{ false };
-
+	bool tryConnect{ false };
+	int retval;
 	static HostNetwork* network;
 
 public:
@@ -56,25 +57,75 @@ public:
 
 	void Update()
 	{
+		if (tryConnect)
+		{
+			if (retval == SOCKET_ERROR)
+				tryConnect = false;
+			else if (retval == 0)
+			{
+				tryConnect = false;
+				isConnect = true;
+				unsigned long on = true;
+				int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
+				Login();
+			}
+		}
 		if (isConnect)
 		{
 			Receiver();
 		}
 	}
 
+	int connect_nonblock(SOCKET sockfd, const struct sockaddr FAR* name, int namelen, int timeout)
+	{
+		unsigned long nonzero = 1;
+		unsigned long zero = 0;
+		fd_set rset, wset;
+		struct timeval tval;
+		int n;
+		int nfds = 1;
+
+		if (ioctlsocket(sockfd, FIONBIO, &nonzero) == SOCKET_ERROR)
+			return SOCKET_ERROR;
+
+		if ((n = connect(sockfd, (struct sockaddr FAR*)name, namelen)) == SOCKET_ERROR)
+		{
+			if (WSAGetLastError() != WSAEWOULDBLOCK)
+				return SOCKET_ERROR;
+		}
+
+		if (n == 0)
+			goto done;
+
+		FD_ZERO(&rset);
+		FD_SET(sockfd, &rset);
+		wset = rset;
+		tval.tv_sec = timeout;
+		tval.tv_usec = 0;
+
+		if ((n = select(nfds, &rset, &wset, NULL, timeout ? &tval : NULL)) == 0)
+		{
+			WSASetLastError(WSAETIMEDOUT);
+			return SOCKET_ERROR;
+		}
+	done:
+		ioctlsocket(sockfd, FIONBIO, &zero);
+		return 0;
+	}
+
 	void PressButton()
 	{
-		if (!isConnect)
+		if (!isConnect && !tryConnect)
 		{
 			WSAStartup(MAKEWORD(2, 0), &WSAData);
 			serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
-			unsigned long on = true;
-			int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
+			//unsigned long on = true;
+			//int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
 
 			std::wstring title(L"Input IP Here : ");
 			SetWindowText(CyanApp::GetHwnd(), title.c_str());
 
-			std::string serverIp = "127.0.0.1";
+			std::string serverIp = "192.168.0.11";
 			//serverIp.assign(wserverIp.begin(), wserverIp.end());
 
 			SOCKADDR_IN serveraddr{};
@@ -82,10 +133,9 @@ public:
 			serveraddr.sin_addr.s_addr = inet_addr(serverIp.c_str());
 			serveraddr.sin_port = htons(SERVER_PORT);
 
-			int retval = connect(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
+			retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
 
-			isConnect = true;
-			Login();
+			tryConnect = true;
 		}
 	}
 };

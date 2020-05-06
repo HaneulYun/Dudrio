@@ -92,32 +92,37 @@ public:
 
 		if (IntersectPlane(rayOrigin.xmf3, rayDir.xmf3, XMFLOAT3{ 0,0,0 }, XMFLOAT3{ 1,0,0 }, XMFLOAT3{ 0,0,1 }))
 		{
-			std::vector<XMFLOAT3> vertices;
-			Vector3 point = rayOrigin + rayDir * dT;
-
-			for (float i = 1; i < dT + 1; i += 0.5)
+			Vector3 point;
+			if (heightMap)
 			{
-				Vector3 p = rayOrigin + rayDir * i;
-				if ((int)point.x == (int)p.x && (int)point.z == (int)p.z)
-					continue;
+				std::vector<XMFLOAT3> vertices;
+				point = rayOrigin + rayDir * dT;
 
-				point = p;
-				float x, y, z;
-				if (std::ceil(point.x) > 256 || std::ceil(point.z) > 256)
-					continue;
+				for (float i = 1; i < dT + 1; i += 0.5)
+				{
+					Vector3 p = rayOrigin + rayDir * i;
+					if ((int)point.x == (int)p.x && (int)point.z == (int)p.z)
+						continue;
 
-				x = std::floor(point.x);
-				z = std::floor(point.z);
-				vertices.push_back({ x,terrainMesh->OnGetHeight(x, z, heightMap),z });
-				vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
-				vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z, heightMap),z });
+					point = p;
+					float x, y, z;
+					if (std::ceil(point.x) > heightMap->GetHeightMapWidth() - 1 || std::ceil(point.z) > heightMap->GetHeightMapLength() - 1)
+						continue;
 
-				vertices.push_back({ x,terrainMesh->OnGetHeight(x, z, heightMap),z });
-				vertices.push_back({ x,terrainMesh->OnGetHeight(x, z + 1, heightMap),z + 1 });
-				vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
+					x = std::floor(point.x);
+					z = std::floor(point.z);
+					vertices.push_back({ x,terrainMesh->OnGetHeight(x, z, heightMap),z });
+					vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
+					vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z, heightMap),z });
 
+					vertices.push_back({ x,terrainMesh->OnGetHeight(x, z, heightMap),z });
+					vertices.push_back({ x,terrainMesh->OnGetHeight(x, z + 1, heightMap),z + 1 });
+					vertices.push_back({ x + 1,terrainMesh->OnGetHeight(x + 1, z + 1, heightMap),z + 1 });
+
+				}
+				IntersectVertices(rayOrigin.xmf3, rayDir.xmf3, vertices);
 			}
-			IntersectVertices(rayOrigin.xmf3, rayDir.xmf3, vertices);
+
 			point = rayOrigin + rayDir * dT;
 			point = point.TransformCoord(terrain->transform->localToWorldMatrix);
 			if (Input::GetKeyDown(KeyCode::T))
@@ -210,7 +215,7 @@ public:
 		}
 	}
 
-	void SelectBuilding(BuildingType type, Mesh* mesh = NULL, Material* mat = NULL, float scaleSize = 0.02f, float colliderSize = NULL)
+	void SelectBuilding(BuildingType type, Mesh* mesh = NULL, Material* mat = NULL, float scaleSize = 0.01f, float colliderSize = NULL)
 	{
 		if (prefab) {
 			DeletePrefab();
@@ -222,14 +227,14 @@ public:
 		case BuildingType::Well_01:
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
-			prefab->AddComponent<BoxCollider>()->extents = { 3.0f, 3.0f, 3.0f };
+			prefab->AddComponent<BoxCollider>()->extents = { 1.5f, 1.5f, 1.5f };
 			{
 				GameObject* child = prefab->AddChild();
 				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well");
 				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
 				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
 			{
@@ -238,8 +243,8 @@ public:
 				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
 				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->position = { 0.0f,3.0f,0.0f };
-				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->position = { 0.0f,1.5f,0.0f };
+				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
 			{
@@ -248,22 +253,22 @@ public:
 				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
 				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->position = { 0.0f,2.0f,0.0f };
-				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->position = { 0.0f,1.0f,0.0f };
+				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
 			break;
 		case BuildingType::House_02:
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
-			prefab->AddComponent<BoxCollider>()->extents = { 5.5f, 5.5f, 5.5f };
+			prefab->AddComponent<BoxCollider>()->extents = { 2.7f, 2.7f, 2.7f };
 			{
 				GameObject* child = prefab->AddChild();
 				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
 				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
 				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
 			{
@@ -273,8 +278,8 @@ public:
 				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 				child->AddComponent<RotatingBehavior>()->speedRotating = -10.0f;
 				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->position = { 0.5f,12.0f,5.0f };
-				child->transform->Scale({ 0.02f, 0.02f, 0.02f });
+				child->transform->position = { 0.25f,6.0f,2.5f };
+				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
 			break;
@@ -287,7 +292,7 @@ public:
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 3.2f, 1.0f, 0.8f };
+			collider->extents = { 1.6f, 0.5f, 0.4f };
 			collider->obb = true;
 
 			GameObject* child = prefab->AddChild();
@@ -310,7 +315,7 @@ public:
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 3.0f, 1.0f, 0.8f };
+			collider->extents = { 1.5f, 0.5f, 0.4f };
 			collider->obb = true;
 
 			GameObject* child = prefab->AddChild();
@@ -329,7 +334,7 @@ public:
 			prefab->AddComponent<Building>();
 		{
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 2.8f, 1.0f, 0.8f };
+			collider->extents = { 1.4f, 0.5f, 0.4f };
 			collider->obb = true;
 			mesh = ASSET MESH("SM_Spike");
 			mat = ASSET MATERIAL("material_02");
@@ -352,7 +357,7 @@ public:
 				renderer->materials.push_back(mat);
 			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
 			child->layer = (int)RenderLayer::BuildPreview;
-			child->transform->position = { -0.2f,1.5f,0.0f };
+			child->transform->position = { -0.1f,0.75f,0.0f };
 			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 		}
@@ -366,7 +371,7 @@ public:
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 4.0f, 3.0f, 2.2f };
+			collider->extents = { 2.0f, 1.5f, 1.1f };
 			collider->obb = true;
 
 			GameObject* child = prefab->AddChild();

@@ -104,7 +104,7 @@ public:
 	{
 		if (!isConnect && !tryConnect)
 		{
-			std::string serverIp = "192.168.0.11";
+			std::string serverIp = "127.0.0.1";
 			//serverIp.assign(wserverIp.begin(), wserverIp.end());
 
 			SOCKADDR_IN serveraddr{};

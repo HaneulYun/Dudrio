@@ -2,6 +2,7 @@
 
 #include "CameraController.h"
 #include "HostCameraController.h"
+#include "GuestCameraController.h"
 #include "RotatingBehavior.h"
 #include "CharacterMovingBehavior.h"
 #include "CharacterController.h"

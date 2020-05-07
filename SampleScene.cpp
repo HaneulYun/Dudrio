@@ -116,12 +116,6 @@ void SampleScene::BuildObjects()
 
 	///*** Game Object ***///
 
-	auto mainCamera = CreateEmpty();
-	{
-		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<HostCameraController>();	// GuestCameraController·Î ¹Ù²ã¾ßÇÔ
-	}
-
 	{
 		auto ritem = CreateEmpty();
 		ritem->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
@@ -182,15 +176,33 @@ void SampleScene::BuildObjects()
 		}
 	}
 
+	auto network = CreateEmpty();
+	{
+		network->AddComponent<GuestNetwork>()->simsPrefab = SimsPrefab;
+	}
+
+	auto myCharacter = Duplicate(SimsPrefab);
+	{
+		myCharacter->AddComponent<CharacterController>()->network = network->GetComponent<GuestNetwork>();
+		
+		auto cameraOffset = myCharacter->AddChild();
+		{
+			cameraOffset->transform->position = { 0,3,-6 };
+			camera = camera->main = cameraOffset->AddComponent<Camera>();
+			cameraOffset->AddComponent<GuestCameraController>();
+		}
+	}
+
+	//auto mainCamera = CreateEmpty();
+	//{
+	//	camera = camera->main = mainCamera->AddComponent<Camera>();
+	//	mainCamera->AddComponent<GuestCameraController>()->character = myCharacter;
+	//}
+
 	{
 		GameObject* build = CreateEmpty();
 		Builder* bd = build->AddComponent<Builder>();
 		Builder::builder = bd;
-	}
-
-	auto network = CreateEmpty();
-	{
-		network->AddComponent<GuestNetwork>()->simsPrefab = SimsPrefab;
 	}
 
 	auto menuSceneButton = CreateImage();

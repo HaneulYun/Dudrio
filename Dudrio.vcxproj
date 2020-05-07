@@ -181,6 +181,7 @@
     <ClInclude Include="CharacterMovingBehavior.h" />
     <ClInclude Include="Dudrio.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GuestCameraController.h" />
     <ClInclude Include="GuestController.h" />
     <ClInclude Include="HostCameraController.h" />
     <ClInclude Include="HostNetwork.h" />

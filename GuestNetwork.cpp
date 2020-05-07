@@ -79,8 +79,8 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		else 
 		{
 			// HOST라면 모든 건물 삭제 및 모든 캐릭터 삭제
-			Scene::scene->PushDelete(myCharacter);
-			myCharacter = NULL;
+			//Scene::scene->PushDelete(myCharacter);
+			//myCharacter = NULL;
 
 			hostId = -1;
 			for (auto& others : otherCharacters)
@@ -147,7 +147,7 @@ void GuestNetwork::send_packet(void* packet)
 	send(serverSocket, p, p[0], 0);
 }
 
-void GuestNetwork::send_move_packet(float xMove, float zMove)//unsigned char dir)
+void GuestNetwork::send_move_packet(float xMove, float zMove)
 {
 	cs_packet_move m_packet;
 	m_packet.type = C2S_MOVE;
@@ -165,8 +165,8 @@ void GuestNetwork::Login()
 	l_packet.type = C2S_LOGIN;
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
-	myCharacter = gameObject->scene->Duplicate(simsPrefab);
-	myCharacter->AddComponent<CharacterController>()->network = this;
+	//myCharacter = gameObject->scene->Duplicate(simsPrefab);
+	//myCharacter->AddComponent<CharacterController>()->network = this;
 	strcpy_s(myCharacter->GetComponent<CharacterMovingBehavior>()->name, l_packet.name);
 	send_packet(&l_packet);
 }

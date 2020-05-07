@@ -223,7 +223,7 @@ void TerrainScene::BuildObjects()
 	{
 		auto model = SimsPrefab->AddChild();
 		{
-			model->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
+			model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
 			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
@@ -290,7 +290,7 @@ void TerrainScene::BuildObjects()
 				else 
 					v.Size = XMFLOAT2(sizex, sizey);
 				v.Pos = XMFLOAT3(i, m_pHeightMapImage->GetHeight(i, j) + sizey / 2, j);;
-				v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
+				v.look = XMFLOAT3(MathHelper::RandF(-1.0f, 1.0f), 0.0f, MathHelper::RandF(-1.0f, 1.0f));
 				vertices.push_back(v);
 			}
 		}

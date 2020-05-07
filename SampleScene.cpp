@@ -163,12 +163,10 @@ void SampleScene::BuildObjects()
 	{
 		auto model = SimsPrefab->AddChild();
 		{
-			model->GetComponent<Transform>()->Scale({ 0.02, 0.02, 0.02 });
+			model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
-			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
-			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
-			for (auto& sm : mesh->DrawArgs)
-				renderer->materials.push_back(ASSET MATERIAL("PolyArt"));
+			model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
+			model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
 
 			auto anim = model->AddComponent<Animator>();
 			anim->controller = controller;
@@ -183,13 +181,14 @@ void SampleScene::BuildObjects()
 	auto network = CreateEmpty();
 	{
 		network->AddComponent<GuestNetwork>()->simsPrefab = SimsPrefab;
-		network->GetComponent<GuestNetwork>()->myCharacter = Duplicate(SimsPrefab);
-	}
+		auto player = network->GetComponent<GuestNetwork>()->myCharacter = Duplicate(SimsPrefab);
 
-	auto mainCamera = CreateEmpty();
-	{
-		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<CameraController>();
+		auto cameraOffset = player->AddChild();
+		{
+			cameraOffset->transform->position = { 0, 3, -6 };
+			camera = camera->main = cameraOffset->AddComponent<Camera>();
+			cameraOffset->AddComponent<CameraController>();
+		}
 	}
 
 	{

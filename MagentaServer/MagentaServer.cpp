@@ -236,6 +236,7 @@ void disconnect(int user_id)
 				disconnect(cl.m_id);
 		}
 		g_host_user_id = -1;
+		buildings.clear();
 	}
 	g_clients[user_id].m_status = ST_FREE;
 }

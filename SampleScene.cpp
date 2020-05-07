@@ -181,23 +181,11 @@ void SampleScene::BuildObjects()
 		network->AddComponent<GuestNetwork>()->simsPrefab = SimsPrefab;
 	}
 
-	auto myCharacter = Duplicate(SimsPrefab);
+	auto mainCamera = CreateEmpty();
 	{
-		myCharacter->AddComponent<CharacterController>()->network = network->GetComponent<GuestNetwork>();
-		
-		auto cameraOffset = myCharacter->AddChild();
-		{
-			cameraOffset->transform->position = { 0,3,-6 };
-			camera = camera->main = cameraOffset->AddComponent<Camera>();
-			cameraOffset->AddComponent<GuestCameraController>();
-		}
+		camera = camera->main = mainCamera->AddComponent<Camera>();
+		mainCamera->AddComponent<HostCameraController>();
 	}
-
-	//auto mainCamera = CreateEmpty();
-	//{
-	//	camera = camera->main = mainCamera->AddComponent<Camera>();
-	//	mainCamera->AddComponent<GuestCameraController>()->character = myCharacter;
-	//}
 
 	{
 		GameObject* build = CreateEmpty();

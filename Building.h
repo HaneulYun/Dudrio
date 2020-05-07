@@ -7,6 +7,8 @@ class Building : public MonoBehavior<Building>
 private /*이 영역에 private 변수를 선언하세요.*/:
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
+	float positionToAnimate = 0.0f;
+	
 
 private:
 	friend class GameObject;
@@ -23,7 +25,15 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-
+		if (!IsZero(positionToAnimate))
+		{
+			gameObject->transform->position += {0.0f, 0.5f * Time::deltaTime, 0.0f};
+			if (gameObject->transform->position.y > positionToAnimate)
+			{
+				gameObject->transform->position.y = positionToAnimate;
+				positionToAnimate = 0.0f;
+			}
+		}
 	}
 
 	void OnTriggerEnter(GameObject* collision) 

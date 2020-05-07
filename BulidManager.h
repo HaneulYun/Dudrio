@@ -149,6 +149,8 @@ public:
 			else if (Input::GetMouseButtonUp(0) && prefab->children.front()->GetComponent<Constant>()->v4.g == 1.0f)
 			{
 				prefab->children.front()->layer = (int)RenderLayer::Opaque;
+				prefab->GetComponent<Building>()->positionToAnimate = prefab->transform->position.y;
+				prefab->transform->position.y -= prefab->GetComponent<BoxCollider>()->extents.y * 2 + 0.5f;
 				GameObject* go = Scene::scene->Duplicate(prefab);
 				DeletePrefab();
 			}
@@ -225,9 +227,12 @@ public:
 		switch (type)
 		{
 		case BuildingType::Well_01:
+		{
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
-			prefab->AddComponent<BoxCollider>()->extents = { 1.5f, 1.5f, 1.5f };
+			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { 1.5f, 1.8f, 1.5f };
+			collider->obb = true;
 			{
 				GameObject* child = prefab->AddChild();
 				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well");
@@ -257,11 +262,15 @@ public:
 				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
+		}
 			break;
 		case BuildingType::House_02:
+		{
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
-			prefab->AddComponent<BoxCollider>()->extents = { 2.7f, 2.7f, 2.7f };
+			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { 2.5f, 4.5f, 2.5f };
+			collider->obb = true;
 			{
 				GameObject* child = prefab->AddChild();
 				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
@@ -282,6 +291,7 @@ public:
 				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
+		}
 			break;
 		case BuildingType::Fence_01:
 			mesh = ASSET MESH("SM_Fence_Var01");
@@ -328,38 +338,40 @@ public:
 			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 		}
-		break;
+			break;
 		case BuildingType::Spike:
+		{
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
-		{
-			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 1.4f, 0.5f, 0.4f };
-			collider->obb = true;
-			mesh = ASSET MESH("SM_Spike");
-			mat = ASSET MATERIAL("material_02");
-			GameObject* child = prefab->AddChild();
-			child->AddComponent<MeshFilter>()->mesh = mesh;
-			Renderer* renderer = child->AddComponent<Renderer>();
-			for (auto& sm : mesh->DrawArgs)
-				renderer->materials.push_back(mat);
-			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
-			child->layer = (int)RenderLayer::BuildPreview;
-			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
-			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-		}
-		{
-			mesh = ASSET MESH("SM_Fish");
-			GameObject* child = prefab->AddChild();
-			child->AddComponent<MeshFilter>()->mesh = mesh;
-			Renderer* renderer = child->AddComponent<Renderer>();
-			for (auto& sm : mesh->DrawArgs)
-				renderer->materials.push_back(mat);
-			child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
-			child->layer = (int)RenderLayer::BuildPreview;
-			child->transform->position = { -0.1f,0.75f,0.0f };
-			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
-			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			{
+				BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+				collider->extents = { 1.4f, 0.8f, 0.4f };
+				collider->obb = true;
+				mesh = ASSET MESH("SM_Spike");
+				mat = ASSET MATERIAL("material_02");
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = mesh;
+				Renderer* renderer = child->AddComponent<Renderer>();
+				for (auto& sm : mesh->DrawArgs)
+					renderer->materials.push_back(mat);
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				mesh = ASSET MESH("SM_Fish");
+				GameObject* child = prefab->AddChild();
+				child->AddComponent<MeshFilter>()->mesh = mesh;
+				Renderer* renderer = child->AddComponent<Renderer>();
+				for (auto& sm : mesh->DrawArgs)
+					renderer->materials.push_back(mat);
+				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+				child->layer = (int)RenderLayer::BuildPreview;
+				child->transform->position = { -0.1f,0.75f,0.0f };
+				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
 		}
 			break;
 		case BuildingType::Cart_01:
@@ -371,7 +383,7 @@ public:
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 2.0f, 1.5f, 1.1f };
+			collider->extents = { 1.7f, 0.5f, 1.0f };
 			collider->obb = true;
 
 			GameObject* child = prefab->AddChild();
@@ -384,8 +396,9 @@ public:
 			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 		}
-		break;
+			break;
 		default:
+		{
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
 			prefab->AddComponent<BoxCollider>()->extents = { colliderSize, colliderSize, colliderSize };
@@ -399,6 +412,7 @@ public:
 			child->layer = (int)RenderLayer::BuildPreview;
 			child->transform->Scale({ scaleSize, scaleSize, scaleSize });
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		}
 			break;
 		}
 	

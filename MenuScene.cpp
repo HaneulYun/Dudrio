@@ -54,16 +54,16 @@ void MenuScene::BuildObjects()
 			rectTransform->width = 150;
 			rectTransform->height = 30;
 
-			sampleSceneButton->AddComponent<Button>()->AddEvent(
-				[](void*) {
-					Debug::Log("이게 되네;;\n");
-					//SceneManager::LoadScene("MainScene");
-				});
-			{
-				auto textobject = sampleSceneButton->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
+		sampleSceneButton->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				Debug::Log("이게 되네;;\n");
+				SceneManager::LoadScene("SampleScene");
+			});
+		{
+			auto textobject = sampleSceneButton->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
 
 				Text* text = textobject->AddComponent<Text>();
 				text->text = L"Sample Scene";

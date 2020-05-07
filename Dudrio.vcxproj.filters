@@ -22,6 +22,9 @@
     <Filter Include="Assets\Scripts">
       <UniqueIdentifier>{95a5485c-d925-4ab1-82f8-d9ab653be419}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Network">
+      <UniqueIdentifier>{745d9efb-85c4-4d46-bf7e-6765245a03a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -57,28 +60,55 @@
     <ClInclude Include="MenuScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="MagentaServer\protocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
     <ClInclude Include="TerrainScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="AnimationScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleScene.h">
+    <ClInclude Include="MaterialScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="GuestController.h">
-      <Filter>Assets\Scripts</Filter>
+    <ClInclude Include="ParticleScene.h">
+      <Filter>Assets\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="BulidManager.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="GuestController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
     <ClInclude Include="HostCameraController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterMovingBehavior.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="GuestNetwork.h">
+      <Filter>Assets\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="HostNetwork.h">
+      <Filter>Assets\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="ButtonManager.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="Building.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="GuestCameraController.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLoader.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,14 +125,26 @@
     <ClCompile Include="MenuScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="SampleScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="TerrainScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="AnimationScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="MaterialScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="ParticleScene.cpp">
       <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GuestNetwork.cpp">
+      <Filter>Assets\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="HostNetwork.cpp">
+      <Filter>Assets\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

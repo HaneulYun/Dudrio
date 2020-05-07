@@ -151,8 +151,12 @@ void TerrainScene::BuildObjects()
 
 	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
-	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
-	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 257, 257, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
+	//CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
+	//CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 257, 257, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
+
+	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap_HN.raw", 1081, 1081, { 1.0f, 1.0f, 1.0f });
+	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 1081, 1081, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
+
 	
 	//*** Animation ***//
 	ASSET AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
@@ -237,7 +241,7 @@ void TerrainScene::BuildObjects()
 
 	GameObject* grid = CreateEmpty();
 	{
-		grid->GetComponent<Transform>()->position -= {512, 10, 512};
+		grid->GetComponent<Transform>()->position -= {540, 10, 540};
 		auto mesh = grid->AddComponent<MeshFilter>()->mesh = gridMesh;
 		grid->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
@@ -309,7 +313,7 @@ void TerrainScene::BuildObjects()
 	
 	
 		GameObject* billboards = CreateEmpty();
-		billboards->GetComponent<Transform>()->position -= {512, 10, 512};
+		billboards->GetComponent<Transform>()->position -= {540, 10, 540};
 		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = ASSET MESH("Grass");
 		billboards->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("grass"));
 		billboards->layer = (int)RenderLayer::Grass;

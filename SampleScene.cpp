@@ -80,8 +80,11 @@ void SampleScene::BuildObjects()
 	}
 	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
-	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
-	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 257, 257, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
+	//CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap.raw", 257, 257, { 1.0f, 0.1f, 1.0f });
+	//CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 257, 257, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
+
+	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap_HN.raw", 1081, 1081, { 1.0f, 1.0f, 1.0f });
+	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 1081, 1081, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
 
 	//*** Animation ***//
 	ASSET AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
@@ -129,7 +132,7 @@ void SampleScene::BuildObjects()
 
 	auto grid = CreateEmpty();
 	{
-		grid->GetComponent<Transform>()->position -= {128, 10, 128};
+		grid->GetComponent<Transform>()->position -= {540, 10, 540};
 		auto mesh = grid->AddComponent<MeshFilter>()->mesh = gridMesh;
 		grid->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}

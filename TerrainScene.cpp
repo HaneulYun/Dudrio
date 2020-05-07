@@ -226,6 +226,7 @@ void TerrainScene::BuildObjects()
 			anim->TimePos = 0;
 	
 			SimsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
+			SimsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = m_pHeightMapImage;
 		}
 	}
 

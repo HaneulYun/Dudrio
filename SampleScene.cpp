@@ -173,18 +173,20 @@ void SampleScene::BuildObjects()
 			anim->TimePos = 0;
 
 			SimsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
+			SimsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = m_pHeightMapImage;
 		}
 	}
 
 	auto network = CreateEmpty();
 	{
 		network->AddComponent<GuestNetwork>()->simsPrefab = SimsPrefab;
+		network->GetComponent<GuestNetwork>()->myCharacter = Duplicate(SimsPrefab);
 	}
 
 	auto mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<HostCameraController>();
+		mainCamera->AddComponent<CameraController>();
 	}
 
 	{

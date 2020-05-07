@@ -26,6 +26,7 @@ public:
 public:
 	GameObject* simsPrefab = NULL;
 	GameObject* myCharacter = NULL;
+
 	unordered_map<int, GameObject*> otherCharacters;
 
 private:

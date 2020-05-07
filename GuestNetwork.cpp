@@ -51,14 +51,14 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		if (other_id == myId) {
 			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			myc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			myc->move(Vector3(my_packet->x, myCharacter->transform->position.y, my_packet->z));
 		}
 		else if(other_id != hostId) {
 			if (0 != otherCharacters.count(other_id))
 			{
 				auto oc = otherCharacters[other_id]->GetComponent<CharacterMovingBehavior>();
 				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-				oc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+				oc->move(Vector3(my_packet->x, otherCharacters[other_id]->transform->position.y, my_packet->z));
 			}
 		}
 	}
@@ -165,7 +165,6 @@ void GuestNetwork::Login()
 	l_packet.type = C2S_LOGIN;
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
-	myCharacter = gameObject->scene->Duplicate(simsPrefab);
 	myCharacter->AddComponent<CharacterController>()->network = this;
 	strcpy_s(myCharacter->GetComponent<CharacterMovingBehavior>()->name, l_packet.name);
 	send_packet(&l_packet);

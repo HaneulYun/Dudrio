@@ -87,6 +87,7 @@ void TerrainScene::BuildObjects()
 		//ASSET AddMaterial("none",			ASSET TEXTURE("none"));
 		//ASSET AddMaterial("yellow",			ASSET TEXTURE("none"), -1, { 0.8f, 0.7f, 0.1f, 1.0f });
 		ASSET AddMaterial("ground",			ASSET TEXTURE("ground"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("ground",			ASSET TEXTURE("ground"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("grass",			ASSET TEXTURE("grass"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 		ASSET AddMaterial("house01",		ASSET TEXTURE("house01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("house02",		ASSET TEXTURE("house02"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
@@ -178,16 +179,15 @@ void TerrainScene::BuildObjects()
 		grid->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
 
+	GameObject* manager = CreateEmpty();
 	{
-		GameObject* manager = CreateEmpty();
 		BuildManager* buildManager = manager->AddComponent<BuildManager>();
 		buildManager->terrain = grid;
 		buildManager->heightMap = m_pHeightMapImage;
 		buildManager->terrainMesh = gridMesh;
 		BuildManager::buildManager = buildManager;
-		ButtonManager* buttonManager = manager->AddComponent<ButtonManager>();
-		ButtonManager::buttonManager = buttonManager;
 	}
+	ButtonManager* buttonManager = ButtonManager::buttonManager = manager->AddComponent<ButtonManager>();
 
 	// billboard points
 	{
@@ -296,7 +296,7 @@ void TerrainScene::BuildObjects()
 	buttons_BuildingType[5]->children.front()->GetComponent<Text>()->text = L"»èÁ¦";
 	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Delete); });
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 4/*5*/; ++i)
 	{
 		butttons_BuildingList[i].push_back(CreateButtonList());
 		ButtonManager::buttonManager->buttons_BuildingList[i].push_back(butttons_BuildingList[i][0]);
@@ -365,94 +365,44 @@ void TerrainScene::BuildObjects()
 	butttons_BuildingList[3][2]->children[5]->children[0]->GetComponent<Text>()->text = L"Mushroom_06";
 	butttons_BuildingList[3][2]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
 		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_06, ASSET MESH("SM_Mushroom_Var06"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); });
-	//butttons_BuildingList[4][1]->children[6]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_02";
-	//butttons_BuildingList[4][1]->children[7]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_03";
-	//butttons_BuildingList[4][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_04";
-	//butttons_BuildingList[4][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_05";
 
-	butttons_BuildingList[4].push_back(CreateButtonList());
-	butttons_BuildingList[4].push_back(CreateButtonList());
-	ButtonManager::buttonManager->buttons_BuildingList[4].push_back(butttons_BuildingList[4][1]);
-	ButtonManager::buttonManager->buttons_BuildingList[4].push_back(butttons_BuildingList[4][2]);
-	butttons_BuildingList[4][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Fence_01";
-	butttons_BuildingList[4][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_01); });
-	butttons_BuildingList[4][0]->children[1]->children[0]->GetComponent<Text>()->text = L"Fence_02";
-	butttons_BuildingList[4][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_02); });
-	butttons_BuildingList[4][0]->children[2]->children[0]->GetComponent<Text>()->text = L"Fence_03";
-	butttons_BuildingList[4][0]->children[2]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_03); });
-	butttons_BuildingList[4][0]->children[3]->children[0]->GetComponent<Text>()->text = L"Fence_04";
-	butttons_BuildingList[4][0]->children[3]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_04); });
-	butttons_BuildingList[4][0]->children[4]->children[0]->GetComponent<Text>()->text = L"Bucket";
-	butttons_BuildingList[4][0]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Bucket, ASSET MESH("SM_Bucket"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
-	butttons_BuildingList[4][0]->children[5]->children[0]->GetComponent<Text>()->text = L"Barrel";
-	butttons_BuildingList[4][0]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Barrel, ASSET MESH("SM_Barrel"), ASSET MATERIAL("material_01"), 0.01f, 0.75f); });
-	butttons_BuildingList[4][0]->children[6]->children[0]->GetComponent<Text>()->text = L"Pitchfork";
-	butttons_BuildingList[4][0]->children[7]->children[0]->GetComponent<Text>()->text = L"Axe";
-	butttons_BuildingList[4][0]->children[8]->children[0]->GetComponent<Text>()->text = L"Ladder";
-	butttons_BuildingList[4][0]->children[9]->children[0]->GetComponent<Text>()->text = L"Spike";
-	butttons_BuildingList[4][0]->children[9]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Spike); });
+	for (auto& btnAssetInfo :
+		{
+			ButtonAssetItem{L"Fence_01",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_01); }},
+			ButtonAssetItem{L"Fence_02",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_02); }},
+			ButtonAssetItem{L"Fence_03",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_03); }},
+			ButtonAssetItem{L"Fence_04",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_04); }},
+			ButtonAssetItem{L"Bucket",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Bucket,		ASSET MESH("SM_Bucket"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+			ButtonAssetItem{L"Barrel",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Barrel,		ASSET MESH("SM_Barrel"), ASSET MATERIAL("material_01"), 0.01f, 0.75f); }},
+			ButtonAssetItem{L"Pitchfork"},
+			ButtonAssetItem{L"Axe"},
+			ButtonAssetItem{L"Ladder"},
+			ButtonAssetItem{L"Spike",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Spike); }},
 
-	butttons_BuildingList[4][1]->children[0]->children[0]->GetComponent<Text>()->text = L"Cart_01";
-	butttons_BuildingList[4][1]->children[0]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_01); });
-	butttons_BuildingList[4][1]->children[1]->children[0]->GetComponent<Text>()->text = L"Cart_02";
-	butttons_BuildingList[4][1]->children[1]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_02); });
+			ButtonAssetItem{L"Cart_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_01); }},
+			ButtonAssetItem{L"Cart_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_02); }},
+			ButtonAssetItem{L"Cauldron",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cauldron,		ASSET MESH("SM_Cauldron"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Torch_02"},
+			ButtonAssetItem{L"Pot_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_01,		ASSET MESH("SM_Pot_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+			ButtonAssetItem{L"Pot_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_02,		ASSET MESH("SM_Pot_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+			ButtonAssetItem{L"Pot_03",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_03,		ASSET MESH("SM_Pot_Var03"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+			ButtonAssetItem{L"Pot_04",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_04,		ASSET MESH("SM_Pot_Var04"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+			ButtonAssetItem{L"Pot_05",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_05,		ASSET MESH("SM_Pot_Var05"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+			ButtonAssetItem{L"Pot_06",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_06,		ASSET MESH("SM_Pot_Var06"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 
-	butttons_BuildingList[4][1]->children[2]->children[0]->GetComponent<Text>()->text = L"Cauldron";
-	butttons_BuildingList[4][1]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Cauldron, ASSET MESH("SM_Cauldron"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); });
-	//butttons_BuildingList[4][1]->children[3]->children[0]->GetComponent<Text>()->text = L"Torch_02";
-	butttons_BuildingList[4][1]->children[4]->children[0]->GetComponent<Text>()->text = L"Pot_01";
-	butttons_BuildingList[4][1]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_01, ASSET MESH("SM_Pot_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
-	butttons_BuildingList[4][1]->children[5]->children[0]->GetComponent<Text>()->text = L"Pot_02";
-	butttons_BuildingList[4][1]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_02, ASSET MESH("SM_Pot_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
-	butttons_BuildingList[4][1]->children[6]->children[0]->GetComponent<Text>()->text = L"Pot_03";
-	butttons_BuildingList[4][1]->children[6]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_03, ASSET MESH("SM_Pot_Var03"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
-	butttons_BuildingList[4][1]->children[7]->children[0]->GetComponent<Text>()->text = L"Pot_04";
-	butttons_BuildingList[4][1]->children[7]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_04, ASSET MESH("SM_Pot_Var04"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
-	butttons_BuildingList[4][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Pot_05";
-	butttons_BuildingList[4][1]->children[8]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_05, ASSET MESH("SM_Pot_Var05"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
-	butttons_BuildingList[4][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Pot_06";
-	butttons_BuildingList[4][1]->children[9]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Pot_06, ASSET MESH("SM_Pot_Var06"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
+			ButtonAssetItem{L"Apple",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Apple,			ASSET MESH("SM_Apple"), ASSET MATERIAL("material_02"), 0.01f, 0.1f); }},
+			ButtonAssetItem{L"Potato",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Potato,		ASSET MESH("SM_Potato"), ASSET MATERIAL("material_02"), 0.01f, 0.1f); }},
+			ButtonAssetItem{L"Tomato",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tomato,		ASSET MESH("SM_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); }},
+			ButtonAssetItem{L"Watermellon",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Watermellon,	ASSET MESH("SM_Watermellon"), ASSET MATERIAL("material_02"), 0.01f, 0.3f); }},
+			ButtonAssetItem{L"Sack_Apple",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Apple,	ASSET MESH("SM_Sack_Apple"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_Flour",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Flour,	ASSET MESH("SM_Sack_Flour"), ASSET MATERIAL("material_02"), 0.01f, 0.45f); }},
+			ButtonAssetItem{L"Sack_Potato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Potato,	ASSET MESH("SM_Sack_Potato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_Tomato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Tomato,	ASSET MESH("SM_Sack_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_01,		ASSET MESH("SM_Sack_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_02,		ASSET MESH("SM_Sack_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+		})
+		buttonManager->buttonAssetItem.push_back(btnAssetInfo);
 
-	butttons_BuildingList[4][2]->children[0]->children[0]->GetComponent<Text>()->text = L"Apple";
-	butttons_BuildingList[4][2]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Apple, ASSET MESH("SM_Apple"), ASSET MATERIAL("material_02"), 0.01f, 0.1f); });
-	butttons_BuildingList[4][2]->children[1]->children[0]->GetComponent<Text>()->text = L"Potato";
-	butttons_BuildingList[4][2]->children[1]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Potato, ASSET MESH("SM_Potato"), ASSET MATERIAL("material_02"), 0.01f, 0.1f); });
-	butttons_BuildingList[4][2]->children[2]->children[0]->GetComponent<Text>()->text = L"Tomato";
-	butttons_BuildingList[4][2]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Tomato, ASSET MESH("SM_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); });
-	butttons_BuildingList[4][2]->children[3]->children[0]->GetComponent<Text>()->text = L"Watermellon";
-	butttons_BuildingList[4][2]->children[3]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Watermellon, ASSET MESH("SM_Watermellon"), ASSET MATERIAL("material_02"), 0.01f, 0.3f); });
-	butttons_BuildingList[4][2]->children[4]->children[0]->GetComponent<Text>()->text = L"Sack_Apple";
-	butttons_BuildingList[4][2]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Apple, ASSET MESH("SM_Sack_Apple"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); });
-	butttons_BuildingList[4][2]->children[5]->children[0]->GetComponent<Text>()->text = L"Sack_Flour";
-	butttons_BuildingList[4][2]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Flour, ASSET MESH("SM_Sack_Flour"), ASSET MATERIAL("material_02"), 0.01f, 0.45f); });
-	butttons_BuildingList[4][2]->children[6]->children[0]->GetComponent<Text>()->text = L"Sack_Potato";
-	butttons_BuildingList[4][2]->children[6]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Potato, ASSET MESH("SM_Sack_Potato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); });
-	butttons_BuildingList[4][2]->children[7]->children[0]->GetComponent<Text>()->text = L"Sack_Tomato";
-	butttons_BuildingList[4][2]->children[7]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Tomato, ASSET MESH("SM_Sack_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); });
-
-	butttons_BuildingList[4][2]->children[8]->children[0]->GetComponent<Text>()->text = L"Sack_01";
-	butttons_BuildingList[4][2]->children[8]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_01, ASSET MESH("SM_Sack_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); });
-	butttons_BuildingList[4][2]->children[9]->children[0]->GetComponent<Text>()->text = L"Sack_02";
-	butttons_BuildingList[4][2]->children[9]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Sack_02, ASSET MESH("SM_Sack_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); });
 
 	GameObject* button_previouspage = CreateImage();
 	{

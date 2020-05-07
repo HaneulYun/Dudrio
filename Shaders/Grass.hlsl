@@ -113,7 +113,7 @@ void GS(point GSInput gin[1],
 	for (int i = 0; i < 8; ++i)
 	{
 		if (i % 2 == 1)
-			v[i].x += sin(gTotalTime + v[i].x / 20);
+			v[i].x += sin(gTotalTime * 0.5f + v[i].x / 20) * 0.5f;
 		gout.PosH = mul(v[i], gViewProj);
 		gout.PosW = v[i].xyz;
 		gout.NormalW = gin[0].Look;

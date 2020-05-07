@@ -72,7 +72,7 @@ void TerrainScene::BuildObjects()
 	{
 		//ASSET AddTexture("none", L"Textures\\none.dds");
 		ASSET AddTexture("ground", L"Textures\\grass.dds");
-		ASSET AddTexture("grass", L"Textures\\grass01.dds");
+		ASSET AddTexture("grass", L"Texture\\grass.dds");
 		ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
 		ASSET AddTexture("house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
 		ASSET AddTexture("material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
@@ -86,7 +86,7 @@ void TerrainScene::BuildObjects()
 	{
 		//ASSET AddMaterial("none",			ASSET TEXTURE("none"));
 		//ASSET AddMaterial("yellow",			ASSET TEXTURE("none"), -1, { 0.8f, 0.7f, 0.1f, 1.0f });
-		ASSET AddMaterial("ground",			ASSET TEXTURE("ground"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("ground",			ASSET TEXTURE("ground"), -1, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
 		ASSET AddMaterial("grass",			ASSET TEXTURE("grass"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 		ASSET AddMaterial("house01",		ASSET TEXTURE("house01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("house02",		ASSET TEXTURE("house02"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
@@ -147,16 +147,20 @@ void TerrainScene::BuildObjects()
 		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
 		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
 	}
+	
+	int TerrainSize = 1081;
 
-	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap_HN.raw", 1081, 1081, { 1.0f, 1.0f, 1.0f });
-	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, 1081, 1081, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
+	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap_HN.raw", TerrainSize, TerrainSize, { 1.0f, 1.0f, 1.0f });
+	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, TerrainSize, TerrainSize, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
 
 	///*** Game Object ***///
 
 	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<HostCameraController>();
+		HostCameraController* controller = mainCamera->AddComponent<HostCameraController>();
+		controller->heightmap = m_pHeightMapImage;
+		controller->terrainOffset = TerrainSize / 2;
 	}
 
 	{
@@ -173,7 +177,7 @@ void TerrainScene::BuildObjects()
 
 	GameObject* grid = CreateEmpty();
 	{
-		grid->GetComponent<Transform>()->position -= {512, 10, 512};
+		grid->GetComponent<Transform>()->position -= {(float)(TerrainSize / 2), 10, (float)(TerrainSize / 2)};
 		auto mesh = grid->AddComponent<MeshFilter>()->mesh = gridMesh;
 		grid->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
@@ -190,61 +194,68 @@ void TerrainScene::BuildObjects()
 	}
 
 	// billboard points
-	//{
-	//	struct TreeSpriteVertex
-	//	{
-	//		XMFLOAT3 Pos;
-	//		XMFLOAT2 Size;
-	//		XMFLOAT3 look;
-	//	};
-	//	std::vector<TreeSpriteVertex> vertices;
-	//	float sizex = 1, sizey = 1;
-	//	const int width = 1081, length = 1081;
-	//	vertices.reserve(width* length);
-	//	for (float i = 0; i < width; i += 1.0f)
-	//	{
-	//		for (float j = 0; j < length; j += 1.0f)
-	//		{
-	//			TreeSpriteVertex v;
-	//			v.Pos = XMFLOAT3(i, gridMesh->OnGetHeight(i, j, m_pHeightMapImage) + sizey / 2, j);
-	//			v.Size = XMFLOAT2(sizex, sizey);
-	//			v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
-	//			vertices.push_back(v);
-	//		}
-	//	}
-	//
-	//	auto geo = std::make_unique<Mesh>();
-	//	const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
-	//
-	//	geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-	//	D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
-	//	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-	//
-	//	auto device = Graphics::Instance()->device;
-	//	auto commandList = Graphics::Instance()->commandList;
-	//
-	//	geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	//
-	//	geo->VertexByteStride = sizeof(TreeSpriteVertex);
-	//	geo->VertexBufferByteSize = vbByteSize;
-	//
-	//	SubmeshGeometry submesh;
-	//	submesh.IndexCount = vertices.size();
-	//	submesh.StartIndexLocation = 0;
-	//	submesh.BaseVertexLocation = 0;
-	//
-	//	geo->DrawArgs["submesh"] = submesh;
-	//	ASSET AddMesh("Grass", std::move(geo));
-	//	//geometries["Grass"] = std::move(geo);
-	//
-	//
-	//	GameObject* billboards = CreateEmpty();
-	//	billboards->GetComponent<Transform>()->position -= {512, 10, 512};
-	//	auto mesh = billboards->AddComponent<MeshFilter>()->mesh = ASSET MESH("Grass");
-	//	billboards->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("grass"));
-	//	billboards->layer = (int)RenderLayer::Grass;
-	//
-	//}
+	{
+		struct TreeSpriteVertex
+		{
+			XMFLOAT3 Pos;
+			XMFLOAT2 Size;
+			XMFLOAT3 look;
+		};
+		std::vector<TreeSpriteVertex> vertices;
+		float sizex = 1, sizey = 1;
+		const int width = 1081, length = 1081;
+		float stride = 0.5f;
+		vertices.reserve(width*length*stride);
+		for (float i = 0; i < width; i += stride)
+		{
+			for (float j = 0; j < length; j += stride)
+			{
+				TreeSpriteVertex v;
+				float h = m_pHeightMapImage->GetHeight(i, j);
+				if (h > 33.0f)
+					continue;
+				if (m_pHeightMapImage->GetHeight(i, j) > 30.0f)
+					v.Size = XMFLOAT2(sizex / (h - 30.0f), sizey / (h - 30.0f));
+				else 
+					v.Size = XMFLOAT2(sizex, sizey);
+				v.Pos = XMFLOAT3(i, m_pHeightMapImage->GetHeight(i, j) + sizey / 2, j);;
+				v.look = XMFLOAT3(MathHelper::RandF(0.0f, 1.0f), 0.0f, MathHelper::RandF(0.0f, 1.0f));
+				vertices.push_back(v);
+			}
+		}
+	
+		auto geo = std::make_unique<Mesh>();
+		const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
+	
+		geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+		D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
+		CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+	
+		auto device = Graphics::Instance()->device;
+		auto commandList = Graphics::Instance()->commandList;
+	
+		geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	
+		geo->VertexByteStride = sizeof(TreeSpriteVertex);
+		geo->VertexBufferByteSize = vbByteSize;
+	
+		SubmeshGeometry submesh;
+		submesh.IndexCount = vertices.size();
+		submesh.StartIndexLocation = 0;
+		submesh.BaseVertexLocation = 0;
+	
+		geo->DrawArgs["submesh"] = submesh;
+		ASSET AddMesh("Grass", std::move(geo));
+		//geometries["Grass"] = std::move(geo);
+	
+	
+		GameObject* billboards = CreateEmpty();
+		billboards->GetComponent<Transform>()->position -= {(float)(TerrainSize / 2), 10, (float)(TerrainSize / 2)};
+		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = ASSET MESH("Grass");
+		billboards->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("grass"));
+		billboards->layer = (int)RenderLayer::Grass;
+	
+	}
 
 	auto menuSceneButton = CreateImage();
 	{

@@ -7,13 +7,14 @@ class HostCameraController : public MonoBehavior<HostCameraController>
 private /*이 영역에 private 변수를 선언하세요.*/:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = 0.2f * XM_PI;
-	float mRadius = 15.0f;
+	float mRadius = 50.0f;
 	Vector3 lookAtPos = { 0,0,0 };
 
 	Vector3 lastMousePos;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-
+	CHeightMapImage* heightmap;
+	int terrainOffset;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<HostCameraController>;
@@ -25,16 +26,18 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
-	}
-
-	void Update(/*업데이트 코드를 작성하세요.*/)
-	{
 		float x = lookAtPos.x + mRadius * sinf(mPhi) * cosf(mTheta);
 		float z = lookAtPos.z + mRadius * sinf(mPhi) * sinf(mTheta);
 		float y = lookAtPos.y + mRadius * cosf(mPhi);
 
-		gameObject->GetComponent<Transform>()->position = { x, y, z };
-		gameObject->GetComponent<Transform>()->forward = (lookAtPos - Vector3(x, y, z)).Normalize();
+		gameObject->transform->position = { x, y, z };
+		gameObject->transform->forward = (lookAtPos - Vector3(x, y, z)).Normalize();
+	}
+
+	void Update(/*업데이트 코드를 작성하세요.*/)
+	{
+		float tTheta = mTheta, tPhi = mPhi, tRadius = mRadius;
+		Vector3 tlookAtPos = lookAtPos;
 
 		if (Input::GetMouseButtonDown(2))
 		{
@@ -45,18 +48,17 @@ public:
 			Vector3 currMousePos = Input::mousePosition;
 			Vector3 delta = (currMousePos - lastMousePos) * 0.25f * (XM_PI / 180.0f);
 
-			mTheta += delta.x;
-			mPhi += delta.y;
+			tTheta = mTheta + delta.x;
+			tPhi = mPhi + delta.y;
 
-			mPhi = FbxClamp(mPhi, 0.1f, PI - 0.1f);
+			tPhi = FbxClamp(tPhi, 0.1f, PI - 0.1f);
 
 			lastMousePos = currMousePos;
 		}
 
 		else if (Input::GetMouseWheelDelta())
 		{
-			float delta = Input::GetMouseWheelDelta();
-			mRadius -= delta * 0.05f;
+			tRadius = mRadius - Input::GetMouseWheelDelta() * 0.05f;
 		}
 
 		else if (Input::GetMouseButtonDown(0))
@@ -68,13 +70,29 @@ public:
 			Vector3 currMousePos = Camera::main->ScreenToWorldPoint(Input::mousePosition);
 			Vector3 dir = currMousePos - lastMousePos;
 
-			lookAtPos.x -= dir.x * 50.0f;
-			lookAtPos.z -= dir.z * 50.0f;
+			tlookAtPos.x = lookAtPos.x - dir.x * mRadius;
+			tlookAtPos.z = lookAtPos.z - dir.z * mRadius;
 
 			lastMousePos = currMousePos;
 		}
 
-	}
+		float h = heightmap->GetHeight(gameObject->transform->position.x + terrainOffset, gameObject->transform->position.z + terrainOffset);
 
+		if (tlookAtPos.y + tRadius * cosf(tPhi) < h)
+			return;
+
+		lookAtPos = tlookAtPos;
+		mRadius = tRadius;
+		mTheta = tTheta; 
+		mPhi = tPhi;
+
+		float x = lookAtPos.x + mRadius * sinf(mPhi) * cosf(mTheta);
+		float z = lookAtPos.z + mRadius * sinf(mPhi) * sinf(mTheta);
+		float y = lookAtPos.y + mRadius * cosf(mPhi);
+
+		gameObject->transform->position = { x, y, z };
+		gameObject->transform->forward = (lookAtPos - Vector3(x, y, z)).Normalize();
+
+	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

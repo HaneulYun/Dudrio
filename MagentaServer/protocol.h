@@ -55,7 +55,9 @@ enum class BuildingType
 	Apple, Potato, Tomato, Fish, Watermellon,
 	Sack_Apple, Sack_Flour, Sack_Potato, Sack_Tomato, Sack_01, Sack_02,
 	Pumpkin_01, Pumpkin_02, Pumpkin_03
+
 };
+
 
 struct sc_packet_login_ok {
 	char size;
@@ -84,7 +86,24 @@ struct BuildingInform
 	BuildingType buildingType;
 	float xPos, yPos, zPos;
 	float rotAngle;
+
+	friend std::ostream& operator<<(std::ostream& os, const BuildingInform& b);
+	friend std::istream& operator>>(std::istream& in, BuildingInform& b);
 };
+
+static std::ostream& operator<<(std::ostream& os, const BuildingInform& b)
+{
+	os << static_cast<int>(b.buildingType) << " " << b.xPos << " " << b.yPos << " " << b.zPos << " " << b.rotAngle << std::endl;
+	return os;
+}
+
+static std::istream& operator>>(std::istream& in, BuildingInform& b)
+{
+	int input;
+	in >> input >> b.xPos >> b.yPos >> b.zPos >> b.rotAngle;
+	b.buildingType = static_cast<BuildingType>(input);
+	return in;
+}
 
 struct sc_packet_construct
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include "CyanEngine\CyanEngine\framework.h"
-#include "MagentaServer\protocol.h"
+//#include "MagentaServer\protocol.h"
 #include <WS2tcpip.h>
 #pragma comment(lib, "Ws2_32.lib")
 #include <unordered_map>

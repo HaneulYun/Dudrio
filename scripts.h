@@ -13,3 +13,4 @@
 #include "Building.h"
 #include "GuestNetwork.h"
 #include "HostNetwork.h"
+#include "GameLoader.h"

@@ -3,6 +3,7 @@
 
 BuildManager* BuildManager::buildManager{ nullptr };
 ButtonManager* ButtonManager::buttonManager{ nullptr };
+GameLoader* GameLoader::gameLoader{ nullptr };
 
 GameObject* TerrainScene::CreateTextButton()
 {
@@ -244,6 +245,10 @@ void TerrainScene::BuildObjects()
 		BuildManager::buildManager = buildManager;
 		ButtonManager* buttonManager = manager->AddComponent<ButtonManager>();
 		ButtonManager::buttonManager = buttonManager;
+		Builder* builder = manager->AddComponent<Builder>();
+		Builder::builder = builder;
+		GameLoader* gameload = manager->AddComponent<GameLoader>();
+		GameLoader::gameLoader = gameload;
 	}
 
 	auto menuSceneButton = CreateImage();
@@ -498,9 +503,9 @@ void TerrainScene::BuildObjects()
 		rectTransform->anchorMin = { 0, 1 };
 		rectTransform->anchorMax = { 0, 1 };
 		rectTransform->pivot = { 0, 1 };
-		rectTransform->posX = 300;
+		rectTransform->posX = 1110;
 		rectTransform->posY = -10;
-		rectTransform->width = 150;
+		rectTransform->width = 80;
 		rectTransform->height = 30;
 	
 		ServerButton->AddComponent<Button>()->AddEvent(
@@ -514,7 +519,65 @@ void TerrainScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 	
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Connect Server";
+			text->text = L"Open";
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
+	auto LoadButton = CreateImage();
+	{
+		auto rectTransform = LoadButton->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 1 };
+		rectTransform->anchorMax = { 0, 1 };
+		rectTransform->pivot = { 0, 1 };
+		rectTransform->posX = 1110;
+		rectTransform->posY = -50;
+		rectTransform->width = 80;
+		rectTransform->height = 30;
+
+		LoadButton->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				GameLoader::gameLoader->Load();
+			});
+		{
+			auto textobject = LoadButton->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"Load";
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
+	}
+
+	auto SaveButton = CreateImage();
+	{
+		auto rectTransform = SaveButton->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 1 };
+		rectTransform->anchorMax = { 0, 1 };
+		rectTransform->pivot = { 0, 1 };
+		rectTransform->posX = 1110;
+		rectTransform->posY = -90;
+		rectTransform->width = 80;
+		rectTransform->height = 30;
+
+		SaveButton->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				GameLoader::gameLoader->Save();
+			});
+		{
+			auto textobject = SaveButton->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"Save";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			textObjects.push_back(textobject);

@@ -15,3 +15,5 @@
 #include "MaterialScene.h"
 #include "AnimationScene.h"
 #include "ParticleScene.h"
+#include "SampleScene.h"
+//#include "TerrainScene.h"

@@ -11,7 +11,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	sceneManager->scenes["MaterialScene"] = new MaterialScene();
 	sceneManager->scenes["AnimationScene"] = new AnimationScene();
 	sceneManager->scenes["ParticleScene"] = new ParticleScene();
+	sceneManager->scenes["SampleScene"] = new SampleScene();
 	Scene::scene = sceneManager->scene = sceneManager->scenes["MenuScene"];
-
 	return CyanApp::Run(cyanFW, hInstance, nCmdShow);
 }

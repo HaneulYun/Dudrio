@@ -366,17 +366,17 @@ void TerrainScene::BuildObjects()
 		buttons_BuildingType[i]->GetComponent<RectTransform>()->posX = -80 + 40 * i;
 	}
 	buttons_BuildingType[0]->children.front()->GetComponent<Text>()->text = L"랜드\n마크";
-	buttons_BuildingType[0]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::LandMark); });
+	buttons_BuildingType[0]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::LandMark); BuildManager::buildManager->deleteButtonState = false; });
 	buttons_BuildingType[1]->children.front()->GetComponent<Text>()->text = L"주거\n건물";
-	buttons_BuildingType[1]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::House); });
+	buttons_BuildingType[1]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::House); BuildManager::buildManager->deleteButtonState = false; });
 	buttons_BuildingType[2]->children.front()->GetComponent<Text>()->text = L"테마\n건물";
-	buttons_BuildingType[2]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Theme); });
+	buttons_BuildingType[2]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Theme); BuildManager::buildManager->deleteButtonState = false; });
 	buttons_BuildingType[3]->children.front()->GetComponent<Text>()->text = L"조경";
-	buttons_BuildingType[3]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::landscape); });
+	buttons_BuildingType[3]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::landscape); BuildManager::buildManager->deleteButtonState = false; });
 	buttons_BuildingType[4]->children.front()->GetComponent<Text>()->text = L"소품";
-	buttons_BuildingType[4]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Decoration); });
+	buttons_BuildingType[4]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Decoration); BuildManager::buildManager->deleteButtonState = false; });
 	buttons_BuildingType[5]->children.front()->GetComponent<Text>()->text = L"삭제";
-	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Delete); });
+	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent([](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Delete); BuildManager::buildManager->deleteButtonState = true; });
 
 	for (int i = 0; i < 4/*5*/; ++i)
 	{
@@ -456,9 +456,9 @@ void TerrainScene::BuildObjects()
 			ButtonAssetItem{L"Fence_04",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Fence_04); }},
 			ButtonAssetItem{L"Bucket",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Bucket,		ASSET MESH("SM_Bucket"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 			ButtonAssetItem{L"Barrel",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Barrel,		ASSET MESH("SM_Barrel"), ASSET MATERIAL("material_01"), 0.01f, 0.75f); }},
-			ButtonAssetItem{L"Pitchfork"},
-			ButtonAssetItem{L"Axe"},
-			ButtonAssetItem{L"Ladder"},
+			//ButtonAssetItem{L"Pitchfork"},
+			//ButtonAssetItem{L"Axe"},
+			//ButtonAssetItem{L"Ladder"},
 			ButtonAssetItem{L"Spike",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Spike); }},
 
 			ButtonAssetItem{L"Cart_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_01); }},

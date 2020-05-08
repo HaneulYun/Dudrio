@@ -58,12 +58,15 @@ public:
 
 	void SelectButton(ButtonType type)
 	{
-		if (buttonType == type)
+		if (buttonType == type || type == ButtonType::Delete)
 		{
-			buttons_BuildingList[type][currentPage]->SetActive(false);
-			buttons_page[0]->SetActive(false); buttons_page[1]->SetActive(false);
-			buttonType = none;
-			currentPage = 0;
+			if (buttonType != -1)
+			{
+				buttons_BuildingList[buttonType][currentPage]->SetActive(false);
+				buttons_page[0]->SetActive(false); buttons_page[1]->SetActive(false);
+				buttonType = none;
+				currentPage = 0;
+			}
 		}
 		else if(type != ButtonType::Delete)
 		{

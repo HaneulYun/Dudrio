@@ -13,14 +13,15 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* terrain;
 	CHeightMapImage* heightMap;
 	CHeightMapGridMesh* terrainMesh;
-	float dT;
+	float distance;
 
+	bool deleteButtonState{ false };
 	bool rotationToggle{ false };
 	Vector3 lastMousePos;
-	static BuildManager* buildManager;
+
 
 	vector<BuildingInform> buildings;
-
+	static BuildManager* buildManager;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<BuildManager>;
@@ -38,13 +39,15 @@ public:
 	{
 		if (prefab)
 			Pick(Input::mousePosition.x, Input::mousePosition.y);
+		if (deleteButtonState)
+			PickObject(Input::mousePosition.x, Input::mousePosition.y);
 	}
 
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 
-	void Pick(int sx, int sy)
+	void Pick(int mx, int my)
 	{
-		Vector3 screenPos{ (float)sx, (float)sy, 1.0f };
+		Vector3 screenPos{ (float)mx, (float)my, 1.0f };
 
 		Vector3 rayOrigin{ 0.0f, 0.0f, 0.0f };
 		Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos);
@@ -64,9 +67,9 @@ public:
 			if (heightMap)
 			{
 				std::vector<XMFLOAT3> vertices;
-				point = rayOrigin + rayDir * dT;
+				point = rayOrigin + rayDir * distance;
 
-				for (float i = 1; i < dT + 1; i += 0.5)
+				for (float i = 1; i < distance + 1; i += 0.5)
 				{
 					Vector3 p = rayOrigin + rayDir * i;
 					if ((int)point.x == (int)p.x && (int)point.z == (int)p.z)
@@ -91,7 +94,7 @@ public:
 				IntersectVertices(rayOrigin.xmf3, rayDir.xmf3, vertices);
 			}
 
-			point = rayOrigin + rayDir * dT;
+			point = rayOrigin + rayDir * distance;
 			point = point.TransformCoord(terrain->transform->localToWorldMatrix);
 			if (Input::GetKeyDown(KeyCode::T))
 				rotationToggle = rotationToggle ? false : true;
@@ -145,6 +148,40 @@ public:
 		}
 	}
 
+	void PickObject(int mx, int my)
+	{
+		Vector3 screenPos{ (float)mx, (float)my, 1.0f };
+
+		Vector3 rayOrigin{ 0.0f, 0.0f, 0.0f };
+		Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos);
+
+		rayOrigin = rayOrigin.TransformCoord(Camera::main->view.Inverse());
+		rayDir = rayDir.Normalized();
+
+		GameObject* obj{ nullptr };
+		float minDist = MathHelper::Infinity;
+		for (auto& go : gameObject->scene->gameObjects)
+		{
+			BoxCollider* collider = go->GetComponent<BoxCollider>();
+			if (collider)
+			{
+				if (collider->boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), distance))
+					if (minDist > distance)
+					{
+						obj = go;
+						minDist = distance;
+					}
+			}	
+		}
+		if (obj != nullptr)
+		{
+			obj->transform->Rotate({ 0.0f,1.0f,0.0f }, 10.0f);
+			if (Input::GetMouseButtonUp(0))
+				gameObject->scene->PushDelete(obj);
+		}
+
+	}
+
 	bool IntersectPlane(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirection, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2)
 	{
 		XMFLOAT3 edge1{ v1.x - v0.x,v1.y - v0.y,v1.z - v0.z };
@@ -163,7 +200,7 @@ public:
 		float dot2 = NS_Vector3::DotProduct(planeNormal, rayOrigin);
 		float dot3 = NS_Vector3::DotProduct(planeNormal, rayDirection);
 
-		dT = (dot1 - dot2) / dot3;
+		distance = (dot1 - dot2) / dot3;
 
 		return true;
 
@@ -197,7 +234,7 @@ public:
 				if (t < tmin)
 				{
 					tmin = t;
-					dT = tmin;
+					distance = tmin;
 				}
 			}
 		}
@@ -218,6 +255,7 @@ public:
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
 			collider->extents = { 1.5f, 1.8f, 1.5f };
+			collider->center.y += collider->extents.y * 0.5f;
 			collider->obb = true;
 			{
 				GameObject* child = prefab->AddChild();
@@ -256,6 +294,7 @@ public:
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
 			collider->extents = { 2.5f, 4.5f, 2.5f };
+			collider->center.y += collider->extents.y * 0.5f;
 			collider->obb = true;
 			{
 				GameObject* child = prefab->AddChild();
@@ -289,6 +328,7 @@ public:
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
 			collider->extents = { 1.6f, 0.5f, 0.4f };
+			collider->center.y += collider->extents.y * 0.5f;
 			collider->obb = true;
 
 			GameObject* child = prefab->AddChild();
@@ -312,6 +352,7 @@ public:
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
 			collider->extents = { 1.5f, 0.5f, 0.4f };
+			collider->center.y += collider->extents.y * 0.5f;
 			collider->obb = true;
 
 			GameObject* child = prefab->AddChild();
@@ -332,6 +373,7 @@ public:
 			{
 				BoxCollider* collider = prefab->AddComponent<BoxCollider>();
 				collider->extents = { 1.4f, 0.8f, 0.4f };
+				collider->center.y += collider->extents.y * 0.5f;
 				collider->obb = true;
 				mesh = ASSET MESH("SM_Spike");
 				mat = ASSET MATERIAL("material_02");
@@ -370,6 +412,7 @@ public:
 			prefab->AddComponent<Building>();
 			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
 			collider->extents = { 1.7f, 0.5f, 1.0f };
+			collider->center.y += collider->extents.y * 0.5f;
 			collider->obb = true;
 
 			GameObject* child = prefab->AddChild();
@@ -387,7 +430,9 @@ public:
 		{
 			prefab = Scene::scene->CreateEmpty();
 			prefab->AddComponent<Building>();
-			prefab->AddComponent<BoxCollider>()->extents = { colliderSize, colliderSize, colliderSize };
+			BoxCollider* collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { colliderSize, colliderSize, colliderSize };
+			collider->center.y += collider->extents.y * 0.5f;
 
 			GameObject* child = prefab->AddChild();
 			child->AddComponent<MeshFilter>()->mesh = mesh;

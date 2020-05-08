@@ -2,7 +2,7 @@
 #include "HostNetwork.h"
 #include "CharacterMovingBehavior.h"
 
-HostNetwork* HostNetwork::network;
+HostNetwork* HostNetwork::network{ nullptr };
 
 void HostNetwork::ProcessPacket(char* ptr)
 {

@@ -37,6 +37,12 @@ public:
 
 	void Load()
 	{
+		for (auto& b : BuildManager::buildManager->buildings)
+		{
+			Scene::scene->PushDelete(b.second);
+		}
+		BuildManager::buildManager->buildings.clear();
+
 		std::ifstream in("Buildings.txt");
 		istream_iterator<BuildingInform> beg{ in };
 		istream_iterator<BuildingInform> end{};

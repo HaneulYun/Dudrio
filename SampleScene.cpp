@@ -192,9 +192,11 @@ void SampleScene::BuildObjects()
 	}
 
 	{
-		GameObject* build = CreateEmpty();
-		Builder* bd = build->AddComponent<Builder>();
+		GameObject* manager = CreateEmpty();
+		Builder* bd = manager->AddComponent<Builder>();
 		Builder::builder = bd;
+		BuildManager* bm = manager->AddComponent<BuildManager>();
+		BuildManager::buildManager = bm;
 	}
 
 	auto menuSceneButton = CreateImage();

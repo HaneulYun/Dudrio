@@ -206,7 +206,7 @@ public:
 					child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 				}
 			}
-				break;
+			break;
 			case BuildingType::House_02:
 			{
 				prefab = Scene::scene->CreateEmpty();
@@ -235,7 +235,7 @@ public:
 					child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 				}
 			}
-				break;
+			break;
 			case BuildingType::Fence_01:
 				mesh = ASSET MESH("SM_Fence_Var01");
 			case BuildingType::Fence_02:
@@ -362,6 +362,13 @@ public:
 			prefab->transform->position = { frontInform.xPos, frontInform.yPos, frontInform.zPos };
 			prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, frontInform.rotAngle);
 			BuildManager::buildManager->buildings[frontInform] = prefab;
+			if (HostNetwork::network != nullptr)
+			{
+				if (HostNetwork::network->isConnect)
+				{	// Networking
+					HostNetwork::network->send_construct_packet(frontInform);
+				}
+			}
 			buildCommand.pop_front();
 		}
 	}

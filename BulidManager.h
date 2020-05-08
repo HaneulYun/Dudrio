@@ -121,7 +121,6 @@ public:
 			{
 				prefab->children.front()->layer = (int)RenderLayer::Opaque;
 				prefab->GetComponent<Building>()->positionToAnimate = prefab->transform->position.y;
-				//prefab->transform->position.y -= prefab->GetComponent<BoxCollider>()->extents.y * 2 + 0.5f;
 				GameObject* go = Scene::scene->Duplicate(prefab);
 
 				BuildingInform b_inform;
@@ -141,7 +140,8 @@ public:
 					HostNetwork::network->send_construct_packet(b_inform);
 				}
 				go->transform->position.y -= prefab->GetComponent<BoxCollider>()->extents.y * 2 + 0.5f;
-				DeletePrefab();
+				if (!Input::GetKey(KeyCode::S))
+					DeletePrefab();
 			}
 			else
 				prefab->transform->position = { point.x, point.y, point.z };

@@ -376,7 +376,10 @@ void TerrainScene::BuildObjects()
 	buttons_BuildingType[4]->children.front()->GetComponent<Text>()->text = L"소품";
 	buttons_BuildingType[4]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Decoration); BuildManager::buildManager->deleteButtonState = false; });
 	buttons_BuildingType[5]->children.front()->GetComponent<Text>()->text = L"삭제";
-	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent([](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Delete); BuildManager::buildManager->deleteButtonState = true; });
+	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent([](void*) { 
+		ButtonManager::buttonManager->SelectButton(ButtonType::Delete); BuildManager::buildManager->deleteButtonState = true; 
+		if (BuildManager::buildManager->prefab) BuildManager::buildManager->DeletePrefab();
+		});
 
 	for (int i = 0; i < 4/*5*/; ++i)
 	{
@@ -477,7 +480,7 @@ void TerrainScene::BuildObjects()
 			ButtonAssetItem{L"Tomato",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tomato,		ASSET MESH("SM_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); }},
 			ButtonAssetItem{L"Watermellon",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Watermellon,	ASSET MESH("SM_Watermellon"), ASSET MATERIAL("material_02"), 0.01f, 0.3f); }},
 			ButtonAssetItem{L"Sack_Apple",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Apple,	ASSET MESH("SM_Sack_Apple"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
-			ButtonAssetItem{L"Sack_Flour",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Flour,	ASSET MESH("SM_Sack_Flour"), ASSET MATERIAL("material_02"), 0.01f, 0.45f); }},
+			ButtonAssetItem{L"Sack_Flour",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Flour,	ASSET MESH("SM_Sack_Flour"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
 			ButtonAssetItem{L"Sack_Potato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Potato,	ASSET MESH("SM_Sack_Potato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
 			ButtonAssetItem{L"Sack_Tomato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Tomato,	ASSET MESH("SM_Sack_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
 			ButtonAssetItem{L"Sack_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_01,		ASSET MESH("SM_Sack_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},

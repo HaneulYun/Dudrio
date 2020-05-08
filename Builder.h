@@ -38,132 +38,132 @@ public:
 			case BuildingType::House_01:
 				mesh = ASSET MESH("SM_House_Var01");
 				mat = ASSET MATERIAL("house01");
-				colliderSize = 5.5f;
+				colliderSize = 2.75f;
 				break;
 			case BuildingType::Mushroom_01:
 				mesh = ASSET MESH("SM_Mushroom_Var01");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.5f;
+				colliderSize = 0.2f;
 				break;
 			case BuildingType::Mushroom_02:
 				mesh = ASSET MESH("SM_Mushroom_Var02");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.5f;
+				colliderSize = 0.2f;
 				break;
 			case BuildingType::Mushroom_03:
 				mesh = ASSET MESH("SM_Mushroom_Var03");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.5f;
+				colliderSize = 0.2f;
 				break;
 			case BuildingType::Mushroom_04:
 				mesh = ASSET MESH("SM_Mushroom_Var04");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.5f;
+				colliderSize = 0.2f;
 				break;
 			case BuildingType::Mushroom_05:
 				mesh = ASSET MESH("SM_Mushroom_Var05");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.4f;
+				colliderSize = 0.15f;
 				break;
 			case BuildingType::Mushroom_06:
 				mesh = ASSET MESH("SM_Mushroom_Var06");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.4f;
+				colliderSize = 0.15f;
 				break;
 			case BuildingType::Bucket:
 				mesh = ASSET MESH("SM_Bucket");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			case BuildingType::Barrel:
 				mesh = ASSET MESH("SM_Barrel");
 				mat = ASSET MATERIAL("material_01");
-				colliderSize = 1.5f;
+				colliderSize = 0.75f;
 				break;
 			case BuildingType::Cauldron:
 				mesh = ASSET MESH("SM_Cauldron");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 1.0f;
+				colliderSize = 0.5f;
 				break;
 			case BuildingType::Pot_01:
 				mesh = ASSET MESH("SM_Pot_Var01");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			case BuildingType::Pot_02:
 				mesh = ASSET MESH("SM_Pot_Var02");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			case BuildingType::Pot_03:
 				mesh = ASSET MESH("SM_Pot_Var03");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			case BuildingType::Pot_04:
 				mesh = ASSET MESH("SM_Pot_Var04");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			case BuildingType::Pot_05:
 				mesh = ASSET MESH("SM_Pot_Var05");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			case BuildingType::Pot_06:
 				mesh = ASSET MESH("SM_Pot_Var06");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			case BuildingType::Apple:
 				mesh = ASSET MESH("SM_Apple");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.2f;
+				colliderSize = 0.1f;
 				break;
 			case BuildingType::Potato:
 				mesh = ASSET MESH("SM_Potato");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.2f;
+				colliderSize = 0.1f;
 				break;
 			case BuildingType::Tomato:
 				mesh = ASSET MESH("SM_Tomato");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.3f;
+				colliderSize = 0.15f;
 				break;
 			case BuildingType::Watermellon:
 				mesh = ASSET MESH("SM_Watermellon");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.6f;
+				colliderSize = 0.3f;
 				break;
 			case BuildingType::Sack_Apple:
 				mesh = ASSET MESH("SM_Sack_Apple");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 1.0f;
+				colliderSize = 0.5f;
 				break;
 			case BuildingType::Sack_Flour:
 				mesh = ASSET MESH("SM_Sack_Flour");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.9f;
+				colliderSize = 0.5f;
 				break;
 			case BuildingType::Sack_Potato:
 				mesh = ASSET MESH("SM_Sack_Potato");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 1.0f;
+				colliderSize = 0.5f;
 				break;
 			case BuildingType::Sack_Tomato:
 				mesh = ASSET MESH("SM_Sack_Tomato");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 1.0f;
+				colliderSize = 0.5f;
 				break;
 			case BuildingType::Sack_01:
 				mesh = ASSET MESH("SM_Sack_Var01");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 1.0f;
+				colliderSize = 0.5f;
 				break;
 			case BuildingType::Sack_02:
 				mesh = ASSET MESH("SM_Sack_Var02");
 				mat = ASSET MATERIAL("material_02");
-				colliderSize = 0.8f;
+				colliderSize = 0.4f;
 				break;
 			}
 

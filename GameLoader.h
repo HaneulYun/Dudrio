@@ -31,7 +31,7 @@ public:
 	{
 		std::ofstream out("Buildings.txt");
 		for (auto& b : BuildManager::buildManager->buildings)
-			out << b;
+			out << b.first;
 		out.close();
 	}
 
@@ -43,11 +43,14 @@ public:
 
 		while (beg != end)
 		{
-			BuildManager::buildManager->buildings.emplace_back(*beg);
-			Builder::builder->BuildNewBuilding(*beg);
+			auto iter = BuildManager::buildManager->buildings.find(*beg);
+		
+			if (iter == BuildManager::buildManager->buildings.end())
+			{
+				Builder::builder->BuildNewBuilding(*beg);
+			}
 			*beg++;
 		}
-
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

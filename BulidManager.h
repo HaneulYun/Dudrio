@@ -165,7 +165,14 @@ public:
 			BoxCollider* collider = go->GetComponent<BoxCollider>();
 			if (collider)
 			{
-				if (collider->boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), distance))
+				BoundingBox b = collider->boundingBox;
+				XMFLOAT4 quarternion;
+				XMStoreFloat4(&quarternion, DirectX::XMQuaternionRotationMatrix(XMLoadFloat4x4(&go->transform->localToWorldMatrix.xmf4x4)));
+				BoundingOrientedBox boundingBox;
+				boundingBox.Orientation = quarternion;
+				boundingBox.Center = b.Center;
+				boundingBox.Extents = NS_Vector3::ScalarProduct(b.Extents, 0.9f, false);
+				if (boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), distance))
 					if (minDist > distance)
 					{
 						obj = go;
@@ -175,7 +182,7 @@ public:
 		}
 		if (obj != nullptr)
 		{
-			obj->transform->Rotate({ 0.0f,1.0f,0.0f }, 10.0f);
+			obj->transform->Rotate({ 0.0f,1.0f,0.0f }, 5.0f);
 			if (Input::GetMouseButtonUp(0))
 				gameObject->scene->PushDelete(obj);
 		}

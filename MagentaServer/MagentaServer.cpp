@@ -33,7 +33,7 @@ struct CLIENT {
 	EXOVER	m_recv_over;
 	int		m_prev_size;
 	char	m_packet_buf[MAX_PACKET_SIZE];
-	//bool	m_connected;
+
 	C_STATUS	m_status;
 
 	float	x, z;
@@ -42,7 +42,7 @@ struct CLIENT {
 };
 
 CLIENT g_clients[MAX_USER];
-//int g_curr_user_id = 0;
+
 int g_host_user_id = -1;
 HANDLE g_iocp;
 SOCKET l_socket;
@@ -135,7 +135,32 @@ void send_construct_packet(int user_id, BuildingInform b_inform)
 	p.type = S2C_CONSTRUCT;
 	p.b_inform = b_inform;
 
-	printf("전송! buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
+	printf("건설 메시지 전송! buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
+
+	send_packet(user_id, &p);
+}
+
+void send_destruct_packet(int user_id, BuildingInform b_inform)
+{
+	sc_packet_destruct p;
+	p.id = g_host_user_id;
+	p.size = sizeof(p);
+	p.type = S2C_DESTRUCT;
+	p.b_inform = b_inform;
+
+	printf("파괴 메시지 전송! buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
+
+	send_packet(user_id, &p);
+}
+
+void send_destruct_all_packet(int user_id)
+{
+	sc_packet_destruct_all p;
+	p.id = g_host_user_id;
+	p.size = sizeof(p);
+	p.type = S2C_DESTRUCT_ALL;
+
+	printf("모두 파괴 메시지 전송!\n");
 
 	send_packet(user_id, &p);
 }
@@ -199,6 +224,40 @@ void do_construct(int user_id, BuildingInform b_inform)
 			send_construct_packet(cl.m_id, b_inform);
 	}
 }
+
+void do_destruct(int user_id, BuildingInform b_inform)
+{
+	for (auto& b : buildings)
+	{
+		if (b == b_inform)
+		{
+			b = buildings.back();
+			buildings.pop_back();
+			break;
+		}
+	}
+
+	for (auto& cl : g_clients)
+	{
+		if (user_id == cl.m_id)
+			continue;
+		if (ST_ACTIVE == cl.m_status)
+			send_destruct_packet(cl.m_id, b_inform);
+	}
+}
+
+void destruct_all(int user_id)
+{
+	buildings.clear();
+	for (auto& cl : g_clients)
+	{
+		if (user_id == cl.m_id)
+			continue;
+		if (ST_ACTIVE == cl.m_status)
+			send_destruct_all_packet(cl.m_id);
+	}
+}
+
 
 void initialize_clients()
 {
@@ -286,6 +345,20 @@ void process_packet(int user_id, char* buf)
 		cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf);
 		if (user_id == g_host_user_id)
 			do_construct(user_id, packet->b_inform);
+	}
+	break;
+	case C2S_DESTRUCT:
+	{
+		cs_packet_destruct* packet = reinterpret_cast<cs_packet_destruct*>(buf);
+		if (user_id == g_host_user_id)
+			do_destruct(user_id, packet->b_inform);
+	}
+	break;
+	case C2S_DESTRUCT_ALL:
+	{
+		cs_packet_destruct_all* packet = reinterpret_cast<cs_packet_destruct_all*>(buf);
+		if (user_id == g_host_user_id)
+			destruct_all(user_id);
 	}
 	break;
 	default:

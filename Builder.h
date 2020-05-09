@@ -362,6 +362,8 @@ public:
 			prefab->transform->position = { frontInform.xPos, frontInform.yPos, frontInform.zPos };
 			prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, frontInform.rotAngle);
 			BuildManager::buildManager->buildings[frontInform] = prefab;
+			prefab->GetComponent<Building>()->positionToAnimate = prefab->transform->position.y;
+			prefab->transform->position.y -= prefab->GetComponent<BoxCollider>()->extents.y * 2 + 0.5f;
 			if (HostNetwork::network != nullptr)
 			{
 				if (HostNetwork::network->isConnect)

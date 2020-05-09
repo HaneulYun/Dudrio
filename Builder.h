@@ -6,7 +6,7 @@ class Builder : public MonoBehavior<Builder>
 private /*이 영역에 private 변수를 선언하세요.*/:
 	GameObject* prefab{ nullptr };
 	deque<BuildingInform> buildCommand;
-
+	deque<BuildingInform> destroyCommand;
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static Builder* builder;
 
@@ -371,11 +371,44 @@ public:
 			}
 			buildCommand.pop_front();
 		}
+
+		while (!destroyCommand.empty())
+		{
+			BuildingInform frontInform = destroyCommand.front();
+			auto it = BuildManager::buildManager->buildings.find(frontInform);
+			if (it != BuildManager::buildManager->buildings.end())
+			{
+				Scene::scene->PushDelete(it->second);
+				BuildManager::buildManager->buildings.erase(it);
+				if (HostNetwork::network != nullptr)
+				{
+					if (HostNetwork::network->isConnect)
+					{	// Networking
+						HostNetwork::network->send_destruct_packet(frontInform);
+					}
+				}
+			}
+			destroyCommand.pop_front();
+		}
 	}
 
 	void BuildNewBuilding(BuildingInform b_inform)
 	{
 		buildCommand.emplace_back(b_inform);
+	}
+
+	void DestroyBuilding(BuildingInform b_inform)
+	{
+		destroyCommand.emplace_back(b_inform);
+	}
+
+	void DestroyAllBuilding()
+	{
+		for (auto& b : BuildManager::buildManager->buildings)
+		{
+			Scene::scene->PushDelete(b.second);
+		}
+		BuildManager::buildManager->buildings.clear();
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

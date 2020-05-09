@@ -76,6 +76,10 @@ void HostNetwork::ProcessPacket(char* ptr)
 
 	case S2C_CONSTRUCT:
 		break;
+	case S2C_DESTRUCT:
+		break;
+	case S2C_DESTRUCT_ALL:
+		break;
 
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
@@ -131,6 +135,25 @@ void HostNetwork::send_construct_packet(BuildingInform b_inform)
 	send_packet(&m_packet);
 }
 
+void HostNetwork::send_destruct_packet(BuildingInform b_inform)
+{
+	cs_packet_destruct m_packet;
+	m_packet.type = C2S_DESTRUCT;
+	m_packet.size = sizeof(m_packet);
+	m_packet.b_inform = b_inform;
+
+	send_packet(&m_packet);
+}
+
+void HostNetwork::send_destruct_all_packet()
+{
+	cs_packet_destruct_all m_packet;
+	m_packet.type = C2S_DESTRUCT_ALL;
+	m_packet.size = sizeof(m_packet);
+
+	send_packet(&m_packet);
+}
+
 void HostNetwork::Login()
 {
 	cs_packet_login l_packet;
@@ -142,5 +165,7 @@ void HostNetwork::Login()
 	send_packet(&l_packet);
 
 	for (auto& p : BuildManager::buildManager->buildings)
+	{
 		send_construct_packet(p.first);
+	}
 }

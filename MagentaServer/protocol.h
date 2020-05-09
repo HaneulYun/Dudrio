@@ -93,8 +93,8 @@ struct BuildingInform
 
 	bool operator== (const BuildingInform& b) const
 	{
-		return ((buildingType == b.buildingType) && (xPos == b.xPos) && (yPos == b.yPos)
-			&& (zPos == b.zPos) && (rotAngle == b.rotAngle));
+		return ((xPos == b.xPos) && (yPos == b.yPos)
+			&& (zPos == b.zPos));
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const BuildingInform& b);
@@ -108,8 +108,8 @@ struct BuildingInformHasher
 		using std::size_t;
 		using std::hash;
 
-		return ((hash<int>()(static_cast<int>(b.buildingType))
-			^ (hash<float>()(b.xPos) << 1)) >> 1) ^ (hash<float>()(b.zPos) << 1);
+		return ((hash<float>()(b.xPos)
+			^ (hash<float>()(b.yPos) << 1)) >> 1) ^ (hash<float>()(b.zPos) << 1);
 	}
 };
 

@@ -47,6 +47,8 @@ public:
 
 	void send_packet(void* packet);
 	void send_construct_packet(BuildingInform b_inform);
+	void send_destruct_packet(BuildingInform b_inform);
+	void send_destruct_all_packet();
 
 	void Login();
 

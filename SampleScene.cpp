@@ -237,7 +237,6 @@ void SampleScene::BuildObjects()
 
 		auto cameraOffset = player->AddChild();
 		{
-			cameraOffset->transform->position = { 0, 3, -6 };
 			camera = camera->main = cameraOffset->AddComponent<Camera>();
 			cameraOffset->AddComponent<CameraController>();
 		}

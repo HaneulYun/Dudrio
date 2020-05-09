@@ -6,10 +6,11 @@ class CameraController : public MonoBehavior<CameraController>
 private /*이 영역에 private 변수를 선언하세요.*/:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = 0.2f * XM_PI;
-	float mRadius = 15.0f;
+	float mRadius = 5.0f;
 	
 	Vector3 lastMousePos;
 
+	Vector3 lookAtPos = { 0,2,0 };
 public  /*이 영역에 public 변수를 선언하세요.*/:
 
 private:
@@ -27,12 +28,12 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		float x = mRadius * sinf(mPhi) * cosf(mTheta);
-		float z = mRadius * sinf(mPhi) * sinf(mTheta);
-		float y = mRadius * cosf(mPhi);
-		
-		gameObject->GetComponent<Transform>()->position = { x, y, z };
-		gameObject->GetComponent<Transform>()->forward = (Vector3(0, 0, 0) - Vector3(x, y, z)).Normalize();
+		float x = lookAtPos.x + mRadius * sinf(mPhi) * cosf(mTheta);
+		float z = lookAtPos.z + mRadius * sinf(mPhi) * sinf(mTheta);
+		float y = lookAtPos.y + mRadius * cosf(mPhi);
+
+		gameObject->transform->position = { x, y, z };
+		gameObject->transform->forward = (lookAtPos - Vector3(x, y, z)).Normalize();
 
 		if (Input::GetMouseButtonDown(2))
 		{

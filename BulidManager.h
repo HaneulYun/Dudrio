@@ -133,6 +133,7 @@ public:
 				b_inform.xPos = prefab->transform->position.x;
 				b_inform.yPos = prefab->transform->position.y;
 				b_inform.zPos = prefab->transform->position.z;
+
 				buildings[b_inform] = go;
 				if (HostNetwork::network->isConnect)
 				{	// Networking
@@ -181,9 +182,26 @@ public:
 		}
 		if (obj != nullptr)
 		{
-			obj->transform->Rotate({ 0.0f,1.0f,0.0f }, 5.0f);
 			if (Input::GetMouseButtonUp(0))
-				gameObject->scene->PushDelete(obj);
+			{
+				BuildingInform b_inform;				
+				b_inform.xPos = obj->transform->position.x;
+				b_inform.yPos = obj->transform->position.y;
+				b_inform.zPos = obj->transform->position.z;
+				auto it = buildings.find(b_inform);
+				if (it != buildings.end())
+				{
+					if (HostNetwork::network != nullptr)
+					{
+						if (HostNetwork::network->isConnect)
+						{	// Networking
+							HostNetwork::network->send_destruct_packet(it->first);
+						}
+					}
+					Scene::scene->PushDelete(it->second);
+					BuildManager::buildManager->buildings.erase(it);
+				}
+			}
 		}
 
 	}

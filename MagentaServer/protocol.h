@@ -13,12 +13,16 @@ constexpr int MAX_USER = 10;
 #define C2S_MOVE			2
 #define C2S_LOGIN_HOST		3	// Host to Server
 #define C2S_CONSTRUCT		4	// Host to Server
+#define C2S_DESTRUCT		5	// Host to Server
+#define C2S_DESTRUCT_ALL	6	// Host to Server
 
 #define S2C_LOGIN_OK		1
 #define S2C_MOVE			2
 #define S2C_ENTER			3
 #define S2C_LEAVE			4
-#define S2C_CONSTRUCT		5	
+#define S2C_CONSTRUCT		5	// Server to Guest
+#define S2C_DESTRUCT		6	// Server to Guest
+#define S2C_DESTRUCT_ALL	7	// Server to Guest
 
 #pragma pack(push ,1)
 
@@ -89,8 +93,8 @@ struct BuildingInform
 
 	bool operator== (const BuildingInform& b) const
 	{
-		return ((buildingType == b.buildingType) && (xPos == b.xPos) && (yPos == b.yPos)
-			&& (zPos == b.zPos) && (rotAngle == b.rotAngle));
+		return ((xPos == b.xPos) && (yPos == b.yPos)
+			&& (zPos == b.zPos));
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const BuildingInform& b);
@@ -104,8 +108,8 @@ struct BuildingInformHasher
 		using std::size_t;
 		using std::hash;
 
-		return ((hash<int>()(static_cast<int>(b.buildingType))
-			^ (hash<float>()(b.xPos) << 1)) >> 1) ^ (hash<float>()(b.zPos) << 1);
+		return ((hash<float>()(b.xPos)
+			^ (hash<float>()(b.yPos) << 1)) >> 1) ^ (hash<float>()(b.zPos) << 1);
 	}
 };
 
@@ -129,6 +133,21 @@ struct sc_packet_construct
 	char type;
 	int id;
 	BuildingInform b_inform;
+};
+
+struct sc_packet_destruct
+{
+	char size;
+	char type;
+	int id;
+	BuildingInform b_inform;
+};
+
+struct sc_packet_destruct_all
+{
+	char size;
+	char type;
+	int id;
 };
 
 constexpr unsigned char O_GUEST = 0;
@@ -169,6 +188,21 @@ struct cs_packet_construct
 	char type;
 
 	BuildingInform b_inform;
+};
+
+struct cs_packet_destruct
+{
+	char size;
+	char type;
+
+	BuildingInform b_inform;
+};
+
+struct cs_packet_destruct_all
+{
+	char size;
+	char type;
+	int id;
 };
 
 #pragma pack (pop)

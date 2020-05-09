@@ -79,8 +79,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		else 
 		{
 			// HOST라면 모든 건물 삭제 및 모든 캐릭터 삭제
-			//Scene::scene->PushDelete(myCharacter);
-			//myCharacter = NULL;
+			Builder::builder->DestroyAllBuilding();
 
 			hostId = -1;
 			for (auto& others : otherCharacters)
@@ -100,6 +99,28 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		if (other_id == hostId)
 		{
 			Builder::builder->BuildNewBuilding(my_packet->b_inform);
+		}
+	}
+		break;
+	case S2C_DESTRUCT:
+	{
+		sc_packet_destruct* my_packet = reinterpret_cast<sc_packet_destruct*>(ptr);
+		int other_id = my_packet->id;
+
+		if (other_id == hostId)
+		{
+			Builder::builder->DestroyBuilding(my_packet->b_inform);
+		}
+	}
+		break;
+	case S2C_DESTRUCT_ALL:
+	{
+		sc_packet_destruct_all* my_packet = reinterpret_cast<sc_packet_destruct_all*>(ptr);
+		int other_id = my_packet->id;
+
+		if (other_id == hostId)
+		{
+			Builder::builder->DestroyAllBuilding();
 		}
 	}
 		break;

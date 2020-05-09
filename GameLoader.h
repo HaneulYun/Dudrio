@@ -43,6 +43,14 @@ public:
 		}
 		BuildManager::buildManager->buildings.clear();
 
+		if (HostNetwork::network != nullptr)
+		{
+			if (HostNetwork::network->isConnect)
+			{
+				HostNetwork::network->send_destruct_all_packet();
+			}
+		}
+
 		std::ifstream in("Buildings.txt");
 		istream_iterator<BuildingInform> beg{ in };
 		istream_iterator<BuildingInform> end{};

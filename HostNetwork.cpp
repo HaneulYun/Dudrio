@@ -2,7 +2,7 @@
 #include "HostNetwork.h"
 #include "CharacterMovingBehavior.h"
 
-HostNetwork* HostNetwork::network;
+HostNetwork* HostNetwork::network{ nullptr };
 
 void HostNetwork::ProcessPacket(char* ptr)
 {
@@ -142,5 +142,5 @@ void HostNetwork::Login()
 	send_packet(&l_packet);
 
 	for (auto& p : BuildManager::buildManager->buildings)
-		send_construct_packet(p);
+		send_construct_packet(p.first);
 }

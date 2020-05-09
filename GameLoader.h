@@ -31,23 +31,32 @@ public:
 	{
 		std::ofstream out("Buildings.txt");
 		for (auto& b : BuildManager::buildManager->buildings)
-			out << b;
+			out << b.first;
 		out.close();
 	}
 
 	void Load()
 	{
+		for (auto& b : BuildManager::buildManager->buildings)
+		{
+			Scene::scene->PushDelete(b.second);
+		}
+		BuildManager::buildManager->buildings.clear();
+
 		std::ifstream in("Buildings.txt");
 		istream_iterator<BuildingInform> beg{ in };
 		istream_iterator<BuildingInform> end{};
 
 		while (beg != end)
 		{
-			BuildManager::buildManager->buildings.emplace_back(*beg);
-			Builder::builder->BuildNewBuilding(*beg);
+			auto iter = BuildManager::buildManager->buildings.find(*beg);
+		
+			if (iter == BuildManager::buildManager->buildings.end())
+			{
+				Builder::builder->BuildNewBuilding(*beg);
+			}
 			*beg++;
 		}
-
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

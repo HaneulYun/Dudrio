@@ -19,8 +19,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	bool rotationToggle{ false };
 	Vector3 lastMousePos;
 
-
-	vector<BuildingInform> buildings;
+	unordered_map<BuildingInform, GameObject*, BuildingInformHasher> buildings;
 	static BuildManager* buildManager;
 private:
 	friend class GameObject;
@@ -134,7 +133,7 @@ public:
 				b_inform.xPos = prefab->transform->position.x;
 				b_inform.yPos = prefab->transform->position.y;
 				b_inform.zPos = prefab->transform->position.z;
-				buildings.emplace_back(b_inform);
+				buildings[b_inform] = go;
 				if (HostNetwork::network->isConnect)
 				{	// Networking
 					HostNetwork::network->send_construct_packet(b_inform);

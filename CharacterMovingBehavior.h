@@ -30,7 +30,7 @@ public:
 	{
 		// 서버에서 받은 위치 부드럽게 보간하는 식 작성하기
 		gameObject->transform->position += velocity * Time::deltaTime;
-		gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x + 540, gameObject->transform->position.z + 540) - 10;
+		gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
 
 		anim->SetFloat("VelocityZ", velocity.z);
 		anim->SetFloat("VelocityX", velocity.x);

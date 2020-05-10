@@ -34,6 +34,7 @@ public:
 
 		gameObject->transform->position = { x, y, z };
 		gameObject->transform->forward = (lookAtPos - Vector3(x, y, z)).Normalize();
+		gameObject->parent->transform->forward = (lookAtPos - Vector3(x, y, z)).Normalize();
 
 		if (Input::GetMouseButtonDown(2))
 		{

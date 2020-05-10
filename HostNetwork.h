@@ -12,16 +12,21 @@ using namespace std;
 class HostNetwork : public MonoBehavior<HostNetwork>
 {
 private:
+	GameObject* ip{ nullptr };
+	GameObject* ipImage{ nullptr };
+	Text* inputIp{ nullptr };
 
 public:
 	WSADATA WSAData;
 	std::wstring wserverIp;
 	SOCKET serverSocket;
 	int myId;
+	int retval;
 	char name[MAX_ID_LEN];
 	bool isConnect{ false };
 	bool tryConnect{ false };
-	int retval;
+	bool pressButton{ false };
+
 	static HostNetwork* network;
 
 public:
@@ -54,19 +59,70 @@ public:
 
 	void Start()
 	{
-	
+		WSAStartup(MAKEWORD(2, 0), &WSAData);
+		serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
 	}
 
 	void Update()
 	{
+		if (pressButton)
+		{
+			for (char key = '0'; key <= '9'; ++key)
+			{
+				if (Input::GetKeyDown((KeyCode)key))
+				{
+					wserverIp += key;
+					if (inputIp != nullptr)
+						inputIp->text = wserverIp;
+				}
+			}
+			if (Input::GetKeyDown(KeyCode::B))
+			{
+				wserverIp += '.';
+				if (inputIp != nullptr)
+					inputIp->text = wserverIp;
+			}
+			if (Input::GetKeyDown(KeyCode::C))
+			{
+				if(!wserverIp.empty())
+					wserverIp.pop_back();
+				if (inputIp != nullptr)
+					inputIp->text = wserverIp;
+			}
+			if (Input::GetKeyDown(KeyCode::A))
+			{
+				std::string serverIp;
+				serverIp.assign(wserverIp.begin(), wserverIp.end());
+
+				SOCKADDR_IN serveraddr{};
+				serveraddr.sin_family = AF_INET;
+				serveraddr.sin_addr.s_addr = inet_addr(serverIp.c_str());
+				serveraddr.sin_port = htons(SERVER_PORT);
+
+				retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
+
+				tryConnect = true;
+				pressButton = false;
+
+				ip->SetActive(false);
+				ipImage->SetActive(false);
+
+				wserverIp.clear();
+			}
+		}
 		if (tryConnect)
 		{
 			if (retval == SOCKET_ERROR)
+			{
 				tryConnect = false;
+				isConnect = false;
+				wserverIp.clear();
+			}
 			else if (retval == 0)
 			{
 				tryConnect = false;
 				isConnect = true;
+				wserverIp.clear();
 				unsigned long on = true;
 				int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
 				Login();
@@ -117,27 +173,83 @@ public:
 
 	void PressButton()
 	{
-		if (!isConnect && !tryConnect)
+		if (!isConnect && !tryConnect && !pressButton)
 		{
-			WSAStartup(MAKEWORD(2, 0), &WSAData);
-			serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
-			//unsigned long on = true;
-			//int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
+			wserverIp.clear();
+			if (inputIp != nullptr)
+				inputIp->text = wserverIp;
+			pressButton = true;
 
-			std::wstring title(L"Input IP Here : ");
-			SetWindowText(CyanApp::GetHwnd(), title.c_str());
+			if (ip == nullptr)
+			{
+				ip = Scene::scene->CreateUI();
+				{
+					auto rectTransform = ip->GetComponent<RectTransform>();
+					rectTransform->anchorMin = { 0, 1 };
+					rectTransform->anchorMax = { 0, 1 };
+					rectTransform->pivot = { 0, 1 };
+					rectTransform->posX = 350;
+					rectTransform->posY = -30;
+					rectTransform->width = 300;
+					rectTransform->height = 40;
 
-			std::string serverIp = "127.0.0.1";
-			//serverIp.assign(wserverIp.begin(), wserverIp.end());
+					Text* text = ip->AddComponent<Text>();
+					text->text = L"Input Server IP : ";
+					text->fontSize = 30;
+					text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+					text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+					text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+					Scene::scene->textObjects.push_back(ip);
+				}
+			}
+			else
+				ip->SetActive(true);
+			if (ipImage == nullptr)
+			{
+				ipImage = Scene::scene->CreateImage();
+				{
+					auto rectTransform = ipImage->GetComponent<RectTransform>();
+					rectTransform->anchorMin = { 0, 1 };
+					rectTransform->anchorMax = { 0, 1 };
+					rectTransform->pivot = { 0, 1 };
+					rectTransform->posX = 650;
+					rectTransform->posY = -30;
+					rectTransform->width = 300;
+					rectTransform->height = 40;
 
-			SOCKADDR_IN serveraddr{};
-			serveraddr.sin_family = AF_INET;
-			serveraddr.sin_addr.s_addr = inet_addr(serverIp.c_str());
-			serveraddr.sin_port = htons(SERVER_PORT);
+					//ipImage->AddComponent<Button>()->AddEvent(
+					//	[](void*) {
+					//	
+					//	});
+					{
+						auto textobject = ipImage->AddChildUI();
+						auto rectTransform = textobject->GetComponent<RectTransform>();
+						rectTransform->anchorMin = { 0, 0 };
+						rectTransform->anchorMax = { 1, 1 };
 
-			retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
-
-			tryConnect = true;
+						inputIp = textobject->AddComponent<Text>();
+						inputIp->text = wserverIp;
+						inputIp->fontSize = 30;
+						inputIp->color = { 0.0f, 0.0f, 0.0f, 1.0f };
+						inputIp->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+						inputIp->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+						Scene::scene->textObjects.push_back(textobject);
+					}
+				}
+			}
+			else
+				ipImage->SetActive(true);
+		}
+		else if (pressButton)
+		{
+			pressButton = false;
+			wserverIp.clear();
+			if(inputIp != nullptr)
+				inputIp->text = wserverIp;
+			if (ip != nullptr)
+				ip->SetActive(false);
+			if (ipImage != nullptr)
+				ipImage->SetActive(false);
 		}
 	}
 };

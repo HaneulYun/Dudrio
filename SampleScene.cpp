@@ -232,8 +232,10 @@ void SampleScene::BuildObjects()
 
 	auto network = CreateEmpty();
 	{
-		network->AddComponent<GuestNetwork>()->simsPrefab = SimsPrefab;
-		auto player = network->GetComponent<GuestNetwork>()->myCharacter = Duplicate(SimsPrefab);
+		GuestNetwork* gn = network->AddComponent<GuestNetwork>();
+		gn->simsPrefab = SimsPrefab;
+		auto player = gn->myCharacter = Duplicate(SimsPrefab);
+		GuestNetwork::network = gn;
 
 		auto cameraOffset = player->AddChild();
 		{
@@ -249,6 +251,35 @@ void SampleScene::BuildObjects()
 		Builder::builder = bd;
 		BuildManager* bm = manager->AddComponent<BuildManager>();
 		BuildManager::buildManager = bm;
+	}
+
+	auto ServerButton = CreateImage();
+	{
+		auto rectTransform = ServerButton->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 1 };
+		rectTransform->anchorMax = { 0, 1 };
+		rectTransform->pivot = { 0, 1 };
+		rectTransform->posX = 1110;
+		rectTransform->posY = -10;
+		rectTransform->width = 80;
+		rectTransform->height = 30;
+
+		ServerButton->AddComponent<Button>()->AddEvent(
+			[](void*) {
+				GuestNetwork::network->PressButton();
+			});
+		{
+			auto textobject = ServerButton->AddChildUI();
+			auto rectTransform = textobject->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0, 0 };
+			rectTransform->anchorMax = { 1, 1 };
+
+			Text* text = textobject->AddComponent<Text>();
+			text->text = L"connect";
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			textObjects.push_back(textobject);
+		}
 	}
 
 	auto menuSceneButton = CreateImage();

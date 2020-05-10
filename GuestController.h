@@ -10,6 +10,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	Animator* animator;
 
+	Vector3 lastMousePos;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<GuestController>;
@@ -46,6 +47,19 @@ public:
 
 		animator->SetFloat("VelocityZ", velocity.z);
 		animator->SetFloat("VelocityX", velocity.x);
+
+		if (Input::GetMouseButtonDown(2))
+		{
+			lastMousePos = Input::mousePosition;
+		}
+		else if (Input::GetMouseButton(2))
+		{
+			Vector3 currMousePos = Input::mousePosition;
+
+			gameObject->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.x - Input::mousePosition.x) * Time::deltaTime * 60.0f);
+
+			lastMousePos = Input::mousePosition;
+		}
 	}
 
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.

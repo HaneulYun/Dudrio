@@ -22,7 +22,7 @@ void MenuScene::BuildObjects()
 	auto mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->AddComponent<CameraController>();
+		//mainCamera->AddComponent<CameraController>();
 	}
 
 	auto background = CreateImage();

@@ -463,8 +463,8 @@ void loop()
 				nc.m_recv_over.wsabuf.buf = nc.m_recv_over.io_buf;
 				nc.m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 				nc.m_s = c_socket;
-				nc.x = 0.0;
-				nc.z = 0.0;
+				nc.x = 540.0;
+				nc.z = 540.0;
 				nc.xMove = 0.0;
 				nc.zMove = 0.0;
 				DWORD flags = 0;

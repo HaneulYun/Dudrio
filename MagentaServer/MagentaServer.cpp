@@ -165,27 +165,17 @@ void send_destruct_all_packet(int user_id)
 	send_packet(user_id, &p);
 }
 
-void do_move(int user_id, float xMove, float zMove)// int direction)
+void do_move(int user_id, float xPos, float zPos, float xMove, float zMove)
 {
 	CLIENT& u = g_clients[user_id];
-	float x = u.x;
-	float z = u.z;
 
-	// 이 검사식 대신 Normalize 필요
-	if (xMove > 4.0f)	xMove = 4.0f;
-	else if (xMove < -4.0f)	xMove = -4.0f;
-	if (zMove > 4.0f)	zMove = 4.0f;
-	else if (zMove < -4.0f)	zMove = -4.0f;
-
-	x += xMove *0.01666;
-	z += zMove *0.01666;
-	u.x = x;
-	u.z = z;
+	u.x = xPos;
+	u.z = zPos;
 	u.xMove = xMove;
 	u.zMove = zMove;
 
 	for (auto& cl : g_clients)
-		if (ST_ACTIVE == cl.m_status)
+		if (ST_ACTIVE == cl.m_status && cl.m_id != user_id)
 			send_move_packet(cl.m_id, user_id);
 }
 
@@ -337,7 +327,7 @@ void process_packet(int user_id, char* buf)
 	case C2S_MOVE:
 	{
 		cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf);
-		do_move(user_id, packet->xMove, packet->zMove);
+		do_move(user_id, packet->x, packet->z, packet->xMove, packet->zMove);
 	}
 	break;
 	case C2S_CONSTRUCT:
@@ -463,8 +453,8 @@ void loop()
 				nc.m_recv_over.wsabuf.buf = nc.m_recv_over.io_buf;
 				nc.m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 				nc.m_s = c_socket;
-				nc.x = 0.0;
-				nc.z = 0.0;
+				nc.x = 540.0;
+				nc.z = 540.0;
 				nc.xMove = 0.0;
 				nc.zMove = 0.0;
 				DWORD flags = 0;

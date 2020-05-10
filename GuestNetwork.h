@@ -55,7 +55,7 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_move_packet(float xMove, float zMove);
+	void send_move_packet(float xPos, float zPos, float xMove, float zMove);
 
 	void Login();
 

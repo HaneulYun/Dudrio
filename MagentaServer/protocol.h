@@ -178,7 +178,7 @@ struct cs_packet_login {
 struct cs_packet_move {
 	char	size;
 	char	type;
-
+	float x, z;
 	float xMove, zMove;
 };
 

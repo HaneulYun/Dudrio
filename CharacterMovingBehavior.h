@@ -29,16 +29,15 @@ public:
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
 		// 서버에서 받은 위치 부드럽게 보간하는 식 작성하기
-		gameObject->transform->position += velocity * Time::deltaTime;
-		gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x + 540, gameObject->transform->position.z + 540) - 10;
-
+		gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
 		anim->SetFloat("VelocityZ", velocity.z);
 		anim->SetFloat("VelocityX", velocity.x);
 	}
 
-	void move(Vector3 newPos)
+	void move(float xPos, float zPos)
 	{
-		gameObject->transform->position = newPos;
+		gameObject->transform->position.x = xPos;
+		gameObject->transform->position.z = zPos;
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

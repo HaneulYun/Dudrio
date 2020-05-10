@@ -48,13 +48,13 @@ public:
 		if (myMoveFunc->velocity.Length() > 1.0f)
 			myMoveFunc->velocity.Normalize();
 
-
 		if(myMoveFunc->accel == Vector3{0,0,0})
 			myMoveFunc->velocity -= myMoveFunc->velocity * 1.5f * Time::deltaTime;
 
 		if (!IsZero(myMoveFunc->velocity.Length())&&GuestNetwork::network->isConnect)
 		{
-			GuestNetwork::network->send_move_packet(myMoveFunc->velocity.x, myMoveFunc->velocity.z);
+			gameObject->transform->position += myMoveFunc->velocity * Time::deltaTime;
+			GuestNetwork::network->send_move_packet(gameObject->transform->position.x, gameObject->transform->position.z, myMoveFunc->velocity.x, myMoveFunc->velocity.z);
 		}
 	}
 

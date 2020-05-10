@@ -29,7 +29,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 			strcpy_s(players[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
 			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
 			p->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			p->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			p->move(my_packet->x, my_packet->z);
 		}
 	}
 	break;
@@ -45,7 +45,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 			{
 				auto p = players[other_id]->GetComponent<CharacterMovingBehavior>();
 				p->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-				p->move(Vector3(my_packet->x, players[other_id]->transform->position.y, my_packet->z));
+				p->move(my_packet->x, my_packet->z);
 			}
 		}
 	}

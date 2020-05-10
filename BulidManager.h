@@ -150,7 +150,7 @@ public:
 				BoundingOrientedBox boundingBox;
 				boundingBox.Orientation = quarternion;
 				boundingBox.Center = b.Center;
-				boundingBox.Extents = NS_Vector3::ScalarProduct(b.Extents, 0.9f, false);
+				//boundingBox.Extents = NS_Vector3::ScalarProduct(b.Extents, 0.9f, false);
 				if (boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), distance))
 					if (minDist > distance)
 					{
@@ -487,7 +487,7 @@ public:
 		SetParticle(collider->extents.y * 4, go->transform->position);
 		go->transform->position.y -= collider->extents.y * 2 + 0.5f;
 
-		if (!Input::GetKey(KeyCode::S))
+		if (!Input::GetKey(KeyCode::Shift))
 			DeletePrefab();
 	}
 

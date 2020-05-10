@@ -326,18 +326,18 @@ void TerrainScene::BuildObjects()
 		buttons_BuildingType[i]->GetComponent<RectTransform>()->posX = -80 + 40 * i;
 	}
 	buttons_BuildingType[0]->children.front()->GetComponent<Text>()->text = L"랜드\n마크";
-	buttons_BuildingType[0]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::LandMark); BuildManager::buildManager->deleteButtonState = false; });
+	buttons_BuildingType[0]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::LandMark); });
 	buttons_BuildingType[1]->children.front()->GetComponent<Text>()->text = L"주거\n건물";
-	buttons_BuildingType[1]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::House); BuildManager::buildManager->deleteButtonState = false; });
+	buttons_BuildingType[1]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::House); });
 	buttons_BuildingType[2]->children.front()->GetComponent<Text>()->text = L"테마\n건물";
-	buttons_BuildingType[2]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Theme); BuildManager::buildManager->deleteButtonState = false; });
+	buttons_BuildingType[2]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Theme); });
 	buttons_BuildingType[3]->children.front()->GetComponent<Text>()->text = L"조경";
-	buttons_BuildingType[3]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::landscape); BuildManager::buildManager->deleteButtonState = false; });
+	buttons_BuildingType[3]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::landscape); });
 	buttons_BuildingType[4]->children.front()->GetComponent<Text>()->text = L"소품";
-	buttons_BuildingType[4]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Decoration); BuildManager::buildManager->deleteButtonState = false; });
+	buttons_BuildingType[4]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Decoration); });
 	buttons_BuildingType[5]->children.front()->GetComponent<Text>()->text = L"삭제";
 	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent([](void*) { 
-		ButtonManager::buttonManager->SelectButton(ButtonType::Delete); BuildManager::buildManager->deleteButtonState = true; 
+		ButtonManager::buttonManager->SelectButton(ButtonType::Delete); BuildManager::buildManager->deleteButtonState = !BuildManager::buildManager->deleteButtonState;
 		if (BuildManager::buildManager->prefab) BuildManager::buildManager->DeletePrefab();
 		});
 

@@ -76,6 +76,7 @@ public:
 			buttonType = type;
 			buttons_BuildingList[type][currentPage]->SetActive(true);
 			buttons_page[0]->SetActive(true); buttons_page[1]->SetActive(true);
+			BuildManager::buildManager->deleteButtonState = false;
 		}
 	}
 

@@ -14,3 +14,4 @@
 #include "GuestNetwork.h"
 #include "HostNetwork.h"
 #include "GameLoader.h"
+#include "ParticleManager.h"

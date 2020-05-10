@@ -3,6 +3,7 @@
 #include "Building.h"
 #include "RotatingBehavior.h"
 #include "HostNetwork.h"
+#include "ParticleManager.h"
 
 class BuildManager : public MonoBehavior<BuildManager>
 {
@@ -14,6 +15,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	TerrainData* heightMap;
 	RenderTexture* terrainMesh;
 	float distance;
+
+	std::vector<ParticleManager*> particles;
 
 	bool deleteButtonState{ false };
 	bool rotationToggle{ false };
@@ -114,34 +117,10 @@ public:
 					prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) * Time::deltaTime * 60.0f);
 					lastMousePos = Input::mousePosition;
 				}
-
 			}
 			else if (Input::GetMouseButtonUp(0) && prefab->children.front()->GetComponent<Constant>()->v4.g == 1.0f)
 			{
-				prefab->children.front()->layer = (int)RenderLayer::Opaque;
-				prefab->GetComponent<Building>()->positionToAnimate = prefab->transform->position.y;
-				GameObject* go = Scene::scene->Duplicate(prefab);
-
-				BuildingInform b_inform;
-				b_inform.buildingType = prefabType;
-				Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
-				Vector3 forward = { 0.0f, 0.0f, 1.0f };
-				float angle = NS_Vector3::DotProduct(forward.xmf3, prefabForward.xmf3);
-				XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, prefabForward.xmf3);
-				b_inform.rotAngle = XMConvertToDegrees(acos(angle));
-				b_inform.rotAngle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
-				b_inform.xPos = prefab->transform->position.x;
-				b_inform.yPos = prefab->transform->position.y;
-				b_inform.zPos = prefab->transform->position.z;
-
-				buildings[b_inform] = go;
-				if (HostNetwork::network->isConnect)
-				{	// Networking
-					HostNetwork::network->send_construct_packet(b_inform);
-				}
-				go->transform->position.y -= prefab->GetComponent<BoxCollider>()->extents.y * 2 + 0.5f;
-				if (!Input::GetKey(KeyCode::S))
-					DeletePrefab();
+				CreateBuilding();
 			}
 			else
 				prefab->transform->position = { point.x, point.y, point.z };
@@ -478,5 +457,49 @@ public:
 	{
 		Scene::scene->PushDelete(prefab);
 		prefab = nullptr;
+	}
+
+	void CreateBuilding()
+	{
+		prefab->children.front()->layer = (int)RenderLayer::Opaque;
+		prefab->GetComponent<Building>()->positionToAnimate = prefab->transform->position;
+		GameObject* go = Scene::scene->Duplicate(prefab);		
+
+		BuildingInform b_inform;
+		b_inform.buildingType = prefabType;
+		Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
+		Vector3 forward = { 0.0f, 0.0f, 1.0f };
+		float angle = NS_Vector3::DotProduct(forward.xmf3, prefabForward.xmf3);
+		XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, prefabForward.xmf3);
+		b_inform.rotAngle = XMConvertToDegrees(acos(angle));
+		b_inform.rotAngle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+		b_inform.xPos = prefab->transform->position.x;
+		b_inform.yPos = prefab->transform->position.y;
+		b_inform.zPos = prefab->transform->position.z;
+
+		buildings[b_inform] = go;
+		if (HostNetwork::network->isConnect)
+		{	// Networking
+			HostNetwork::network->send_construct_packet(b_inform);
+		}
+		BoxCollider* collider = prefab->GetComponent<BoxCollider>();
+		/*Create Effect*/
+		SetParticle(collider->extents.y * 4, go->transform->position);
+		go->transform->position.y -= collider->extents.y * 2 + 0.5f;
+
+		if (!Input::GetKey(KeyCode::S))
+			DeletePrefab();
+	}
+
+	void SetParticle(float time, Vector3 pos)
+	{
+		for (auto& particle : particles)
+		{
+			if (!particle->particleSystem->enabled)
+			{
+				particle->Enable(time, pos);
+				return;
+			}
+		}
 	}
 };

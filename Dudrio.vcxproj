@@ -189,6 +189,7 @@
     <ClInclude Include="MagentaServer\protocol.h" />
     <ClInclude Include="MaterialScene.h" />
     <ClInclude Include="GuestNetwork.h" />
+    <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="ParticleScene.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />

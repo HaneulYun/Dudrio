@@ -81,6 +81,8 @@ void TerrainScene::BuildObjects()
 		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
 		//ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
 		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
+		ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
+		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
 	}
 
 
@@ -97,6 +99,8 @@ void TerrainScene::BuildObjects()
 		ASSET AddMaterial("material_03",	ASSET TEXTURE("material_03"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("none", ASSET TEXTURE("none"));
 		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
+		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
 	}
 
 	//*** Mesh ***//
@@ -200,22 +204,6 @@ void TerrainScene::BuildObjects()
 
 	///*** Game Object ***///
 
-	//*** Texture ***//
-	ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
-	ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
-
-	//*** Material ***//
-	ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
-	ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
-
-	//auto particleSystemObjectSmoke = CreateEmpty();
-	//{
-	//	particleSystemObjectSmoke->GetComponent<Transform>()->position = { 540, 25, 540 };
-	//	particleSystemObjectSmoke->AddComponent<ParticleSystem>()->Set();
-	//	particleSystemObjectSmoke->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("smokeMat"));
-	//	particleSystemObjectSmoke->layer = (int)RenderLayer::Particle;
-	//}
-
 	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
@@ -276,12 +264,29 @@ void TerrainScene::BuildObjects()
 
 		ButtonManager* buttonManager = manager->AddComponent<ButtonManager>();
 		ButtonManager::buttonManager = buttonManager;
+
 		Builder* builder = manager->AddComponent<Builder>();
 		Builder::builder = builder;
+
 		GameLoader* gameload = manager->AddComponent<GameLoader>();
 		GameLoader::gameLoader = gameload;
+
 	}
 	ButtonManager* buttonManager = ButtonManager::buttonManager = manager->AddComponent<ButtonManager>();
+
+	/*particle*/
+	const int particleNum = 10;
+	for (int i = 0; i < particleNum; ++i)
+	{
+		auto particleSystemObjectSmoke = CreateEmpty();
+		ParticleSystem* particleSystem = particleSystemObjectSmoke->AddComponent<ParticleSystem>();
+		particleSystem->Set();
+		particleSystem->enabled = false;
+		particleSystemObjectSmoke->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("smokeMat"));
+		particleSystemObjectSmoke->layer = (int)RenderLayer::Particle;
+		BuildManager::buildManager->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
+	}
+
 
 	auto menuSceneButton = CreateImage();
 	{
@@ -422,7 +427,7 @@ void TerrainScene::BuildObjects()
 			ButtonAssetItem{L"Cart_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_01); }},
 			ButtonAssetItem{L"Cart_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cart_02); }},
 			ButtonAssetItem{L"Cauldron",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Cauldron,		ASSET MESH("SM_Cauldron"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
-			ButtonAssetItem{L"Torch_02"},
+			//ButtonAssetItem{L"Torch_02"},
 			ButtonAssetItem{L"Pot_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_01,		ASSET MESH("SM_Pot_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 			ButtonAssetItem{L"Pot_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_02,		ASSET MESH("SM_Pot_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 			ButtonAssetItem{L"Pot_03",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_03,		ASSET MESH("SM_Pot_Var03"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},

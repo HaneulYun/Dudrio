@@ -5,9 +5,9 @@
 class Building : public MonoBehavior<Building>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
-
+	float time{ 0.0f };
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	float positionToAnimate = 0.0f;
+	Vector3 positionToAnimate{ 0.0f,0.0f,0.0f };
 	
 
 private:
@@ -25,13 +25,21 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		if (!IsZero(positionToAnimate))
+		if (!IsZero(positionToAnimate.y))
 		{
 			gameObject->transform->position += {0.0f, 0.5f * Time::deltaTime, 0.0f};
-			if (gameObject->transform->position.y > positionToAnimate)
+			time += Time::deltaTime;
+			if (time >= 0.1f)
 			{
-				gameObject->transform->position.y = positionToAnimate;
-				positionToAnimate = 0.0f;
+				time -= 0.1f;
+				gameObject->transform->position.x = positionToAnimate.x + MathHelper::RandF(-0.1f, 0.1f);
+				gameObject->transform->position.z = positionToAnimate.z + MathHelper::RandF(-0.1f, 0.1f);
+			}
+			if (gameObject->transform->position.y > positionToAnimate.y)
+			{
+				gameObject->transform->position = positionToAnimate;
+				positionToAnimate = { 0.0f,0.0f,0.0f };
+				time = 0.0f;
 			}
 		}
 	}

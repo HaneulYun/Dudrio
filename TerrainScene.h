@@ -7,6 +7,7 @@ public:
 	TerrainScene() : Scene() {}
 	~TerrainScene() {}
 
+
 	virtual void BuildObjects();
 
 	GameObject* CreateTextButton();

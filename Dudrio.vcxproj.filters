@@ -111,6 +111,9 @@
     <ClInclude Include="GameLoader.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">

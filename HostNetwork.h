@@ -76,20 +76,20 @@ public:
 						inputIp->text = wserverIp;
 				}
 			}
-			if (Input::GetKeyDown(KeyCode::B))
+			if (Input::GetKeyDown(KeyCode::I))
 			{
 				wserverIp += '.';
 				if (inputIp != nullptr)
 					inputIp->text = wserverIp;
 			}
-			if (Input::GetKeyDown(KeyCode::C))
+			if (Input::GetKeyDown(KeyCode::O))
 			{
 				if(!wserverIp.empty())
 					wserverIp.pop_back();
 				if (inputIp != nullptr)
 					inputIp->text = wserverIp;
 			}
-			if (Input::GetKeyDown(KeyCode::A))
+			if (Input::GetKeyDown(KeyCode::P))
 			{
 				std::string serverIp;
 				serverIp.assign(wserverIp.begin(), wserverIp.end());

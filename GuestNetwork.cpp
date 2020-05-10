@@ -188,7 +188,6 @@ void GuestNetwork::Login()
 	l_packet.type = C2S_LOGIN;
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
-	myCharacter->AddComponent<CharacterController>();
 	strcpy_s(myCharacter->GetComponent<CharacterMovingBehavior>()->name, l_packet.name);
 	send_packet(&l_packet);
 }

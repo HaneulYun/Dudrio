@@ -235,6 +235,7 @@ void SampleScene::BuildObjects()
 		GuestNetwork* gn = network->AddComponent<GuestNetwork>();
 		gn->simsPrefab = SimsPrefab;
 		auto player = gn->myCharacter = Duplicate(SimsPrefab);
+		player->AddComponent<CharacterController>();
 		GuestNetwork::network = gn;
 
 		auto cameraOffset = player->AddChild();

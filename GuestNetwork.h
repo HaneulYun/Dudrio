@@ -116,20 +116,20 @@ public:
 						inputIp->text = wserverIp;
 				}
 			}
-			if (Input::GetKeyDown(KeyCode::B))
+			if (Input::GetKeyDown(KeyCode::I))
 			{
 				wserverIp += '.';
 				if (inputIp != nullptr)
 					inputIp->text = wserverIp;
 			}
-			if (Input::GetKeyDown(KeyCode::C))
+			if (Input::GetKeyDown(KeyCode::O))
 			{
 				if (!wserverIp.empty())
 					wserverIp.pop_back();
 				if (inputIp != nullptr)
 					inputIp->text = wserverIp;
 			}
-			if (Input::GetKeyDown(KeyCode::A))
+			if (Input::GetKeyDown(KeyCode::P))
 			{
 				std::string serverIp;
 				serverIp.assign(wserverIp.begin(), wserverIp.end());
@@ -191,7 +191,7 @@ public:
 					rectTransform->anchorMin = { 0, 1 };
 					rectTransform->anchorMax = { 0, 1 };
 					rectTransform->pivot = { 0, 1 };
-					rectTransform->posX = 300;
+					rectTransform->posX = 350;
 					rectTransform->posY = -30;
 					rectTransform->width = 300;
 					rectTransform->height = 40;
@@ -215,7 +215,7 @@ public:
 					rectTransform->anchorMin = { 0, 1 };
 					rectTransform->anchorMax = { 0, 1 };
 					rectTransform->pivot = { 0, 1 };
-					rectTransform->posX = 700;
+					rectTransform->posX = 650;
 					rectTransform->posY = -30;
 					rectTransform->width = 300;
 					rectTransform->height = 40;

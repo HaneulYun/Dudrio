@@ -52,7 +52,7 @@ public:
 		if(myMoveFunc->accel == Vector3{0,0,0})
 			myMoveFunc->velocity -= myMoveFunc->velocity * 1.5f * Time::deltaTime;
 
-		if (!IsZero(myMoveFunc->velocity.Length()))
+		if (!IsZero(myMoveFunc->velocity.Length())&&GuestNetwork::network->isConnect)
 		{
 			GuestNetwork::network->send_move_packet(myMoveFunc->velocity.x, myMoveFunc->velocity.z);
 		}

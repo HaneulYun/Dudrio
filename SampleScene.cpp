@@ -178,6 +178,7 @@ void SampleScene::BuildObjects()
 		GuestNetwork* gn = network->AddComponent<GuestNetwork>();
 		gn->simsPrefab = SimsPrefab;
 		auto player = gn->myCharacter = Duplicate(SimsPrefab);
+		player->GetComponent<Transform>()->position = { 540.0, 0.0, 540.0 };
 		player->AddComponent<CharacterController>();
 		GuestNetwork::network = gn;
 

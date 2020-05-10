@@ -12,7 +12,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	Vector3 velocity{ 0,0,0 };
 	Vector3 accel{ 0,0,0 };
 
-	CHeightMapImage* heightmap = NULL;
+	TerrainData* heightmap = NULL;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<CharacterMovingBehavior>;

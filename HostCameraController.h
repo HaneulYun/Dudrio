@@ -13,8 +13,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	Vector3 lastMousePos;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	CHeightMapImage* heightmap;
-	int terrainOffset;
+	TerrainData* heightmap;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<HostCameraController>;
@@ -26,6 +25,7 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
+		lookAtPos = { (float)(heightmap->heightmapWidth / 2), 0, (float)(heightmap->heightmapHeight / 2) };
 		float x = lookAtPos.x + mRadius * sinf(mPhi) * cosf(mTheta);
 		float z = lookAtPos.z + mRadius * sinf(mPhi) * sinf(mTheta);
 		float y = lookAtPos.y + mRadius * cosf(mPhi);
@@ -76,9 +76,9 @@ public:
 			lastMousePos = currMousePos;
 		}
 
-		float h = heightmap->GetHeight(gameObject->transform->position.x + terrainOffset, gameObject->transform->position.z + terrainOffset);
-
-		if (tlookAtPos.y + tRadius * cosf(tPhi) < h)
+		float h = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
+		
+		if (tlookAtPos.y + tRadius * cosf(tPhi) - 1.0f < h)
 			return;
 
 		lookAtPos = tlookAtPos;

@@ -9,7 +9,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	GuestNetwork* network;
+
 private:
 	friend class GameObject;
 	friend class MonoBehavior<CharacterController>;
@@ -52,9 +52,9 @@ public:
 		if(myMoveFunc->accel == Vector3{0,0,0})
 			myMoveFunc->velocity -= myMoveFunc->velocity * 1.5f * Time::deltaTime;
 
-		if (!IsZero(myMoveFunc->velocity.Length()))
+		if (!IsZero(myMoveFunc->velocity.Length())&&GuestNetwork::network->isConnect)
 		{
-			network->send_move_packet(myMoveFunc->velocity.x, myMoveFunc->velocity.z);
+			GuestNetwork::network->send_move_packet(myMoveFunc->velocity.x, myMoveFunc->velocity.z);
 		}
 	}
 

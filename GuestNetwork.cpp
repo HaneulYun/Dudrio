@@ -16,7 +16,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		myId = my_packet->id;
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 		myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-		myc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+		myc->move(my_packet->x, my_packet->z);
 	}
 	break;
 
@@ -29,14 +29,14 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		if (id == myId) {
 			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			myc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			myc->move(my_packet->x, my_packet->z);
 		}
 		else if (o_type == O_GUEST){
 			otherCharacters[id] = gameObject->scene->Duplicate(simsPrefab);
 			strcpy_s(otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
 			auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
 			oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			oc->move(Vector3(my_packet->x, 0.0f, my_packet->z));
+			oc->move(my_packet->x, my_packet->z);
 		}
 		else
 		{
@@ -49,18 +49,21 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_move* my_packet = reinterpret_cast<sc_packet_move*>(ptr);
 		int other_id = my_packet->id;
-
+		Debug::Log("이동 패킷\n");
 		if (other_id == myId) {
 			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			myc->move(Vector3(my_packet->x, myCharacter->transform->position.y, my_packet->z));
+			Vector3 tmpPos = { my_packet->x, 0.0, my_packet->z };
+			tmpPos.y = myc->heightmap->GetHeight(tmpPos.x, tmpPos.z);
+			if (std::fabs((tmpPos - myCharacter->transform->position).Length()) > 4.0f)
+				myc->move(my_packet->x, my_packet->z);
 		}
 		else if(other_id != hostId) {
 			if (0 != otherCharacters.count(other_id))
 			{
 				auto oc = otherCharacters[other_id]->GetComponent<CharacterMovingBehavior>();
 				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-				oc->move(Vector3(my_packet->x, otherCharacters[other_id]->transform->position.y, my_packet->z));
+				oc->move(my_packet->x, my_packet->z);
 			}
 		}
 	}
@@ -170,13 +173,15 @@ void GuestNetwork::send_packet(void* packet)
 	send(serverSocket, p, p[0], 0);
 }
 
-void GuestNetwork::send_move_packet(float xMove, float zMove)
+void GuestNetwork::send_move_packet(float xPos, float zPos, float xMove, float zMove)
 {
 	cs_packet_move m_packet;
 	m_packet.type = C2S_MOVE;
 	m_packet.size = sizeof(m_packet);
 	m_packet.xMove = xMove;
 	m_packet.zMove = zMove;
+	m_packet.x = xPos;
+	m_packet.z = zPos;
 
 	send_packet(&m_packet);
 }

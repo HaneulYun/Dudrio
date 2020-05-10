@@ -49,11 +49,14 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_move* my_packet = reinterpret_cast<sc_packet_move*>(ptr);
 		int other_id = my_packet->id;
-
+		Debug::Log("이동 패킷\n");
 		if (other_id == myId) {
-			//auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
-			//myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			//myc->move(Vector3(my_packet->x, myCharacter->transform->position.y, my_packet->z));
+			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
+			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+			Vector3 tmpPos = { my_packet->x, 0.0, my_packet->z };
+			tmpPos.y = myc->heightmap->GetHeight(tmpPos.x, tmpPos.z);
+			if (std::fabs((tmpPos - myCharacter->transform->position).Length()) > 4.0f)
+				myc->move(my_packet->x, my_packet->z);
 		}
 		else if(other_id != hostId) {
 			if (0 != otherCharacters.count(other_id))

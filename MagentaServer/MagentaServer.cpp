@@ -175,7 +175,7 @@ void do_move(int user_id, float xPos, float zPos, float xMove, float zMove)
 	u.zMove = zMove;
 
 	for (auto& cl : g_clients)
-		if (ST_ACTIVE == cl.m_status && cl.m_id != user_id)
+		if (ST_ACTIVE == cl.m_status)
 			send_move_packet(cl.m_id, user_id);
 }
 

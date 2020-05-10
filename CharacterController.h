@@ -6,10 +6,10 @@
 class CharacterController : public MonoBehavior<CharacterController>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
+	Vector3 lastMousePos;
 
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-
 private:
 	friend class GameObject;
 	friend class MonoBehavior<CharacterController>;
@@ -55,6 +55,19 @@ public:
 		if (!IsZero(myMoveFunc->velocity.Length())&&GuestNetwork::network->isConnect)
 		{
 			GuestNetwork::network->send_move_packet(myMoveFunc->velocity.x, myMoveFunc->velocity.z);
+		}
+
+		if (Input::GetMouseButtonDown(2))
+		{
+			lastMousePos = Input::mousePosition;
+		}
+		else if (Input::GetMouseButton(2))
+		{
+			Vector3 currMousePos = Input::mousePosition;
+
+			gameObject->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (Input::mousePosition.x - lastMousePos.x) * Time::deltaTime);
+
+			lastMousePos = Input::mousePosition;
 		}
 	}
 

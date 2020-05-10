@@ -25,7 +25,7 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
-		//lookAtPos = { (float)(heightmap->heightmapWidth / 2), 0, (float)(heightmap->heightmapHeight / 2) };
+		lookAtPos = { (float)(heightmap->heightmapWidth / 2), 0, (float)(heightmap->heightmapHeight / 2) };
 		float x = lookAtPos.x + mRadius * sinf(mPhi) * cosf(mTheta);
 		float z = lookAtPos.z + mRadius * sinf(mPhi) * sinf(mTheta);
 		float y = lookAtPos.y + mRadius * cosf(mPhi);

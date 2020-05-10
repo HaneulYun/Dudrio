@@ -200,6 +200,22 @@ void TerrainScene::BuildObjects()
 
 	///*** Game Object ***///
 
+	//*** Texture ***//
+	ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
+	ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
+
+	//*** Material ***//
+	ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
+	ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
+
+	//auto particleSystemObjectSmoke = CreateEmpty();
+	//{
+	//	particleSystemObjectSmoke->GetComponent<Transform>()->position = { 540, 25, 540 };
+	//	particleSystemObjectSmoke->AddComponent<ParticleSystem>()->Set();
+	//	particleSystemObjectSmoke->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("smokeMat"));
+	//	particleSystemObjectSmoke->layer = (int)RenderLayer::Particle;
+	//}
+
 	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();

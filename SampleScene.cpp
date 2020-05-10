@@ -80,10 +80,22 @@ void SampleScene::BuildObjects()
 
 	int TerrainSize = 1081;
 
-	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+	GameObject* terrain = CreateEmpty();
+	auto terrainData = terrain->AddComponent<Terrain>();
+	{
+		{
+			terrainData->terrainData.AlphamapTextureName = L"Texture\\heightMap_HN.raw";
+			terrainData->terrainData.heightmapHeight = TerrainSize;
+			terrainData->terrainData.heightmapWidth = TerrainSize;
 
-	CHeightMapImage* m_pHeightMapImage = new CHeightMapImage(L"Texture\\heightMap_HN.raw", TerrainSize, TerrainSize, { 1.0f, 1.0f, 1.0f });
-	CHeightMapGridMesh* gridMesh = new CHeightMapGridMesh(0, 0, TerrainSize, TerrainSize, { 1, 1, 1 }, { 1, 1, 0, 1 }, m_pHeightMapImage);
+			terrainData->terrainData.size = { TerrainSize - 1.0f, 255, TerrainSize - 1.0f };
+
+			terrainData->Set();
+		}
+		terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
+	}
+
+	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
 
 	//*** Animation ***//
@@ -129,75 +141,6 @@ void SampleScene::BuildObjects()
 		ritem->layer = (int)RenderLayer::Sky;
 	}
 
-	GameObject* grid = CreateEmpty();
-	{
-		grid->GetComponent<Transform>()->position -= {(float)(TerrainSize / 2), 10, (float)(TerrainSize / 2)};
-		auto mesh = grid->AddComponent<MeshFilter>()->mesh = gridMesh;
-		grid->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
-	}
-
-	// billboard points
-	{
-		struct TreeSpriteVertex
-		{
-			XMFLOAT3 Pos;
-			XMFLOAT2 Size;
-			XMFLOAT3 look;
-		};
-		std::vector<TreeSpriteVertex> vertices;
-		float sizex = 1, sizey = 1;
-		const int width = 1081, length = 1081;
-		float stride = 0.5f;
-		vertices.reserve(width * length * stride);
-		for (float i = 0; i < width; i += stride)
-		{
-			for (float j = 0; j < length; j += stride)
-			{
-				TreeSpriteVertex v;
-				float h = m_pHeightMapImage->GetHeight(i, j);
-				if (h > 33.0f)
-					continue;
-				if (m_pHeightMapImage->GetHeight(i, j) > 30.0f)
-					v.Size = XMFLOAT2(sizex / (h - 30.0f), sizey / (h - 30.0f));
-				else
-					v.Size = XMFLOAT2(sizex, sizey);
-				v.Pos = XMFLOAT3(i, m_pHeightMapImage->GetHeight(i, j) + sizey / 2, j);;
-				v.look = XMFLOAT3(MathHelper::RandF(-1.0f, 1.0f), 0.0f, MathHelper::RandF(-1.0f, 1.0f));
-				vertices.push_back(v);
-			}
-		}
-
-		auto geo = std::make_unique<Mesh>();
-		const UINT vbByteSize = (UINT)vertices.size() * sizeof(TreeSpriteVertex);
-
-		geo->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-		D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU);
-		CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-		auto device = Graphics::Instance()->device;
-		auto commandList = Graphics::Instance()->commandList;
-
-		geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device.Get(), commandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-
-		geo->VertexByteStride = sizeof(TreeSpriteVertex);
-		geo->VertexBufferByteSize = vbByteSize;
-
-		SubmeshGeometry submesh;
-		submesh.IndexCount = vertices.size();
-		submesh.StartIndexLocation = 0;
-		submesh.BaseVertexLocation = 0;
-
-		geo->DrawArgs["submesh"] = submesh;
-		ASSET AddMesh("Grass", std::move(geo));
-		//geometries["Grass"] = std::move(geo);
-
-
-		GameObject* billboards = CreateEmpty();
-		billboards->GetComponent<Transform>()->position -= {(float)(TerrainSize / 2), 10, (float)(TerrainSize / 2)};
-		auto mesh = billboards->AddComponent<MeshFilter>()->mesh = ASSET MESH("Grass");
-		billboards->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("grass"));
-		billboards->layer = (int)RenderLayer::Grass;
-	}
 
 	std::string name[9]{
 		"Attack01_BowAnim",
@@ -226,7 +169,7 @@ void SampleScene::BuildObjects()
 			anim->TimePos = 0;
 
 			SimsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
-			SimsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = m_pHeightMapImage;
+			SimsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
 		}
 	}
 

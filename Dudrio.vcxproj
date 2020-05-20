@@ -180,6 +180,7 @@
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="CharacterMovingBehavior.h" />
     <ClInclude Include="Dudrio.h" />
+    <ClInclude Include="FPS.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameLoader.h" />
     <ClInclude Include="GuestCameraController.h" />
@@ -195,10 +196,10 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RotatingBehavior.h" />
     <ClInclude Include="MenuScene.h" />
-    <ClInclude Include="SampleScene.h" />
+    <ClInclude Include="GuestScene.h" />
     <ClInclude Include="scripts.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TerrainScene.h" />
+    <ClInclude Include="HostScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationScene.cpp" />
@@ -214,8 +215,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MenuScene.cpp" />
-    <ClCompile Include="SampleScene.cpp" />
-    <ClCompile Include="TerrainScene.cpp" />
+    <ClCompile Include="GuestScene.cpp" />
+    <ClCompile Include="HostScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dudrio.rc" />

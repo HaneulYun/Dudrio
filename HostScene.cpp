@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "TerrainScene.h"
+#include "HostScene.h"
 
 BuildManager* BuildManager::buildManager{ nullptr };
 ButtonManager* ButtonManager::buttonManager{ nullptr };
 GameLoader* GameLoader::gameLoader{ nullptr };
 
-GameObject* TerrainScene::CreateTextButton()
+GameObject* HostScene::CreateTextButton()
 {
 	GameObject* button = CreateImage();
 	{
@@ -35,7 +35,7 @@ GameObject* TerrainScene::CreateTextButton()
 	return button;
 }
 
-GameObject* TerrainScene::CreateButtonList()
+GameObject* HostScene::CreateButtonList()
 {
 	GameObject* button = CreateImage();
 	{
@@ -65,7 +65,7 @@ GameObject* TerrainScene::CreateButtonList()
 
 
 
-void TerrainScene::BuildObjects()
+void HostScene::BuildObjects()
 {
 	///*** Asset ***///
 	//*** Texture ***//
@@ -152,7 +152,20 @@ void TerrainScene::BuildObjects()
 		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
 		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
 	}
-	
+
+	{
+		GameObject* fps = CreateUI();
+		auto rectTransform = fps->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 0 };
+		rectTransform->anchorMax = { 1, 1 };
+
+		Text* text = fps->AddComponent<Text>();
+		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+		text->color = { 1,1,1,1 };
+		textObjects.push_back(fps);
+		fps->AddComponent<FPS>();
+	}
+
 	float TerrainSize = 1081;
 
 	GameObject* terrain = CreateEmpty();

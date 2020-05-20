@@ -15,3 +15,4 @@
 #include "HostNetwork.h"
 #include "GameLoader.h"
 #include "ParticleManager.h"
+#include "FPS.h"

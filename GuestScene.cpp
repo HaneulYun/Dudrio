@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "SampleScene.h"
+#include "GuestScene.h"
 
 Builder* Builder::builder{ nullptr };
 
-void SampleScene::BuildObjects()
+void GuestScene::BuildObjects()
 {
 	{
 		//ASSET AddTexture("none", L"Textures\\none.dds");
@@ -76,6 +76,19 @@ void SampleScene::BuildObjects()
 		ASSET AddFbxForMesh("SM_Sack_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Tomato.FBX");
 		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
 		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
+	}
+
+	{
+		GameObject* fps = CreateUI();
+		auto rectTransform = fps->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 0 };
+		rectTransform->anchorMax = { 1, 1 };
+
+		Text* text = fps->AddComponent<Text>();
+		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+		text->color = { 1,1,1,1 };
+		textObjects.push_back(fps);
+		fps->AddComponent<FPS>();
 	}
 
 	int TerrainSize = 1081;

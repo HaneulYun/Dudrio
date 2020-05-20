@@ -63,12 +63,6 @@
     <ClInclude Include="MagentaServer\protocol.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SampleScene.h">
-      <Filter>Assets\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainScene.h">
-      <Filter>Assets\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
@@ -114,6 +108,15 @@
     <ClInclude Include="ParticleManager.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="HostScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GuestScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FPS.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -126,12 +129,6 @@
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="MenuScene.cpp">
-      <Filter>Assets\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="SampleScene.cpp">
-      <Filter>Assets\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="TerrainScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="AnimationScene.cpp">
@@ -148,6 +145,12 @@
     </ClCompile>
     <ClCompile Include="HostNetwork.cpp">
       <Filter>Assets\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="HostScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GuestScene.cpp">
+      <Filter>Assets\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

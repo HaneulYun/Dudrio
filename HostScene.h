@@ -1,11 +1,11 @@
 #pragma once
 #include "Scene.h"
 
-class TerrainScene : public Scene
+class HostScene : public Scene
 {
 public:
-	TerrainScene() : Scene() {}
-	~TerrainScene() {}
+	HostScene() : Scene() {}
+	~HostScene() {}
 
 
 	virtual void BuildObjects();

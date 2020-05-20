@@ -42,7 +42,7 @@ public:
 		for (auto& item : buttonAssetItem)
 		{
 			if (!buildCountInPage)
-				buttons_BuildingList[buildType].push_back(((TerrainScene*)gameObject->scene)->CreateButtonList());
+				buttons_BuildingList[buildType].push_back(((HostScene*)gameObject->scene)->CreateButtonList());
 			buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->children[0]->GetComponent<Text>()->text = item.name;
 			buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->AddComponent<Button>()->AddEvent(item.func);
 

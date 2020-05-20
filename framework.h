@@ -11,9 +11,8 @@
 #include <tchar.h>
 
 #include "MenuScene.h"
-#include "TerrainScene.h"
+#include "HostScene.h"
+#include "GuestScene.h"
 #include "MaterialScene.h"
 #include "AnimationScene.h"
 #include "ParticleScene.h"
-#include "SampleScene.h"
-//#include "TerrainScene.h"

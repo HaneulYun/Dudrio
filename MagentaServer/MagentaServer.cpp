@@ -38,6 +38,8 @@ struct CLIENT {
 
 	float	x, z;
 	float	xMove, zMove;
+	bool	moving;
+	DWORD	startMoveTime;
 	char	m_name[MAX_ID_LEN + 1];
 };
 
@@ -113,16 +115,28 @@ void send_leave_packet(int user_id, int o_id)
 	send_packet(user_id, &p);
 }
 
-void send_move_packet(int user_id, int mover)
+void send_move_start_packet(int user_id, int mover)
 {
-	sc_packet_move p;
+	sc_packet_move_start p;
 	p.id = mover;
 	p.size = sizeof(p);
-	p.type = S2C_MOVE;
+	p.type = S2C_MOVE_START;
 	p.x = g_clients[mover].x;
 	p.z = g_clients[mover].z;
 	p.xMove = g_clients[mover].xMove;
 	p.zMove = g_clients[mover].zMove;
+
+	send_packet(user_id, &p);
+}
+
+void send_move_end_packet(int user_id, int mover)
+{
+	sc_packet_move_end p;
+	p.id = mover;
+	p.size = sizeof(p);
+	p.type = S2C_MOVE_END;
+	p.x = g_clients[mover].x;
+	p.z = g_clients[mover].z;
 
 	send_packet(user_id, &p);
 }
@@ -165,18 +179,35 @@ void send_destruct_all_packet(int user_id)
 	send_packet(user_id, &p);
 }
 
-void do_move(int user_id, float xPos, float zPos, float xMove, float zMove)
+void do_move_start(int user_id, float xPos, float zPos, float xMove, float zMove)
 {
 	CLIENT& u = g_clients[user_id];
 
-	u.x = xPos;
-	u.z = zPos;
-	u.xMove = xMove;
-	u.zMove = zMove;
+	float nmlzeSpeedNum = sqrt(pow(xMove, 2) + pow(zMove, 2));
+
+	u.xMove = xMove / nmlzeSpeedNum;
+	u.zMove = zMove / nmlzeSpeedNum;
+
+	u.startMoveTime = GetTickCount64();
+	u.moving = true;
 
 	for (auto& cl : g_clients)
 		if (ST_ACTIVE == cl.m_status)
-			send_move_packet(cl.m_id, user_id);
+			send_move_start_packet(cl.m_id, user_id);
+}
+
+void do_move_end(int user_id)
+{
+	CLIENT& u = g_clients[user_id];
+
+	u.x += u.xMove * (GetTickCount64() - u.startMoveTime) / 1000.f;
+	u.z += u.zMove * (GetTickCount64() - u.startMoveTime) / 1000.f;
+
+	u.moving = false;
+
+	for (auto& cl : g_clients)
+		if (ST_ACTIVE == cl.m_status)
+			send_move_end_packet(cl.m_id, user_id);
 }
 
 void enter_game(int user_id, char name[])
@@ -191,8 +222,16 @@ void enter_game(int user_id, char name[])
 			continue;
 		if (ST_ACTIVE == g_clients[i].m_status)
 			if (user_id != i) {
+				if (true == g_clients[i].moving){
+					g_clients[i].x += g_clients[i].xMove * (GetTickCount64() - g_clients[i].startMoveTime);
+					g_clients[i].z += g_clients[i].zMove * (GetTickCount64() - g_clients[i].startMoveTime);
+					g_clients[i].startMoveTime = GetTickCount64();
+				}
 				send_enter_packet(user_id, i);
 				send_enter_packet(i, user_id);
+				if (true == g_clients[i].moving) {
+					send_move_start_packet(user_id, i);
+				}
 			}
 	}
 	for (auto& b : buildings)
@@ -324,10 +363,16 @@ void process_packet(int user_id, char* buf)
 		}
 	}
 	break;
-	case C2S_MOVE:
+	case C2S_MOVE_START:
 	{
-		cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf);
-		do_move(user_id, packet->x, packet->z, packet->xMove, packet->zMove);
+		cs_packet_move_start* packet = reinterpret_cast<cs_packet_move_start*>(buf);
+		do_move_start(user_id, packet->x, packet->z, packet->xMove, packet->zMove);
+	}
+	break;
+	case C2S_MOVE_END:
+	{
+		cs_packet_move_end* packet = reinterpret_cast<cs_packet_move_end*>(buf);
+		do_move_end(user_id);
 	}
 	break;
 	case C2S_CONSTRUCT:
@@ -457,6 +502,7 @@ void loop()
 				nc.z = 540.0;
 				nc.xMove = 0.0;
 				nc.zMove = 0.0;
+				nc.moving = false;
 				DWORD flags = 0;
 				WSARecv(c_socket, &nc.m_recv_over.wsabuf, 1, NULL, &flags, &nc.m_recv_over.over, NULL);
 			}

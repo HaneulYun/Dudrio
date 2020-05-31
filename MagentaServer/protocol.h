@@ -10,19 +10,21 @@ constexpr int MAX_USER = 10;
 #define SERVER_PORT		9000
 
 #define C2S_LOGIN			1
-#define C2S_MOVE			2
-#define C2S_LOGIN_HOST		3	// Host to Server
-#define C2S_CONSTRUCT		4	// Host to Server
-#define C2S_DESTRUCT		5	// Host to Server
-#define C2S_DESTRUCT_ALL	6	// Host to Server
+#define C2S_MOVE_START		2	// Guest to Server
+#define C2S_MOVE_END		3	// Guest to Server
+#define C2S_LOGIN_HOST		4	// Host to Server
+#define C2S_CONSTRUCT		5	// Host to Server
+#define C2S_DESTRUCT		6	// Host to Server
+#define C2S_DESTRUCT_ALL	7	// Host to Server
 
 #define S2C_LOGIN_OK		1
-#define S2C_MOVE			2
-#define S2C_ENTER			3
-#define S2C_LEAVE			4
-#define S2C_CONSTRUCT		5	// Server to Guest
-#define S2C_DESTRUCT		6	// Server to Guest
-#define S2C_DESTRUCT_ALL	7	// Server to Guest
+#define S2C_MOVE_START		2	// Server to Guest
+#define S2C_MOVE_END		3	// Server to Guest
+#define S2C_ENTER			4
+#define S2C_LEAVE			5
+#define S2C_CONSTRUCT		6	// Server to Guest
+#define S2C_DESTRUCT		7	// Server to Guest
+#define S2C_DESTRUCT_ALL	8	// Server to Guest
 
 #pragma pack(push ,1)
 
@@ -74,7 +76,7 @@ struct sc_packet_login_ok {
 	int	exp;
 };
 
-struct sc_packet_move {
+struct sc_packet_move_start {
 	char size;
 	char type;
 	int id;
@@ -82,8 +84,12 @@ struct sc_packet_move {
 	float xMove, zMove;
 };
 
-constexpr unsigned char B_SPHERE = 0;
-constexpr unsigned char B_CUBE = 1;
+struct sc_packet_move_end {
+	char size;
+	char type;
+	int id;
+	float x, z;
+};
 
 struct BuildingInform
 {
@@ -175,11 +181,16 @@ struct cs_packet_login {
 	char	name[MAX_ID_LEN];
 };
 
-struct cs_packet_move {
+struct cs_packet_move_start {
 	char	size;
 	char	type;
 	float x, z;
 	float xMove, zMove;
+};
+
+struct cs_packet_move_end {
+	char	size;
+	char	type;
 };
 
 struct cs_packet_construct

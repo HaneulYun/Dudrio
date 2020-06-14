@@ -14,6 +14,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
+		myCharacter->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 		myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
 		myc->move(my_packet->x, my_packet->z);
@@ -34,6 +35,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		else if (o_type == O_GUEST){
 			otherCharacters[id] = gameObject->scene->Duplicate(simsPrefab);
 			strcpy_s(otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
+			otherCharacters[id]->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 			auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
 			oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
 			oc->move(my_packet->x, my_packet->z);
@@ -45,23 +47,63 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		}
 	}
 	break;
-	case S2C_MOVE:
+	case S2C_MOVE_START:
 	{
-		sc_packet_move* my_packet = reinterpret_cast<sc_packet_move*>(ptr);
-		int other_id = my_packet->id;
-		Debug::Log("이동 패킷\n");
-		if (other_id == myId) {
+		sc_packet_move_start* my_packet = reinterpret_cast<sc_packet_move_start*>(ptr);
+		int id = my_packet->id;
+		if (id == myId) {
 			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			Vector3 tmpPos = { my_packet->x, 0.0, my_packet->z };
-			tmpPos.y = myc->heightmap->GetHeight(tmpPos.x, tmpPos.z);
-			if (std::fabs((tmpPos - myCharacter->transform->position).Length()) > 4.0f)
-				myc->move(my_packet->x, my_packet->z);
+			myc->move(my_packet->x, my_packet->z);
+			myc->moving = true;
 		}
-		else if(other_id != hostId) {
-			if (0 != otherCharacters.count(other_id))
+		else if(id != hostId) {
+			if (0 != otherCharacters.count(id))
 			{
-				auto oc = otherCharacters[other_id]->GetComponent<CharacterMovingBehavior>();
+				auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
+				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+				oc->move(my_packet->x, my_packet->z);
+				oc->moving = true;
+			}
+		}
+	}
+	break;
+	case S2C_MOVE_END:
+	{
+		sc_packet_move_end* my_packet = reinterpret_cast<sc_packet_move_end*>(ptr);
+		int id = my_packet->id;
+		if (id == myId) {
+			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
+			myc->velocity = Vector3{ 0.0, 0.0, 0.0 };
+			myc->move(my_packet->x, my_packet->z);
+			myc->moving = false;
+		}
+		else if (id != hostId) {
+			if (0 != otherCharacters.count(id))
+			{
+				auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
+				oc->velocity = Vector3{ 0.0, 0.0, 0.0 };
+				oc->move(my_packet->x, my_packet->z);
+				oc->moving = false;
+			}
+		}
+	}
+	break;
+	case S2C_ROTATE:
+	{
+		sc_packet_rotate* my_packet = reinterpret_cast<sc_packet_rotate*>(ptr);
+		int id = my_packet->id;
+		if (id == myId) {
+			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
+			myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+			myc->move(my_packet->x, my_packet->z);
+		}
+		else if (id != hostId) {
+			if (0 != otherCharacters.count(id))
+			{
+				//otherCharacters[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
+				auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
+				oc->turn(my_packet->rotAngle);
 				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
 				oc->move(my_packet->x, my_packet->z);
 			}
@@ -173,11 +215,34 @@ void GuestNetwork::send_packet(void* packet)
 	send(serverSocket, p, p[0], 0);
 }
 
-void GuestNetwork::send_move_packet(float xPos, float zPos, float xMove, float zMove)
+void GuestNetwork::send_move_start_packet(float xPos, float zPos, float xMove, float zMove)
 {
-	cs_packet_move m_packet;
-	m_packet.type = C2S_MOVE;
+	cs_packet_move_start m_packet;
+	m_packet.type = C2S_MOVE_START;
 	m_packet.size = sizeof(m_packet);
+	m_packet.xMove = xMove;
+	m_packet.zMove = zMove;
+	m_packet.x = xPos;
+	m_packet.z = zPos;
+
+	send_packet(&m_packet);
+}
+
+void GuestNetwork::send_move_end_packet()
+{
+	cs_packet_move_end m_packet;
+	m_packet.type = C2S_MOVE_END;
+	m_packet.size = sizeof(m_packet);
+
+	send_packet(&m_packet);
+}
+
+void GuestNetwork::send_rotate_packet(float xPos, float zPos, float xMove, float zMove, float rotAngle)
+{
+	cs_packet_rotate m_packet;
+	m_packet.type = C2S_ROTATE;
+	m_packet.size = sizeof(m_packet);
+	m_packet.rotAngle = rotAngle;
 	m_packet.xMove = xMove;
 	m_packet.zMove = zMove;
 	m_packet.x = xPos;

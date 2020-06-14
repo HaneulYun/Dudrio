@@ -55,7 +55,9 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_move_packet(float xPos, float zPos, float xMove, float zMove);
+	void send_move_start_packet(float xPos, float zPos, float xMove, float zMove);
+	void send_move_end_packet();
+	void send_rotate_packet(float xPos, float zPos, float xMove, float zMove, float rotAngle);
 
 	void Login();
 
@@ -116,7 +118,7 @@ public:
 						inputIp->text = wserverIp;
 				}
 			}
-			if (Input::GetKeyDown(KeyCode::I))
+			if (Input::GetKeyDown(KeyCode::Period))
 			{
 				wserverIp += '.';
 				if (inputIp != nullptr)
@@ -129,7 +131,7 @@ public:
 				if (inputIp != nullptr)
 					inputIp->text = wserverIp;
 			}
-			if (Input::GetKeyDown(KeyCode::P))
+			if (Input::GetKeyDown(KeyCode::Return) && ip != nullptr && ipImage != nullptr)
 			{
 				std::string serverIp;
 				serverIp.assign(wserverIp.begin(), wserverIp.end());
@@ -220,10 +222,6 @@ public:
 					rectTransform->width = 300;
 					rectTransform->height = 40;
 
-					//ipImage->AddComponent<Button>()->AddEvent(
-					//	[](void*) {
-					//	
-					//	});
 					{
 						auto textobject = ipImage->AddChildUI();
 						auto rectTransform = textobject->GetComponent<RectTransform>();

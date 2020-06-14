@@ -76,7 +76,7 @@ public:
 						inputIp->text = wserverIp;
 				}
 			}
-			if (Input::GetKeyDown(KeyCode::I))
+			if (Input::GetKeyDown(KeyCode::Period))
 			{
 				wserverIp += '.';
 				if (inputIp != nullptr)
@@ -89,7 +89,7 @@ public:
 				if (inputIp != nullptr)
 					inputIp->text = wserverIp;
 			}
-			if (Input::GetKeyDown(KeyCode::P))
+			if (Input::GetKeyDown(KeyCode::Return) && ip != nullptr && ipImage != nullptr)
 			{
 				std::string serverIp;
 				serverIp.assign(wserverIp.begin(), wserverIp.end());
@@ -217,10 +217,6 @@ public:
 					rectTransform->width = 300;
 					rectTransform->height = 40;
 
-					//ipImage->AddComponent<Button>()->AddEvent(
-					//	[](void*) {
-					//	
-					//	});
 					{
 						auto textobject = ipImage->AddChildUI();
 						auto rectTransform = textobject->GetComponent<RectTransform>();

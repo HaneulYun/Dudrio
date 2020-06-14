@@ -38,6 +38,7 @@ struct CLIENT {
 
 	float	x, z;
 	float	xMove, zMove;
+	float	rotAngle;
 	bool	moving;
 	DWORD	startMoveTime;
 	char	m_name[MAX_ID_LEN + 1];
@@ -70,16 +71,14 @@ void send_packet(int user_id, void* p)
 void send_login_ok_packet(int user_id)
 {
 	sc_packet_login_ok p;
-	p.exp = 0;
-	p.hp = 0;
 	p.id = user_id;
-	p.level = 0;
 	p.size = sizeof(p);
 	p.type = S2C_LOGIN_OK;
 	p.x = g_clients[user_id].x;
 	p.z = g_clients[user_id].z;
 	p.xMove = g_clients[user_id].xMove;
 	p.zMove = g_clients[user_id].zMove;
+	p.rotAngle = g_clients[user_id].rotAngle;
 
 	send_packet(user_id, &p);
 }
@@ -94,6 +93,7 @@ void send_enter_packet(int user_id, int o_id)
 	p.z = g_clients[o_id].z;
 	p.xMove = g_clients[user_id].xMove;
 	p.zMove = g_clients[user_id].zMove;
+	p.rotAngle = g_clients[user_id].rotAngle;
 
 	strcpy_s(p.name, g_clients[o_id].m_name);
 	if (o_id == g_host_user_id)
@@ -101,7 +101,6 @@ void send_enter_packet(int user_id, int o_id)
 	else
 		p.o_type = O_GUEST;
 
-	//printf("Send_Packet_Enter\n");
 	send_packet(user_id, &p);
 }
 
@@ -141,6 +140,22 @@ void send_move_end_packet(int user_id, int mover)
 	send_packet(user_id, &p);
 }
 
+void send_rotate_packet(int user_id, int rotater, float dAngle)
+{
+	sc_packet_rotate p;
+	p.id = rotater;
+	p.size = sizeof(p);
+	p.type = S2C_ROTATE;
+	p.rotAngle = dAngle;
+	p.x = g_clients[rotater].x;
+	p.z = g_clients[rotater].z;
+	p.xMove = g_clients[rotater].xMove;
+	p.zMove = g_clients[rotater].zMove;
+
+	printf("x: %f, z: %f, xmove: %f, zmove: %f, rotAngle: %f\n", p.x, p.z, p.xMove, p.zMove, p.rotAngle);
+	send_packet(user_id, &p);
+}
+
 void send_construct_packet(int user_id, BuildingInform b_inform)
 {
 	sc_packet_construct p;
@@ -148,8 +163,6 @@ void send_construct_packet(int user_id, BuildingInform b_inform)
 	p.size = sizeof(p);
 	p.type = S2C_CONSTRUCT;
 	p.b_inform = b_inform;
-
-	printf("건설 메시지 전송! buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
 
 	send_packet(user_id, &p);
 }
@@ -162,8 +175,6 @@ void send_destruct_packet(int user_id, BuildingInform b_inform)
 	p.type = S2C_DESTRUCT;
 	p.b_inform = b_inform;
 
-	printf("파괴 메시지 전송! buildingType : %d, angle: %f \n", b_inform.buildingType, b_inform.rotAngle);
-
 	send_packet(user_id, &p);
 }
 
@@ -173,8 +184,6 @@ void send_destruct_all_packet(int user_id)
 	p.id = g_host_user_id;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT_ALL;
-
-	printf("모두 파괴 메시지 전송!\n");
 
 	send_packet(user_id, &p);
 }
@@ -208,6 +217,33 @@ void do_move_end(int user_id)
 	for (auto& cl : g_clients)
 		if (ST_ACTIVE == cl.m_status)
 			send_move_end_packet(cl.m_id, user_id);
+}
+
+void do_rotate(int user_id, float xPos, float zPos, float xMove, float zMove, float rotAngle)
+{
+	CLIENT& u = g_clients[user_id];
+	u.rotAngle += rotAngle;
+	if (u.rotAngle > 360.0f)
+		u.rotAngle -= 360.0f;
+	
+	float nmlzeSpeedNum = sqrt(pow(xMove, 2) + pow(zMove, 2));
+	if (nmlzeSpeedNum != 0.0f)
+	{
+		u.xMove = xMove / nmlzeSpeedNum;
+		u.zMove = zMove / nmlzeSpeedNum;
+	}
+	else
+	{
+		u.xMove = 0.0f;
+		u.zMove = 0.0f;
+	}
+	u.x += u.xMove * (GetTickCount64() - u.startMoveTime) / 1000.f;
+	u.z += u.zMove * (GetTickCount64() - u.startMoveTime) / 1000.f;
+	u.startMoveTime = GetTickCount64();
+
+	for (auto& cl : g_clients)
+		if (ST_ACTIVE == cl.m_status)
+			send_rotate_packet(cl.m_id, user_id, rotAngle);
 }
 
 void enter_game(int user_id, char name[])
@@ -286,7 +322,6 @@ void destruct_all(int user_id)
 			send_destruct_all_packet(cl.m_id);
 	}
 }
-
 
 void initialize_clients()
 {
@@ -373,6 +408,12 @@ void process_packet(int user_id, char* buf)
 	{
 		cs_packet_move_end* packet = reinterpret_cast<cs_packet_move_end*>(buf);
 		do_move_end(user_id);
+	}
+	break;
+	case C2S_ROTATE:
+	{
+		cs_packet_rotate* packet = reinterpret_cast<cs_packet_rotate*>(buf);
+		do_rotate(user_id, packet->x, packet->z, packet->xMove, packet->zMove, packet->rotAngle);
 	}
 	break;
 	case C2S_CONSTRUCT:
@@ -502,6 +543,7 @@ void loop()
 				nc.z = 540.0;
 				nc.xMove = 0.0;
 				nc.zMove = 0.0;
+				nc.rotAngle = 0.0f;
 				nc.moving = false;
 				DWORD flags = 0;
 				WSARecv(c_socket, &nc.m_recv_over.wsabuf, 1, NULL, &flags, &nc.m_recv_over.over, NULL);

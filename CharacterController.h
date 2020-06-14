@@ -1,5 +1,6 @@
 #pragma once
 #include "CyanEngine\CyanEngine\framework.h"
+#include <chrono>
 #include "MagentaServer\protocol.h"
 #include "GuestNetwork.h"
 
@@ -11,6 +12,9 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	bool pressS{ false };
 	bool pressA{ false };
 	bool pressD{ false };
+
+	float rotAngleSum;
+	chrono::high_resolution_clock::time_point last_packet_time;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
 private:
@@ -24,6 +28,8 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
+		last_packet_time = chrono::high_resolution_clock::now();
+		rotAngleSum = 0.0f;
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
@@ -63,6 +69,7 @@ public:
 			}
 		}
 
+
 		if (Input::GetMouseButtonDown(2))
 		{
 			lastMousePos = Input::mousePosition;
@@ -70,10 +77,19 @@ public:
 		else if (Input::GetMouseButton(2))
 		{
 			Vector3 currMousePos = Input::mousePosition;
+			float rotateAngle = (Input::mousePosition.x - lastMousePos.x) * Time::deltaTime;
 
-			gameObject->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (Input::mousePosition.x - lastMousePos.x) * Time::deltaTime);
+			gameObject->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, rotateAngle);
 
+			rotAngleSum += rotateAngle;
 			lastMousePos = Input::mousePosition;
+		}
+
+		if (GuestNetwork::network->isConnect && chrono::high_resolution_clock::now() - last_packet_time > chrono::milliseconds(333) && !IsZero(rotAngleSum))
+		{
+			GuestNetwork::network->send_rotate_packet(gameObject->transform->position.x, gameObject->transform->position.z, tmpVelocity.x, tmpVelocity.z, rotAngleSum);
+			last_packet_time = chrono::high_resolution_clock::now();
+			rotAngleSum = 0.0f;
 		}
 	}
 

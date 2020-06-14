@@ -26,6 +26,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		}
 		else {
 			players[id] = gameObject->scene->Duplicate(simsPrefab);
+			players[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
 			strcpy_s(players[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
 			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
 			p->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
@@ -59,6 +60,21 @@ void HostNetwork::ProcessPacket(char* ptr)
 				oc->velocity = Vector3{ 0.0, 0.0, 0.0 };
 				oc->move(my_packet->x, my_packet->z);
 				oc->moving = false;
+			}
+		}
+	}
+	break;
+	case S2C_ROTATE:
+	{
+		sc_packet_rotate* my_packet = reinterpret_cast<sc_packet_rotate*>(ptr);
+		int id = my_packet->id;
+		if (id != myId) {
+			if (0 != players.count(id))
+			{
+				players[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
+				auto oc = players[id]->GetComponent<CharacterMovingBehavior>();
+				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
+				oc->move(my_packet->x, my_packet->z);
 			}
 		}
 	}

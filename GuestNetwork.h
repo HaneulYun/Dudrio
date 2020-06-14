@@ -57,6 +57,7 @@ public:
 	void send_packet(void* packet);
 	void send_move_start_packet(float xPos, float zPos, float xMove, float zMove);
 	void send_move_end_packet();
+	void send_rotate_packet(float xPos, float zPos, float xMove, float zMove, float rotAngle);
 
 	void Login();
 

@@ -71,8 +71,9 @@ void HostNetwork::ProcessPacket(char* ptr)
 		if (id != myId) {
 			if (0 != players.count(id))
 			{
-				players[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
+				//players[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
 				auto oc = players[id]->GetComponent<CharacterMovingBehavior>();
+				oc->turn(my_packet->rotAngle);
 				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
 				oc->move(my_packet->x, my_packet->z);
 			}

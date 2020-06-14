@@ -18,7 +18,6 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 		myc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
 		myc->move(my_packet->x, my_packet->z);
-		myCharacter->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 	}
 	break;
 
@@ -102,8 +101,9 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		else if (id != hostId) {
 			if (0 != otherCharacters.count(id))
 			{
-				otherCharacters[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
+				//otherCharacters[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
 				auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
+				oc->turn(my_packet->rotAngle);
 				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
 				oc->move(my_packet->x, my_packet->z);
 			}

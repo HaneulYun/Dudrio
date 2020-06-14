@@ -91,9 +91,9 @@ void send_enter_packet(int user_id, int o_id)
 	p.type = S2C_ENTER;
 	p.x = g_clients[o_id].x;
 	p.z = g_clients[o_id].z;
-	p.xMove = g_clients[user_id].xMove;
-	p.zMove = g_clients[user_id].zMove;
-	p.rotAngle = g_clients[user_id].rotAngle;
+	p.xMove = g_clients[o_id].xMove;
+	p.zMove = g_clients[o_id].zMove;
+	p.rotAngle = g_clients[o_id].rotAngle;
 
 	strcpy_s(p.name, g_clients[o_id].m_name);
 	if (o_id == g_host_user_id)
@@ -223,9 +223,7 @@ void do_rotate(int user_id, float xPos, float zPos, float xMove, float zMove, fl
 {
 	CLIENT& u = g_clients[user_id];
 	u.rotAngle += rotAngle;
-	if (u.rotAngle > 360.0f)
-		u.rotAngle -= 360.0f;
-	
+	printf("u.rotAngle: %f\n", u.rotAngle);
 	float nmlzeSpeedNum = sqrt(pow(xMove, 2) + pow(zMove, 2));
 	if (nmlzeSpeedNum != 0.0f)
 	{

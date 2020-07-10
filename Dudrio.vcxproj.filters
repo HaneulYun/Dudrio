@@ -117,6 +117,12 @@
     <ClInclude Include="FPS.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainGenerator.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -151,6 +157,12 @@
     </ClCompile>
     <ClCompile Include="GuestScene.cpp">
       <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainGenerator.cpp">
+      <Filter>Assets\Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

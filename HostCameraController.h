@@ -7,7 +7,7 @@ class HostCameraController : public MonoBehavior<HostCameraController>
 private /*이 영역에 private 변수를 선언하세요.*/:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = 0.2f * XM_PI;
-	float mRadius = 50.0f;
+	float mRadius = 100.0f;
 	Vector3 lookAtPos = { 0,0,0 };
 
 	Vector3 lastMousePos;
@@ -43,7 +43,7 @@ public:
 		{
 			lastMousePos = Input::mousePosition;
 		}
-		else if (Input::GetMouseButton(2) && BuildManager::buildManager->prefab == nullptr)
+		else if (Input::GetMouseButton(2))// && BuildManager::buildManager->prefab == nullptr)
 		{
 			Vector3 currMousePos = Input::mousePosition;
 			Vector3 delta = (currMousePos - lastMousePos) * 0.25f * (XM_PI / 180.0f);

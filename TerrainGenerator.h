@@ -7,7 +7,7 @@ private:
 	int width;
 	int height;
 	
-	UINT8 randomTable[255];
+	UINT8 randomTable[256];
 	std::vector<float> data;
 	std::vector<float> data_fallOff;
 public:

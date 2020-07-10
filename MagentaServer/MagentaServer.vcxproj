@@ -123,10 +123,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="contents.cpp" />
+    <ClCompile Include="IOCPServer.cpp" />
     <ClCompile Include="MagentaServer.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Clients.h" />
+    <ClInclude Include="contents.h" />
+    <ClInclude Include="IOCPServer.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="protocol.h" />
+    <ClInclude Include="RWLock.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

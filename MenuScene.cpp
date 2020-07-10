@@ -195,5 +195,36 @@ void MenuScene::BuildObjects()
 				textObjects.push_back(textobject);
 			}
 		}
+
+		auto TestSceneButton = CreateImage();
+		{
+			auto rectTransform = TestSceneButton->GetComponent<RectTransform>();
+			rectTransform->anchorMin = { 0.5, 0.5 };
+			rectTransform->anchorMax = { 0.5, 0.5 };
+			rectTransform->pivot = { 0.5, 0.5 };
+			rectTransform->posX = -10;
+			rectTransform->posY = -180;
+			rectTransform->width = 150;
+			rectTransform->height = 30;
+
+			TestSceneButton->AddComponent<Button>()->AddEvent(
+				[](void*) {
+					SceneManager::LoadScene("TestScene");
+				});
+			{
+				auto textobject = TestSceneButton->AddChildUI();
+				auto rectTransform = textobject->GetComponent<RectTransform>();
+				rectTransform->anchorMin = { 0, 0 };
+				rectTransform->anchorMax = { 1, 1 };
+
+				Text* text = textobject->AddComponent<Text>();
+				text->text = L"Test Scene";
+				text->font = L"메이플스토리";
+				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+				textObjects.push_back(textobject);
+			}
+		}
+
 	}
 }

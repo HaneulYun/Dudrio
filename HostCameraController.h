@@ -7,7 +7,7 @@ class HostCameraController : public MonoBehavior<HostCameraController>
 private /*이 영역에 private 변수를 선언하세요.*/:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = 0.2f * XM_PI;
-	float mRadius = 50.0f;
+	float mRadius = 100.0f;
 	Vector3 lookAtPos = { 0,0,0 };
 
 	Vector3 lastMousePos;

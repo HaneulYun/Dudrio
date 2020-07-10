@@ -60,12 +60,12 @@ void TestScene::BuildObjects()
 
 	/*************************************************************/
 	float TerrainSize = 1024;
-	float frequency = 5;
-	int octaves = 3;
-	int seed = 0;
+	float frequency = 4;
+	int octaves = 1;
+	int seed = 100;
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
-	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed);
+	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
 	//delete terrainGenerator;
 	/*************************************************************/
 

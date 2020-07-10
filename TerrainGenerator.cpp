@@ -94,37 +94,54 @@ void TerrainGenerator::initTable(int seed)
 	std::shuffle(std::begin(randomTable), std::begin(randomTable) + 256, std::default_random_engine(seed));
 }
 
-float curve(float v)
+float curve(float v, float a, float b)
 {
-	float a = 3; 
-	float b = 2;
-
 	return pow(v, a) / (pow(v, a) + pow((b - b * v), a));
 }
 
-void TerrainGenerator::createFallOffData()
+void TerrainGenerator::createFallOffData(char shape[])
 {
 	data_fallOff.resize(width * height);
 
-	float maxValue = width * 0.6f;
-	for (int y = 0; y < height; ++y)
+	if (!strcmp(shape, "circle"))
 	{
-		for (int x = 0; x < width; ++x)
+		float maxValue = width * 0.6f;
+		for (int y = 0; y < height; ++y)
 		{
-			float X = (x - width / 2) / maxValue;
-			float Y = (y - height / 2) / maxValue;
-			
-			float value = sqrt(X * X + Y * Y);
+			for (int x = 0; x < width; ++x)
+			{
+				float X = (x - width / 2) / maxValue;
+				float Y = (y - height / 2) / maxValue;
 
-			data_fallOff[y * width + x] = curve(value);
+				float value = sqrt(X * X + Y * Y);
+
+				data_fallOff[y * width + x] = curve(value, 3, 2);
+			}
 		}
 	}
+	else if (!strcmp(shape, "square"))
+	{
+		float maxValue = width * 0.6f;
+		for (int y = 0; y < height; ++y)
+		{
+			for (int x = 0; x < width; ++x)
+			{
+				float X = (x - width / 2) / maxValue;
+				float Y = (y - height / 2) / maxValue;
+
+				float value = max(abs(X), abs(Y));
+
+				data_fallOff[y * width + x] = curve(value, 3, 2);
+			}
+		}
+	}
+	
 }
 
-std::string TerrainGenerator::createHeightMap(float frequency, int octaves, int seed)
+std::string TerrainGenerator::createHeightMap(float frequency, int octaves, int seed, char shape[])
 {
 	initTable(seed);
-	createFallOffData();
+	createFallOffData(shape);
 
 	float fx = width / frequency;
 	float fy = height / frequency;

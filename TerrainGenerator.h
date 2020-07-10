@@ -25,6 +25,6 @@ public:
 	float noise2D(float x, float y);
 	float noise3D(float x, float y, float z);
 
-	void createFallOffData();
-	std::string createHeightMap(float frequency, int octaves, int seed);
+	void createFallOffData(char shape[]);
+	std::string createHeightMap(float frequency, int octaves, int seed, char shape[]);
 };

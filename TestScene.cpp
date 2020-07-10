@@ -66,7 +66,7 @@ void TestScene::BuildObjects()
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
 	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
-	//delete terrainGenerator;
+	delete terrainGenerator;
 	/*************************************************************/
 
 

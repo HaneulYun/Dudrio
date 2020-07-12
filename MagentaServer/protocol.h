@@ -17,16 +17,19 @@ constexpr int MAX_USER = 10;
 #define C2S_CONSTRUCT		6	// Host to Server
 #define C2S_DESTRUCT		7	// Host to Server
 #define C2S_DESTRUCT_ALL	8	// Host to Server
+#define C2S_CHAT			9
 
 #define S2C_LOGIN_OK		1
-#define S2C_MOVE_START		2	// Server to Guest
-#define S2C_MOVE_END		3	// Server to Guest
-#define S2C_ROTATE			4	// Server to Guest
-#define S2C_ENTER			5
-#define S2C_LEAVE			6
-#define S2C_CONSTRUCT		7	// Server to Guest
-#define S2C_DESTRUCT		8	// Server to Guest
-#define S2C_DESTRUCT_ALL	9	// Server to Guest
+#define S2C_LOGIN_FAIL		2
+#define S2C_MOVE_START		3	// Server to Guest
+#define S2C_MOVE_END		4	// Server to Guest
+#define S2C_ROTATE			5	// Server to Guest
+#define S2C_ENTER			6
+#define S2C_LEAVE			7
+#define S2C_CONSTRUCT		8	// Server to Guest
+#define S2C_DESTRUCT		9	// Server to Guest
+#define S2C_DESTRUCT_ALL	10	// Server to Guest
+#define S2C_CHAT			11
 
 #pragma pack(push ,1)
 
@@ -74,6 +77,18 @@ struct sc_packet_login_ok {
 	float x, z;
 	float xMove, zMove;
 	float rotAngle;
+};
+
+struct sc_packet_login_fail {
+	unsigned char size;
+	char type;
+};
+
+struct sc_packet_chat {
+	unsigned char size;
+	char type;
+	int	 id;
+	wchar_t mess[MAX_STR_LEN];
 };
 
 struct sc_packet_move_start {
@@ -191,6 +206,17 @@ struct cs_packet_login {
 	char	name[MAX_ID_LEN];
 };
 
+struct cs_packet_logout {
+	unsigned char size;
+	char type;
+};
+
+struct cs_packet_chat {
+	unsigned char size;
+	char type;
+	wchar_t message[MAX_STR_LEN];
+};
+
 struct cs_packet_move_start {
 	char	size;
 	char	type;
@@ -233,5 +259,4 @@ struct cs_packet_destruct_all
 	char type;
 	int id;
 };
-
 #pragma pack (pop)

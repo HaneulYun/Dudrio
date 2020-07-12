@@ -118,7 +118,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>x64\Debug;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CyanEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CyanEngine.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
     </Link>
   </ItemDefinitionGroup>
@@ -166,7 +166,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>x64\Release;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CyanEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CyanEngine.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
     </Link>
   </ItemDefinitionGroup>

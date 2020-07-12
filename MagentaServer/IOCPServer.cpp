@@ -29,10 +29,6 @@ void IOCPServer::init_server()
 
 	// listen -----------------------------------------------------
 	listen(l_socket, SOMAXCONN);
-	
-	// 네이글 알고리즘 OFF
-	//int option = TRUE;
-	//setsockopt(l_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 }
 
 void IOCPServer::start_server()
@@ -95,7 +91,6 @@ void IOCPServer::worker_thread_loop()
 
 		switch (exover->op) {
 		case OP_RECV:
-			// send나 recv의 경우에만 이 처리를 해줘야 함
 			if (0 == io_byte)
 				contents.disconnect(user_id);
 			else {
@@ -106,53 +101,10 @@ void IOCPServer::worker_thread_loop()
 			}
 			break;
 		case OP_SEND:
-			// send나 recv의 경우에만 이 처리를 해줘야 함
 			if (0 == io_byte)
 				contents.disconnect(user_id);
 			delete exover;
 			break;
-		//case OP_ACCEPT:
-		//{
-		//	SOCKET c_socket = exover->c_socket;
-		//	int idx = 0;
-		//	bool flag = false;
-		//	for (auto& cl : g_clients){
-		//		if (idx != cl.first) {
-		//			g_clients[idx] = new Clients(c_socket, idx);
-		//			g_clients[idx]->m_status = ST_ALLOC;
-		//			flag = true;
-		//			break;
-		//		}
-		//		else
-		//			idx++;
-		//	}
-		//
-		//	if (g_clients.empty())
-		//	{
-		//		g_clients[idx] = new Clients(c_socket, idx);
-		//		flag = true;
-		//	}
-		//	else if (idx == g_clients.size() && !flag)
-		//	{
-		//		g_clients[idx] = new Clients(c_socket, idx);
-		//		flag = true;
-		//	}
-		//
-		//	if (!flag) {
-		//		closesocket(c_socket);
-		//	}
-		//	else {
-		//		CreateIoCompletionPort(reinterpret_cast<HANDLE>(c_socket), g_iocp, idx, 0);
-		//
-		//		DWORD flags = 0;
-		//		WSARecv(c_socket, &g_clients[idx]->m_recv_over.wsabuf, 1, NULL, &flags, &g_clients[idx]->m_recv_over.over, NULL);
-		//	}
-		//	c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-		//	exover->c_socket = c_socket;
-		//	ZeroMemory(&exover->over, sizeof(exover->over));
-		//	AcceptEx(l_socket, c_socket, exover->io_buf, NULL, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, &exover->over);
-		//}
-		//break;
 		default:
 			cout << "Invalid Operation " << exover->op << endl;
 			break;
@@ -212,7 +164,6 @@ void IOCPServer::accept_thread_loop()
 		char clientIP[32] = { 0, };
 		inet_ntop(AF_INET, &(client_addr.sin_addr), clientIP, 32 - 1);
 
-		// Recv Overlapped I/O작업을 요청해 놓는다.
 		DWORD flags = 0;
 		g_clients[idx]->m_recv_over.c_socket = g_clients[idx]->m_s;
 		g_clients[idx]->m_recv_over.op = OP_RECV;

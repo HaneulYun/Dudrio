@@ -20,7 +20,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	std::vector<GameObject*> buttons_BuildingList[6];
 	GameObject* buttons_page[2];
 
-	std::vector<ButtonAssetItem> buttonAssetItem;
+	std::vector<ButtonAssetItem> buttonAssetItem[5];
 
 	ButtonType buttonType = none;
 	int currentPage = 0;
@@ -36,20 +36,40 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
-		int buildType = 4;
-		int buildPage = 0;
-		int buildCountInPage = 0;
-		for (auto& item : buttonAssetItem)
+		for (int i = 0; i < 5; ++i)
 		{
-			if (!buildCountInPage)
-				buttons_BuildingList[buildType].push_back(((HostScene*)gameObject->scene)->CreateButtonList());
-			buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->children[0]->GetComponent<Text>()->text = item.name;
-			buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->AddComponent<Button>()->AddEvent(item.func);
+			int buildType = i;
+			int buildPage = 0;
+			int buildCountInPage = 0;
+			if (buttonAssetItem[i].empty()) buttons_BuildingList[buildType].push_back(((HostScene*)gameObject->scene)->CreateButtonList());
+			for (auto& item : buttonAssetItem[i])
+			{
+				if (!buildCountInPage)
+					buttons_BuildingList[buildType].push_back(((HostScene*)gameObject->scene)->CreateButtonList());
+				buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->children[0]->GetComponent<Text>()->text = item.name;
+				buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->AddComponent<Button>()->AddEvent(item.func);
 
-			if (++buildCountInPage == 10)
-				++buildPage, buildCountInPage = 0;
+				if (++buildCountInPage == 10)
+					++buildPage, buildCountInPage = 0;
 
+			}
 		}
+
+
+		//int buildType = 4;
+		//int buildPage = 0;
+		//int buildCountInPage = 0;
+		//for (auto& item : buttonAssetItem)
+		//{
+		//	if (!buildCountInPage)
+		//		buttons_BuildingList[buildType].push_back(((HostScene*)gameObject->scene)->CreateButtonList());
+		//	buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->children[0]->GetComponent<Text>()->text = item.name;
+		//	buttons_BuildingList[buildType][buildPage]->children[buildCountInPage]->AddComponent<Button>()->AddEvent(item.func);
+		//
+		//	if (++buildCountInPage == 10)
+		//		++buildPage, buildCountInPage = 0;
+		//
+		//}
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)

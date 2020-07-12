@@ -79,7 +79,7 @@ void HostScene::BuildObjects()
 		ASSET AddTexture("material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
 		ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
 		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
-		//ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
+		ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
 		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 		ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
 		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
@@ -101,6 +101,7 @@ void HostScene::BuildObjects()
 		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 		ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
+		ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
 	}
 
 	//*** Mesh ***//
@@ -113,11 +114,11 @@ void HostScene::BuildObjects()
 		ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
 		ASSET AddFbxForMesh("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
 		ASSET AddFbxForMesh("SM_House_Var02_Extra", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02_Extra.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var02.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var03.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var04.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var05.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var05.FBX");
 		ASSET AddFbxForMesh("SM_Mushroom_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var01.FBX");
 		ASSET AddFbxForMesh("SM_Mushroom_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var02.FBX");
 		ASSET AddFbxForMesh("SM_Mushroom_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var03.FBX");
@@ -152,6 +153,40 @@ void HostScene::BuildObjects()
 		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
 		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
 	}
+
+
+	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+
+	//*** Animation ***//
+	ASSET AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
+	ASSET AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
+	ASSET AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
+
+	//*** AnimatorController ***//
+	AnimatorController* controller = new AnimatorController();
+	{
+		controller->AddParameterFloat("VelocityX");
+		controller->AddParameterFloat("VelocityZ");
+
+		controller->AddState("Idle", ASSET animationClips["Idle_BowAnim"].get());
+		controller->AddState("Walk", ASSET animationClips["Walk_BowAnim"].get());
+		controller->AddState("WalkBack", ASSET animationClips["WalkBack_BowAnim"].get());
+		controller->AddState("WalkRight", ASSET animationClips["WalkRight_BowAnim"].get());
+		controller->AddState("WalkLeft", ASSET animationClips["WalkLeft_BowAnim"].get());
+
+		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("VelocityZ", Greater, 0.3));
+		controller->AddTransition("Idle", "WalkBack", TransitionCondition::CreateFloat("VelocityZ", Less, -0.3));
+		controller->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("VelocityZ", Less, 0.3));
+		controller->AddTransition("WalkBack", "Idle", TransitionCondition::CreateFloat("VelocityZ", Greater, -0.3));
+
+		controller->AddTransition("Idle", "WalkLeft", TransitionCondition::CreateFloat("VelocityX", Greater, 0.3));
+		controller->AddTransition("Idle", "WalkRight", TransitionCondition::CreateFloat("VelocityX", Less, -0.3));
+		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
+		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("VelocityX", Greater, -0.3));
+	}
+
 
 	{
 		GameObject* fps = CreateUI();
@@ -192,38 +227,6 @@ void HostScene::BuildObjects()
 		terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
 
-	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
-
-	//*** Animation ***//
-	ASSET AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
-	ASSET AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
-	ASSET AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
-	ASSET AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
-	ASSET AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
-
-	//*** AnimatorController ***//
-	AnimatorController* controller = new AnimatorController();
-	{
-		controller->AddParameterFloat("VelocityX");
-		controller->AddParameterFloat("VelocityZ");
-	
-		controller->AddState("Idle", ASSET animationClips["Idle_BowAnim"].get());
-		controller->AddState("Walk", ASSET animationClips["Walk_BowAnim"].get());
-		controller->AddState("WalkBack", ASSET animationClips["WalkBack_BowAnim"].get());
-		controller->AddState("WalkRight", ASSET animationClips["WalkRight_BowAnim"].get());
-		controller->AddState("WalkLeft", ASSET animationClips["WalkLeft_BowAnim"].get());
-	
-		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("VelocityZ", Greater, 0.3));
-		controller->AddTransition("Idle", "WalkBack", TransitionCondition::CreateFloat("VelocityZ", Less, -0.3));
-		controller->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("VelocityZ", Less, 0.3));
-		controller->AddTransition("WalkBack", "Idle", TransitionCondition::CreateFloat("VelocityZ", Greater, -0.3));
-	
-		controller->AddTransition("Idle", "WalkLeft", TransitionCondition::CreateFloat("VelocityX", Greater, 0.3));
-		controller->AddTransition("Idle", "WalkRight", TransitionCondition::CreateFloat("VelocityX", Less, -0.3));
-		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
-		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("VelocityX", Greater, -0.3));
-	}
-
 	///*** Game Object ***///
 
 	GameObject* mainCamera = CreateEmpty();
@@ -242,18 +245,6 @@ void HostScene::BuildObjects()
 			renderer->materials.push_back(ASSET MATERIAL("none"));
 		ritem->layer = (int)RenderLayer::Sky;
 	}
-
-	std::string name[9]{
-		"Attack01_BowAnim",
-		"Attack01Maintain_BowAnim",
-		"Attack01RepeatFire_BowAnim",
-		"Attack01Start_BowAnim",
-		"Attack02Maintain_BowAnim",
-		"Attack02RepeatFire_BowAnim",
-		"Attack02Start_BowAnim",
-		"DashBackward_BowAnim",
-		"DashForward_BowAnim",
-	};
 
 	auto SimsPrefab = CreateEmptyPrefab();
 	{
@@ -358,80 +349,59 @@ void HostScene::BuildObjects()
 	buttons_BuildingType[4]->children.front()->GetComponent<Text>()->text = L"소품";
 	buttons_BuildingType[4]->AddComponent<Button>()->AddEvent( [](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Decoration); });
 	buttons_BuildingType[5]->children.front()->GetComponent<Text>()->text = L"삭제";
-	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent([](void*) { 
-		ButtonManager::buttonManager->SelectButton(ButtonType::Delete); BuildManager::buildManager->deleteButtonState = !BuildManager::buildManager->deleteButtonState;
+	buttons_BuildingType[5]->AddComponent<Button>()->AddEvent([](void*) { ButtonManager::buttonManager->SelectButton(ButtonType::Delete); 
+	BuildManager::buildManager->deleteButtonState = !BuildManager::buildManager->deleteButtonState;
 		if (BuildManager::buildManager->prefab) BuildManager::buildManager->DeletePrefab();
 		});
 
-	for (int i = 0; i < 4/*5*/; ++i)
-	{
-		butttons_BuildingList[i].push_back(CreateButtonList());
-		ButtonManager::buttonManager->buttons_BuildingList[i].push_back(butttons_BuildingList[i][0]);
-	}
-	butttons_BuildingList[0][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Well";
-	butttons_BuildingList[0][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Well_01); });
+	/*LandMark*/
+	for (auto& LandMarkAssetInfo :
+		{
+			ButtonAssetItem{L"Well",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Well_01); }}
+		})
+		buttonManager->buttonAssetItem[0].push_back(LandMarkAssetInfo);
 
-	butttons_BuildingList[1][0]->children[0]->children[0]->GetComponent<Text>()->text = L"House01";
-	butttons_BuildingList[1][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::House_01, ASSET MESH("SM_House_Var01"), ASSET MATERIAL("house01"), 0.01f, 2.75f); });
-	butttons_BuildingList[1][0]->children[1]->children[0]->GetComponent<Text>()->text = L"House02";
-	butttons_BuildingList[1][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::House_02); });
+	/*House*/
+	for (auto& HouseAssetInfo :
+		{
+			ButtonAssetItem{L"House01",		[](void*) {BuildManager::buildManager->SelectBuilding(BuildingType::House_01,		ASSET MESH("SM_House_Var01"), ASSET MATERIAL("house01"), 0.01f, 2.75f); }},
+			ButtonAssetItem{L"House02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::House_02); }}
+		})
+		buttonManager->buttonAssetItem[1].push_back(HouseAssetInfo);
 
-	//SM_Tree_Var04
-	butttons_BuildingList[3].push_back(CreateButtonList());
-	butttons_BuildingList[3].push_back(CreateButtonList());
-	ButtonManager::buttonManager->buttons_BuildingList[3].push_back(butttons_BuildingList[3][1]);
-	ButtonManager::buttonManager->buttons_BuildingList[3].push_back(butttons_BuildingList[3][2]);
-	butttons_BuildingList[3][0]->children[0]->children[0]->GetComponent<Text>()->text = L"Tree_01";
-	//butttons_BuildingList[3][0]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
-	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_01, ASSET MESH("SM_Tree_Var01"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); });
-	butttons_BuildingList[3][0]->children[1]->children[0]->GetComponent<Text>()->text = L"Tree_02";
-	//butttons_BuildingList[3][0]->children[1]->AddComponent<Button>()->AddEvent([](void*) {
-	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_02, ASSET MESH("SM_Tree_Var02"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); });
-	butttons_BuildingList[3][0]->children[2]->children[0]->GetComponent<Text>()->text = L"Tree_03";
-	//butttons_BuildingList[3][0]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
-	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_03, ASSET MESH("SM_Tree_Var03"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); });
-	butttons_BuildingList[3][0]->children[3]->children[0]->GetComponent<Text>()->text = L"Tree_04";
-	//butttons_BuildingList[3][0]->children[3]->AddComponent<Button>()->AddEvent([](void*) {
-	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_04, ASSET MESH("SM_Tree_Var04"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); });
-	butttons_BuildingList[3][0]->children[4]->children[0]->GetComponent<Text>()->text = L"Tree_05";
-	//butttons_BuildingList[3][0]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
-	//	BuildManager::buildManager->SelectBuilding(BuildingType::Tree_05, ASSET MESH("SM_Tree_Var05"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); });
-	butttons_BuildingList[3][0]->children[5]->children[0]->GetComponent<Text>()->text = L"Flower_01";
-	butttons_BuildingList[3][0]->children[6]->children[0]->GetComponent<Text>()->text = L"Flower_02";
-	butttons_BuildingList[3][0]->children[7]->children[0]->GetComponent<Text>()->text = L"Flower_03";
-	butttons_BuildingList[3][0]->children[8]->children[0]->GetComponent<Text>()->text = L"Flower_04";
-	butttons_BuildingList[3][0]->children[9]->children[0]->GetComponent<Text>()->text = L"Flower_05";
-
-	butttons_BuildingList[3][1]->children[0]->children[0]->GetComponent<Text>()->text = L"Stone_Big_01";
-	butttons_BuildingList[3][1]->children[1]->children[0]->GetComponent<Text>()->text = L"Stone_Big_02";
-	butttons_BuildingList[3][1]->children[2]->children[0]->GetComponent<Text>()->text = L"Stone_Big_03";
-	butttons_BuildingList[3][1]->children[3]->children[0]->GetComponent<Text>()->text = L"Stone_Big_04";
-	butttons_BuildingList[3][1]->children[4]->children[0]->GetComponent<Text>()->text = L"Stone_Big_05";
-	butttons_BuildingList[3][1]->children[5]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_01";
-	butttons_BuildingList[3][1]->children[6]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_02";
-	butttons_BuildingList[3][1]->children[7]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_03";
-	butttons_BuildingList[3][1]->children[8]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_04";
-	butttons_BuildingList[3][1]->children[9]->children[0]->GetComponent<Text>()->text = L"Stone_Medium_05";
-
-	butttons_BuildingList[3][2]->children[0]->children[0]->GetComponent<Text>()->text = L"Mushroom_01";
-	butttons_BuildingList[3][2]->children[0]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_01, ASSET MESH("SM_Mushroom_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); });
-	butttons_BuildingList[3][2]->children[1]->children[0]->GetComponent<Text>()->text = L"Mushroom_02";
-	butttons_BuildingList[3][2]->children[1]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_02, ASSET MESH("SM_Mushroom_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); });
-	butttons_BuildingList[3][2]->children[2]->children[0]->GetComponent<Text>()->text = L"Mushroom_03";
-	butttons_BuildingList[3][2]->children[2]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_03, ASSET MESH("SM_Mushroom_Var03"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); });
-	butttons_BuildingList[3][2]->children[3]->children[0]->GetComponent<Text>()->text = L"Mushroom_04";
-	butttons_BuildingList[3][2]->children[3]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_04, ASSET MESH("SM_Mushroom_Var04"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); });
-	butttons_BuildingList[3][2]->children[4]->children[0]->GetComponent<Text>()->text = L"Mushroom_05";
-	butttons_BuildingList[3][2]->children[4]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_05, ASSET MESH("SM_Mushroom_Var05"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); });
-	butttons_BuildingList[3][2]->children[5]->children[0]->GetComponent<Text>()->text = L"Mushroom_06";
-	butttons_BuildingList[3][2]->children[5]->AddComponent<Button>()->AddEvent([](void*) {
-		BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_06, ASSET MESH("SM_Mushroom_Var06"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); });
+	/*Theme*/
+	
+	/*landscape*/
+	for (auto& landscapeAssetInfo :
+		{
+			ButtonAssetItem{L"Tree_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tree_01, ASSET MESH("SM_Tree_Var01"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); }},
+			ButtonAssetItem{L"Tree_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tree_02, ASSET MESH("SM_Tree_Var02"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); }},
+			ButtonAssetItem{L"Tree_03",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tree_03, ASSET MESH("SM_Tree_Var03"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); }},
+			ButtonAssetItem{L"Tree_04",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tree_04, ASSET MESH("SM_Tree_Var04"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); }},
+			ButtonAssetItem{L"Tree_05",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tree_05, ASSET MESH("SM_Tree_Var05"), ASSET MATERIAL("TreeLeafs"), 0.01f, 5.0f); }},
+			//ButtonAssetItem{L"Flower_01"},
+			//ButtonAssetItem{L"Flower_02"},
+			//ButtonAssetItem{L"Flower_03"},
+			//ButtonAssetItem{L"Flower_04"},
+			//ButtonAssetItem{L"Flower_05"},
+			//ButtonAssetItem{L"Stone_Big_01"},
+			//ButtonAssetItem{L"Stone_Big_02"},
+			//ButtonAssetItem{L"Stone_Big_03"},
+			//ButtonAssetItem{L"Stone_Big_04"},
+			//ButtonAssetItem{L"Stone_Big_05"},			
+			//ButtonAssetItem{L"Stone_Medium_01"},
+			//ButtonAssetItem{L"Stone_Medium_02"},
+			//ButtonAssetItem{L"Stone_Medium_03"},
+			//ButtonAssetItem{L"Stone_Medium_04"},
+			//ButtonAssetItem{L"Stone_Medium_05"},
+			ButtonAssetItem{L"Mushroom_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_01,	ASSET MESH("SM_Mushroom_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); }},
+			ButtonAssetItem{L"Mushroom_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_02,	ASSET MESH("SM_Mushroom_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); }},
+			ButtonAssetItem{L"Mushroom_03",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_03,	ASSET MESH("SM_Mushroom_Var03"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); }},
+			ButtonAssetItem{L"Mushroom_04",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_04,	ASSET MESH("SM_Mushroom_Var04"), ASSET MATERIAL("material_02"), 0.01f, 0.2f); }},
+			ButtonAssetItem{L"Mushroom_05",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_05,	ASSET MESH("SM_Mushroom_Var05"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); }},
+			ButtonAssetItem{L"Mushroom_06",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Mushroom_06,	ASSET MESH("SM_Mushroom_Var06"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); }}
+		})
+		buttonManager->buttonAssetItem[3].push_back(landscapeAssetInfo);
 
 	for (auto& btnAssetInfo :
 		{
@@ -468,7 +438,7 @@ void HostScene::BuildObjects()
 			ButtonAssetItem{L"Sack_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_01,		ASSET MESH("SM_Sack_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
 			ButtonAssetItem{L"Sack_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_02,		ASSET MESH("SM_Sack_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 		})
-		buttonManager->buttonAssetItem.push_back(btnAssetInfo);
+		buttonManager->buttonAssetItem[4].push_back(btnAssetInfo);
 
 
 	GameObject* button_previouspage = CreateImage();

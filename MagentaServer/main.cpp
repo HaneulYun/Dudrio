@@ -3,6 +3,8 @@
 class IOCPServer iocp;
 class Timer	timer;
 class Contents contents;
+unordered_map<int, Clients*> g_clients;
+vector<BuildingInform> buildings;
 
 int main()
 {

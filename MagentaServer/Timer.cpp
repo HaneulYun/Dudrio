@@ -44,8 +44,8 @@ void Timer::timer_thread_loop()
 			{
 			case 1:
 			{
-				over->op = ev.event_id;
-				over->p_id = ev.target_id;
+				//over->op = ev.event_id;
+				//over->p_id = ev.target_id;
 			}
 			break;
 			default:

@@ -91,13 +91,22 @@ void GuestScene::BuildObjects()
 		fps->AddComponent<FPS>();
 	}
 
-	int TerrainSize = 1081;
+	float TerrainSize = 1024;
+	float frequency = 5;
+	int octaves = 3;
+	int seed = 1024;
+
+	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
+	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
+	delete terrainGenerator;
 
 	GameObject* terrain = CreateEmpty();
 	auto terrainData = terrain->AddComponent<Terrain>();
 	{
 		{
-			terrainData->terrainData.AlphamapTextureName = L"Texture\\heightMap_HN.raw";
+			wstring name;
+			name.assign(fileName.begin(), fileName.end());
+			terrainData->terrainData.AlphamapTextureName = name.c_str();
 			terrainData->terrainData.heightmapHeight = TerrainSize;
 			terrainData->terrainData.heightmapWidth = TerrainSize;
 

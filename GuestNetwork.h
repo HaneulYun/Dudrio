@@ -107,30 +107,13 @@ public:
 
 	void Update()
 	{
-		if (!isConnect && !tryConnect)
+		if (pressButton)
 		{
-			for (char key = '0'; key <= '9'; ++key)
-			{
-				if (Input::GetKeyDown((KeyCode)key))
-				{
-					wserverIp += key;
-					if(inputIp != nullptr)
-						inputIp->text = wserverIp;
-				}
-			}
-			if (Input::GetKeyDown(KeyCode::Period))
-			{
-				wserverIp += '.';
-				if (inputIp != nullptr)
-					inputIp->text = wserverIp;
-			}
-			if (Input::GetKeyDown(KeyCode::O))
-			{
-				if (!wserverIp.empty())
-					wserverIp.pop_back();
-				if (inputIp != nullptr)
-					inputIp->text = wserverIp;
-			}
+			wchar_t str[256];
+			wsprintf(str, L"%s", Input::buffer);
+			wserverIp = str;
+			inputIp->text = wserverIp;
+
 			if (Input::GetKeyDown(KeyCode::Return) && ip != nullptr && ipImage != nullptr)
 			{
 				std::string serverIp;
@@ -150,6 +133,7 @@ public:
 				ipImage->SetActive(false);
 
 				wserverIp.clear();
+				Input::ClearBuffer();
 			}
 		}
 		if (tryConnect)
@@ -180,6 +164,7 @@ public:
 	{
 		if (!isConnect && !tryConnect && !pressButton)
 		{
+			Input::ClearBuffer();
 			wserverIp.clear();
 			if (inputIp != nullptr)
 				inputIp->text = wserverIp;

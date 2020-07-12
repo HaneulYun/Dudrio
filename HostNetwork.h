@@ -67,28 +67,6 @@ public:
 	{
 		if (pressButton)
 		{
-			for (char key = '0'; key <= '9'; ++key)
-			{
-				if (Input::GetKeyDown((KeyCode)key))
-				{
-					wserverIp += key;
-					if (inputIp != nullptr)
-						inputIp->text = wserverIp;
-				}
-			}
-			if (Input::GetKeyDown(KeyCode::Period))
-			{
-				wserverIp += '.';
-				if (inputIp != nullptr)
-					inputIp->text = wserverIp;
-			}
-			if (Input::GetKeyDown(KeyCode::O))
-			{
-				if(!wserverIp.empty())
-					wserverIp.pop_back();
-				if (inputIp != nullptr)
-					inputIp->text = wserverIp;
-			}
 			if (Input::GetKeyDown(KeyCode::Return) && ip != nullptr && ipImage != nullptr)
 			{
 				std::string serverIp;
@@ -99,7 +77,7 @@ public:
 				serveraddr.sin_addr.s_addr = inet_addr(serverIp.c_str());
 				serveraddr.sin_port = htons(SERVER_PORT);
 
-				retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
+				retval = connect_nonblock(serverSocket, (SOCKADDR*)& serveraddr, sizeof(serveraddr), 5);
 
 				tryConnect = true;
 				pressButton = false;
@@ -108,7 +86,13 @@ public:
 				ipImage->SetActive(false);
 
 				wserverIp.clear();
+				Input::ClearBuffer();
 			}
+
+			wchar_t str[256];
+			wsprintf(str, L"%s", Input::buffer);
+			wserverIp = str;
+			inputIp->text = wserverIp;
 		}
 		if (tryConnect)
 		{
@@ -175,6 +159,7 @@ public:
 	{
 		if (!isConnect && !tryConnect && !pressButton)
 		{
+			Input::ClearBuffer();
 			wserverIp.clear();
 			if (inputIp != nullptr)
 				inputIp->text = wserverIp;
@@ -227,8 +212,8 @@ public:
 						inputIp->text = wserverIp;
 						inputIp->fontSize = 30;
 						inputIp->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-						inputIp->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-						inputIp->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+						inputIp->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+						inputIp->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
 						Scene::scene->textObjects.push_back(textobject);
 					}
 				}

@@ -200,10 +200,9 @@ struct cs_packet_chat {
 struct cs_packet_move {
 	char size;
 	char type;
-	float xPos, zPos;
 	float xVel, zVel;
 	float rotAngle;
-	char run_level;
+	float run_level;
 };
 
 struct cs_packet_construct{

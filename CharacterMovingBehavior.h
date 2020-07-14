@@ -8,14 +8,18 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	Animator* anim{ nullptr };
+	Vector3 animVel{ 0,0,0 };
 	char name[MAX_ID_LEN];
-	Vector3 velocity{ 0,0,0 };
 
+	queue<pair<Vector3, float>> moveQueue;
+	Vector3 destPos{ 0,0,0 };
+	float destAngle;
+	Vector3 curPos{ 0,0,0 };
+	float curAngle;
 	bool moving{ false };
-	bool rotate{ false };
-	float newRotAngle;
-	float curRotAngle;
+
 	TerrainData* heightmap = NULL;
+
 private:
 	friend class GameObject;
 	friend class MonoBehavior<CharacterMovingBehavior>;
@@ -27,34 +31,59 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
-		newRotAngle = 0.0f;
-		curRotAngle = 0.0f;
+		destPos = { 0,0,0 };
+		destAngle = 0.0f;
+		curPos = { 0,0,0 };
+		curAngle = 0.0f;
+		animVel = { 0,0,0 };
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		// 서버에서 받은 위치 부드럽게 보간하는 식 작성하기
-		if (moving)
-		{
-			gameObject->transform->position.x += velocity.x * Time::deltaTime;
-			gameObject->transform->position.z += velocity.z * Time::deltaTime;
+		if (!moveQueue.empty() && !moving){
+			destPos = moveQueue.front().first - gameObject->transform->position;
+			destPos.y = 0;
+			destAngle = moveQueue.front().second;
+			curPos = { 0,0,0 };
+			curAngle = 0.0f;
+			animVel = { 0,0,0 };
+			moveQueue.pop();
+			moving = true;
 		}
-		if (rotate)
-		{
-			float angle = newRotAngle * Time::deltaTime / 0.333;
-			gameObject->transform->Rotate(Vector3{ 0,1,0 }, angle);
-			curRotAngle += angle;
-			if (fabs(curRotAngle) >= fabs(newRotAngle))
-			{
-				gameObject->transform->Rotate(Vector3{ 0,1,0 }, curRotAngle - newRotAngle);
-				rotate = false;
-				curRotAngle = 0.0f;
-				newRotAngle = 0.0f;
+
+		if (moving){
+			if (curPos.Length() < destPos.Length()) {
+				float dx = destPos.x * Time::deltaTime / 0.333;
+				float dz = destPos.z * Time::deltaTime / 0.333;
+
+				gameObject->transform->position += {dx, 0, dz};
+				curPos += {dx, 0, dz};
+				gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
 			}
+			if (fabs(curAngle) < fabs(destAngle)) {
+				float dr = destAngle * Time::deltaTime / 0.333;
+				gameObject->transform->Rotate(Vector3{ 0,1,0 }, dr);
+				curAngle += dr;
+			}
+			if (curPos.Length() >= destPos.Length() && fabs(curAngle) >= fabs(destAngle)) {
+				moving = false;
+			}
+			
+			Vector3 characterForward = gameObject->transform->forward.Normalized();
+			Vector3 forward = { 0,0,1 };
+			float angle = NS_Vector3::DotProduct(forward.xmf3, characterForward.xmf3);
+			XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, characterForward.xmf3);
+			angle = acos(angle);
+			angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+			animVel = { destPos.x * cos(angle) - destPos.z * sin(angle), 0,
+				destPos.x * sin(angle) + destPos.z * cos(angle) };
+			anim->SetFloat("VelocityZ", animVel.z);
+			anim->SetFloat("VelocityX", animVel.x);           
 		}
-		gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
-		anim->SetFloat("VelocityZ", velocity.z);
-		anim->SetFloat("VelocityX", velocity.x);
+		if(!moving){
+			anim->SetFloat("VelocityZ", 0);
+			anim->SetFloat("VelocityX", 0);
+		}
 	}
 
 	void move(float xPos, float zPos)
@@ -64,10 +93,9 @@ public:
 		gameObject->transform->position.z = zPos;
 	}
 
-	void turn(float destAngle)
+	void add_move_queue(Vector3 destPos, float rotAngle)
 	{
-		newRotAngle += destAngle;
-		rotate = true;
+		moveQueue.push(make_pair(destPos, rotAngle));
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

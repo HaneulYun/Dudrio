@@ -27,5 +27,5 @@ public:
 	~Clients();
 
 	void enter_game(char name[]);
-	void do_move(float xVel, float zVel, float rotAngle, char run_level);
+	void do_move(float xVel, float zVel, float rotAngle, float run_level);
 };

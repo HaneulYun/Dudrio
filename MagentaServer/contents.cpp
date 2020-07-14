@@ -35,15 +35,13 @@ void Contents::logic_thread_loop()
 
 			switch (buf.second[1]){
 			case C2S_LOGIN:{
-				if (host_id != -1)
-				{
+				if (host_id != -1){
 					cout << "The Guest " <<  buf.first << "is connected" << endl;
 					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
 					g_clients[buf.first]->is_host = false;
 					g_clients[buf.first]->enter_game(packet->name);
 				}
-				else
-				{
+				else{
 					cout << "Host does not exist" << endl;
 					disconnect(buf.first);
 				}
@@ -51,16 +49,14 @@ void Contents::logic_thread_loop()
 			break;
 			case C2S_LOGIN_HOST:
 			{
-				if (host_id == -1)
-				{
+				if (host_id == -1){
 					cout << "The host is connected" << endl;
 					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
 					host_id = buf.first;
 					g_clients[buf.first]->is_host = true;
 					g_clients[buf.first]->enter_game(packet->name);
 				}
-				else
-				{
+				else{
 					cout << "Host is already exist" << endl;
 					disconnect(buf.first);
 				}

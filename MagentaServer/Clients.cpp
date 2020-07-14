@@ -56,7 +56,7 @@ void Clients::enter_game(char name[])
 }
 
 
-void Clients::do_move(float xVel, float zVel, float rotAngle, char run_level)
+void Clients::do_move(float xVel, float zVel, float rotAngle, float run_level)
 {
 	// run_level == 2 : default
 	m_rotAngle += rotAngle;
@@ -65,10 +65,6 @@ void Clients::do_move(float xVel, float zVel, float rotAngle, char run_level)
 	if (nomalize_vel != 0.0f) {
 		m_xVel = xVel / nomalize_vel * (0.5 * run_level);
 		m_zVel = zVel / nomalize_vel * (0.5 * run_level);
-	}
-	else {
-		m_xVel = 0.0f;
-		m_zVel = 0.0f;
 	}
 	m_xPos += m_xVel / 1000.f;
 	m_zPos += m_zVel / 1000.f;

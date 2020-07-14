@@ -238,11 +238,11 @@ void IOCPServer::send_login_ok_packet(int user_id)
 	p.id = user_id;
 	p.size = sizeof(p);
 	p.type = S2C_LOGIN_OK;
-	p.x = g_clients[user_id]->xPos;
-	p.z = g_clients[user_id]->zPos;
-	p.xMove = g_clients[user_id]->xVel;
-	p.zMove = g_clients[user_id]->zVel;
-	p.rotAngle = g_clients[user_id]->rotAngle;
+	p.xPos = g_clients[user_id]->m_xPos;
+	p.zPos = g_clients[user_id]->m_zPos;
+	p.xVel = g_clients[user_id]->m_xVel;
+	p.zVel = g_clients[user_id]->m_zVel;
+	p.rotAngle = g_clients[user_id]->m_rotAngle;
 
 	send_packet(user_id, &p);
 }
@@ -262,11 +262,11 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 	p.id = o_id;
 	p.size = sizeof(p);
 	p.type = S2C_ENTER;
-	p.x = g_clients[o_id]->xPos;
-	p.z = g_clients[o_id]->zPos;
-	p.xMove = g_clients[o_id]->xVel;
-	p.zMove = g_clients[o_id]->zVel;
-	p.rotAngle = g_clients[o_id]->rotAngle;
+	p.xPos = g_clients[o_id]->m_xPos;
+	p.zPos = g_clients[o_id]->m_zPos;
+	p.xVel = g_clients[o_id]->m_xVel;
+	p.zVel = g_clients[o_id]->m_zVel;
+	p.rotAngle = g_clients[o_id]->m_rotAngle;
 
 	strcpy_s(p.name, g_clients[o_id]->m_name);
 	if (o_id == contents.host_id)
@@ -287,57 +287,24 @@ void IOCPServer::send_leave_packet(int user_id, int o_id)
 	send_packet(user_id, &p);
 }
 
-//void IOCPServer::send_move_packet(int user_id, int mover)
-//{
-//
-//}
-
-void IOCPServer::send_move_start_packet(int user_id, int mover)
+void IOCPServer::send_move_packet(int user_id, int mover, float dAngle)
 {
-	sc_packet_move_start p;
+	sc_packet_move p;
 	p.id = mover;
 	p.size = sizeof(p);
-	p.type = S2C_MOVE_START;
-	p.x = g_clients[mover]->xPos;
-	p.z = g_clients[mover]->zPos;
-	p.xMove = g_clients[mover]->xVel;
-	p.zMove = g_clients[mover]->zVel;
-
-	send_packet(user_id, &p);
-}
-
-void IOCPServer::send_move_end_packet(int user_id, int mover)
-{
-	sc_packet_move_end p;
-	p.id = mover;
-	p.size = sizeof(p);
-	p.type = S2C_MOVE_END;
-	p.x = g_clients[mover]->xPos;
-	p.z = g_clients[mover]->zPos;
-
-	send_packet(user_id, &p);
-}
-
-void IOCPServer::send_rotate_packet(int user_id, int rotater, float dAngle)
-{
-	sc_packet_rotate p;
-	p.id = rotater;
-	p.size = sizeof(p);
-	p.type = S2C_ROTATE;
+	p.type = S2C_MOVE;
+	p.xPos = g_clients[mover]->m_xPos;
+	p.zPos = g_clients[mover]->m_zPos;
+	p.xVel = g_clients[mover]->m_xVel;
+	p.zVel = g_clients[mover]->m_zVel;
 	p.rotAngle = dAngle;
-	p.x = g_clients[rotater]->xPos;
-	p.z = g_clients[rotater]->zPos;
-	p.xMove = g_clients[rotater]->xVel;
-	p.zMove = g_clients[rotater]->zVel;
 
-	printf("x: %f, z: %f, xVel: %f, zVel: %f, rotAngle: %f\n", p.x, p.z, p.xMove, p.zMove, p.rotAngle);
 	send_packet(user_id, &p);
 }
 
 void IOCPServer::send_construct_packet(int user_id, BuildingInform b_inform)
 {
 	sc_packet_construct p;
-	p.id = 0;
 	p.size = sizeof(p);
 	p.type = S2C_CONSTRUCT;
 	p.b_inform = b_inform;
@@ -348,7 +315,6 @@ void IOCPServer::send_construct_packet(int user_id, BuildingInform b_inform)
 void IOCPServer::send_destruct_packet(int user_id, BuildingInform b_inform)
 {
 	sc_packet_destruct p;
-	p.id = 0;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT;
 	p.b_inform = b_inform;
@@ -359,7 +325,6 @@ void IOCPServer::send_destruct_packet(int user_id, BuildingInform b_inform)
 void IOCPServer::send_destruct_all_packet(int user_id)
 {
 	sc_packet_destruct_all p;
-	p.id = 0;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT_ALL;
 

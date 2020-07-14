@@ -39,6 +39,7 @@ void Contents::logic_thread_loop()
 				{
 					cout << "The Guest " <<  buf.first << "is connected" << endl;
 					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
+					g_clients[buf.first]->is_host = false;
 					g_clients[buf.first]->enter_game(packet->name);
 				}
 				else
@@ -55,6 +56,7 @@ void Contents::logic_thread_loop()
 					cout << "The host is connected" << endl;
 					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
 					host_id = buf.first;
+					g_clients[buf.first]->is_host = true;
 					g_clients[buf.first]->enter_game(packet->name);
 				}
 				else
@@ -64,22 +66,10 @@ void Contents::logic_thread_loop()
 				}
 			}
 			break;
-			case C2S_MOVE_START:
+			case C2S_MOVE:
 			{
-				cs_packet_move_start* packet = reinterpret_cast<cs_packet_move_start*>(buf.second);
-				g_clients[buf.first]->do_move_start(packet->x, packet->z, packet->xMove, packet->zMove);
-			}
-			break;
-			case C2S_MOVE_END:
-			{
-				cs_packet_move_end* packet = reinterpret_cast<cs_packet_move_end*>(buf.second);
-				g_clients[buf.first]->do_move_end();
-			}
-			break;
-			case C2S_ROTATE:
-			{
-				cs_packet_rotate* packet = reinterpret_cast<cs_packet_rotate*>(buf.second);
-				g_clients[buf.first]->do_rotate(packet->x, packet->z, packet->xMove, packet->zMove, packet->rotAngle);
+				cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf.second);
+				g_clients[buf.first]->do_move(packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
 			}
 			break;
 			case C2S_CONSTRUCT:

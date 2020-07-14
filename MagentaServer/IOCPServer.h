@@ -37,10 +37,7 @@ public:
 
 	void send_enter_packet(int user_id, int o_id);
 	void send_leave_packet(int user_id, int o_id);
-	//void send_move_packet(int user_id, int mover);	// move + rotate
-	void send_move_start_packet(int user_id, int mover);
-	void send_move_end_packet(int user_id, int mover);
-	void send_rotate_packet(int user_id, int mover, float dAngle);
+	void send_move_packet(int user_id, int mover, float dAngle);	// move + rotate
 
 	void send_construct_packet(int user_id, BuildingInform b_inform);
 	void send_destruct_packet(int user_id, BuildingInform b_inform);

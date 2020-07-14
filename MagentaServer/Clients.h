@@ -12,16 +12,13 @@ public:
 	char	m_packet_buf[MAX_PACKET_SIZE];
 	atomic	<C_STATUS> m_status;
 	unsigned m_move_time;
-	high_resolution_clock::time_point m_last_move_time;
 
 	unordered_set<int> view_list;
 	
 	bool	is_host;
-	float	xPos, zPos;
-	float	xVel, zVel;
-	float	rotAngle;
-	bool	moving;
-	DWORD	startMoveTime;
+	float	m_xPos, m_zPos;
+	float	m_xVel, m_zVel;
+	float	m_rotAngle;
 	char	m_name[MAX_ID_LEN + 1];
 
 public:
@@ -30,7 +27,5 @@ public:
 	~Clients();
 
 	void enter_game(char name[]);
-	void do_move_start(float xPos, float zPos, float xMove, float zMove);
-	void do_move_end();
-	void do_rotate(float xPos, float zPos, float xMove, float zMove, float rAngle);
+	void do_move(float xVel, float zVel, float rotAngle, char run_level);
 };

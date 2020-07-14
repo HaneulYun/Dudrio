@@ -10,10 +10,9 @@ Clients::Clients(SOCKET& sock, int id)
 	m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 	m_status = ST_FREE;
 	m_s = sock;
-	xPos = 540.0;	zPos = 540.0;
-	xVel = 0.0;		zVel = 0.0;
-	rotAngle = 0.0f;
-	moving = false;
+	m_xPos = 540.0;	m_zPos = 540.0;
+	m_xVel = 0.0;	m_zVel = 0.0;
+	m_rotAngle = 0.0f;
 }
 
 Clients::Clients(int id)
@@ -25,10 +24,9 @@ Clients::Clients(int id)
 	m_recv_over.wsabuf.buf = m_recv_over.io_buf;
 	m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 	m_status = ST_FREE;
-	xPos = 540.0;	zPos = 540.0;
-	xVel = 0.0;		zVel = 0.0;
-	rotAngle = 0.0f;
-	moving = false;
+	m_xPos = 540.0;	m_zPos = 540.0;
+	m_xVel = 0.0;	m_zVel = 0.0;
+	m_rotAngle = 0.0f;
 }
 
 Clients::~Clients()
@@ -42,21 +40,12 @@ void Clients::enter_game(char name[])
 	m_name[MAX_ID_LEN] = NULL;
 	iocp.send_login_ok_packet(m_id);
 
-	for (auto& cl : g_clients)
-	{
+	for (auto& cl : g_clients){
 		if (m_id == cl.second->m_id)
 			continue;
 		if (ST_ACTIVE == cl.second->m_status) {
-			if (true == cl.second->moving) {
-				cl.second->xPos += cl.second->xVel * (GetTickCount64() - cl.second->startMoveTime);
-				cl.second->zPos += cl.second->zVel * (GetTickCount64() - cl.second->startMoveTime);
-				cl.second->startMoveTime = GetTickCount64();
-			}
 			iocp.send_enter_packet(m_id, cl.second->m_id);
 			iocp.send_enter_packet(cl.second->m_id, m_id);
-			if (true == cl.second->moving) {
-				iocp.send_move_start_packet(m_id, cl.second->m_id);
-			}
 		}
 	}
 
@@ -66,50 +55,25 @@ void Clients::enter_game(char name[])
 	m_status = ST_ACTIVE;
 }
 
-void Clients::do_move_start(float xPos, float zPos, float xMove, float zMove)
+
+void Clients::do_move(float xVel, float zVel, float rotAngle, char run_level)
 {
-	float nmlzeSpeedNum = sqrt(pow(xMove, 2) + pow(zMove, 2));
+	// run_level == 2 : default
+	m_rotAngle += rotAngle;
 
-	xVel = xMove / nmlzeSpeedNum;
-	zVel = zMove / nmlzeSpeedNum;
-
-	startMoveTime = GetTickCount64();
-	moving = true;
-
-	for (auto& cl : g_clients)
-		if (ST_ACTIVE == cl.second->m_status)
-			iocp.send_move_start_packet(cl.second->m_id, m_id);
-}
-
-void Clients::do_move_end()
-{
-	xPos += xVel * (GetTickCount64() - startMoveTime) / 1000.f;
-	zPos += zVel * (GetTickCount64() - startMoveTime) / 1000.f;
-
-	moving = false;
-
-	for (auto& cl : g_clients)
-		if (ST_ACTIVE == cl.second->m_status)
-			iocp.send_move_end_packet(cl.second->m_id, m_id);
-}
-
-void Clients::do_rotate(float xPos, float zPos, float xMove, float zMove, float rAngle)
-{
-	rotAngle += rAngle;
-	float nmlzeSpeedNum = sqrt(pow(xMove, 2) + pow(zMove, 2));
-	if (nmlzeSpeedNum != 0.0f) {
-		xVel = xMove / nmlzeSpeedNum;
-		zVel = zMove / nmlzeSpeedNum;
+	float nomalize_vel = sqrt(pow(xVel, 2) + pow(zVel, 2));
+	if (nomalize_vel != 0.0f) {
+		m_xVel = xVel / nomalize_vel * (0.5 * run_level);
+		m_zVel = zVel / nomalize_vel * (0.5 * run_level);
 	}
 	else {
-		xVel = 0.0f;
-		zVel = 0.0f;
+		m_xVel = 0.0f;
+		m_zVel = 0.0f;
 	}
-	xPos += xVel * (GetTickCount64() - startMoveTime) / 1000.f;
-	zPos += zVel * (GetTickCount64() - startMoveTime) / 1000.f;
-	startMoveTime = GetTickCount64();
+	m_xPos += m_xVel / 1000.f;
+	m_zPos += m_zVel / 1000.f;
 
 	for (auto& cl : g_clients)
 		if (ST_ACTIVE == cl.second->m_status)
-			iocp.send_rotate_packet(cl.second->m_id, m_id, rAngle);
+			iocp.send_move_packet(cl.second->m_id, m_id, rotAngle);
 }

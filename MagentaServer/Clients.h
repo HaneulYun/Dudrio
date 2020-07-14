@@ -12,7 +12,7 @@ public:
 	char	m_packet_buf[MAX_PACKET_SIZE];
 	atomic	<C_STATUS> m_status;
 	unsigned m_move_time;
-
+	DWORD	m_last_move_time;
 	unordered_set<int> view_list;
 	
 	bool	is_host;

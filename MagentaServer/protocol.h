@@ -11,17 +11,18 @@ constexpr int MAX_USER = 10;
 
 #define C2S_LOGIN			1	// Guest to Server
 #define C2S_LOGIN_HOST		2	// Host to Server
-#define C2S_MOVE			3	// Guest to Server
-#define C2S_CONSTRUCT		4	// Host to Server
-#define C2S_DESTRUCT		5	// Host to Server
-#define C2S_DESTRUCT_ALL	6	// Host to Server
-#define C2S_CHAT			7
+#define C2S_MOVE_START		3	// Guest to Server
+#define C2S_MOVE			4	// Guest to Server
+#define C2S_CONSTRUCT		5	// Host to Server
+#define C2S_DESTRUCT		6	// Host to Server
+#define C2S_DESTRUCT_ALL	7	// Host to Server
+#define C2S_CHAT			8
 
 #define S2C_LOGIN_OK		1
-#define S2C_LOGIN_FAIL		2
-#define S2C_MOVE			3	
-#define S2C_ENTER			4
-#define S2C_LEAVE			5
+#define S2C_LOGIN_FAIL		2	
+#define S2C_ENTER			3
+#define S2C_LEAVE			4
+#define S2C_MOVE			5
 #define S2C_CONSTRUCT		6	// Server to Guest
 #define S2C_DESTRUCT		7	// Server to Guest
 #define S2C_DESTRUCT_ALL	8	// Server to Guest
@@ -195,6 +196,14 @@ struct cs_packet_chat {
 	unsigned char size;
 	char type;
 	wchar_t message[MAX_STR_LEN];
+};
+
+struct cs_packet_move_start {
+	char size;
+	char type;
+	float xVel, zVel;
+	float rotAngle;
+	float run_level;
 };
 
 struct cs_packet_move {

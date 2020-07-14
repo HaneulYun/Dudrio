@@ -62,6 +62,13 @@ void Contents::logic_thread_loop()
 				}
 			}
 			break;
+			case C2S_MOVE_START:
+			{
+				cs_packet_move_start* packet = reinterpret_cast<cs_packet_move_start*>(buf.second);
+				g_clients[buf.first]->m_last_move_time = GetTickCount64();
+				g_clients[buf.first]->do_move(packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
+			}
+			break;
 			case C2S_MOVE:
 			{
 				cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf.second);

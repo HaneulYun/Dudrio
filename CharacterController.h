@@ -10,8 +10,9 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	Vector3 lastMousePos;
 
 	Vector3 moveSum{ 0,0,0 };
+	float lastMoveSum;
 	float rotAngleSum;
-	int runLevelSum;
+	float runLevelSum;
 	int averageCount;
 	chrono::high_resolution_clock::time_point last_packet_time;
 
@@ -28,9 +29,10 @@ public:
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
 		last_packet_time = chrono::high_resolution_clock::now();
+		lastMoveSum = 0.0f;
 		rotAngleSum = 0.0f;
-		moveSum = Vector3{ 0,0,0 };
-		runLevelSum = 0;
+		moveSum = { 0,0,0 };
+		runLevelSum = 0.0f;
 		averageCount = 0;
 	}
 
@@ -49,11 +51,11 @@ public:
 		tmpVel = tmpVel.Normalize();
 
 		if (!IsZero(tmpVel.Length())) {
-			runLevelSum += 2;
+			runLevelSum += 2.0f;
 			if (Input::GetKey(KeyCode::Q))	// 달리기
-				runLevelSum++;
+				runLevelSum += 2.0f;
 			if (Input::GetKey(KeyCode::E))	// 느리게 걷기
-				runLevelSum--;
+				runLevelSum -= 1.0f;
 			moveSum += tmpVel;
 		}
 
@@ -74,13 +76,20 @@ public:
 			lastMousePos = Input::mousePosition;
 		}
 
-		if (GuestNetwork::network->isConnect && chrono::high_resolution_clock::now() - last_packet_time > chrono::milliseconds(333)) {
-			if (!IsZero(rotAngleSum) || !IsZero(moveSum.Length()))
+		if(GuestNetwork::network->isConnect && chrono::high_resolution_clock::now() - last_packet_time >= chrono::milliseconds(333))
+		{
+			if (IsZero(lastMoveSum) && !IsZero(moveSum.Length())) {
+				GuestNetwork::network->send_move_start_packet(moveSum.x, moveSum.z, rotAngleSum, runLevelSum / averageCount);
+				last_packet_time = chrono::high_resolution_clock::now();
+			}
+			else if (!IsZero(rotAngleSum) || !IsZero(moveSum.Length())){
 				GuestNetwork::network->send_move_packet(moveSum.x, moveSum.z, rotAngleSum, runLevelSum / averageCount);
-			last_packet_time = chrono::high_resolution_clock::now();
+				last_packet_time = chrono::high_resolution_clock::now();
+			}
+			lastMoveSum = moveSum.Length();
 			rotAngleSum = 0.0f;
-			moveSum = Vector3{ 0,0,0 };
-			runLevelSum = 0;
+			moveSum = { 0,0,0 };
+			runLevelSum = 0.0f;
 			averageCount = 0;
 		}
 	}

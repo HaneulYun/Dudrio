@@ -147,6 +147,19 @@ void GuestNetwork::send_move_packet(float xVel, float zVel, float rotAngle, floa
 	send_packet(&m_packet);
 }
 
+void GuestNetwork::send_move_start_packet(float xVel, float zVel, float rotAngle, float run_level)
+{
+	cs_packet_move_start m_packet;
+	m_packet.type = C2S_MOVE_START;
+	m_packet.size = sizeof(m_packet);
+	m_packet.xVel = xVel;
+	m_packet.zVel = zVel;
+	m_packet.rotAngle = rotAngle;
+	m_packet.run_level = run_level;
+
+	send_packet(&m_packet);
+}
+
 void GuestNetwork::Login()
 {
 	cs_packet_login l_packet;

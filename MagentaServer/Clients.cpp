@@ -63,11 +63,16 @@ void Clients::do_move(float xVel, float zVel, float rotAngle, float run_level)
 
 	float nomalize_vel = sqrt(pow(xVel, 2) + pow(zVel, 2));
 	if (nomalize_vel != 0.0f) {
-		m_xVel = xVel / nomalize_vel * (0.5 * run_level);
-		m_zVel = zVel / nomalize_vel * (0.5 * run_level);
+		m_xVel = xVel * run_level * 0.25 / nomalize_vel;
+		m_zVel = zVel * run_level * 0.25 / nomalize_vel;
 	}
-	m_xPos += m_xVel / 1000.f;
-	m_zPos += m_zVel / 1000.f;
+	else {
+		m_xVel = 0.0f;
+		m_zVel = 0.0f;
+	}
+	m_xPos += m_xVel * (GetTickCount64() - m_last_move_time) / 1000.f;
+	m_zPos += m_zVel * (GetTickCount64() - m_last_move_time) / 1000.f;
+	m_last_move_time = GetTickCount64();
 
 	for (auto& cl : g_clients)
 		if (ST_ACTIVE == cl.second->m_status)

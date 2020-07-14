@@ -13,8 +13,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	queue<pair<Vector3, float>> moveQueue;
 	Vector3 destPos{ 0,0,0 };
-	float destAngle;
 	Vector3 curPos{ 0,0,0 };
+	float destAngle;
 	float curAngle;
 	bool moving{ false };
 
@@ -43,47 +43,60 @@ public:
 		if (!moveQueue.empty() && !moving){
 			destPos = moveQueue.front().first - gameObject->transform->position;
 			destPos.y = 0;
-			destAngle = moveQueue.front().second;
 			curPos = { 0,0,0 };
+			destAngle = moveQueue.front().second;
 			curAngle = 0.0f;
 			animVel = { 0,0,0 };
 			moveQueue.pop();
 			moving = true;
 		}
 
+		float dx = 0.0f;
+		float dz = 0.0f;
+		float dr = 0.0f;
+
 		if (moving){
 			if (curPos.Length() < destPos.Length()) {
-				float dx = destPos.x * Time::deltaTime / 0.333;
-				float dz = destPos.z * Time::deltaTime / 0.333;
+				dx = destPos.x * Time::deltaTime * 3;
+				dz = destPos.z * Time::deltaTime * 3;
+			
+				if ((curPos + Vector3{ dx, 0, dz }).Length() > destPos.Length()) {
+					dx = destPos.x - curPos.x;
+					dz = destPos.z - curPos.z;
+				}
 
 				gameObject->transform->position += {dx, 0, dz};
 				curPos += {dx, 0, dz};
 				gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
 			}
 			if (fabs(curAngle) < fabs(destAngle)) {
-				float dr = destAngle * Time::deltaTime / 0.333;
+				dr = destAngle * Time::deltaTime * 3;
+			
+				if (fabs(curAngle + dr) > fabs(destAngle))
+					dr = destAngle - curAngle;
+			
 				gameObject->transform->Rotate(Vector3{ 0,1,0 }, dr);
 				curAngle += dr;
 			}
 			if (curPos.Length() >= destPos.Length() && fabs(curAngle) >= fabs(destAngle)) {
+			
 				moving = false;
 			}
-			
-			Vector3 characterForward = gameObject->transform->forward.Normalized();
-			Vector3 forward = { 0,0,1 };
-			float angle = NS_Vector3::DotProduct(forward.xmf3, characterForward.xmf3);
-			XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, characterForward.xmf3);
-			angle = acos(angle);
-			angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
-			animVel = { destPos.x * cos(angle) - destPos.z * sin(angle), 0,
-				destPos.x * sin(angle) + destPos.z * cos(angle) };
-			anim->SetFloat("VelocityZ", animVel.z);
-			anim->SetFloat("VelocityX", animVel.x);           
 		}
-		if(!moving){
-			anim->SetFloat("VelocityZ", 0);
-			anim->SetFloat("VelocityX", 0);
-		}
+
+		//Vector3 characterForward = gameObject->transform->forward;
+		//characterForward.y = 0;
+		//characterForward = characterForward.Normalized();
+		//Vector3 forward = { 0,0,1 };
+		//float angle = NS_Vector3::DotProduct(forward.xmf3, characterForward.xmf3);
+		//XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, characterForward.xmf3);
+		//angle = XMConvertToDegrees(acos(angle));
+		//angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+		//animVel = { dx * cos(angle) - dz * sin(angle), 0,
+		//	dx * sin(angle) + dz * cos(angle) };
+
+		anim->SetFloat("VelocityX", dx);
+		anim->SetFloat("VelocityZ", dz);
 	}
 
 	void move(float xPos, float zPos)

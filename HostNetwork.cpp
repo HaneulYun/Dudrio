@@ -21,61 +21,23 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_enter* my_packet = reinterpret_cast<sc_packet_enter*>(ptr);
 		int id = my_packet->id;
 
-		if (id == myId) {
-		
-		}
-		else {
+		if (id != myId) {
 			players[id] = gameObject->scene->Duplicate(simsPrefab);
 			players[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
-			strcpy_s(players[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->name);
 			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
-			p->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-			p->move(my_packet->x, my_packet->z);
+			p->move(my_packet->xPos, my_packet->zPos);
 		}
 	}
 	break;
-	case S2C_MOVE_START:
+	case S2C_MOVE:
 	{
-		sc_packet_move_start* my_packet = reinterpret_cast<sc_packet_move_start*>(ptr);
+		sc_packet_move* my_packet = reinterpret_cast<sc_packet_move*>(ptr);
 		int id = my_packet->id;
+
 		if (id != myId) {
-			if (0 != players.count(id))
-			{
-				auto oc = players[id]->GetComponent<CharacterMovingBehavior>();
-				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-				oc->move(my_packet->x, my_packet->z);
-				oc->moving = true;
-			}
-		}
-	}
-	break;
-	case S2C_MOVE_END:
-	{
-		sc_packet_move_end* my_packet = reinterpret_cast<sc_packet_move_end*>(ptr);
-		int id = my_packet->id;
-		if (id != myId) {
-			if (0 != players.count(id))
-			{
-				auto oc = players[id]->GetComponent<CharacterMovingBehavior>();
-				oc->velocity = Vector3{ 0.0, 0.0, 0.0 };
-				oc->move(my_packet->x, my_packet->z);
-				oc->moving = false;
-			}
-		}
-	}
-	break;
-	case S2C_ROTATE:
-	{
-		sc_packet_rotate* my_packet = reinterpret_cast<sc_packet_rotate*>(ptr);
-		int id = my_packet->id;
-		if (id != myId) {
-			if (0 != players.count(id))
-			{
-				//players[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
-				auto oc = players[id]->GetComponent<CharacterMovingBehavior>();
-				oc->turn(my_packet->rotAngle);
-				oc->velocity = Vector3{ my_packet->xMove, 0.0, my_packet->zMove };
-				oc->move(my_packet->x, my_packet->z);
+			if (0 != players.count(id)) {
+				auto p = players[id]->GetComponent<CharacterMovingBehavior>();
+				p->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, my_packet->rotAngle);
 			}
 		}
 	}
@@ -85,10 +47,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
 		int other_id = my_packet->id;
 		if (other_id == myId) {
-			for (auto& p : players)
-			{
+			for (auto& p : players)			
 				Scene::scene->PushDelete(p.second);
-			}
 			players.clear();
 			closesocket(serverSocket);
 			isConnect = false;

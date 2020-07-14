@@ -9,27 +9,24 @@ constexpr int MAX_USER = 10;
 
 #define SERVER_PORT		9000
 
-#define C2S_LOGIN			1
-#define C2S_MOVE_START		2	// Guest to Server
-#define C2S_MOVE_END		3	// Guest to Server
-#define C2S_ROTATE			4	// Guest to Server
-#define C2S_LOGIN_HOST		5	// Host to Server
-#define C2S_CONSTRUCT		6	// Host to Server
-#define C2S_DESTRUCT		7	// Host to Server
-#define C2S_DESTRUCT_ALL	8	// Host to Server
-#define C2S_CHAT			9
+#define C2S_LOGIN			1	// Guest to Server
+#define C2S_LOGIN_HOST		2	// Host to Server
+#define C2S_MOVE_START		3	// Guest to Server
+#define C2S_MOVE			4	// Guest to Server
+#define C2S_CONSTRUCT		5	// Host to Server
+#define C2S_DESTRUCT		6	// Host to Server
+#define C2S_DESTRUCT_ALL	7	// Host to Server
+#define C2S_CHAT			8
 
 #define S2C_LOGIN_OK		1
-#define S2C_LOGIN_FAIL		2
-#define S2C_MOVE_START		3	// Server to Guest
-#define S2C_MOVE_END		4	// Server to Guest
-#define S2C_ROTATE			5	// Server to Guest
-#define S2C_ENTER			6
-#define S2C_LEAVE			7
-#define S2C_CONSTRUCT		8	// Server to Guest
-#define S2C_DESTRUCT		9	// Server to Guest
-#define S2C_DESTRUCT_ALL	10	// Server to Guest
-#define S2C_CHAT			11
+#define S2C_LOGIN_FAIL		2	
+#define S2C_ENTER			3
+#define S2C_LEAVE			4
+#define S2C_MOVE			5
+#define S2C_CONSTRUCT		6	// Server to Guest
+#define S2C_DESTRUCT		7	// Server to Guest
+#define S2C_DESTRUCT_ALL	8	// Server to Guest
+#define S2C_CHAT			9
 
 #pragma pack(push ,1)
 
@@ -74,8 +71,8 @@ struct sc_packet_login_ok {
 	char size;
 	char type;
 	int id;
-	float x, z;
-	float xMove, zMove;
+	float xPos, zPos;
+	float xVel, zVel;
 	float rotAngle;
 };
 
@@ -91,28 +88,13 @@ struct sc_packet_chat {
 	wchar_t mess[MAX_STR_LEN];
 };
 
-struct sc_packet_move_start {
+struct sc_packet_move {
 	char size;
 	char type;
 	int id;
-	float x, z;
-	float xMove, zMove;
-};
-
-struct sc_packet_move_end {
-	char size;
-	char type;
-	int id;
-	float x, z;
-};
-
-struct sc_packet_rotate {
-	char	size;
-	char	type;
-	int		id;
-	float	rotAngle;
-	float	x, z;
-	float	xMove, zMove;
+	float xPos, zPos;
+	float xVel, zVel;
+	float rotAngle;
 };
 
 struct BuildingInform
@@ -161,7 +143,7 @@ struct sc_packet_construct
 {
 	char size;
 	char type;
-	int id;
+
 	BuildingInform b_inform;
 };
 
@@ -169,7 +151,7 @@ struct sc_packet_destruct
 {
 	char size;
 	char type;
-	int id;
+
 	BuildingInform b_inform;
 };
 
@@ -177,7 +159,6 @@ struct sc_packet_destruct_all
 {
 	char size;
 	char type;
-	int id;
 };
 
 constexpr unsigned char O_GUEST = 0;
@@ -189,8 +170,8 @@ struct sc_packet_enter {
 	int id;
 	char name[MAX_ID_LEN];
 	char o_type;
-	float x, z;
-	float xMove, zMove;
+	float xPos, zPos;
+	float xVel, zVel;
 	float rotAngle;
 };
 
@@ -218,45 +199,37 @@ struct cs_packet_chat {
 };
 
 struct cs_packet_move_start {
-	char	size;
-	char	type;
-	float x, z;
-	float xMove, zMove;
+	char size;
+	char type;
+	float xVel, zVel;
+	float rotAngle;
+	float run_level;
 };
 
-struct cs_packet_move_end {
-	char	size;
-	char	type;
+struct cs_packet_move {
+	char size;
+	char type;
+	float xVel, zVel;
+	float rotAngle;
+	float run_level;
 };
 
-struct cs_packet_rotate {
-	char	size;
-	char	type;
-	float	rotAngle;
-	float	x, z;
-	float	xMove, zMove;
-};
-
-struct cs_packet_construct
-{
+struct cs_packet_construct{
 	char size;
 	char type;
 
 	BuildingInform b_inform;
 };
 
-struct cs_packet_destruct
-{
+struct cs_packet_destruct{
 	char size;
 	char type;
 
 	BuildingInform b_inform;
 };
 
-struct cs_packet_destruct_all
-{
+struct cs_packet_destruct_all{
 	char size;
 	char type;
-	int id;
 };
 #pragma pack (pop)

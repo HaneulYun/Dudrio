@@ -8,12 +8,12 @@ class CharacterController : public MonoBehavior<CharacterController>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
 	Vector3 lastMousePos;
-	bool pressW{ false };
-	bool pressS{ false };
-	bool pressA{ false };
-	bool pressD{ false };
 
+	Vector3 moveSum{ 0,0,0 };
+	float lastMoveSum;
 	float rotAngleSum;
+	float runLevelSum;
+	int averageCount;
 	chrono::high_resolution_clock::time_point last_packet_time;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
@@ -29,46 +29,37 @@ public:
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
 		last_packet_time = chrono::high_resolution_clock::now();
+		lastMoveSum = 0.0f;
 		rotAngleSum = 0.0f;
+		moveSum = { 0,0,0 };
+		runLevelSum = 0.0f;
+		averageCount = 0;
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		if (Input::GetKey(KeyCode::W)) pressW = true;
-		else pressW = false;
+		Vector3 tmpVel = { 0,0,0 };
+		if (Input::GetKey(KeyCode::W))
+			tmpVel += gameObject->transform->forward;
+		if (Input::GetKey(KeyCode::A))
+			tmpVel -= gameObject->transform->right;
+		if (Input::GetKey(KeyCode::S))
+			tmpVel -= gameObject->transform->forward;
+		if (Input::GetKey(KeyCode::D))
+			tmpVel += gameObject->transform->right;
 
-		if (Input::GetKey(KeyCode::S)) pressS = true;
-		else pressS = false;
+		tmpVel = tmpVel.Normalize();
 
-		if (Input::GetKey(KeyCode::D)) pressD = true;
-		else pressD = false;
-		
-		if (Input::GetKey(KeyCode::A)) pressA = true;
-		else pressA = false;
-
-		Vector3 tmpVelocity = { 0,0,0 };
-
-		if (pressW)	tmpVelocity += gameObject->transform->forward;
-		if (pressS) tmpVelocity -= gameObject->transform->forward;
-		if (pressD)	tmpVelocity += gameObject->transform->right;
-		if (pressA) tmpVelocity -= gameObject->transform->right;
-
-		if (GuestNetwork::network->isConnect)
-		{
-			CharacterMovingBehavior* mymovebhvr = gameObject->GetComponent<CharacterMovingBehavior>();
-			if (IsZero(tmpVelocity.Length()) && mymovebhvr->moving)
-			{
-				GuestNetwork::network->send_move_end_packet();
-				mymovebhvr->moving = false;
-			}
-			else if (!IsZero(tmpVelocity.Length()) && !mymovebhvr->moving)
-			{
-				tmpVelocity = tmpVelocity.Normalize();
-				GuestNetwork::network->send_move_start_packet(gameObject->transform->position.x, gameObject->transform->position.z, tmpVelocity.x, tmpVelocity.z);
-				mymovebhvr->moving = true;
-			}
+		if (!IsZero(tmpVel.Length())) {
+			runLevelSum += 2.0f;
+			if (Input::GetKey(KeyCode::Q))	// 달리기
+				runLevelSum += 2.0f;
+			if (Input::GetKey(KeyCode::E))	// 느리게 걷기
+				runLevelSum -= 1.0f;
+			moveSum += tmpVel;
 		}
 
+		averageCount++;
 
 		if (Input::GetMouseButtonDown(2))
 		{
@@ -85,11 +76,21 @@ public:
 			lastMousePos = Input::mousePosition;
 		}
 
-		if (GuestNetwork::network->isConnect && chrono::high_resolution_clock::now() - last_packet_time > chrono::milliseconds(333) && !IsZero(rotAngleSum))
+		if(GuestNetwork::network->isConnect && chrono::high_resolution_clock::now() - last_packet_time >= chrono::milliseconds(333))
 		{
-			GuestNetwork::network->send_rotate_packet(gameObject->transform->position.x, gameObject->transform->position.z, tmpVelocity.x, tmpVelocity.z, rotAngleSum);
-			last_packet_time = chrono::high_resolution_clock::now();
+			if (IsZero(lastMoveSum) && !IsZero(moveSum.Length())) {
+				GuestNetwork::network->send_move_start_packet(moveSum.x, moveSum.z, rotAngleSum, runLevelSum / averageCount);
+				last_packet_time = chrono::high_resolution_clock::now();
+			}
+			else if (!IsZero(rotAngleSum) || !IsZero(moveSum.Length())){
+				GuestNetwork::network->send_move_packet(moveSum.x, moveSum.z, rotAngleSum, runLevelSum / averageCount);
+				last_packet_time = chrono::high_resolution_clock::now();
+			}
+			lastMoveSum = moveSum.Length();
 			rotAngleSum = 0.0f;
+			moveSum = { 0,0,0 };
+			runLevelSum = 0.0f;
+			averageCount = 0;
 		}
 	}
 

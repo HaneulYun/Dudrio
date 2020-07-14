@@ -69,7 +69,6 @@ public:
 
 				gameObject->transform->position += {dx, 0, dz};
 				curPos += {dx, 0, dz};
-				gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
 			}
 			if (fabs(curAngle) < fabs(destAngle)) {
 				dr = destAngle * Time::deltaTime * 3;
@@ -101,6 +100,7 @@ public:
 		animVel = { dx * cos(angle) - dz * sin(angle), 0,
 			dx * sin(angle) + dz * cos(angle) };
 		
+		gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
 		anim->SetFloat("VelocityX", animVel.x * 1000.f);
 		anim->SetFloat("VelocityZ", animVel.z * 1000.f);
 

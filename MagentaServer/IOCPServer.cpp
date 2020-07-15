@@ -33,12 +33,21 @@ void IOCPServer::init_server()
 
 void IOCPServer::start_server()
 {
+	init_clients();
+
 	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);// *2 + 1);
 
 	create_worker_threads();
 	create_accept_threads();
 
 	cout << "Start_Server Complete" << endl;
+}
+
+void IOCPServer::init_clients()
+{
+	for (auto& cl : g_clients)
+		delete cl.second;
+	g_clients.clear();
 }
 
 // thread ---------------------------------
@@ -125,7 +134,7 @@ void IOCPServer::accept_thread_loop()
 
 		for (auto& cl : g_clients) {
 			if (idx != cl.first) {
-				g_clients[idx] = new Clients(idx);
+				g_clients[idx] = new Client(idx);
 				g_clients[idx]->m_status = ST_ALLOC;
 				flag = true;
 				break;
@@ -140,11 +149,11 @@ void IOCPServer::accept_thread_loop()
 			continue;
 
 		if (g_clients.empty()){
-			g_clients[idx] = new Clients(idx);
+			g_clients[idx] = new Client(idx);
 			flag = true;
 		}
 		else if (idx == g_clients.size() && !flag){
-			g_clients[idx] = new Clients(idx);
+			g_clients[idx] = new Client(idx);
 			flag = true;
 		}
 

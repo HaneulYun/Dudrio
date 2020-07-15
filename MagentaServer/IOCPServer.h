@@ -19,6 +19,7 @@ public:
 	~IOCPServer();
 	void init_server();
 	void start_server();
+	void init_clients();
 
 	// getter ---------------------------------
 	HANDLE& get_iocp_handle() { return g_iocp; }

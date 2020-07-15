@@ -2,10 +2,10 @@
 
 constexpr int MAX_ID_LEN = 50;
 constexpr int MAX_STR_LEN = 255;
-constexpr int MAX_USER = 10;
+constexpr int MAX_USER = 10000;
 
-#define WORLD_WIDTH		8
-#define WORLD_HEIGHT	8
+#define WORLD_WIDTH		1000
+#define WORLD_HEIGHT	1000
 
 #define SERVER_PORT		9000
 

@@ -125,7 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Clients.cpp" />
+    <ClCompile Include="Objects.cpp" />
     <ClCompile Include="contents.cpp" />
     <ClCompile Include="IOCPServer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -133,7 +133,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Clients.h" />
+    <ClInclude Include="Objects.h" />
     <ClInclude Include="contents.h" />
     <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="main.h" />

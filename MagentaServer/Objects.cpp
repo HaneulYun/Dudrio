@@ -1,6 +1,6 @@
-#include "Clients.h"
+#include "Objects.h"
 
-Clients::Clients(SOCKET& sock, int id)
+Client::Client(SOCKET& sock, int id)
 {
 	m_id = id;
 	m_prev_size = 0;
@@ -10,12 +10,12 @@ Clients::Clients(SOCKET& sock, int id)
 	m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 	m_status = ST_FREE;
 	m_s = sock;
-	m_xPos = 540.0;	m_zPos = 540.0;
+	m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
 }
 
-Clients::Clients(int id)
+Client::Client(int id)
 {
 	m_id = id;
 	m_prev_size = 0;
@@ -24,17 +24,17 @@ Clients::Clients(int id)
 	m_recv_over.wsabuf.buf = m_recv_over.io_buf;
 	m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 	m_status = ST_FREE;
-	m_xPos = 540.0;	m_zPos = 540.0;
+	m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
 }
 
-Clients::~Clients()
+Client::~Client()
 {
 
 }
 
-void Clients::enter_game(char name[])
+void Client::enter_game(char name[])
 {
 	strcpy_s(m_name, name);
 	m_name[MAX_ID_LEN] = NULL;
@@ -49,14 +49,13 @@ void Clients::enter_game(char name[])
 		}
 	}
 
-	for (auto& b : buildings)
-		iocp.send_construct_packet(m_id, b);
+	for (auto& b : g_buildings)
+		iocp.send_construct_packet(m_id, b.first);
 
 	m_status = ST_ACTIVE;
 }
 
-
-void Clients::do_move(float xVel, float zVel, float rotAngle, float run_level)
+void Client::do_move(float xVel, float zVel, float rotAngle, float run_level)
 {
 	// run_level == 2 : default
 	m_rotAngle += rotAngle;

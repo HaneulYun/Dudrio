@@ -13,8 +13,8 @@
 #include <windows.h>
 #include <unordered_map>
 #include <unordered_set>
-#include <chrono>
 #include <queue>
+#include <chrono>
 #include <mutex>
 #include <atomic>
 #include <algorithm>
@@ -41,17 +41,22 @@ struct EXOVER {
 	};
 };
 
+#define SECTOR_WIDTH 20
+
 #include "RWLock.h"
 #include "protocol.h"
 #include "TerrainGenerator.h"
 #include "Timer.h"
 #include "IOCPServer.h"
-#include "Clients.h"
+#include "Objects.h"
 #include "contents.h"
 
 extern class IOCPServer iocp;
 extern class Timer	timer;
 extern class Contents contents;
 
-extern unordered_map<int, class Clients*> g_clients;
-extern vector<BuildingInform> buildings;
+extern unordered_map<int, class Client*> g_clients;
+extern unordered_map<BuildingInform, class Building*, BuildingInformHasher> g_buildings;
+
+extern unordered_set <class Client*> g_sector_clients[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
+extern unordered_set <class Building*> g_sector_buildings[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];

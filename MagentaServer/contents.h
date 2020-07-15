@@ -19,6 +19,7 @@ public:
 	Contents();
 	~Contents();
 
+	void init_contents();
 	void start_contents();
 	void stop_contents();
 
@@ -29,4 +30,6 @@ public:
 	void do_construct(int user_id, BuildingInform b_inform);
 	void do_destruct(int user_id, BuildingInform b_inform);
 	void destruct_all(int user_id);
+
+	pair<int, int> calculate_sector_num(float xPos, float zPos);
 };

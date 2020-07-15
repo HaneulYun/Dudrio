@@ -11,10 +11,23 @@ Contents::~Contents()
 	stop_contents();
 }
 
+void Contents::init_contents()
+{
+	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
+		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
+			g_sector_buildings[i][j].clear();
+
+	for (auto& b : g_buildings)
+		delete b.second;
+	g_buildings.clear();
+}
+
 void Contents::start_contents()
 {
 	logic_run = true;
 	logic_thread = thread([this]() { logic_thread_loop(); });
+
+	init_contents();
 }
 
 void Contents::stop_contents()
@@ -135,14 +148,17 @@ void Contents::disconnect(int user_id)
 			delete cl.second;
 		}
 		host_id = -1;
-		buildings.clear();
+
 		g_clients.clear();
 	}
 }
 
 void Contents::do_construct(int user_id, BuildingInform b_inform)
 {
-	buildings.emplace_back(b_inform);
+	g_buildings[b_inform] = new Building(b_inform);
+	pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
+	g_sector_buildings[b_sectnum.second][b_sectnum.first].insert(g_buildings[b_inform]);
+	
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;
@@ -153,13 +169,11 @@ void Contents::do_construct(int user_id, BuildingInform b_inform)
 
 void Contents::do_destruct(int user_id, BuildingInform b_inform)
 {
-	for (auto& b : buildings){
-		if (b == b_inform){
-			b = buildings.back();
-			buildings.pop_back();
-			break;
-		}
-	}
+	pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
+	g_sector_buildings[b_sectnum.second][b_sectnum.first].erase(g_buildings[b_inform]);
+	
+	delete g_buildings[b_inform];
+	g_buildings.erase(b_inform);
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -171,7 +185,8 @@ void Contents::do_destruct(int user_id, BuildingInform b_inform)
 
 void Contents::destruct_all(int user_id)
 {
-	buildings.clear();
+	init_contents();
+
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;
@@ -185,4 +200,12 @@ void Contents::add_packet(int user_id, char* buf)
 	logic_lock.EnterWriteLock();
 	recvQueue.push(make_pair(user_id, buf));
 	logic_lock.LeaveWriteLock();
+}
+
+pair<int, int> Contents::calculate_sector_num(float xPos, float zPos)
+{
+	int x_sectnum = floor(xPos / SECTOR_WIDTH);
+	int z_sectnum = floor(zPos / SECTOR_WIDTH);
+	
+	return make_pair(x_sectnum, z_sectnum);
 }

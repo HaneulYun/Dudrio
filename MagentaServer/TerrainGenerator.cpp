@@ -82,6 +82,8 @@ float TerrainGenerator::accumulatedOctaveNoise2D_0_1(float x, float y, int octav
 	return clamp<float>(accumulatedOctaveNoise2D(x, y, octaves) * 0.5 + 0.5, 0, 1);
 }
 
+
+
 void TerrainGenerator::initTable(int seed)
 {
 	for (int i = 0; i < 256; ++i)
@@ -89,6 +91,11 @@ void TerrainGenerator::initTable(int seed)
 		randomTable[i] = static_cast<uint8_t>(i);
 	}
 	shuffle(begin(randomTable), begin(randomTable) + 256, default_random_engine(seed));
+
+	for (size_t i = 0; i < 256; ++i)
+	{
+		randomTable[256 + i] = randomTable[i];
+	}
 }
 
 float curve(float v, float a, float b)

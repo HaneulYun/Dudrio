@@ -7,10 +7,9 @@ private:
 	int width;
 	int height;
 
-	UINT8 randomTable[256];
+	UINT8 randomTable[512];
 	vector<float> data;
 	vector<float> data_fallOff;
-
 public:
 	TerrainGenerator(int width, int height) : width(width), height(height) { data.resize(width * height); };
 

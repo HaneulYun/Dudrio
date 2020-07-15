@@ -13,6 +13,9 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
+
+		for (auto& p : BuildManager::buildManager->buildings)
+			send_construct_packet(p.first);
 	}
 	break;
 
@@ -69,7 +72,10 @@ void HostNetwork::ProcessPacket(char* ptr)
 		break;
 	case S2C_DESTRUCT_ALL:
 		break;
-
+	case S2C_CHAT:
+		break;
+	case S2C_LOGIN_FAIL:
+		break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
@@ -145,16 +151,16 @@ void HostNetwork::send_destruct_all_packet()
 
 void HostNetwork::Login()
 {
-	cs_packet_login l_packet;
+	cs_packet_login_host l_packet;
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_HOST;
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
 	strcpy_s(name, l_packet.name);
-	send_packet(&l_packet);
+	l_packet.frequency = frequency;
+	l_packet.octaves = octaves;
+	l_packet.seed = seed;
+	l_packet.terrainSize = terrainSize;
 
-	for (auto& p : BuildManager::buildManager->buildings)
-	{
-		send_construct_packet(p.first);
-	}
+	send_packet(&l_packet);
 }

@@ -75,6 +75,13 @@ void Contents::logic_thread_loop()
 				}
 			}
 			break;
+			case C2S_TERRAIN:
+			{
+				if (host_id == buf.first){
+
+				}
+			}
+			break;
 			case C2S_MOVE_START:
 			{
 				cs_packet_move_start* packet = reinterpret_cast<cs_packet_move_start*>(buf.second);

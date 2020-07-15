@@ -92,6 +92,11 @@ void TerrainGenerator::initTable(int seed)
 		randomTable[i] = static_cast<std::uint8_t>(i);
 	}
 	std::shuffle(std::begin(randomTable), std::begin(randomTable) + 256, std::default_random_engine(seed));
+
+	for (size_t i = 0; i < 256; ++i)
+	{
+		randomTable[256 + i] = randomTable[i];
+	}
 }
 
 float curve(float v, float a, float b)

@@ -14,9 +14,38 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
+		
+		TerrainGenerator* terrainGenerator = new TerrainGenerator(my_packet->terrainSize, my_packet->terrainSize);
+		string fileName = terrainGenerator->createHeightMap(my_packet->frequency, my_packet->octaves, my_packet->seed, (char*)"square");
+		delete terrainGenerator;
+
+		GameObject* terrain = Scene::scene->CreateEmpty();
+		auto terrainData = terrain->AddComponent<Terrain>();
+		{
+			{
+				wstring name;
+				name.assign(fileName.begin(), fileName.end());
+				terrainData->terrainData.AlphamapTextureName = name.c_str();
+				terrainData->terrainData.heightmapHeight = my_packet->terrainSize;
+				terrainData->terrainData.heightmapWidth = my_packet->terrainSize;
+
+				terrainData->terrainData.size = { my_packet->terrainSize, 255, my_packet->terrainSize};
+
+				terrainData->Set();
+			}
+			terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
+		}
+
 		myCharacter->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
+		myc->heightmap = &terrainData->terrainData;
+		simsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
 		myc->move(my_packet->xPos, my_packet->zPos);
+	}
+	break;
+	case S2C_LOGIN_FAIL:
+	{
+
 	}
 	break;
 	case S2C_ENTER:
@@ -31,6 +60,28 @@ void GuestNetwork::ProcessPacket(char* ptr)
 			auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
 			strcpy_s(oc->name, my_packet->name);
 			oc->move(my_packet->xPos, my_packet->zPos);
+		}
+	}
+	break;
+	case S2C_LEAVE:
+	{
+		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
+		int id = my_packet->id;
+
+		if (id != hostId && id != myId) {
+			if (0 != otherCharacters.count(id)) {
+				Scene::scene->PushDelete(otherCharacters[id]);
+				otherCharacters.erase(id);
+			}
+		}
+		else {
+			Builder::builder->DestroyAllBuilding();
+
+			hostId = -1;
+			for (auto& others : otherCharacters)
+				Scene::scene->PushDelete(others.second);
+
+			otherCharacters.clear();
 		}
 	}
 	break;
@@ -50,28 +101,6 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		}
 	}
 	break;
-	case S2C_LEAVE:
-	{
-		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
-		int id = my_packet->id;
-
-		if(id != hostId && id != myId) {
-			if (0 != otherCharacters.count(id)){
-				Scene::scene->PushDelete(otherCharacters[id]);
-				otherCharacters.erase(id);
-			}
-		}
-		else {
-			Builder::builder->DestroyAllBuilding();
-
-			hostId = -1;
-			for (auto& others : otherCharacters)
-				Scene::scene->PushDelete(others.second);
-			
-			otherCharacters.clear();
-		}
-	}
-	break;
 	case S2C_CONSTRUCT:
 	{
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
@@ -88,6 +117,11 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_destruct_all* my_packet = reinterpret_cast<sc_packet_destruct_all*>(ptr);
 		Builder::builder->DestroyAllBuilding();
+	}
+	break;
+	case S2C_CHAT:
+	{
+
 	}
 	break;
 	default:
@@ -134,19 +168,6 @@ void GuestNetwork::send_packet(void* packet)
 	send(serverSocket, p, p[0], 0);
 }
 
-void GuestNetwork::send_move_packet(float xVel, float zVel, float rotAngle, float run_level)
-{
-	cs_packet_move m_packet;
-	m_packet.type = C2S_MOVE;
-	m_packet.size = sizeof(m_packet);
-	m_packet.xVel = xVel;
-	m_packet.zVel = zVel;
-	m_packet.rotAngle = rotAngle;
-	m_packet.run_level = run_level;
-
-	send_packet(&m_packet);
-}
-
 void GuestNetwork::send_move_start_packet(float xVel, float zVel, float rotAngle, float run_level)
 {
 	cs_packet_move_start m_packet;
@@ -160,13 +181,37 @@ void GuestNetwork::send_move_start_packet(float xVel, float zVel, float rotAngle
 	send_packet(&m_packet);
 }
 
+void GuestNetwork::send_move_packet(float xVel, float zVel, float rotAngle, float run_level)
+{
+	cs_packet_move m_packet;
+	m_packet.type = C2S_MOVE;
+	m_packet.size = sizeof(m_packet);
+	m_packet.xVel = xVel;
+	m_packet.zVel = zVel;
+	m_packet.rotAngle = rotAngle;
+	m_packet.run_level = run_level;
+
+	send_packet(&m_packet);
+}
+
+void GuestNetwork::send_chat_packet(wchar_t msg[])
+{
+	cs_packet_chat m_packet;
+	m_packet.type = C2S_CHAT;
+	m_packet.size = sizeof(m_packet);
+	wcscpy_s(m_packet.message, msg);
+
+	send_packet(&m_packet);
+}
+
 void GuestNetwork::Login()
 {
-	cs_packet_login l_packet;
+	cs_packet_login_guest l_packet;
 	l_packet.size = sizeof(l_packet);
-	l_packet.type = C2S_LOGIN;
+	l_packet.type = C2S_LOGIN_GUEST;
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
 	strcpy_s(myCharacter->GetComponent<CharacterMovingBehavior>()->name, l_packet.name);
+	
 	send_packet(&l_packet);
 }

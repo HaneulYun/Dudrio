@@ -96,26 +96,26 @@ void GuestScene::BuildObjects()
 	int octaves = 3;
 	int seed = 1024;
 
-	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
-	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
-	delete terrainGenerator;
-
-	GameObject* terrain = CreateEmpty();
-	auto terrainData = terrain->AddComponent<Terrain>();
-	{
-		{
-			wstring name;
-			name.assign(fileName.begin(), fileName.end());
-			terrainData->terrainData.AlphamapTextureName = name.c_str();
-			terrainData->terrainData.heightmapHeight = TerrainSize;
-			terrainData->terrainData.heightmapWidth = TerrainSize;
-
-			terrainData->terrainData.size = { TerrainSize - 1.0f, 255, TerrainSize - 1.0f };
-
-			terrainData->Set();
-		}
-		terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
-	}
+	//TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
+	//string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
+	//delete terrainGenerator;
+	//
+	//GameObject* terrain = CreateEmpty();
+	//auto terrainData = terrain->AddComponent<Terrain>();
+	//{
+	//	{
+	//		wstring name;
+	//		name.assign(fileName.begin(), fileName.end());
+	//		terrainData->terrainData.AlphamapTextureName = name.c_str();
+	//		terrainData->terrainData.heightmapHeight = TerrainSize;
+	//		terrainData->terrainData.heightmapWidth = TerrainSize;
+	//
+	//		terrainData->terrainData.size = { TerrainSize - 1.0f, 255, TerrainSize - 1.0f };
+	//
+	//		terrainData->Set();
+	//	}
+	//	terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
+	//}
 
 	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
@@ -191,7 +191,7 @@ void GuestScene::BuildObjects()
 			anim->TimePos = 0;
 
 			SimsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
-			SimsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
+			//SimsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
 		}
 	}
 

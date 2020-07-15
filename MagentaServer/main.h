@@ -7,6 +7,8 @@
 #include <WS2tcpip.h>
 #include <MSWSock.h>
 #include <iostream>
+#include <sstream>
+#include <fstream>
 #include <thread>
 #include <windows.h>
 #include <unordered_map>
@@ -15,6 +17,9 @@
 #include <queue>
 #include <mutex>
 #include <atomic>
+#include <algorithm>
+#include <random>
+#include <string>
 
 using namespace std;
 using namespace chrono;
@@ -38,6 +43,7 @@ struct EXOVER {
 
 #include "RWLock.h"
 #include "protocol.h"
+#include "TerrainGenerator.h"
 #include "Timer.h"
 #include "IOCPServer.h"
 #include "Clients.h"

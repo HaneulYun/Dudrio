@@ -104,7 +104,7 @@ void Contents::logic_thread_loop()
 			}
 		}
 		else
-			this_thread::sleep_for(std::chrono::milliseconds(2));
+			this_thread::sleep_for(chrono::milliseconds(2));
 	}
 }
 

@@ -4,8 +4,8 @@
 class Contents
 {
 private:
-	std::queue<pair<int, char*>> recvQueue;
-	std::thread logic_thread;
+	queue<pair<int, char*>> recvQueue;
+	thread		logic_thread;
 	RWLock		logic_lock;
 	bool		logic_run;
 

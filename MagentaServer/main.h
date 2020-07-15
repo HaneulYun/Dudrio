@@ -60,3 +60,5 @@ extern unordered_map<BuildingInform, class Building*, BuildingInformHasher> g_bu
 
 extern unordered_set <class Client*> g_sector_clients[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
 extern unordered_set <class Building*> g_sector_buildings[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
+
+extern class Terrain* terrain_data;

@@ -20,6 +20,9 @@ void Contents::init_contents()
 	for (auto& b : g_buildings)
 		delete b.second;
 	g_buildings.clear();
+
+	if (terrain_data != nullptr)
+		delete terrain_data;
 }
 
 void Contents::start_contents()
@@ -47,10 +50,10 @@ void Contents::logic_thread_loop()
 			logic_lock.LeaveWriteLock();
 
 			switch (buf.second[1]){
-			case C2S_LOGIN:{
+			case C2S_LOGIN_GUEST:{
 				if (host_id != -1){
 					cout << "The Guest " <<  buf.first << "is connected" << endl;
-					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
+					cs_packet_login_guest* packet = reinterpret_cast<cs_packet_login_guest*>(buf.second);
 					g_clients[buf.first]->is_host = false;
 					g_clients[buf.first]->enter_game(packet->name);
 				}
@@ -64,21 +67,33 @@ void Contents::logic_thread_loop()
 			{
 				if (host_id == -1){
 					cout << "The host is connected" << endl;
-					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
+					cs_packet_login_host* packet = reinterpret_cast<cs_packet_login_host*>(buf.second);
 					host_id = buf.first;
 					g_clients[buf.first]->is_host = true;
+					
+					TerrainGenerator terrainGenerator(packet->terrainSize, packet->terrainSize);
+					string fileName = terrainGenerator.createHeightMap(packet->frequency, packet->octaves, packet->seed, (char*)"square");
+					terrain_data = new Terrain;
+					terrain_data->frequency = packet->frequency;
+					terrain_data->terrain_size = packet->terrainSize;
+					terrain_data->octaves = packet->octaves;
+					terrain_data->seed = packet->seed;
+
+					wstring name;
+					name.assign(fileName.begin(), fileName.end());
+					terrain_data->AlphamapTextureName = name.c_str();
+					terrain_data->heightmapHeight = terrain_data->terrain_size;
+					terrain_data->heightmapWidth = terrain_data->terrain_size;
+					terrain_data->x_size = terrain_data->terrain_size;
+					terrain_data->y_size = 255;
+					terrain_data->z_size = terrain_data->terrain_size;
+					terrain_data->Load();
+
 					g_clients[buf.first]->enter_game(packet->name);
 				}
 				else{
 					cout << "Host is already exist" << endl;
 					disconnect(buf.first);
-				}
-			}
-			break;
-			case C2S_TERRAIN:
-			{
-				if (host_id == buf.first){
-
 				}
 			}
 			break;
@@ -114,6 +129,11 @@ void Contents::logic_thread_loop()
 				cs_packet_destruct_all* packet = reinterpret_cast<cs_packet_destruct_all*>(buf.second);
 				if (buf.first == host_id)
 					destruct_all(buf.first);
+			}
+			break;
+			case C2S_CHAT:
+			{
+
 			}
 			break;
 			default:

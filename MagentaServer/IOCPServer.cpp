@@ -252,6 +252,13 @@ void IOCPServer::send_login_ok_packet(int user_id)
 	p.xVel = g_clients[user_id]->m_xVel;
 	p.zVel = g_clients[user_id]->m_zVel;
 	p.rotAngle = g_clients[user_id]->m_rotAngle;
+	
+	if (terrain_data != nullptr) {
+		p.frequency = terrain_data->frequency;
+		p.terrainSize = terrain_data->terrain_size;
+		p.octaves = terrain_data->octaves;
+		p.seed = terrain_data->seed;
+	}
 
 	send_packet(user_id, &p);
 }

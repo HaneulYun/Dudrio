@@ -31,7 +31,13 @@ void GuestNetwork::ProcessPacket(char* ptr)
 
 				terrainData->terrainData.size = { my_packet->terrainSize, 255, my_packet->terrainSize};
 
+				Graphics::Instance()->commandList->Reset(Graphics::Instance()->commandAllocator.Get(), nullptr);
+
 				terrainData->Set();
+
+				Graphics::Instance()->commandList->Close();
+				ID3D12CommandList* cmdsLists[] = { Graphics::Instance()->commandList.Get() };
+				Graphics::Instance()->commandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 			}
 			terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 		}

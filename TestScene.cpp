@@ -7,12 +7,16 @@ void TestScene::BuildObjects()
 	//*** Texture ***//
 	ASSET AddTexture("ground", L"Textures\\grass.dds");
 	ASSET AddTexture("grass", L"Texture\\grass.dds");
+	ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
 
 	//*** Material ***//
 	ASSET AddMaterial("ground", ASSET TEXTURE("ground"), -1, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
 	ASSET AddMaterial("grass", ASSET TEXTURE("grass"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+	ASSET AddMaterial("house01", ASSET TEXTURE("house01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 	//*** Mesh 
+	ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
+	ASSET AddMesh("Cube", Mesh::CreateCube());
 
 	///*** Game Object ***///
 	auto menuSceneButton = CreateImage();
@@ -86,6 +90,8 @@ void TestScene::BuildObjects()
 		}
 		terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
+	PathFinder::Instance()->SetTerrainData(&terrainData->terrainData);
+
 
 	GameObject* mainCamera = CreateEmpty();
 	{
@@ -104,4 +110,43 @@ void TestScene::BuildObjects()
 		ritem->layer = (int)RenderLayer::Sky;
 	}
 
+	GameObject* manager = CreateEmpty();
+	{
+		BuildManager* buildManager = manager->AddComponent<BuildManager>();
+		buildManager->terrain = terrain;
+		buildManager->heightMap = &terrainData->terrainData;
+		buildManager->terrainMesh = terrainData->terrainData.heightmapTexture;
+		BuildManager::buildManager = buildManager;
+
+		manager->AddComponent<AIManager>();
+	}
+
+	GameObject* pref = CreateEmptyPrefab();
+	pref->transform->Scale({ 5.f, 5.f, 5.f });
+	pref->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
+	pref->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("gray"));
+	PathFinder::Instance()->prefab = pref;
+
+	for (int i = 0; i < 1; ++i)
+	{
+		int x = 500;
+		int z = 500;
+
+		GameObject* house = CreateEmpty();
+		house->AddComponent<Building>();
+		house->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var01");
+		house->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
+		house->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
+		house->transform->Scale({ 0.01f, 0.01f, 0.01f });
+		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+
+		GameObject* sim = CreateEmpty();
+		sim->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z - 5), z - 5);
+		sim->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
+		sim->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
+		sim->transform->Scale({ 20.f, 20.f, 20.f });
+		Sim* simCompo = sim->AddComponent<Sim>();
+		simCompo->home = house;
+		SimManager::Instance()->AddSim(simCompo);
+	}
 }

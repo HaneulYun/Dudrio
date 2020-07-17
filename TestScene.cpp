@@ -127,10 +127,10 @@ void TestScene::BuildObjects()
 	pref->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("gray"));
 	PathFinder::Instance()->prefab = pref;
 
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
-		int x = 500;
-		int z = 500;
+		int x = rand() % 300 + 400;
+		int z = rand() % 300 + 400;
 
 		GameObject* house = CreateEmpty();
 		house->AddComponent<Building>();

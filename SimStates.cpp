@@ -42,7 +42,9 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		sim->stateMachine.ChangeState(MoveState::Instance());
 		return true;
 	case Msg_Sleep:
+		// 기존 목적지 폐기
 		sim->targetPos.clear();
+		sim->path.clear();
 
 		sim->targetPos.push_back(Vector2(sim->home->transform->position.x, sim->home->transform->position.z));
 		sim->stateMachine.PushState(MoveState::Instance());
@@ -117,6 +119,7 @@ bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
 	case Msg_Sleep:
 		// 기존 목적지 폐기
 		sim->targetPos.clear();
+		sim->path.clear();
 
 		// 집으로 이동
 		Vector2 dest;

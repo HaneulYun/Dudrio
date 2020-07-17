@@ -26,13 +26,13 @@ public:
 	{
 		time += Time::deltaTime;
 		
-		if (time > 20.f)
+		if (time > 60.f)
 		{
 			for (auto s : SimManager::Instance()->sims)
 			{
 				Messenger->CreateMessage(0, s.first, s.first, Msg_Sleep);
 			}
-			time -= 20.f;
+			time -= 60.f;
 			b = true;
 		}
 

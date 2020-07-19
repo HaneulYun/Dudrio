@@ -16,7 +16,6 @@
 #include "SimStates.h"
 
 #include "Village.h"
-#include "SimManager.h"
 #include "AIManager.h"
 
 

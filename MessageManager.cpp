@@ -11,8 +11,8 @@ void MessageManager::Send(Sim* receiver,
 
 void MessageManager::CreateMessage(double delay, int senderIndex, int receiverIndex, int msg, void* ExtraInfo)
 {
-	Sim* sender = SimManager::Instance()->sims[senderIndex];
-	Sim* receiver = SimManager::Instance()->sims[receiverIndex];
+	Sim* sender = AIManager::Instance->sims[senderIndex];
+	Sim* receiver = AIManager::Instance->sims[receiverIndex];
 
 	Telegram telegram(0, senderIndex, receiverIndex, msg, ExtraInfo);
            
@@ -33,7 +33,7 @@ void MessageManager::Timer()
 	{
 		const Telegram& telegram = *msgQueue.begin();
 
-		Sim* receiver = SimManager::Instance()->sims[telegram.receiver];
+		Sim* receiver = AIManager::Instance->sims[telegram.receiver];
 
 		string str = "\nQueued telegram ready for dispatch: Sent to " + to_string(telegram.receiver) + ". msg is " + to_string(telegram.msg);
 		Debug::Log(str.c_str());

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "TestScene.h"
 
+AIManager* AIManager::Instance;
+
 void TestScene::BuildObjects()
 {
 	///*** Asset ***///
@@ -118,7 +120,8 @@ void TestScene::BuildObjects()
 		buildManager->terrainMesh = terrainData->terrainData.heightmapTexture;
 		BuildManager::buildManager = buildManager;
 
-		manager->AddComponent<AIManager>();
+		AIManager::Instance = manager->AddComponent<AIManager>();
+
 	}
 
 	GameObject* pref = CreateEmptyPrefab();
@@ -147,6 +150,6 @@ void TestScene::BuildObjects()
 		sim->transform->Scale({ 20.f, 20.f, 20.f });
 		Sim* simCompo = sim->AddComponent<Sim>();
 		simCompo->home = house;
-		SimManager::Instance()->AddSim(simCompo);
+		AIManager::Instance->AddSim(simCompo);
 	}
 }

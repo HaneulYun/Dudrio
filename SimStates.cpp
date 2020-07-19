@@ -13,14 +13,11 @@ IdleState* IdleState::Instance()
 
 void IdleState::Enter(Sim* sim)
 {
-	// 다음 상태가 없으면
 	if (sim->stateMachine.HaveNextState())
 		return;
 
-	// n초 후에 이동하도록 메신저에 추가
 	double delay = rand() % 10;
 	Messenger->CreateMessage(delay, sim->id, sim->id, Msg_Move);
-
 };
 
 void IdleState::Execute(Sim* sim)
@@ -42,7 +39,6 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		sim->stateMachine.ChangeState(MoveState::Instance());
 		return true;
 	case Msg_Sleep:
-		// 기존 목적지 폐기
 		sim->targetPos.clear();
 		sim->path.clear();
 
@@ -80,7 +76,6 @@ void MoveState::Enter(Sim* sim)
 
 void MoveState::Execute(Sim* sim)
 {
-	// 도착함
 	if (sim->path.empty())
 	{
 		if (sim->stateMachine.HaveNextState())
@@ -91,9 +86,11 @@ void MoveState::Execute(Sim* sim)
 		sim->targetPos.pop_front();
 		return;
 	}
-	// 현재 목적 노드와 가까워지면 다음 노드로 이동
-	Vector2 dis{ sim->gameObject->transform->position.x - sim->path.front().x, sim->gameObject->transform->position.z - sim->path.front().y };
-	float distance = sqrt(pow(dis.x, 2) + pow(dis.y, 2));
+
+
+	Vector2 distanceV{ sim->gameObject->transform->position.x - sim->path.front().x, sim->gameObject->transform->position.z - sim->path.front().y };
+	float distance = sqrt(pow(distanceV.x, 2) + pow(distanceV.y, 2));
+	
 	if (distance < 0.1f)
 	{
 		sim->path.pop_front();

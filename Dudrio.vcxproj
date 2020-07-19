@@ -204,7 +204,6 @@
     <ClInclude Include="GuestScene.h" />
     <ClInclude Include="scripts.h" />
     <ClInclude Include="Sim.h" />
-    <ClInclude Include="SimManager.h" />
     <ClInclude Include="SimStates.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />

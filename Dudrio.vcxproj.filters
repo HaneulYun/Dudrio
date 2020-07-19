@@ -132,9 +132,6 @@
     <ClInclude Include="Sim.h">
       <Filter>Assets\Scripts\AI</Filter>
     </ClInclude>
-    <ClInclude Include="SimManager.h">
-      <Filter>Assets\Scripts\AI</Filter>
-    </ClInclude>
     <ClInclude Include="PathFinder.h">
       <Filter>Assets\Scripts\AI</Filter>
     </ClInclude>

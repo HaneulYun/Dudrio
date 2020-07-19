@@ -7,7 +7,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	int id;
-	float speed = 4.f;
+	float speed = 1.f;
 
 	GameObject* home;
 

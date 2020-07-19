@@ -163,23 +163,27 @@ public:
 		
 		float angle = NS_Vector3::Angle(currentDir.xmf3, dir.xmf3);
 
-		//if (angle < 0.01f)
-		//{
-		//	Vector3 newPos = object->position + currentDir.Normalize() * speed * Time::deltaTime;
-		//	object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
-		//}
-		//else
+		if (angle < 3.f || angle > 177.f)
 		{
-			//Vector3 newPos = object->position + currentDir.Normalized() * speed * Time::deltaTime;
-			//object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
-
-			float rotSpeed = 30.0f * Time::deltaTime;
-			if (abs(angle) > rotSpeed)
-				angle = angle < 0 ? -rotSpeed : rotSpeed;
-			object->Rotate(Vector3{ 0,1,0 }, angle);
-			
-			Vector3 newPos = object->position + object->forward.Normalized() * speed * Time::deltaTime;
+			currentDir = dir;
+			Vector3 newPos = object->position + currentDir.Normalize() * speed * Time::deltaTime;
 			object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
+
+			return;
 		}
+
+		Vector3 cross;
+		Vector3 up = { 0,1,0 };
+		cross.xmf3 = NS_Vector3::CrossProduct(currentDir.xmf3, dir.xmf3);
+		bool isRight = NS_Vector3::DotProduct(cross.xmf3, up.xmf3) > 0 ? true : false;
+
+
+		float rotSpeed = 180.f * Time::deltaTime;
+		if (!isRight) rotSpeed *= -1;
+
+		object->Rotate(Vector3{ 0,1,0 }, rotSpeed);
+
+		Vector3 newPos = object->position + object->forward.Normalized() * speed * Time::deltaTime;
+		object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
 	}
 };

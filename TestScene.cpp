@@ -10,15 +10,19 @@ void TestScene::BuildObjects()
 	ASSET AddTexture("ground", L"Textures\\grass.dds");
 	ASSET AddTexture("grass", L"Texture\\grass.dds");
 	ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
+	ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 
 	//*** Material ***//
 	ASSET AddMaterial("ground", ASSET TEXTURE("ground"), -1, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
 	ASSET AddMaterial("grass", ASSET TEXTURE("grass"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 	ASSET AddMaterial("house01", ASSET TEXTURE("house01"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+	ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), -1, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 	//*** Mesh 
 	ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
 	ASSET AddMesh("Cube", Mesh::CreateCube());
+
+	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 
 	///*** Game Object ***///
 	auto menuSceneButton = CreateImage();
@@ -125,10 +129,11 @@ void TestScene::BuildObjects()
 	}
 
 	GameObject* pref = CreateEmptyPrefab();
-	pref->transform->Scale({ 5.f, 5.f, 5.f });
+	pref->transform->Scale({ 2.f, 2.f, 2.f });
 	pref->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
 	pref->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("gray"));
 	PathFinder::Instance()->prefab = pref;
+
 
 	for (int i = 0; i < 10; ++i)
 	{
@@ -145,9 +150,11 @@ void TestScene::BuildObjects()
 
 		GameObject* sim = CreateEmpty();
 		sim->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z - 5), z - 5);
-		sim->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
-		sim->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
-		sim->transform->Scale({ 20.f, 20.f, 20.f });
+		GameObject* model = sim->AddChild();
+		model->AddComponent<MeshFilter>()->mesh = ASSET MESH("ApprenticeSK");
+		model->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+		model->transform->Scale({ 0.01, 0.01, 0.01 });
+		model->transform->Rotate({ 1, 0, 0 }, -90);
 		Sim* simCompo = sim->AddComponent<Sim>();
 		simCompo->home = house;
 		AIManager::Instance->AddSim(simCompo);

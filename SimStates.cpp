@@ -114,11 +114,9 @@ bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
 	case Msg_Build:
 		return true;
 	case Msg_Sleep:
-		// 기존 목적지 폐기
 		sim->targetPos.clear();
 		sim->path.clear();
 
-		// 집으로 이동
 		Vector2 dest;
 		dest.x = sim->home->transform->position.x;
 		dest.y = sim->home->transform->position.z;

@@ -1,4 +1,4 @@
-#include "shaders\\Common.hlsl"
+#include "common.hlsl"
 
 struct VSInput
 {
@@ -24,43 +24,14 @@ struct PSInput
 	nointerpolation uint MatIndex : MATINDEX;
 };
 
-//---------------------------------------------------------------------------------------
-// PCF for shadow mapping.
-//---------------------------------------------------------------------------------------
-
-float CalcShadowFactor(float4 shadowPosH)
+struct MRT_VSOutput
 {
-	// Complete projection by doing division by w.
-	shadowPosH.xyz /= shadowPosH.w;
+	float4 Color : SV_TARGET0;
+	float4 Diffuse : SV_TARGET1;
+	float4 Normal : SV_TARGET2;
+};
 
-	// Depth in NDC space.
-	float depth = shadowPosH.z;
-
-	uint width, height, numMips;
-	gShadowMap.GetDimensions(0, width, height, numMips);
-
-	// Texel size.
-	float dx = 1.0f / (float)width;
-
-	float percentLit = 0.0f;
-	const float2 offsets[9] =
-	{
-		float2(-dx,  -dx), float2(0.0f,  -dx), float2(dx,  -dx),
-		float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
-		float2(-dx,  +dx), float2(0.0f,  +dx), float2(dx,  +dx)
-	};
-
-	[unroll]
-	for (int i = 0; i < 9; ++i)
-	{
-		percentLit += gShadowMap.SampleCmpLevelZero(gsamShadow,
-			shadowPosH.xy + offsets[i], depth).r;
-	}
-
-	return percentLit / 9.0f;
-}
-
-PSInput VSMain(VSInput vin, uint instanceID : SV_InstanceID)
+PSInput VS(VSInput vin, uint instanceID : SV_InstanceID)
 {
 	PSInput vout;
 
@@ -99,7 +70,9 @@ PSInput VSMain(VSInput vin, uint instanceID : SV_InstanceID)
 	float4 posW = mul(float4(vin.PosL, 1.0f), world);
 	vout.PosW = mul(float4(vin.PosL, 1.0f), world).xyz;
 	vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
+	
 	vout.NormalW = mul(vin.NormalL, (float3x3)world);
+	vout.TangentW = mul(vin.TangentL, (float3x3)world);
 	vout.TexC = mul(mul(float4(vin.TexC, 0.0f, 1.0f), texTransform), matData.MatTransform).xy;
 	
 	// Generate projective tex-coords to project shadow map onto scene.
@@ -107,18 +80,20 @@ PSInput VSMain(VSInput vin, uint instanceID : SV_InstanceID)
 	return vout;
 }
 
-float4 PSMain(PSInput input) : SV_TARGET
+MRT_VSOutput PS(PSInput input)
 {
 	MaterialData matData = gMaterialData[input.MatIndex];
 	float4 diffuseAlbedo = matData.DiffuseAlbedo;
 	float3 fresnelR0 = matData.FresnelR0;
 	float roughness = matData.Roughness;
 	uint diffuseTexIndex = matData.DiffuseMapIndex;
+	uint normalTexIndex = matData.NormalMapIndex;
 
 
 	diffuseAlbedo *= gDiffuseMap[diffuseTexIndex].Sample(gsamAnisotropicWrap, input.TexC);
 
 	input.NormalW = normalize(input.NormalW);
+	input.TangentW = normalize(input.TangentW);
 
 	float3 toEyeW = normalize(gEyePosW - input.PosW);
 
@@ -130,8 +105,7 @@ float4 PSMain(PSInput input) : SV_TARGET
 	const float shininess = 1.0f - roughness;
 	Material mat = { diffuseAlbedo, fresnelR0, shininess };
 
-	float4 directLight = ComputeLighting(gLights, mat, input.PosW, 
-		input.NormalW, toEyeW, shadowFactor);
+	float4 directLight = ComputeLighting(gLights, mat, input.PosW, input.NormalW, toEyeW, shadowFactor);
 
 	float4 litColor = ambient + directLight;
 
@@ -142,5 +116,24 @@ float4 PSMain(PSInput input) : SV_TARGET
 	
 	litColor.a = diffuseAlbedo.a;
 
-	return litColor;
+	MRT_VSOutput result;
+	result.Color = litColor;
+	result.Diffuse = diffuseAlbedo;
+	result.Normal = float4(input.NormalW, 1);
+
+	if (normalTexIndex != -1)
+	{
+		float3 texNormal = gDiffuseMap[normalTexIndex].Sample(gsamAnisotropicWrap, input.TexC);
+		float3 normalT = texNormal * 2.0f - 1.0f;
+
+		float3 N = input.NormalW;
+		float3 T = normalize(input.TangentW - dot(input.TangentW, N) * N);
+		float3 B = cross(N, T);
+
+		float3x3 TBN = float3x3(T, B, N);
+
+		result.Normal = float4(mul(normalT, TBN), 1);
+	}
+
+	return result;
 }

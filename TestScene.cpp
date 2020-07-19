@@ -135,7 +135,7 @@ void TestScene::BuildObjects()
 	PathFinder::Instance()->prefab = pref;
 
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 1000; ++i)
 	{
 		int x = rand() % 300 + 400;
 		int z = rand() % 300 + 400;

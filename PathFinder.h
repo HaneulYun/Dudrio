@@ -92,8 +92,6 @@ public:
 					path.push_front(Vector2 { (float)currentNode.posX, (float)currentNode.posZ });
 					currentNode = *currentNode.parent;
 
-					auto g = Scene::scene->Duplicate(prefab);
-					g->transform->position = Vector3((float)currentNode.posX, terrainData->GetHeight(currentNode.posX, currentNode.posZ), (float)currentNode.posZ);
 				}
 				return;
 			}

@@ -68,9 +68,6 @@ MoveState* MoveState::Instance()
 
 void MoveState::Enter(Sim* sim)
 {
-	string str = "\n" + to_string(sim->id) + " : 출발합니다";
-	Debug::Log(str.c_str());
-
 	PathFinder::Instance()->FindPath(sim->targetPos.front(), Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path);
 };
 
@@ -101,8 +98,6 @@ void MoveState::Execute(Sim* sim)
 
 void MoveState::Exit(Sim* sim)
 {
-	string str = "\n" + to_string(sim->id) + " : 도착함 ㅋㅋ";
-	Debug::Log(str.c_str());
 };
 
 bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
@@ -144,9 +139,6 @@ SleepState* SleepState::Instance()
 
 void SleepState::Enter(Sim* sim)
 {
-	string str = "\n" + to_string(sim->id) + " : 잡니다";
-	Debug::Log(str.c_str());
-
 	Messenger->CreateMessage(5, sim->id, sim->id, Msg_WakeUp);
 };
 
@@ -157,8 +149,6 @@ void SleepState::Execute(Sim* sim)
 
 void SleepState::Exit(Sim* sim)
 {
-	string str = "\n" + to_string(sim->id) + " : 일어납니다";
-	Debug::Log(str.c_str());
 };
 
 bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)

@@ -4,6 +4,21 @@
 #include "HostCameraController.h"
 #include "GuestCameraController.h"
 
+#include "Message.h"
+#include "Telegram.h"
+
+#include "State.h"
+#include "StateMachine.h"
+#include "PathFinder.h"
+
+#include "Sim.h"
+#include "MessageManager.h"
+#include "SimStates.h"
+
+#include "Village.h"
+#include "AIManager.h"
+
+
 #include "TerrainGenerator.h"
 #include "RotatingBehavior.h"
 #include "CharacterMovingBehavior.h"

@@ -484,6 +484,8 @@ public:
 		SetParticle(collider->extents.y * 4, go->transform->position);
 		go->transform->position.y -= collider->extents.y * 2 + 0.5f;
 
+
+
 		if (!Input::GetKey(KeyCode::Shift))
 			DeletePrefab();
 	}

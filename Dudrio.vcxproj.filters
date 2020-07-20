@@ -25,6 +25,12 @@
     <Filter Include="Assets\Network">
       <UniqueIdentifier>{745d9efb-85c4-4d46-bf7e-6765245a03a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Scripts\AI">
+      <UniqueIdentifier>{0c1ff43d-499d-4572-a5f6-35b92c7b1ba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Scripts\AI\FSM">
+      <UniqueIdentifier>{d0262009-6b88-478e-95bf-3ffcaaa5ee2e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Assets\Scripts\Build">
       <UniqueIdentifier>{119ea835-4ce6-4bdd-be3c-e81d88044b1a}</UniqueIdentifier>
     </Filter>
@@ -126,6 +132,36 @@
     <ClInclude Include="ParticleManager.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="Sim.h">
+      <Filter>Assets\Scripts\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFinder.h">
+      <Filter>Assets\Scripts\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="SimStates.h">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.h">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Telegram.h">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="AIManager.h">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Village.h">
+      <Filter>Assets\Scripts\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageManager.h">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClInclude>
     <ClInclude Include="GuestController.h">
       <Filter>Assets\Scripts\Controller</Filter>
     </ClInclude>
@@ -181,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="TerrainGenerator.cpp">
       <Filter>Assets\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="SimStates.cpp">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageManager.cpp">
+      <Filter>Assets\Scripts\AI\FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -294,9 +294,9 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 		p.o_type = O_GUEST;
 
 	if (user_id != contents.host_id && o_id != contents.host_id) {
-	//	g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.insert(o_id);
-	//	g_clients[user_id]->m_cl.LeaveWriteLock();
+		g_clients[user_id]->m_cl.LeaveWriteLock();
 	}
 
 	send_packet(user_id, &p);
@@ -310,9 +310,9 @@ void IOCPServer::send_leave_packet(int user_id, int o_id)
 	p.type = S2C_LEAVE;
 
 	if (user_id != contents.host_id && o_id != contents.host_id) {
-	//	g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.erase(o_id);
-	//	g_clients[user_id]->m_cl.LeaveWriteLock();
+		g_clients[user_id]->m_cl.LeaveWriteLock();
 	}
 
 	send_packet(user_id, &p);

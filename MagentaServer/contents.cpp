@@ -43,13 +43,13 @@ void Contents::stop_contents()
 void Contents::logic_thread_loop()
 {
 	while (logic_run) {
-		//logic_lock.EnterReadLock();
+		logic_lock.EnterReadLock();
 		if (!recvQueue.empty()) {
-			//logic_lock.LeaveReadLock();
-			//logic_lock.EnterWriteLock();
+			logic_lock.LeaveReadLock();
+			logic_lock.EnterWriteLock();
 			auto buf = recvQueue.front();
 			recvQueue.pop();
-			//logic_lock.LeaveWriteLock();
+			logic_lock.LeaveWriteLock();
 
 			switch (buf.second[1]) {
 			case C2S_LOGIN_GUEST: {
@@ -146,7 +146,7 @@ void Contents::logic_thread_loop()
 			}
 		}
 		else
-		;//logic_lock.LeaveReadLock();
+			logic_lock.LeaveReadLock();
 	}
 }
 
@@ -229,9 +229,9 @@ void Contents::destruct_all(int user_id)
 
 void Contents::add_packet(int user_id, char* buf)
 {
-	//logic_lock.EnterWriteLock();
+	logic_lock.EnterWriteLock();
 	recvQueue.push(make_pair(user_id, buf));
-	//logic_lock.LeaveWriteLock();
+	logic_lock.LeaveWriteLock();
 }
 
 pair<int, int> Contents::calculate_sector_num(float xPos, float zPos)

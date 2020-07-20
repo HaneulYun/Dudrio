@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "TerrainGenerator.h"
 
+double TerrainGenerator::Range_From0To60(double x)
+{
+	return x >= 1.0 ? 60 : x <= 0.0 ? 0 : (x * 60.0);
+}
+
 std::uint8_t TerrainGenerator::ToUint8(double x)
 {
 	return x >= 1.0 ? 255 : x <= 0.0 ? 0 : static_cast<std::uint8_t>(x * 255.0 + 0.5);
@@ -156,18 +161,21 @@ std::string TerrainGenerator::createHeightMap(float frequency, int octaves, int 
 	{
 		for (int x = 0; x < width; ++x)
 		{
-			data[y * width + x] = (accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) - data_fallOff[y * width + x]) / 4;
+			data[y * width + x] = (accumulatedOctaveNoise2D_0_1(x / fx, y / fy, octaves) - data_fallOff[y * width + x]);
 		}
 	}
 
 	std::stringstream ss;
 	ss << 'f' << frequency << 'o' << octaves << '_' << seed << ".raw";
 
-	std::vector<std::uint8_t> rawData;
-	for (auto d : data) rawData.push_back(ToUint8(d));
+	//std::vector<std::uint8_t> rawData;
+	//for (auto d : data) rawData.push_back(ToUint8(d));
+
+	std::vector<float> rawData;
+	for (auto d : data) rawData.push_back(Range_From0To60(d));
 
 	ofstream os(ss.str(), ios::out | ios::binary);
-	os.write((char*)&rawData.front(), rawData.size());
+	os.write((char*)&rawData.front(), rawData.size() * 4);
 	os.close();
 
 	return ss.str();

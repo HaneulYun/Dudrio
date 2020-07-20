@@ -15,6 +15,7 @@ public:
 
 	void initTable(int seed); 
 
+	double Range_From0To60(double x);
 	std::uint8_t ToUint8(double x);
 	float Fade(float t);
 	float Lerp(float t, float a, float b);

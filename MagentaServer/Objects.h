@@ -10,6 +10,13 @@ public:
 public:
 	Object() {}
 	~Object() {}
+
+	bool is_near(const Object& other)
+	{
+		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
+		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
+		return true;
+	}
 };
 
 class Building : public Object
@@ -53,9 +60,7 @@ public:
 	unordered_set<int> view_list;
 	
 	bool	is_host;
-	//float	m_xPos, m_zPos;
 	float	m_xVel, m_zVel;
-	//float	m_rotAngle;
 	char	m_name[MAX_ID_LEN + 1];
 
 public:
@@ -65,4 +70,11 @@ public:
 
 	void enter_game(char name[]);
 	void do_move(float xVel, float zVel, float rotAngle, float run_level);
+
+	bool is_sector_change(float prevX, float prevZ);
+	void erase_client_in_sector(float x, float z);
+	void erase_client_in_sector();
+	void insert_client_in_sector();
+
+	vector<int> get_near_clients();
 };

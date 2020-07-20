@@ -42,22 +42,24 @@ void Contents::stop_contents()
 
 void Contents::logic_thread_loop()
 {
-	while (logic_run){
-		if (!recvQueue.empty()){
-			logic_lock.EnterWriteLock();
+	while (logic_run) {
+		//logic_lock.EnterReadLock();
+		if (!recvQueue.empty()) {
+			//logic_lock.LeaveReadLock();
+			//logic_lock.EnterWriteLock();
 			auto buf = recvQueue.front();
 			recvQueue.pop();
-			logic_lock.LeaveWriteLock();
+			//logic_lock.LeaveWriteLock();
 
-			switch (buf.second[1]){
-			case C2S_LOGIN_GUEST:{
-				if (host_id != -1){
-					cout << "The Guest " <<  buf.first << "is connected" << endl;
+			switch (buf.second[1]) {
+			case C2S_LOGIN_GUEST: {
+				if (host_id != -1) {
+					cout << "The Guest " << buf.first << " is connected" << endl;
 					cs_packet_login_guest* packet = reinterpret_cast<cs_packet_login_guest*>(buf.second);
 					g_clients[buf.first]->is_host = false;
 					g_clients[buf.first]->enter_game(packet->name);
 				}
-				else{
+				else {
 					cout << "Host does not exist" << endl;
 					disconnect(buf.first);
 				}
@@ -65,12 +67,12 @@ void Contents::logic_thread_loop()
 			break;
 			case C2S_LOGIN_HOST:
 			{
-				if (host_id == -1){
-					cout << "The host is connected" << endl;
+				if (host_id == -1) {
+					cout << "The host " << buf.first << " is connected" << endl;
 					cs_packet_login_host* packet = reinterpret_cast<cs_packet_login_host*>(buf.second);
 					host_id = buf.first;
 					g_clients[buf.first]->is_host = true;
-					
+
 					TerrainGenerator terrainGenerator(packet->terrainSize, packet->terrainSize);
 					string fileName = terrainGenerator.createHeightMap(packet->frequency, packet->octaves, packet->seed, (char*)"square");
 					terrain_data = new Terrain;
@@ -91,7 +93,7 @@ void Contents::logic_thread_loop()
 
 					g_clients[buf.first]->enter_game(packet->name);
 				}
-				else{
+				else {
 					cout << "Host is already exist" << endl;
 					disconnect(buf.first);
 				}
@@ -144,15 +146,17 @@ void Contents::logic_thread_loop()
 			}
 		}
 		else
-			this_thread::sleep_for(chrono::milliseconds(2));
+		;//logic_lock.LeaveReadLock();
 	}
 }
 
 void Contents::disconnect(int user_id)
 {
-	g_clients[user_id]->m_status = ST_ALLOC;
 	cout << "Disconnect " << user_id << endl;
+
+	g_clients[user_id]->erase_client_in_sector();
 	iocp.send_leave_packet(user_id, user_id);
+	g_clients[user_id]->m_status = ST_ALLOC;
 	closesocket(g_clients[user_id]->m_s);
 
 	delete g_clients[user_id];
@@ -177,6 +181,7 @@ void Contents::disconnect(int user_id)
 		host_id = -1;
 
 		g_clients.clear();
+		init_contents();
 	}
 }
 
@@ -224,9 +229,9 @@ void Contents::destruct_all(int user_id)
 
 void Contents::add_packet(int user_id, char* buf)
 {
-	logic_lock.EnterWriteLock();
+	//logic_lock.EnterWriteLock();
 	recvQueue.push(make_pair(user_id, buf));
-	logic_lock.LeaveWriteLock();
+	//logic_lock.LeaveWriteLock();
 }
 
 pair<int, int> Contents::calculate_sector_num(float xPos, float zPos)

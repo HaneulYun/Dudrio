@@ -25,6 +25,12 @@
     <Filter Include="Assets\Network">
       <UniqueIdentifier>{745d9efb-85c4-4d46-bf7e-6765245a03a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Scripts\Build">
+      <UniqueIdentifier>{119ea835-4ce6-4bdd-be3c-e81d88044b1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Scripts\Controller">
+      <UniqueIdentifier>{81397fc0-9085-46f1-aeda-59241113524a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -41,12 +47,6 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraController.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterController.h">
-      <Filter>Assets\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="RotatingBehavior.h">
       <Filter>Assets\Scripts</Filter>
@@ -72,15 +72,6 @@
     <ClInclude Include="ParticleScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="BulidManager.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="GuestController.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="HostCameraController.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="CharacterMovingBehavior.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
@@ -90,22 +81,7 @@
     <ClInclude Include="HostNetwork.h">
       <Filter>Assets\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Builder.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="ButtonManager.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="Building.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="GuestCameraController.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="GameLoader.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleManager.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="HostScene.h">
@@ -122,6 +98,48 @@
     </ClInclude>
     <ClInclude Include="TerrainGenerator.h">
       <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterController.h">
+      <Filter>Assets\Scripts\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>Assets\Scripts\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="BulidManager.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="Building.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonManager.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="GuestCameraController.h">
+      <Filter>Assets\Scripts\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="HostCameraController.h">
+      <Filter>Assets\Scripts\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="GuestController.h">
+      <Filter>Assets\Scripts\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingTypeSelector.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingSelector.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingBuilder.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingType.h">
+      <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

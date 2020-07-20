@@ -59,11 +59,9 @@ public:
 		Matrix4x4 toLocal = invView * invWorld;
 
 		rayOrigin = rayOrigin.TransformCoord(toLocal);
-		rayDir = rayDir.TransformNormal(invWorld);
+		rayDir = rayDir.TransformNormal(invWorld).Normalize();
 
-		rayDir = rayDir.Normalized();
-
-		if (IntersectPlane(rayOrigin.xmf3, rayDir.xmf3, XMFLOAT3{ 0,0,0 }, XMFLOAT3{ 1,0,0 }, XMFLOAT3{ 0,0,1 }))
+		if (IntersectPlane(rayOrigin, rayDir, Vector3{ 0,0,0 }, Vector3{ 1,0,0 }, Vector3{ 0,0,1 }))
 		{
 			Vector3 point;
 			if (heightMap)
@@ -132,10 +130,9 @@ public:
 		Vector3 screenPos{ (float)mx, (float)my, 1.0f };
 
 		Vector3 rayOrigin{ 0.0f, 0.0f, 0.0f };
-		Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos);
+		Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos).Normalize();
 
 		rayOrigin = rayOrigin.TransformCoord(Camera::main->view.Inverse());
-		rayDir = rayDir.Normalized();
 
 		GameObject* obj{ nullptr };
 		float minDist = MathHelper::Infinity;
@@ -185,23 +182,23 @@ public:
 
 	}
 
-	bool IntersectPlane(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirection, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2)
+	bool IntersectPlane(Vector3 rayOrigin, Vector3 rayDirection, Vector3 v0, Vector3 v1, Vector3 v2)
 	{
-		XMFLOAT3 edge1{ v1.x - v0.x,v1.y - v0.y,v1.z - v0.z };
-		XMFLOAT3 edge2{ v2.x - v0.x,v2.y - v0.y, v2.z - v0.z };
+		Vector3 edge1{ v1.x - v0.x,v1.y - v0.y,v1.z - v0.z };
+		Vector3 edge2{ v2.x - v0.x,v2.y - v0.y, v2.z - v0.z };
 
-		XMFLOAT3 pvec = NS_Vector3::CrossProduct(rayDirection, edge2);
+		Vector3 pvec = Vector3::CrossProduct(rayDirection, edge2);
 
-		float dot = NS_Vector3::DotProduct(edge1, pvec);
+		float dot = Vector3::DotProduct(edge1, pvec);
 
 		if (dot > 0.0001f)
 			return false;
 
-		XMFLOAT3 planeNormal = NS_Vector3::CrossProduct(edge1, edge2);
+		Vector3 planeNormal = Vector3::CrossProduct(edge1, edge2);
 
-		float dot1 = NS_Vector3::DotProduct(planeNormal, v0);
-		float dot2 = NS_Vector3::DotProduct(planeNormal, rayOrigin);
-		float dot3 = NS_Vector3::DotProduct(planeNormal, rayDirection);
+		float dot1 = Vector3::DotProduct(planeNormal, v0);
+		float dot2 = Vector3::DotProduct(planeNormal, rayOrigin);
+		float dot3 = Vector3::DotProduct(planeNormal, rayDirection);
 
 		distance = (dot1 - dot2) / dot3;
 
@@ -467,10 +464,10 @@ public:
 
 		BuildingInform b_inform;
 		b_inform.buildingType = prefabType;
-		Vector3 prefabForward = prefab->transform->localToWorldMatrix.forward.Normalized();
+		Vector3 prefabForward = Vector3::Normalize(prefab->transform->localToWorldMatrix.forward);
 		Vector3 forward = { 0.0f, 0.0f, 1.0f };
-		float angle = NS_Vector3::DotProduct(forward.xmf3, prefabForward.xmf3);
-		XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, prefabForward.xmf3);
+		float angle = Vector3::DotProduct(forward, prefabForward);
+		Vector3 dir = Vector3::CrossProduct(forward, prefabForward);
 		b_inform.rotAngle = XMConvertToDegrees(acos(angle));
 		b_inform.rotAngle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 		b_inform.xPos = prefab->transform->position.x;

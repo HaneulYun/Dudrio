@@ -8,9 +8,16 @@
 #include "RotatingBehavior.h"
 #include "CharacterMovingBehavior.h"
 #include "CharacterController.h"
+
 #include "BulidManager.h"
 #include "ButtonManager.h"
 #include "Builder.h"
+
+#include "BuildingType.h"
+#include "BuildingBuilder.h"
+#include "BuildingSelector.h"
+#include "BuildingTypeSelector.h"
+
 #include "GuestController.h"
 #include "Building.h"
 #include "GuestNetwork.h"

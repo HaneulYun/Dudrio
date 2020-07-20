@@ -91,10 +91,10 @@ public:
 
 		Vector3 characterForward = gameObject->transform->forward;
 		characterForward.y = 0;
-		characterForward = characterForward.Normalized();
+		characterForward.Normalize();
 		Vector3 forward = { 0,0,1 };
-		float angle = NS_Vector3::DotProduct(forward.xmf3, characterForward.xmf3);
-		XMFLOAT3 dir = NS_Vector3::CrossProduct(forward.xmf3, characterForward.xmf3);
+		float angle = Vector3::DotProduct(forward, characterForward);
+		Vector3 dir = Vector3::CrossProduct(forward, characterForward);
 		angle = acos(angle);
 		angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 		animVel = { dx * cos(angle) - dz * sin(angle), 0,

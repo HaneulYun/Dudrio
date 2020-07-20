@@ -92,6 +92,8 @@ public:
 					path.push_front(Vector2 { (float)currentNode.posX, (float)currentNode.posZ });
 					currentNode = *currentNode.parent;
 
+					auto d = Scene::scene->Duplicate(prefab);
+					d->transform->position = Vector3(currentNode.posX, terrainData->GetHeight(currentNode.posX, currentNode.posZ), currentNode.posZ);
 				}
 				return;
 			}
@@ -159,8 +161,7 @@ public:
 		Vector3 currentDir{ object->forward.x, 0, object->forward.z }; currentDir.Normalize();
 		Vector3 dir{ targetPos.x - object->position.x, 0, targetPos.y - object->position.z };
 		
-		float angle = NS_Vector3::Angle(currentDir.xmf3, dir.xmf3);
-
+		float angle = XMConvertToDegrees(Vector3::Angle(currentDir, dir));
 		if (angle < 3.f || angle > 177.f)
 		{
 			currentDir = dir;
@@ -170,10 +171,9 @@ public:
 			return;
 		}
 
-		Vector3 cross;
+		Vector3 cross = Vector3::CrossProduct(currentDir, dir);
 		Vector3 up = { 0,1,0 };
-		cross.xmf3 = NS_Vector3::CrossProduct(currentDir.xmf3, dir.xmf3);
-		bool isRight = NS_Vector3::DotProduct(cross.xmf3, up.xmf3) > 0 ? true : false;
+		bool isRight = Vector3::DotProduct(cross, up) > 0 ? true : false;
 
 
 		float rotSpeed = 180.f * Time::deltaTime;
@@ -181,7 +181,7 @@ public:
 
 		object->Rotate(Vector3{ 0,1,0 }, rotSpeed);
 
-		Vector3 newPos = object->position + object->forward.Normalized() * speed * Time::deltaTime;
+		Vector3 newPos = object->position + Vector3::Normalize(object->forward) * speed * Time::deltaTime;
 		object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
 	}
 };

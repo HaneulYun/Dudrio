@@ -6,8 +6,9 @@ class BuildingTypeSelector : public MonoBehavior<BuildingTypeSelector>
 private /*이 영역에 private 변수를 선언하세요.*/:
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	enum BuildingType { none = -1, Landmark, House, Theme, Landscape, Prop };
 	std::vector<BuildingSelector*> buildingSelectors;
+
+	BuildingBuilder* builder{ nullptr };
 
 protected:
 	friend class GameObject;
@@ -59,8 +60,8 @@ public:
 		}
 
 		{
-			auto rt = buildingSelectorObject->GetComponent<RectTransform>();
-			rt->setPosAndSize(0, 100, CyanFW::Instance()->GetWidth() - 100, 60);
+			buildingSelectorObject->GetComponent<RectTransform>()->setPosAndSize(0, 100, CyanFW::Instance()->GetWidth() - 100, 60);
+			buildingSelectorObject->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("gray");
 		}
 		auto buildingSelector = buildingSelectorObject->AddComponent<BuildingSelector>();
 

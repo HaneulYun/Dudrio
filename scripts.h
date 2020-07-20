@@ -13,6 +13,8 @@
 #include "ButtonManager.h"
 #include "Builder.h"
 
+#include "BuildingType.h"
+#include "BuildingBuilder.h"
 #include "BuildingSelector.h"
 #include "BuildingTypeSelector.h"
 

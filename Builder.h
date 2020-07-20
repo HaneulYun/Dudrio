@@ -7,6 +7,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	GameObject* prefab{ nullptr };
 	deque<BuildingInform> buildCommand;
 	deque<BuildingInform> destroyCommand;
+
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static Builder* builder;
 

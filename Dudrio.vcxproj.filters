@@ -135,6 +135,12 @@
     <ClInclude Include="BuildingSelector.h">
       <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
+    <ClInclude Include="BuildingBuilder.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildingType.h">
+      <Filter>Assets\Scripts\Build</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">

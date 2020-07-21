@@ -143,7 +143,7 @@ void GuestNetwork::process_data(char* net_buf, size_t io_byte)
 	static char packet_buffer[BUFSIZE];
 
 	while (0 != io_byte) {
-		if (0 == in_packet_size) in_packet_size = ptr[0];
+		if (0 == in_packet_size) in_packet_size = (unsigned char)ptr[0];
 		if (io_byte + saved_packet_size >= in_packet_size) {
 			memcpy(packet_buffer + saved_packet_size, ptr, in_packet_size - saved_packet_size);
 			ProcessPacket(packet_buffer);
@@ -171,7 +171,7 @@ void GuestNetwork::Receiver()
 void GuestNetwork::send_packet(void* packet)
 {
 	char* p = reinterpret_cast<char*>(packet);
-	send(serverSocket, p, p[0], 0);
+	send(serverSocket, p, (unsigned char)p[0], 0);
 }
 
 void GuestNetwork::send_move_start_packet(float xVel, float zVel, float rotAngle, float run_level)

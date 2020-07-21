@@ -319,6 +319,7 @@ void IOCPServer::send_move_packet(int user_id, int mover, float dAngle)
 	p.xVel = g_clients[mover]->m_xVel;
 	p.zVel = g_clients[mover]->m_zVel;
 	p.rotAngle = dAngle;
+	p.move_time = g_clients[mover]->m_move_time;
 
 	send_packet(user_id, &p);
 }

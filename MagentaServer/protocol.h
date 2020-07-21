@@ -99,6 +99,7 @@ struct sc_packet_move {
 	float xPos, zPos;
 	float xVel, zVel;
 	float rotAngle;
+	unsigned move_time;
 };
 
 struct BuildingInform
@@ -218,6 +219,7 @@ struct cs_packet_move_start {
 	float xVel, zVel;
 	float rotAngle;
 	float run_level;
+	unsigned move_time;
 };
 
 struct cs_packet_move {
@@ -226,6 +228,7 @@ struct cs_packet_move {
 	float xVel, zVel;
 	float rotAngle;
 	float run_level;
+	unsigned move_time;
 };
 
 struct cs_packet_construct{

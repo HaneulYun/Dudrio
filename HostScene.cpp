@@ -159,7 +159,7 @@ void HostScene::BuildObjects()
 	{
 		auto model = SimsPrefab->AddChild();
 		{
-			model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
+			//model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
 			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			auto renderer = model->GetComponent<SkinnedMeshRenderer>();

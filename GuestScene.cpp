@@ -180,7 +180,7 @@ void GuestScene::BuildObjects()
 	{
 		auto model = SimsPrefab->AddChild();
 		{
-			model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
+			//model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
 			model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));

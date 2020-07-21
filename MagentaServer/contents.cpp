@@ -153,8 +153,9 @@ void Contents::logic_thread_loop()
 void Contents::disconnect(int user_id)
 {
 	cout << "Disconnect " << user_id << endl;
-
-	g_clients[user_id]->erase_client_in_sector();
+	
+	if (host_id != user_id)
+		g_clients[user_id]->erase_client_in_sector();
 	iocp.send_leave_packet(user_id, user_id);
 	g_clients[user_id]->m_status = ST_ALLOC;
 	closesocket(g_clients[user_id]->m_s);

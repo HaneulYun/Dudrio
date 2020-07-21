@@ -35,7 +35,7 @@ public:
 		{
 			for (auto s : AIManager::Instance->sims)
 			{
-				Messenger->CreateMessage(0, s.first, s.first, Msg_Sleep);
+				//Messenger->CreateMessage(0, s.first, s.first, Msg_Sleep);
 			}
 			time -= 60.f;
 		}

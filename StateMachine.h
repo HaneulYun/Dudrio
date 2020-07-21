@@ -26,6 +26,11 @@ public:
 		return false;
 	}
 
+	void ClearStack()
+	{
+		stateStack.clear();
+	}
+
 	bool HaveNextState()
 	{
 		return stateStack.size() > 1;

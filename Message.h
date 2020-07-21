@@ -13,4 +13,6 @@ struct BuildMessageInfo
 {
 	Vector2 pos;
 	BuildingType type;
+
+	std::vector<GameObject*>* simList;
 };

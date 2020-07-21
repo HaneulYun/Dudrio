@@ -10,11 +10,14 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	float speed = 1.f;
 
 	GameObject* home;
+	GameObject* prefab;
 
 	StateMachine<Sim> stateMachine;
 
 	deque<Vector2> targetPos;
 	deque<Vector2> path;
+
+	BuildMessageInfo buildInfo;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<Sim>;
@@ -36,6 +39,9 @@ public:
 	bool HandleMessage(const Telegram& msg)
 	{
 		return stateMachine.HandleMessage(msg);
+
+		if (msg.msg == Msg_Build)
+			buildInfo = *static_cast<BuildMessageInfo*>(msg.extraInfo);
 	}
 
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.

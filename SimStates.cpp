@@ -34,14 +34,18 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 {
 	switch (telegram.msg)
 	{
-	case Msg_Move:	
+	case Msg_Move:
+		Debug::Log("Target 추가\n");
 		sim->targetPos.push_back(Vector2(sim->gameObject->transform->position.x + (rand() % 30) -15, sim->gameObject->transform->position.z + (rand() % 30) - 15));
 		sim->stateMachine.ChangeState(MoveState::Instance());
 		return true;
 	case Msg_Sleep:
+		Debug::Log("Sleep 메시지 도착\n");
+		Debug::Log("Target 리셋\n");
+		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
-		sim->path.clear();
 
+		Debug::Log("Target 추가\n");
 		sim->targetPos.push_back(Vector2(sim->home->transform->position.x, sim->home->transform->position.z));
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(SleepState::Instance());
@@ -49,6 +53,19 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		sim->stateMachine.ChangeState();
 		return true;
 	case Msg_Build:
+	{
+		Debug::Log("Build 메시지 도착\n");
+		Debug::Log("Target 리셋\n");
+		sim->targetPos.clear();
+		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
+
+		Debug::Log("Target 추가\n");
+		sim->targetPos.push_back(info->pos);
+		sim->stateMachine.PushState(MoveState::Instance());
+		sim->stateMachine.PushState(BuildState::Instance());
+
+		sim->stateMachine.ChangeState();
+	}
 		return true;
 	}
 	return false;
@@ -80,6 +97,7 @@ void MoveState::Execute(Sim* sim)
 		else
 			sim->stateMachine.ChangeState(IdleState::Instance());
 
+		Debug::Log("Target 제거\n");
 		sim->targetPos.pop_front();
 		return;
 	}
@@ -106,21 +124,34 @@ bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
 	{
 	case Msg_Move:
 		return true;
-	case Msg_Build:
-		return true;
 	case Msg_Sleep:
+		Debug::Log("Sleep 메시지 도착\n");
+		Debug::Log("Target 리셋\n");
+		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
 		sim->path.clear();
 
 		Vector2 dest;
 		dest.x = sim->home->transform->position.x;
 		dest.y = sim->home->transform->position.z;
+		Debug::Log("Target 추가\n");
 		sim->targetPos.push_back(dest);
 
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(SleepState::Instance());
 
 		sim->stateMachine.ChangeState();
+		return true;
+	case Msg_Build:
+	{
+		Debug::Log("Build 메시지 도착\n");
+		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
+
+		Debug::Log("Target 추가\n");
+		sim->targetPos.push_back(info->pos);
+		sim->stateMachine.PushState(MoveState::Instance());
+		sim->stateMachine.PushState(BuildState::Instance());
+	}
 		return true;
 	}
 	return false;
@@ -158,14 +189,22 @@ bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
 	case Msg_Move:
 		return true;
 	case Msg_Build:
+	{
+		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
+
+		sim->targetPos.push_back(info->pos);
+		sim->stateMachine.PushState(MoveState::Instance());
+		sim->stateMachine.PushState(BuildState::Instance());
+	}
 		return true;
 	case Msg_WakeUp:
-		Vector2 dest;
-		dest.x = sim->gameObject->transform->position.x - (rand() % 10 - 5);
-		dest.y = sim->gameObject->transform->position.z - (rand() % 10 - 5);
-
-		sim->targetPos.push_back(dest);
-		sim->stateMachine.ChangeState(IdleState::Instance());
+		if (sim->stateMachine.HaveNextState())
+			sim->stateMachine.ChangeState();
+		else
+		{
+			sim->targetPos.push_back(Vector2(sim->gameObject->transform->position.x - (rand() % 10 - 5), sim->gameObject->transform->position.z - (rand() % 10 - 5)));
+			sim->stateMachine.ChangeState(IdleState::Instance());
+		}
 		return true;
 	}
 	return false;
@@ -184,17 +223,46 @@ BuildState* BuildState::Instance()
 
 void BuildState::Enter(Sim* sim)
 {
+	Debug::Log("Build Enter\n");
+
 };
 
 void BuildState::Execute(Sim* sim)
 {
+	// 건물 짓고 바로 다음 상태로 전이
+	GameObject* building = Scene::scene->Duplicate(sim->prefab);
+	building->transform->position = sim->gameObject->transform->position;
+	if (sim->stateMachine.HaveNextState())
+		sim->stateMachine.ChangeState();
+	else
+		sim->stateMachine.ChangeState(IdleState::Instance());
 };
 
 void BuildState::Exit(Sim* sim)
 {
+	Debug::Log("Build Leave\n");
 };
 
 bool BuildState::OnMessage(Sim* sim, const Telegram& telegram)
 {
+	switch (telegram.msg)
+	{
+	case Msg_Sleep:
+		Debug::Log("Sleep 메시지 도착\n");
+		//sim->stateMachine.ClearStack();
+		//sim->targetPos.clear();
+		//sim->path.clear();
+
+		Vector2 dest;
+		dest.x = sim->home->transform->position.x;
+		dest.y = sim->home->transform->position.z;
+		sim->targetPos.push_back(dest);
+
+		sim->stateMachine.PushState(MoveState::Instance());
+		sim->stateMachine.PushState(SleepState::Instance());
+
+		sim->stateMachine.ChangeState();
+		return true;
+	}
 	return false;
 };

@@ -10,6 +10,8 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	GameObject* prefab{ nullptr };
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
+	static BuildingBuilder* buildingBuilder;
+
 	Terrain* terrain{ nullptr };
 	float distance;
 
@@ -24,6 +26,7 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
+		buildingBuilder = this;
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
@@ -107,6 +110,12 @@ public:
 		data.mesh = mesh;
 		data.materials = materials;
 		return data;
+	}
+
+	void build(Vector3 position)
+	{
+		prefab->transform->position = position;
+		prefab = nullptr;
 	}
 
 	void exitBuildMode()

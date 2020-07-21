@@ -4,6 +4,7 @@
 BuildManager* BuildManager::buildManager{ nullptr };
 ButtonManager* ButtonManager::buttonManager{ nullptr };
 GameLoader* GameLoader::gameLoader{ nullptr };
+BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
 
 GameObject* HostScene::CreateTextButton()
 {
@@ -205,7 +206,6 @@ void HostScene::BuildObjects()
 		particleSystemObjectSmoke->layer = (int)RenderLayer::Particle;
 		BuildManager::buildManager->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
 	}
-
 
 	auto menuSceneButton = CreateImage();
 	{

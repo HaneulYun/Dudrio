@@ -75,6 +75,8 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	case S2C_CONSTRUCT:
 	{
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
+		BuildingBuilder::buildingBuilder->enterBuildMode(0, 0);
+		BuildingBuilder::buildingBuilder->build({ my_packet->b_inform.xPos, my_packet->b_inform.yPos, my_packet->b_inform.zPos });
 		Builder::builder->BuildNewBuilding(my_packet->b_inform);
 	}
 	break;

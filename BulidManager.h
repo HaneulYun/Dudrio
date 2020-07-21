@@ -244,6 +244,8 @@ public:
 			if (prefabType == type) return;
 		}
 
+		scaleSize = { 1.0f };
+
 		switch (type)
 		{
 		case BuildingType::Well_01:

@@ -118,14 +118,14 @@ void TestScene::BuildObjects()
 
 	GameObject* manager = CreateEmpty();
 	{
-		BuildManager* buildManager = manager->AddComponent<BuildManager>();
-		buildManager->terrain = terrain;
-		buildManager->heightMap = &terrainData->terrainData;
-		buildManager->terrainMesh = terrainData->terrainData.heightmapTexture;
-		BuildManager::buildManager = buildManager;
+		manager->AddComponent<BuildingBuilder>();
+		//BuildManager* buildManager = manager->AddComponent<BuildManager>();
+		//buildManager->terrain = terrain;
+		//buildManager->heightMap = &terrainData->terrainData;
+		//buildManager->terrainMesh = terrainData->terrainData.heightmapTexture;
+		//BuildManager::buildManager = buildManager;
 
 		AIManager::Instance = manager->AddComponent<AIManager>();
-
 	}
 
 	GameObject* pref = CreateEmptyPrefab();

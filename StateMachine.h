@@ -5,7 +5,7 @@ class StateMachine
 {
 private:
 	entity* owner;
-	deque<State<entity>*> stateStack;
+	std::deque<State<entity>*> stateStack;
 
 public:
 	StateMachine(entity* owner) : owner(owner) {}

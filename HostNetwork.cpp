@@ -14,8 +14,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
 
-		for (auto& p : BuildManager::buildManager->buildings)
-			send_construct_packet(p.first);
+		//for (auto& p : BuildManager::buildManager->buildings)
+		//	send_construct_packet(p.first);
 	}
 	break;
 

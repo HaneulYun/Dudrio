@@ -10,7 +10,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static AIManager* Instance;
 
-	map<int, Sim*> sims;
+	std::map<int, Sim*> sims;
 	std::vector<Village*> villages;
 
 private:

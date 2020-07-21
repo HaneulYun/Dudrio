@@ -7,11 +7,7 @@ public:
 	HostScene() : Scene() {}
 	~HostScene() {}
 
-
 	virtual void BuildObjects();
-
-	GameObject* CreateTextButton();
-	GameObject* CreateButtonList();
 
 	void LoadTextureAsset()
 	{
@@ -24,6 +20,7 @@ public:
 		ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
 		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
 		ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
+		ASSET AddTexture("TreeTrunks", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeTrunks_D.dds");
 		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 		ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
 		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
@@ -46,6 +43,7 @@ public:
 		ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
 		ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
+		ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
 	}
 
 	void LoadMeshAsset()
@@ -110,51 +108,77 @@ public:
 	void LoadPrefab()
 	{
 		{
-			float scaleSize = 0.01;
 			auto prefab = CreateEmptyPrefab();
-			//prefab->AddComponent<Building>();
 			auto collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 1.5f, 1.8f, 1.5f };
+			collider->obb = true;
+			Vector3 boundMin{ FLT_MAX }, boundMax{ -FLT_MAX }, center, extents;
+			BoundingBox bb0, bb1, bb2;
+			{
+				auto child = MakePrefab(ASSET MESH("SM_Well"), ASSET MATERIAL("material_03"), prefab);
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+				bb0 = ASSET MESH("SM_Well")->Bounds;
+				center.xmf3 = bb0.Center; extents.xmf3 = bb0.Extents;
+				boundMin = Vector3::Min(boundMin, center - extents);
+				boundMax = Vector3::Max(boundMax, center + extents);
+			}
+			{
+				auto child = MakePrefab(ASSET MESH("SM_Well_Extra02"), ASSET MATERIAL("material_03"), prefab);
+				child->transform->position = { 0.0f,1.5f,0.0f };
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+				bb1 = ASSET MESH("SM_Well_Extra02")->Bounds;
+				center.xmf3 = bb1.Center; extents.xmf3 = bb1.Extents;
+				boundMin = Vector3::Min(boundMin, center - extents);
+				boundMax = Vector3::Max(boundMax, center + extents);
+			}
+			{
+				auto child = MakePrefab(ASSET MESH("SM_Well_Extra03"), ASSET MATERIAL("material_03"), prefab);
+				child->transform->position = { 0.0f,1.0f,0.0f };
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+				bb2 = ASSET MESH("SM_Well_Extra03")->Bounds;
+				center.xmf3 = bb2.Center; extents.xmf3 = bb2.Extents;
+				boundMin = Vector3::Min(boundMin, center - extents);
+				boundMax = Vector3::Max(boundMax, center + extents);
+			}
+			collider->center = (boundMax + boundMin) / 2;
+			collider->extents = (boundMax - boundMin) / 2;
+
+			ASSET AddPrefab("Well", std::make_unique<GameObject>(prefab));
+		}
+
+		{
+			auto prefab = CreateEmptyPrefab();
+			auto collider = prefab->AddComponent<BoxCollider>();
+			collider->extents = { 2.5f, 4.5f, 2.5f };
 			collider->center.y += collider->extents.y * 0.5f;
 			collider->obb = true;
 			{
-				auto* child = prefab->AddChild();
-				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well");
-				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
-				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
-				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+				auto child = MakePrefab(ASSET MESH("SM_House_Var02"), ASSET MATERIAL("house02"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
 			{
-				auto* child = prefab->AddChild();
-				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well_Extra02");
-				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
-				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
-				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->position = { 0.0f,1.5f,0.0f };
-				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
+				auto child = MakePrefab(ASSET MESH("SM_House_Var02_Extra"), ASSET MATERIAL("house02"), prefab);
+				child->AddComponent<RotatingBehavior>()->speedRotating = -10.0f;
+				child->transform->position = { 0.25f,6.0f,2.5f };
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
-			{
-				auto* child = prefab->AddChild();
-				child->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_Well_Extra03");
-				child->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("material_03"));
-				child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
-				child->layer = (int)RenderLayer::BuildPreview;
-				child->transform->position = { 0.0f,1.0f,0.0f };
-				child->transform->Scale({ scaleSize, scaleSize, scaleSize });
-				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-			}
-			ASSET AddPrefab("Well", std::make_unique<GameObject>(prefab));
+			ASSET AddPrefab("House01", std::make_unique<GameObject>(prefab));
+		}
+
+		{
+			auto prefab = MakePrefab();
+			auto collider = prefab->AddComponent<BoxCollider>()->obb;
+
+			ASSET AddPrefab("MRC", std::make_unique<GameObject>(prefab));
 		}
 	}
 
-	GameObject* MakePrefab(Mesh* mesh, Material* material)
+	GameObject* MakePrefab(Mesh* mesh = nullptr, Material* material = nullptr, GameObject* parent = nullptr)
 	{
-		auto prefab = CreateEmptyPrefab();
+		auto prefab = parent ? parent->AddChild() : CreateEmptyPrefab();
 		prefab->AddComponent<MeshFilter>()->mesh = mesh;
-		prefab->AddComponent<Renderer>()->materials.push_back(material);
+		auto renderer = prefab->AddComponent<Renderer>();
+		if (material)
+			renderer->materials.push_back(material);
 		return prefab;
 	}
 };

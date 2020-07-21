@@ -54,7 +54,7 @@ public:
 		return node;
 	}
 
-	void FindPath(Vector2 targetPos, Vector2 startPos, deque<Vector2>& path)
+	void FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector2>& path)
 	{
 		const int height = terrainData->heightmapHeight;
 		const int width = terrainData->heightmapWidth;
@@ -62,8 +62,8 @@ public:
 		const int halfX = 0;
 		const int halfZ = 0;
 
-		vector<Node> openList;
-		vector<Node> closedList;
+		std::vector<Node> openList;
+		std::vector<Node> closedList;
 		closedList.reserve(400);
 
 		Node start;
@@ -99,7 +99,7 @@ public:
 			}
 
 			// 새로 갈 수 있는 경로를 추가
-			vector<Node> childs;
+			std::vector<Node> childs;
 			Node& parent = closedList.back();
 			if (currentNode.posX > -halfX)
 			{

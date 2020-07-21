@@ -13,8 +13,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	StateMachine<Sim> stateMachine;
 
-	deque<Vector2> targetPos;
-	deque<Vector2> path;
+	std::deque<Vector2> targetPos;
+	std::deque<Vector2> path;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<Sim>;

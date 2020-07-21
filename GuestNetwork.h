@@ -55,8 +55,9 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_move_packet(float xVel, float zVel, float rotAngle, float run_level);
 	void send_move_start_packet(float xVel, float zVel, float rotAngle, float run_level);
+	void send_move_packet(float xVel, float zVel, float rotAngle, float run_level);
+	void send_chat_packet(wchar_t msg[]);
 
 	void Login();
 

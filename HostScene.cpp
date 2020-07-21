@@ -399,6 +399,10 @@ void HostScene::BuildObjects()
 		HostNetwork* hn = network->AddComponent<HostNetwork>();
 		hn->simsPrefab = SimsPrefab;
 		HostNetwork::network = hn;
+		hn->terrainSize = TerrainSize;
+		hn->frequency = frequency;
+		hn->octaves = octaves;
+		hn->seed = seed;
 	}
 
 	auto ServerButton = CreateImage();

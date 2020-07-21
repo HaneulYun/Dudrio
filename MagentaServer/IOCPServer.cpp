@@ -33,12 +33,21 @@ void IOCPServer::init_server()
 
 void IOCPServer::start_server()
 {
+	init_clients();
+
 	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);// *2 + 1);
 
 	create_worker_threads();
 	create_accept_threads();
 
 	cout << "Start_Server Complete" << endl;
+}
+
+void IOCPServer::init_clients()
+{
+	for (auto& cl : g_clients)
+		delete cl.second;
+	g_clients.clear();
 }
 
 // thread ---------------------------------
@@ -125,7 +134,8 @@ void IOCPServer::accept_thread_loop()
 
 		for (auto& cl : g_clients) {
 			if (idx != cl.first) {
-				g_clients[idx] = new Clients(idx);
+				cout << "New idx " << idx << " is generated" << endl;
+				g_clients[idx] = new Client(idx);
 				g_clients[idx]->m_status = ST_ALLOC;
 				flag = true;
 				break;
@@ -140,11 +150,13 @@ void IOCPServer::accept_thread_loop()
 			continue;
 
 		if (g_clients.empty()){
-			g_clients[idx] = new Clients(idx);
+			cout << "New idx " << idx << " is generated" << endl;
+			g_clients[idx] = new Client(idx);
 			flag = true;
 		}
 		else if (idx == g_clients.size() && !flag){
-			g_clients[idx] = new Clients(idx);
+			cout << "New idx " << idx << " is generated" << endl;
+			g_clients[idx] = new Client(idx);
 			flag = true;
 		}
 
@@ -243,6 +255,13 @@ void IOCPServer::send_login_ok_packet(int user_id)
 	p.xVel = g_clients[user_id]->m_xVel;
 	p.zVel = g_clients[user_id]->m_zVel;
 	p.rotAngle = g_clients[user_id]->m_rotAngle;
+	
+	if (terrain_data != nullptr) {
+		p.frequency = terrain_data->frequency;
+		p.terrainSize = terrain_data->terrain_size;
+		p.octaves = terrain_data->octaves;
+		p.seed = terrain_data->seed;
+	}
 
 	send_packet(user_id, &p);
 }
@@ -274,6 +293,12 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 	else
 		p.o_type = O_GUEST;
 
+	if (user_id != contents.host_id && o_id != contents.host_id) {
+		g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->view_list.insert(o_id);
+		g_clients[user_id]->m_cl.LeaveWriteLock();
+	}
+
 	send_packet(user_id, &p);
 }
 
@@ -283,6 +308,12 @@ void IOCPServer::send_leave_packet(int user_id, int o_id)
 	p.id = o_id;
 	p.size = sizeof(p);
 	p.type = S2C_LEAVE;
+
+	if (user_id != contents.host_id && o_id != contents.host_id) {
+		g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->view_list.erase(o_id);
+		g_clients[user_id]->m_cl.LeaveWriteLock();
+	}
 
 	send_packet(user_id, &p);
 }

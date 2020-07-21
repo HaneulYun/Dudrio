@@ -27,6 +27,11 @@ public:
 	bool tryConnect{ false };
 	bool pressButton{ false };
 
+	float terrainSize;
+	float frequency;
+	int octaves;
+	int seed;
+
 	static HostNetwork* network;
 
 public:

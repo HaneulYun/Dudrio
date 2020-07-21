@@ -2,14 +2,14 @@
 
 constexpr int MAX_ID_LEN = 50;
 constexpr int MAX_STR_LEN = 255;
-constexpr int MAX_USER = 10;
+constexpr int MAX_USER = 10000;
 
-#define WORLD_WIDTH		8
-#define WORLD_HEIGHT	8
+#define WORLD_WIDTH		1000
+#define WORLD_HEIGHT	1000
 
 #define SERVER_PORT		9000
 
-#define C2S_LOGIN			1	// Guest to Server
+#define C2S_LOGIN_GUEST		1	// Guest to Server
 #define C2S_LOGIN_HOST		2	// Host to Server
 #define C2S_MOVE_START		3	// Guest to Server
 #define C2S_MOVE			4	// Guest to Server
@@ -19,7 +19,7 @@ constexpr int MAX_USER = 10;
 #define C2S_CHAT			8
 
 #define S2C_LOGIN_OK		1
-#define S2C_LOGIN_FAIL		2	
+#define S2C_LOGIN_FAIL		2
 #define S2C_ENTER			3
 #define S2C_LEAVE			4
 #define S2C_MOVE			5
@@ -74,6 +74,10 @@ struct sc_packet_login_ok {
 	float xPos, zPos;
 	float xVel, zVel;
 	float rotAngle;
+	float terrainSize;
+	float frequency;
+	int octaves;
+	int seed;
 };
 
 struct sc_packet_login_fail {
@@ -181,10 +185,20 @@ struct sc_packet_leave {
 	int id;
 };
 
-struct cs_packet_login {
+struct cs_packet_login_guest {
 	char	size;
 	char	type;
 	char	name[MAX_ID_LEN];
+};
+
+struct cs_packet_login_host {
+	char	size;
+	char	type;
+	char	name[MAX_ID_LEN];
+	float	terrainSize;
+	float	frequency;
+	int		octaves;
+	int		seed;
 };
 
 struct cs_packet_logout {

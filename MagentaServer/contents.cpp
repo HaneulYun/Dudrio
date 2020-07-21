@@ -11,10 +11,26 @@ Contents::~Contents()
 	stop_contents();
 }
 
+void Contents::init_contents()
+{
+	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
+		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
+			g_sector_buildings[i][j].clear();
+
+	for (auto& b : g_buildings)
+		delete b.second;
+	g_buildings.clear();
+
+	if (terrain_data != nullptr)
+		delete terrain_data;
+}
+
 void Contents::start_contents()
 {
 	logic_run = true;
 	logic_thread = thread([this]() { logic_thread_loop(); });
+
+	init_contents();
 }
 
 void Contents::stop_contents()
@@ -26,22 +42,24 @@ void Contents::stop_contents()
 
 void Contents::logic_thread_loop()
 {
-	while (logic_run){
-		if (!recvQueue.empty()){
+	while (logic_run) {
+		logic_lock.EnterReadLock();
+		if (!recvQueue.empty()) {
+			logic_lock.LeaveReadLock();
 			logic_lock.EnterWriteLock();
 			auto buf = recvQueue.front();
 			recvQueue.pop();
 			logic_lock.LeaveWriteLock();
 
-			switch (buf.second[1]){
-			case C2S_LOGIN:{
-				if (host_id != -1){
-					cout << "The Guest " <<  buf.first << "is connected" << endl;
-					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
+			switch (buf.second[1]) {
+			case C2S_LOGIN_GUEST: {
+				if (host_id != -1) {
+					cout << "The Guest " << buf.first << " is connected" << endl;
+					cs_packet_login_guest* packet = reinterpret_cast<cs_packet_login_guest*>(buf.second);
 					g_clients[buf.first]->is_host = false;
 					g_clients[buf.first]->enter_game(packet->name);
 				}
-				else{
+				else {
 					cout << "Host does not exist" << endl;
 					disconnect(buf.first);
 				}
@@ -49,14 +67,33 @@ void Contents::logic_thread_loop()
 			break;
 			case C2S_LOGIN_HOST:
 			{
-				if (host_id == -1){
-					cout << "The host is connected" << endl;
-					cs_packet_login* packet = reinterpret_cast<cs_packet_login*>(buf.second);
+				if (host_id == -1) {
+					cout << "The host " << buf.first << " is connected" << endl;
+					cs_packet_login_host* packet = reinterpret_cast<cs_packet_login_host*>(buf.second);
 					host_id = buf.first;
 					g_clients[buf.first]->is_host = true;
+
+					TerrainGenerator terrainGenerator(packet->terrainSize, packet->terrainSize);
+					string fileName = terrainGenerator.createHeightMap(packet->frequency, packet->octaves, packet->seed, (char*)"square");
+					terrain_data = new Terrain;
+					terrain_data->frequency = packet->frequency;
+					terrain_data->terrain_size = packet->terrainSize;
+					terrain_data->octaves = packet->octaves;
+					terrain_data->seed = packet->seed;
+
+					wstring name;
+					name.assign(fileName.begin(), fileName.end());
+					terrain_data->AlphamapTextureName = name.c_str();
+					terrain_data->heightmapHeight = terrain_data->terrain_size;
+					terrain_data->heightmapWidth = terrain_data->terrain_size;
+					terrain_data->x_size = terrain_data->terrain_size;
+					terrain_data->y_size = 255;
+					terrain_data->z_size = terrain_data->terrain_size;
+					terrain_data->Load();
+
 					g_clients[buf.first]->enter_game(packet->name);
 				}
-				else{
+				else {
 					cout << "Host is already exist" << endl;
 					disconnect(buf.first);
 				}
@@ -96,6 +133,11 @@ void Contents::logic_thread_loop()
 					destruct_all(buf.first);
 			}
 			break;
+			case C2S_CHAT:
+			{
+
+			}
+			break;
 			default:
 				cout << "Unknown Packet Type Error!\n";
 				DebugBreak();
@@ -104,15 +146,17 @@ void Contents::logic_thread_loop()
 			}
 		}
 		else
-			this_thread::sleep_for(std::chrono::milliseconds(2));
+			logic_lock.LeaveReadLock();
 	}
 }
 
 void Contents::disconnect(int user_id)
 {
-	g_clients[user_id]->m_status = ST_ALLOC;
 	cout << "Disconnect " << user_id << endl;
+
+	g_clients[user_id]->erase_client_in_sector();
 	iocp.send_leave_packet(user_id, user_id);
+	g_clients[user_id]->m_status = ST_ALLOC;
 	closesocket(g_clients[user_id]->m_s);
 
 	delete g_clients[user_id];
@@ -135,14 +179,18 @@ void Contents::disconnect(int user_id)
 			delete cl.second;
 		}
 		host_id = -1;
-		buildings.clear();
+
 		g_clients.clear();
+		init_contents();
 	}
 }
 
 void Contents::do_construct(int user_id, BuildingInform b_inform)
 {
-	buildings.emplace_back(b_inform);
+	g_buildings[b_inform] = new Building(b_inform);
+	pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
+	g_sector_buildings[b_sectnum.second][b_sectnum.first].insert(g_buildings[b_inform]);
+	
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;
@@ -153,13 +201,11 @@ void Contents::do_construct(int user_id, BuildingInform b_inform)
 
 void Contents::do_destruct(int user_id, BuildingInform b_inform)
 {
-	for (auto& b : buildings){
-		if (b == b_inform){
-			b = buildings.back();
-			buildings.pop_back();
-			break;
-		}
-	}
+	pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
+	g_sector_buildings[b_sectnum.second][b_sectnum.first].erase(g_buildings[b_inform]);
+	
+	delete g_buildings[b_inform];
+	g_buildings.erase(b_inform);
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -171,7 +217,8 @@ void Contents::do_destruct(int user_id, BuildingInform b_inform)
 
 void Contents::destruct_all(int user_id)
 {
-	buildings.clear();
+	init_contents();
+
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;
@@ -185,4 +232,12 @@ void Contents::add_packet(int user_id, char* buf)
 	logic_lock.EnterWriteLock();
 	recvQueue.push(make_pair(user_id, buf));
 	logic_lock.LeaveWriteLock();
+}
+
+pair<int, int> Contents::calculate_sector_num(float xPos, float zPos)
+{
+	int x_sectnum = floor(xPos / SECTOR_WIDTH);
+	int z_sectnum = floor(zPos / SECTOR_WIDTH);
+	
+	return make_pair(x_sectnum, z_sectnum);
 }

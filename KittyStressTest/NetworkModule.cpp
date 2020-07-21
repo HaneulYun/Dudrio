@@ -47,6 +47,7 @@ struct CLIENT {
 	int id;
 	float x;
 	float z;
+	atomic_bool move_start = false;
 	atomic_bool connected;
 
 	SOCKET client_socket;
@@ -137,7 +138,6 @@ void ProcessPacket(int ci, unsigned char packet[])
 		g_clients[my_id].id = login_packet->id;
 		g_clients[my_id].x = login_packet->xPos;
 		g_clients[my_id].z = login_packet->zPos;
-
 		//cs_packet_teleport t_packet;
 		//t_packet.size = sizeof(t_packet);
 		//t_packet.type = CS_TELEPORT;
@@ -351,23 +351,45 @@ void Test_Thread()
 			if (false == g_clients[i].connected) continue;
 			if (g_clients[i].last_move_time + 1s > high_resolution_clock::now()) continue;
 			g_clients[i].last_move_time = high_resolution_clock::now();
-			cs_packet_move my_packet;
-			my_packet.size = sizeof(my_packet);
-			my_packet.type = C2S_MOVE;
-			my_packet.rotAngle = 0;
-			my_packet.run_level = 2.0f;
-			switch (rand() % 8) {
-			case 0: my_packet.xVel = 0.0f; my_packet.zVel = 1.0f; break;
-			case 1: my_packet.xVel = 0.0f; my_packet.zVel = -1.0f; break;
-			case 2: my_packet.xVel = 1.0f; my_packet.zVel = 0.0f; break;
-			case 3: my_packet.xVel = -1.0f; my_packet.zVel = 0.0f; break;
-			case 4: my_packet.xVel = 1.0f; my_packet.zVel = 1.0f; break;
-			case 5: my_packet.xVel = 1.0f; my_packet.zVel = -1.0f; break;
-			case 6: my_packet.xVel = -1.0f; my_packet.zVel = 1.0f; break;
-			case 7: my_packet.xVel = -1.0f; my_packet.zVel = -1.0f; break;
+			if (g_clients[i].move_start) {
+				cs_packet_move my_packet;
+				my_packet.size = sizeof(my_packet);
+				my_packet.type = C2S_MOVE;
+				my_packet.rotAngle = 0;
+				my_packet.run_level = 2.0f;
+				switch (rand() % 8) {
+				case 0: my_packet.xVel = 0.0f; my_packet.zVel = 1.0f; break;
+				case 1: my_packet.xVel = 0.0f; my_packet.zVel = -1.0f; break;
+				case 2: my_packet.xVel = 1.0f; my_packet.zVel = 0.0f; break;
+				case 3: my_packet.xVel = -1.0f; my_packet.zVel = 0.0f; break;
+				case 4: my_packet.xVel = 1.0f; my_packet.zVel = 1.0f; break;
+				case 5: my_packet.xVel = 1.0f; my_packet.zVel = -1.0f; break;
+				case 6: my_packet.xVel = -1.0f; my_packet.zVel = 1.0f; break;
+				case 7: my_packet.xVel = -1.0f; my_packet.zVel = -1.0f; break;
+				}
+				my_packet.move_time = static_cast<unsigned>(duration_cast<milliseconds>(high_resolution_clock::now().time_since_epoch()).count());
+				SendPacket(i, &my_packet);
 			}
-			my_packet.move_time = static_cast<unsigned>(duration_cast<milliseconds>(high_resolution_clock::now().time_since_epoch()).count());
-			SendPacket(i, &my_packet);
+			else {
+				cs_packet_move_start my_packet;
+				my_packet.size = sizeof(my_packet);
+				my_packet.type = C2S_MOVE_START;
+				my_packet.rotAngle = 0;
+				my_packet.run_level = 2.0f;
+				switch (rand() % 8) {
+				case 0: my_packet.xVel = 0.0f; my_packet.zVel = 1.0f; break;
+				case 1: my_packet.xVel = 0.0f; my_packet.zVel = -1.0f; break;
+				case 2: my_packet.xVel = 1.0f; my_packet.zVel = 0.0f; break;
+				case 3: my_packet.xVel = -1.0f; my_packet.zVel = 0.0f; break;
+				case 4: my_packet.xVel = 1.0f; my_packet.zVel = 1.0f; break;
+				case 5: my_packet.xVel = 1.0f; my_packet.zVel = -1.0f; break;
+				case 6: my_packet.xVel = -1.0f; my_packet.zVel = 1.0f; break;
+				case 7: my_packet.xVel = -1.0f; my_packet.zVel = -1.0f; break;
+				}
+				my_packet.move_time = static_cast<unsigned>(duration_cast<milliseconds>(high_resolution_clock::now().time_since_epoch()).count());
+				SendPacket(i, &my_packet);
+				g_clients[i].move_start = true;
+			}
 		}
 	}
 }

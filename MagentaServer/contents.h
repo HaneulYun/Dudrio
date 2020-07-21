@@ -6,7 +6,8 @@ class Contents
 private:
 	queue<pair<int, char*>> recvQueue;
 	thread		logic_thread;
-	RWLock		logic_lock;
+	//RWLock		logic_lock;
+	mutex		logic_lock;
 	bool		logic_run;
 
 public:
@@ -25,6 +26,8 @@ public:
 
 	void add_packet(int user_id, char* buf);
 
+	void enter_game(int user_id, char name[]);
+	void do_move(int user_id, float xVel, float zVel, float rotAngle, float run_level);
 	void disconnect(int user_id);
 
 	void do_construct(int user_id, BuildingInform b_inform);

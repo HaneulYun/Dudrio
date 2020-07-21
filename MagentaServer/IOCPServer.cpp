@@ -98,6 +98,9 @@ void IOCPServer::worker_thread_loop()
 		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
 		int user_id = static_cast<int>(key);
 
+		if (g_clients.count(user_id) == 0)
+			cout << "@@@@@씨 발 ㅋㅋ@@@@@" << endl;
+
 		switch (exover->op) {
 		case OP_RECV:
 			if (0 == io_byte)
@@ -130,14 +133,12 @@ void IOCPServer::accept_thread_loop()
 	{
 		// 접속 받을 유저 소켓을 생성 한다.
 		int idx = 0;
-		bool flag = false;
 
 		while (idx < MAX_USER) {
 			if (g_clients.count(idx) == 0) {
 				cout << "New idx " << idx << " is generated" << endl;
 				g_clients[idx] = new Client(idx);
 				g_clients[idx]->m_status = ST_ALLOC;
-				flag = true;
 				break;
 			}
 			else {
@@ -220,7 +221,7 @@ void IOCPServer::send_packet(int user_id, void* p)
 {
 	unsigned char* buf = reinterpret_cast<unsigned char*>(p);
 
-	//CLIENT& u = g_clients[user_id];
+	Client& u = *g_clients[user_id];
 
 	EXOVER* exover = new EXOVER;
 	exover->op = OP_SEND;
@@ -228,8 +229,9 @@ void IOCPServer::send_packet(int user_id, void* p)
 	exover->wsabuf.buf = exover->io_buf;
 	exover->wsabuf.len = buf[0];
 	memcpy(exover->io_buf, buf, buf[0]);
+
 	// IpBuffers 항목에 u의 wsabuf은 이미 Recv에서 쓰고 있기 때문에 사용하면 안됨
-	WSASend(g_clients[user_id]->m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
+	WSASend(u.m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
 }
 
 void IOCPServer::send_login_ok_packet(int user_id)
@@ -283,9 +285,11 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
-		g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->m_cl.lock();
+		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.insert(o_id);
-		g_clients[user_id]->m_cl.LeaveWriteLock();
+		//g_clients[user_id]->m_cl.LeaveWriteLock();
+		g_clients[user_id]->m_cl.unlock();
 	}
 
 	send_packet(user_id, &p);
@@ -300,9 +304,11 @@ void IOCPServer::send_leave_packet(int user_id, int o_id)
 
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
-		g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->m_cl.lock();
+		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.erase(o_id);
-		g_clients[user_id]->m_cl.LeaveWriteLock();
+		//g_clients[user_id]->m_cl.LeaveWriteLock();
+		g_clients[user_id]->m_cl.unlock();
 	}
 
 	send_packet(user_id, &p);

@@ -28,7 +28,7 @@ public:
 	}
 
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
-	BuildingSelector* addBuildingType(std::wstring name, float x, float y)
+	BuildingSelector* addBuildingType(BuildingBuilder::BuildingType type, std::wstring name, float x, float y)
 	{
 		auto buildingTypeButton = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
 		auto buildingSelectorObject = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
@@ -51,19 +51,20 @@ public:
 			}
 			buildingTypeButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
-					GameObject* object = reinterpret_cast<GameObject*>(ptr);
-
+					auto object = reinterpret_cast<GameObject*>(ptr);
 					object->parent->GetComponent<BuildingTypeSelector>()->InactivateChildren(object);
-
 					object->SetActive(!object->active);
+					object->GetComponent<BuildingSelector>()->setBuildingButtonName();
 				}, buildingSelectorObject);
 		}
 
 		{
-			buildingSelectorObject->GetComponent<RectTransform>()->setPosAndSize(0, 100, CyanFW::Instance()->GetWidth() - 100, 60);
+			buildingSelectorObject->GetComponent<RectTransform>()->setPosAndSize(0, 100, 510, 60);
 			buildingSelectorObject->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("gray");
 		}
 		auto buildingSelector = buildingSelectorObject->AddComponent<BuildingSelector>();
+		buildingSelector->type = type;
+		buildingSelector->buildingBuilder = builder;
 
 		buildingSelectors.push_back(buildingSelector);
 

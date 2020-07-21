@@ -146,20 +146,17 @@ void HostScene::BuildObjects()
 	}
 
 	{
-		auto ritem = CreateEmpty();
-		ritem->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
-		auto mesh = ritem->AddComponent<MeshFilter>()->mesh = ASSET MESH("Sphere");
-		auto renderer = ritem->AddComponent<Renderer>();
-		for (auto& sm : mesh->DrawArgs)
-			renderer->materials.push_back(ASSET MATERIAL("none"));
-		ritem->layer = (int)RenderLayer::Sky;
+		auto skySphere = CreateEmpty();
+		skySphere->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
+		skySphere->AddComponent<MeshFilter>()->mesh = ASSET MESH("Sphere");
+		skySphere->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
+		skySphere->layer = (int)RenderLayer::Sky;
 	}
 
 	auto SimsPrefab = CreateEmptyPrefab();
 	{
 		auto model = SimsPrefab->AddChild();
 		{
-			model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
 			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
@@ -212,14 +209,9 @@ void HostScene::BuildObjects()
 
 	auto menuSceneButton = CreateImage();
 	{
-		auto rectTransform = menuSceneButton->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 1 };
-		rectTransform->anchorMax = { 0, 1 };
-		rectTransform->pivot = { 0, 1 };
-		rectTransform->posX = 10;
-		rectTransform->posY = -10;
-		rectTransform->width = 150;
-		rectTransform->height = 30;
+		auto rt = menuSceneButton->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 1);
+		rt->setPosAndSize(10, -10, 150, 30);
 
 		menuSceneButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
@@ -239,19 +231,21 @@ void HostScene::BuildObjects()
 		}
 	}
 
-	//auto object = CreateUI();
-	//{
-	//	auto buildingBuilder = object->AddComponent<BuildingBuilder>();
-	//
-	//	auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
-	//	buildingTypeSelector->builder = buildingBuilder;
-	//
-	//	auto buildingType = buildingTypeSelector->addBuildingType(L"랜드\n마크", -80, 0);
-	//	buildingTypeSelector->addBuildingType(L"주거\n건물", -40, 0);
-	//	buildingTypeSelector->addBuildingType(L"테마\n건물", 0, 0);
-	//	buildingTypeSelector->addBuildingType(L"조경", 40, 0);
-	//	buildingTypeSelector->addBuildingType(L"소품", 80, 0);
-	//}
+	auto object = CreateUI();
+	{
+		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
+		buildingBuilder->serializeBuildings();
+		buildingBuilder->terrain = terrainData;
+	
+		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
+		buildingTypeSelector->builder = buildingBuilder;
+	
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, L"랜드\n마크", -80, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::House, L"주거\n건물", -40, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, L"테마\n건물", 0, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landscape, L"조경", 40, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, L"소품", 80, 0);
+	}
 
 	GameObject* buttons_BuildingType[6];
 
@@ -365,14 +359,9 @@ void HostScene::BuildObjects()
 
 	GameObject* button_previouspage = CreateImage();
 	{
-		auto rectTransform = button_previouspage->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 0 };
-		rectTransform->anchorMax = { 0, 0 };
-		rectTransform->pivot = { 0, 0 };
-		rectTransform->posX = 10;
-		rectTransform->posY = 60;
-		rectTransform->width = 20;
-		rectTransform->height = 20;
+		auto rt = button_previouspage->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 0);
+		rt->setPosAndSize(10, 60, 20, 20);
 
 		button_previouspage->AddComponent<Button>()->AddEvent([](void*) { ButtonManager::buttonManager->PreviousPage(); });
 		button_previouspage->SetActive(false);
@@ -380,14 +369,9 @@ void HostScene::BuildObjects()
 	}
 	GameObject* button_nextpage = CreateImage();
 	{
-		auto rectTransform = button_nextpage->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 0 };
-		rectTransform->anchorMax = { 0, 0 };
-		rectTransform->pivot = { 0, 0 };
-		rectTransform->posX = CyanFW::Instance()->GetWidth() - 30;
-		rectTransform->posY = 60;
-		rectTransform->width = 20;
-		rectTransform->height = 20;
+		auto rt = button_nextpage->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 0);
+		rt->setPosAndSize(CyanFW::Instance()->GetWidth() - 30, 60, 20, 20);
 
 		button_nextpage->AddComponent<Button>()->AddEvent([](void*) { ButtonManager::buttonManager->NextPage(); });
 		button_nextpage->SetActive(false);
@@ -403,14 +387,9 @@ void HostScene::BuildObjects()
 
 	auto ServerButton = CreateImage();
 	{
-		auto rectTransform = ServerButton->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 1 };
-		rectTransform->anchorMax = { 0, 1 };
-		rectTransform->pivot = { 0, 1 };
-		rectTransform->posX = 1110;
-		rectTransform->posY = -10;
-		rectTransform->width = 80;
-		rectTransform->height = 30;
+		auto rt = ServerButton->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 1);
+		rt->setPosAndSize(1110, -10, 80, 30);
 	
 		ServerButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
@@ -432,14 +411,9 @@ void HostScene::BuildObjects()
 
 	auto LoadButton = CreateImage();
 	{
-		auto rectTransform = LoadButton->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 1 };
-		rectTransform->anchorMax = { 0, 1 };
-		rectTransform->pivot = { 0, 1 };
-		rectTransform->posX = 1110;
-		rectTransform->posY = -50;
-		rectTransform->width = 80;
-		rectTransform->height = 30;
+		auto rt = LoadButton->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 1);
+		rt->setPosAndSize(1110, -50, 80, 30);
 
 		LoadButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
@@ -461,14 +435,9 @@ void HostScene::BuildObjects()
 
 	auto SaveButton = CreateImage();
 	{
-		auto rectTransform = SaveButton->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 1 };
-		rectTransform->anchorMax = { 0, 1 };
-		rectTransform->pivot = { 0, 1 };
-		rectTransform->posX = 1110;
-		rectTransform->posY = -90;
-		rectTransform->width = 80;
-		rectTransform->height = 30;
+		auto rt = SaveButton->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 1);
+		rt->setPosAndSize(1110, -90, 80, 30);
 
 		SaveButton->AddComponent<Button>()->AddEvent(
 			[](void*) {

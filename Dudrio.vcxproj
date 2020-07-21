@@ -175,6 +175,7 @@
     <ClInclude Include="Building.h" />
     <ClInclude Include="Builder.h" />
     <ClInclude Include="BuildingBuilder.h" />
+    <ClInclude Include="BuildingBuilderData.h" />
     <ClInclude Include="BuildingSelector.h" />
     <ClInclude Include="BuildingType.h" />
     <ClInclude Include="BuildingTypeSelector.h" />

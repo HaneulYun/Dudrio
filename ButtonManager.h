@@ -1,5 +1,6 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
+#include "HostScene.h"
 
 enum ButtonType { none = -1, LandMark, House, Theme, landscape, Decoration, Delete };
 

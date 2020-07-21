@@ -14,6 +14,7 @@
 #include "Builder.h"
 
 #include "BuildingType.h"
+#include "BuildingBuilderData.h"
 #include "BuildingBuilder.h"
 #include "BuildingSelector.h"
 #include "BuildingTypeSelector.h"

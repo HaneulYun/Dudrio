@@ -68,7 +68,7 @@ enum class BuildingType
 
 
 struct sc_packet_login_ok {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 	float xPos, zPos;
@@ -93,7 +93,7 @@ struct sc_packet_chat {
 };
 
 struct sc_packet_move {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 	float xPos, zPos;
@@ -145,7 +145,7 @@ static std::istream& operator>>(std::istream& in, BuildingInform& b)
 
 struct sc_packet_construct
 {
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
@@ -153,7 +153,7 @@ struct sc_packet_construct
 
 struct sc_packet_destruct
 {
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
@@ -161,7 +161,7 @@ struct sc_packet_destruct
 
 struct sc_packet_destruct_all
 {
-	char size;
+	unsigned char size;
 	char type;
 };
 
@@ -169,7 +169,7 @@ constexpr unsigned char O_GUEST = 0;
 constexpr unsigned char O_HOST = 1;
 
 struct sc_packet_enter {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 	char name[MAX_ID_LEN];
@@ -180,19 +180,19 @@ struct sc_packet_enter {
 };
 
 struct sc_packet_leave {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 };
 
 struct cs_packet_login_guest {
-	char	size;
+	unsigned char	size;
 	char	type;
 	char	name[MAX_ID_LEN];
 };
 
 struct cs_packet_login_host {
-	char	size;
+	unsigned char	size;
 	char	type;
 	char	name[MAX_ID_LEN];
 	float	terrainSize;
@@ -213,7 +213,7 @@ struct cs_packet_chat {
 };
 
 struct cs_packet_move_start {
-	char size;
+	unsigned char size;
 	char type;
 	float xVel, zVel;
 	float rotAngle;
@@ -221,7 +221,7 @@ struct cs_packet_move_start {
 };
 
 struct cs_packet_move {
-	char size;
+	unsigned char size;
 	char type;
 	float xVel, zVel;
 	float rotAngle;
@@ -229,21 +229,21 @@ struct cs_packet_move {
 };
 
 struct cs_packet_construct{
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
 };
 
 struct cs_packet_destruct{
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
 };
 
 struct cs_packet_destruct_all{
-	char size;
+	unsigned char size;
 	char type;
 };
 #pragma pack (pop)

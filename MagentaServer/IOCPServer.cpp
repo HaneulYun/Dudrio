@@ -132,33 +132,21 @@ void IOCPServer::accept_thread_loop()
 		int idx = 0;
 		bool flag = false;
 
-		for (auto& cl : g_clients) {
-			if (idx != cl.first) {
+		while (idx < MAX_USER) {
+			if (g_clients.count(idx) == 0) {
 				cout << "New idx " << idx << " is generated" << endl;
 				g_clients[idx] = new Client(idx);
 				g_clients[idx]->m_status = ST_ALLOC;
 				flag = true;
 				break;
 			}
-			else
+			else {
 				idx++;
-			if (idx >= MAX_USER)
-				break;
+			}
 		}
 
 		if (idx >= MAX_USER)
 			continue;
-
-		if (g_clients.empty()){
-			cout << "New idx " << idx << " is generated" << endl;
-			g_clients[idx] = new Client(idx);
-			flag = true;
-		}
-		else if (idx == g_clients.size() && !flag){
-			cout << "New idx " << idx << " is generated" << endl;
-			g_clients[idx] = new Client(idx);
-			flag = true;
-		}
 
 		ZeroMemory(&g_clients[idx]->m_recv_over.over, sizeof(g_clients[idx]->m_recv_over.over));
 		g_clients[idx]->m_s = WSAAccept(l_socket, reinterpret_cast<sockaddr*>(&client_addr), &client_len, NULL, NULL);
@@ -207,7 +195,7 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 	{
 		// 우리가 처리해야 되는 패킷을 전에 처리해본 적이 없을 때
 		// == 패킷의 시작 부분이 있다
-		if (0 == packet_size)	packet_size = *p;
+		if (0 == packet_size)	packet_size = (unsigned char)*p;
 		// 패킷을 완성할 수 있다
 		if (packet_size <= rest_byte + g_clients[user_id]->m_prev_size) {
 			memcpy(g_clients[user_id]->m_packet_buf + g_clients[user_id]->m_prev_size, p, packet_size - g_clients[user_id]->m_prev_size);
@@ -230,7 +218,7 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 
 void IOCPServer::send_packet(int user_id, void* p)
 {
-	char* buf = reinterpret_cast<char*>(p);
+	unsigned char* buf = reinterpret_cast<unsigned char*>(p);
 
 	//CLIENT& u = g_clients[user_id];
 

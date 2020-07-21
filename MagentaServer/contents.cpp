@@ -164,7 +164,7 @@ void Contents::disconnect(int user_id)
 	g_clients.erase(user_id);
 
 	if (host_id != user_id){
-		for (auto& cl : g_clients){
+		for (auto cl : g_clients){
 			if (user_id == cl.second->m_id)
 				continue;
 			if (ST_ACTIVE == cl.second->m_status)
@@ -173,15 +173,19 @@ void Contents::disconnect(int user_id)
 	}
 	else{
 		cout << "Disconnect the host" << endl;
-		for (auto& cl : g_clients){
-			if (user_id == cl.second->m_id)
-				continue;
-			iocp.send_leave_packet(cl.second->m_id, cl.second->m_id);
-			delete cl.second;
+		for (auto cl = g_clients.begin(); cl != g_clients.end();) {
+			if (ST_ACTIVE == cl->second->m_status) {
+				cout << "Disconnect " << cl->second->m_id << endl;
+				iocp.send_leave_packet(cl->second->m_id, cl->second->m_id);
+				delete cl->second;
+				cl = g_clients.erase(cl);
+			}
+			else
+				++cl;
 		}
+
 		host_id = -1;
 
-		g_clients.clear();
 		init_contents();
 	}
 }

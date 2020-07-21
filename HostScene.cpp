@@ -343,16 +343,16 @@ void HostScene::BuildObjects()
 			ButtonAssetItem{L"Pot_05",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_05,		ASSET MESH("SM_Pot_Var05"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 			ButtonAssetItem{L"Pot_06",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Pot_06,		ASSET MESH("SM_Pot_Var06"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 
-			ButtonAssetItem{L"Apple",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Apple,			ASSET MESH("SM_Apple"), ASSET MATERIAL("material_02"), 0.01f, 0.1f); }},
-			ButtonAssetItem{L"Potato",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Potato,		ASSET MESH("SM_Potato"), ASSET MATERIAL("material_02"), 0.01f, 0.1f); }},
-			ButtonAssetItem{L"Tomato",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tomato,		ASSET MESH("SM_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.15f); }},
-			ButtonAssetItem{L"Watermellon",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Watermellon,	ASSET MESH("SM_Watermellon"), ASSET MATERIAL("material_02"), 0.01f, 0.3f); }},
-			ButtonAssetItem{L"Sack_Apple",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Apple,	ASSET MESH("SM_Sack_Apple"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
-			ButtonAssetItem{L"Sack_Flour",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Flour,	ASSET MESH("SM_Sack_Flour"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
-			ButtonAssetItem{L"Sack_Potato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Potato,	ASSET MESH("SM_Sack_Potato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
-			ButtonAssetItem{L"Sack_Tomato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Tomato,	ASSET MESH("SM_Sack_Tomato"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
-			ButtonAssetItem{L"Sack_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_01,		ASSET MESH("SM_Sack_Var01"), ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
-			ButtonAssetItem{L"Sack_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_02,		ASSET MESH("SM_Sack_Var02"), ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
+			ButtonAssetItem{L"Apple",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Apple,			ASSET MESH("SM_Apple"),			ASSET MATERIAL("material_02"), 0.01f, 0.1f); }},
+			ButtonAssetItem{L"Potato",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Potato,		ASSET MESH("SM_Potato"),		ASSET MATERIAL("material_02"), 0.01f, 0.1f); }},
+			ButtonAssetItem{L"Tomato",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Tomato,		ASSET MESH("SM_Tomato"),		ASSET MATERIAL("material_02"), 0.01f, 0.15f); }},
+			ButtonAssetItem{L"Watermellon",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Watermellon,	ASSET MESH("SM_Watermellon"),	ASSET MATERIAL("material_02"), 0.01f, 0.3f); }},
+			ButtonAssetItem{L"Sack_Apple",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Apple,	ASSET MESH("SM_Sack_Apple"),	ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_Flour",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Flour,	ASSET MESH("SM_Sack_Flour"),	ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_Potato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Potato,	ASSET MESH("SM_Sack_Potato"),	ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_Tomato",	[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_Tomato,	ASSET MESH("SM_Sack_Tomato"),	ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_01",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_01,		ASSET MESH("SM_Sack_Var01"),	ASSET MATERIAL("material_02"), 0.01f, 0.5f); }},
+			ButtonAssetItem{L"Sack_02",		[](void*) { BuildManager::buildManager->SelectBuilding(BuildingType::Sack_02,		ASSET MESH("SM_Sack_Var02"),	ASSET MATERIAL("material_02"), 0.01f, 0.4f); }},
 		})
 		buttonManager->buttonAssetItem[4].push_back(btnAssetInfo);
 

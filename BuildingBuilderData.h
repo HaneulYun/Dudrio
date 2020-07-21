@@ -3,13 +3,9 @@
 struct BuildingBuilderData
 {
 	std::wstring buildingName{ L"none" };
-	union
-	{
-		GameObject* prefab{ nullptr };
-		struct
-		{
-			Mesh* mesh;
-			Material* material;
-		};
-	};
+
+	GameObject* prefab{ nullptr };
+	Mesh* mesh{ nullptr };
+	Material* material{ nullptr };
+	vector<Material*> materials;
 };

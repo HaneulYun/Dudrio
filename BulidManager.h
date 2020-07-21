@@ -369,7 +369,9 @@ public:
 			collider->center.y += collider->extents.y * 0.5f;
 
 			prefab->GetComponent<MeshFilter>()->mesh = mesh;
-			prefab->GetComponent<Renderer>()->materials.push_back(mat);
+			auto renderer = prefab->GetComponent<Renderer>();
+			for (auto& sm : mesh->DrawArgs)
+				renderer->materials.push_back(mat);
 			prefab->transform->Scale({ scaleSize, scaleSize, scaleSize });
 			prefab->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 		}

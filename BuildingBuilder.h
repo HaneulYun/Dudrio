@@ -31,6 +31,9 @@ public:
 		if (prefab)
 		{
 			prefab->transform->position = getPosOnTerrain();
+
+			if (Input::GetMouseButtonUp(0))
+				prefab = nullptr;
 		}
 	}
 
@@ -38,6 +41,49 @@ public:
 	void serializeBuildings()
 	{
 		building[Landmark].push_back(makeBuilderDataAsPrefab(L"Well", ASSET PREFAB("Well")));
+
+		building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"House01",			ASSET MESH("SM_House_Var01"),		ASSET MATERIAL("house01")));
+		building[House].push_back(makeBuilderDataAsPrefab(L"House02", ASSET PREFAB("House01")));
+
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_01",		ASSET MESH("SM_Tree_Var01"),		{ ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_02",		ASSET MESH("SM_Tree_Var02"),		{ ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_03",		ASSET MESH("SM_Tree_Var03"),		{ ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_04",		ASSET MESH("SM_Tree_Var04"),		{ ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_05",		ASSET MESH("SM_Tree_Var05"),		{ ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
+
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"Mushroom_01",	ASSET MESH("SM_Mushroom_Var01"),	ASSET MATERIAL("material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"Mushroom_02",	ASSET MESH("SM_Mushroom_Var02"),	ASSET MATERIAL("material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"Mushroom_03",	ASSET MESH("SM_Mushroom_Var03"),	ASSET MATERIAL("material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"Mushroom_04",	ASSET MESH("SM_Mushroom_Var04"),	ASSET MATERIAL("material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"Mushroom_05",	ASSET MESH("SM_Mushroom_Var05"),	ASSET MATERIAL("material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"Mushroom_06",	ASSET MESH("SM_Mushroom_Var06"),	ASSET MATERIAL("material_02")));
+
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Fence_01",			ASSET MESH("SM_Fence_Var01"),		ASSET MATERIAL("material_01")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Fence_02",			ASSET MESH("SM_Fence_Var02"),		ASSET MATERIAL("material_01")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Fence_03",			ASSET MESH("SM_Fence_Var03"),		ASSET MATERIAL("material_01")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Fence_04",			ASSET MESH("SM_Fence_Var04"),		ASSET MATERIAL("material_01")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Bucket",			ASSET MESH("SM_Bucket"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Barrel",			ASSET MESH("SM_Barrel"),			ASSET MATERIAL("material_01")));
+		//building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Spike",			ASSET MESH("SM_Mushroom_Var06"),	ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Cart_01",			ASSET MESH("SM_Cart_Var01"),		ASSET MATERIAL("material_01")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Cart_02",			ASSET MESH("SM_Cart_Var02"),		ASSET MATERIAL("material_01")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Cauldron",			ASSET MESH("SM_Cauldron"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Pot_01",			ASSET MESH("SM_Pot_Var01"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Pot_02",			ASSET MESH("SM_Pot_Var02"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Pot_03",			ASSET MESH("SM_Pot_Var03"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Pot_04",			ASSET MESH("SM_Pot_Var04"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Pot_05",			ASSET MESH("SM_Pot_Var05"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Pot_06",			ASSET MESH("SM_Pot_Var06"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Apple",				ASSET MESH("SM_Apple"),				ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Potato",			ASSET MESH("SM_Potato"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Tomato",			ASSET MESH("SM_Tomato"),			ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Watermellon",		ASSET MESH("SM_Watermellon"),		ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_Apple",		ASSET MESH("SM_Sack_Apple"),		ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_Flour",		ASSET MESH("SM_Sack_Flour"),		ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_Potato",		ASSET MESH("SM_Sack_Potato"),		ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_Tomato",		ASSET MESH("SM_Sack_Tomato"),		ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_01",			ASSET MESH("SM_Sack_Var01"),		ASSET MATERIAL("material_02")));
+		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_02",			ASSET MESH("SM_Sack_Var02"),		ASSET MATERIAL("material_02")));
 	}
 
 	BuildingBuilderData makeBuilderDataAsPrefab(wstring name, GameObject* prefab)
@@ -47,15 +93,28 @@ public:
 		return data;
 	}
 
-	BuildingBuilderData makeBuilderDataAsAsset(wstring name, Mesh* mesh, Material* material)
+	BuildingBuilderData makeBuilderDataAsMeshAndMaterial(wstring name, Mesh* mesh, Material* material)
 	{
 		BuildingBuilderData data{ name };
 		data.mesh = mesh;
 		data.material = material;
 		return data;
 	}
+	
+	BuildingBuilderData makeBuilderDataAsMeshAndMaterials(wstring name, Mesh* mesh, vector<Material*> materials)
+	{
+		BuildingBuilderData data{ name };
+		data.mesh = mesh;
+		data.materials = materials;
+		return data;
+	}
 
-	void build(int type, int index)
+	void exitBuildMode()
+	{
+
+	}
+
+	void enterBuildMode(int type, int index)
 	{
 		if (index < building[type].size())
 		{
@@ -65,10 +124,25 @@ public:
 			else
 			{
 				prefab = Scene::scene->Duplicate(ASSET PREFAB("MRC"));
+				prefab->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 				prefab->GetComponent<MeshFilter>()->mesh = data.mesh;
-				prefab->GetComponent<Renderer>()->materials.push_back(data.material);
+				if (data.material)
+					prefab->GetComponent<Renderer>()->materials.push_back(data.material);
+				else
+				{
+					auto renderer = prefab->GetComponent<Renderer>();
+					int i = 0;
+					for (auto& sm : data.mesh->DrawArgs)
+						renderer->materials.push_back(data.materials[i++]);
+				}
+				prefab->GetComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
 			}
 		}
+	}
+
+	int getBuildingCount(int type)
+	{
+		return building[type].size();
 	}
 
 	wstring getBuildingName(int type, int index)

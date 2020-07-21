@@ -24,6 +24,7 @@ public:
 		ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
 		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
 		ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
+		ASSET AddTexture("TreeTrunks", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeTrunks_D.dds");
 		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 		ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
 		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
@@ -46,6 +47,7 @@ public:
 		ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
 		ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
+		ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
 	}
 
 	void LoadMeshAsset()

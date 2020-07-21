@@ -54,7 +54,8 @@ public:
 					auto object = reinterpret_cast<GameObject*>(ptr);
 					object->parent->GetComponent<BuildingTypeSelector>()->InactivateChildren(object);
 					object->SetActive(!object->active);
-					object->GetComponent<BuildingSelector>()->setBuildingButtonName();
+					if(object->active)
+						object->GetComponent<BuildingSelector>()->setBuildingButtonName();
 				}, buildingSelectorObject);
 		}
 

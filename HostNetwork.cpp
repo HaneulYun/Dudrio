@@ -153,8 +153,8 @@ void HostNetwork::Login()
 	strcpy_s(name, l_packet.name);
 	send_packet(&l_packet);
 
-	for (auto& p : BuildManager::buildManager->buildings)
-	{
-		send_construct_packet(p.first);
-	}
+	//for (auto& p : BuildManager::buildManager->buildings)
+	//{
+	//	send_construct_packet(p.first);
+	//}
 }

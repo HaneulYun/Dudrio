@@ -34,7 +34,7 @@ public:
 		auto buildingSelectorObject = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
 		{
 			auto rt = buildingTypeButton->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setAnchorAndPivot(0.5, 0);
 			rt->setPosAndSize(x, y, 40, 40);
 			{
 				auto textObject = buildingTypeButton->AddChildUI();
@@ -60,7 +60,8 @@ public:
 		}
 
 		{
-			buildingSelectorObject->GetComponent<RectTransform>()->setPosAndSize(0, 100, 510, 60);
+			buildingSelectorObject->GetComponent<RectTransform>()->setAnchorAndPivot(0.5, 0);
+			buildingSelectorObject->GetComponent<RectTransform>()->setPosAndSize(0, 60, 510, 60);
 			buildingSelectorObject->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("gray");
 		}
 		auto buildingSelector = buildingSelectorObject->AddComponent<BuildingSelector>();

@@ -30,18 +30,18 @@ public:
 	void Save()
 	{
 		std::ofstream out("Buildings.txt");
-		for (auto& b : BuildManager::buildManager->buildings)
-			out << b.first;
+		//for (auto& b : BuildManager::buildManager->buildings)
+		//	out << b.first;
 		out.close();
 	}
 
 	void Load()
 	{
-		for (auto& b : BuildManager::buildManager->buildings)
-		{
-			Scene::scene->PushDelete(b.second);
-		}
-		BuildManager::buildManager->buildings.clear();
+		//for (auto& b : BuildManager::buildManager->buildings)
+		//{
+		//	Scene::scene->PushDelete(b.second);
+		//}
+		//BuildManager::buildManager->buildings.clear();
 
 		if (HostNetwork::network != nullptr)
 		{
@@ -57,12 +57,12 @@ public:
 
 		while (beg != end)
 		{
-			auto iter = BuildManager::buildManager->buildings.find(*beg);
-		
-			if (iter == BuildManager::buildManager->buildings.end())
-			{
-				Builder::builder->BuildNewBuilding(*beg);
-			}
+			//auto iter = BuildManager::buildManager->buildings.find(*beg);
+			//
+			//if (iter == BuildManager::buildManager->buildings.end())
+			//{
+			//	Builder::builder->BuildNewBuilding(*beg);
+			//}
 			*beg++;
 		}
 	}

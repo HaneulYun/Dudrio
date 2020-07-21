@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GuestScene.h"
 
-Builder* Builder::builder{ nullptr };
+//Builder* Builder::builder{ nullptr };
 
 void GuestScene::BuildObjects()
 {
@@ -120,13 +120,13 @@ void GuestScene::BuildObjects()
 		}
 	}
 
-	{
-		GameObject* manager = CreateEmpty();
-		Builder* bd = manager->AddComponent<Builder>();
-		Builder::builder = bd;
-		BuildManager* bm = manager->AddComponent<BuildManager>();
-		BuildManager::buildManager = bm;
-	}
+	//{
+	//	GameObject* manager = CreateEmpty();
+	//	Builder* bd = manager->AddComponent<Builder>();
+	//	Builder::builder = bd;
+	//	BuildManager* bm = manager->AddComponent<BuildManager>();
+	//	BuildManager::buildManager = bm;
+	//}
 
 	auto object = CreateUI();
 	{

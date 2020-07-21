@@ -62,7 +62,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 			}
 		}
 		else {
-			Builder::builder->DestroyAllBuilding();
+			//Builder::builder->DestroyAllBuilding();
 
 			hostId = -1;
 			for (auto& others : otherCharacters)
@@ -77,19 +77,19 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
 		BuildingBuilder::buildingBuilder->enterBuildMode(0, 0);
 		BuildingBuilder::buildingBuilder->build({ my_packet->b_inform.xPos, my_packet->b_inform.yPos, my_packet->b_inform.zPos });
-		Builder::builder->BuildNewBuilding(my_packet->b_inform);
+		//Builder::builder->BuildNewBuilding(my_packet->b_inform);
 	}
 	break;
 	case S2C_DESTRUCT:
 	{
 		sc_packet_destruct* my_packet = reinterpret_cast<sc_packet_destruct*>(ptr);
-		Builder::builder->DestroyBuilding(my_packet->b_inform);
+		//Builder::builder->DestroyBuilding(my_packet->b_inform);
 	}
 	break;
 	case S2C_DESTRUCT_ALL:
 	{
 		sc_packet_destruct_all* my_packet = reinterpret_cast<sc_packet_destruct_all*>(ptr);
-		Builder::builder->DestroyAllBuilding();
+		//Builder::builder->DestroyAllBuilding();
 	}
 	break;
 	default:

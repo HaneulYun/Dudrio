@@ -105,16 +105,7 @@
     <ClInclude Include="CameraController.h">
       <Filter>Assets\Scripts\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="BulidManager.h">
-      <Filter>Assets\Scripts\Build</Filter>
-    </ClInclude>
-    <ClInclude Include="Builder.h">
-      <Filter>Assets\Scripts\Build</Filter>
-    </ClInclude>
     <ClInclude Include="Building.h">
-      <Filter>Assets\Scripts\Build</Filter>
-    </ClInclude>
-    <ClInclude Include="ButtonManager.h">
       <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
     <ClInclude Include="GuestCameraController.h">

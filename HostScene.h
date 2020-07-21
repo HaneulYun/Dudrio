@@ -7,11 +7,7 @@ public:
 	HostScene() : Scene() {}
 	~HostScene() {}
 
-
 	virtual void BuildObjects();
-
-	GameObject* CreateTextButton();
-	GameObject* CreateButtonList();
 
 	void LoadTextureAsset()
 	{

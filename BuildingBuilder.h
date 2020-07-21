@@ -1,5 +1,6 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
+#include "HostNetwork.h"
 
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
@@ -36,7 +37,13 @@ public:
 			prefab->transform->position = getPosOnTerrain();
 
 			if (Input::GetMouseButtonUp(0))
+			{
+				auto p = prefab->transform->position;
+				BuildingInform inform{ ::BuildingType::Well_01, p.x, p.y, p.z, 0 };
+				if (HostNetwork::network->isConnect)
+					HostNetwork::network->send_construct_packet(inform);
 				prefab = nullptr;
+			}
 		}
 	}
 

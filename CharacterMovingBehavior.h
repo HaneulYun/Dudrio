@@ -11,7 +11,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	Vector3 animVel{ 0,0,0 };
 	char name[MAX_ID_LEN];
 
-	queue<pair<Vector3, float>> moveQueue;
+	std::queue<std::pair<Vector3, float>> moveQueue;
 	Vector3 destPos{ 0,0,0 };
 	Vector3 curPos{ 0,0,0 };
 	float destAngle;
@@ -115,7 +115,7 @@ public:
 
 	void add_move_queue(Vector3 destPos, float rotAngle)
 	{
-		moveQueue.push(make_pair(destPos, rotAngle));
+		moveQueue.push(std::make_pair(destPos, rotAngle));
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

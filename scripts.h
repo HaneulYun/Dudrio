@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Building.h"
+
 #include "CameraController.h"
 #include "HostCameraController.h"
 #include "GuestCameraController.h"
@@ -9,10 +11,6 @@
 #include "CharacterMovingBehavior.h"
 #include "CharacterController.h"
 
-#include "BulidManager.h"
-#include "ButtonManager.h"
-#include "Builder.h"
-
 #include "BuildingType.h"
 #include "BuildingBuilderData.h"
 #include "BuildingBuilder.h"
@@ -20,7 +18,6 @@
 #include "BuildingTypeSelector.h"
 
 #include "GuestController.h"
-#include "Building.h"
 #include "GuestNetwork.h"
 #include "HostNetwork.h"
 #include "GameLoader.h"

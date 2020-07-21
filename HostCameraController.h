@@ -1,6 +1,5 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
-#include "BulidManager.h"
 
 class HostCameraController : public MonoBehavior<HostCameraController>
 {

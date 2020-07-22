@@ -155,8 +155,8 @@ void TestScene::BuildObjects()
 
 	for (int i = 0; i < 1; ++i)
 	{
-		int x = rand() % 300 + 400;
-		int z = rand() % 300 + 400;
+		int x = rand() % 60 + 470;
+		int z = rand() % 60 + 470;
 
 		GameObject* house = CreateEmpty();
 		house->AddComponent<Building>();

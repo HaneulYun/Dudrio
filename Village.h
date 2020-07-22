@@ -37,9 +37,8 @@ public:
 				info->type = BuildingType::House_01;
 				info->simList = &sims;
 
-				//autoDevelopment = false;
 
-				timeDelay = rand() % 10 + 30;
+				timeDelay = rand() % 10 + 60;
 				Messenger->CreateMessage(0, -1, -1, Msg_Build, info);
 			}
 			

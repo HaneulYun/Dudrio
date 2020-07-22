@@ -10,9 +10,6 @@ void MessageManager::Send(Sim* receiver,
 
 void MessageManager::CreateMessage(double delay, int senderIndex, int receiverIndex, int msg, void* ExtraInfo)
 {
-	Sim* sender = AIManager::Instance->sims[senderIndex];
-	Sim* receiver = AIManager::Instance->sims[receiverIndex];
-
 	Telegram telegram(0, senderIndex, receiverIndex, msg, ExtraInfo);
            
 	float currentTime = Time::currentTime;

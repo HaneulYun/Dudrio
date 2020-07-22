@@ -28,7 +28,7 @@ public:
 
 	void ClearStack()
 	{
-		stateStack.clear();
+		stateStack.erase(stateStack.begin() + 1, stateStack.end());
 	}
 
 	bool HaveNextState()

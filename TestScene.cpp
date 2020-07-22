@@ -153,10 +153,10 @@ void TestScene::BuildObjects()
 	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
 
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
-		int x = rand() % 60 + 470;
-		int z = rand() % 60 + 470;
+		int x = rand() % 200 + 400;
+		int z = rand() % 200 + 400;
 
 		GameObject* house = CreateEmpty();
 		house->AddComponent<Building>();

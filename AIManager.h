@@ -31,13 +31,13 @@ public:
 	{
 		time += Time::deltaTime;
 		
-		if (time > 30.f)
+		if (time > 100.f)
 		{
 			for (auto s : AIManager::Instance->sims)
 			{
 				Messenger->CreateMessage(0, s.first, s.first, Msg_Sleep);
 			}
-			time -= 30.f;
+			time -= 100.f;
 		}
 
 		Messenger->Timer();

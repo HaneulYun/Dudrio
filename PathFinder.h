@@ -162,7 +162,7 @@ public:
 		Vector3 dir{ targetPos.x - object->position.x, 0, targetPos.y - object->position.z };
 		
 		float angle = XMConvertToDegrees(Vector3::Angle(currentDir, dir));
-		if (angle < 3.f || angle > 177.f)
+		if (angle < 3.f)
 		{
 			currentDir = dir;
 			Vector3 newPos = object->position + currentDir.Normalize() * speed * Time::deltaTime;

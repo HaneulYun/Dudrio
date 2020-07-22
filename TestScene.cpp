@@ -22,6 +22,7 @@ void TestScene::BuildObjects()
 
 	//*** Mesh 
 	ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
+	ASSET AddFbxForMesh("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
 	ASSET AddMesh("Cube", Mesh::CreateCube());
 
 	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");

@@ -96,9 +96,6 @@ void MoveState::Execute(Sim* sim)
 			sim->stateMachine.ChangeState();
 		else
 			sim->stateMachine.ChangeState(IdleState::Instance());
-
-		Debug::Log("Target 제거\n");
-		sim->targetPos.pop_front();
 		return;
 	}
 
@@ -116,6 +113,8 @@ void MoveState::Execute(Sim* sim)
 
 void MoveState::Exit(Sim* sim)
 {
+	Debug::Log("Target 제거\n");
+	sim->targetPos.pop_front();
 };
 
 bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)

@@ -39,7 +39,7 @@ public:
 
 				//autoDevelopment = false;
 
-				timeDelay = rand() % 10 + 10;
+				timeDelay = rand() % 10 + 30;
 				Messenger->CreateMessage(0, -1, -1, Msg_Build, info);
 			}
 			

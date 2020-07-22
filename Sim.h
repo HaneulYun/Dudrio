@@ -38,10 +38,10 @@ public:
 
 	bool HandleMessage(const Telegram& msg)
 	{
-		return stateMachine.HandleMessage(msg);
-
 		if (msg.msg == Msg_Build)
 			buildInfo = *static_cast<BuildMessageInfo*>(msg.extraInfo);
+
+		return stateMachine.HandleMessage(msg);
 	}
 
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.

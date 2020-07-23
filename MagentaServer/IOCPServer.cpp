@@ -14,6 +14,8 @@ IOCPServer::~IOCPServer()
 
 void IOCPServer::init_server()
 {
+	cur_listen_socket = 0;
+
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
 
@@ -102,7 +104,11 @@ void IOCPServer::worker_thread_loop()
 
 		g_clients_lock.lock();
 		if (g_clients.count(user_id) == 0)
-			cout << "저한테 왜그러세요" << endl;
+		{
+			cout << "저한테 왜그러세요" << user_id << endl;
+			g_clients_lock.unlock();
+			continue;
+		}
 		g_clients_lock.unlock();
 
 		switch (exover->op) {
@@ -138,8 +144,8 @@ void IOCPServer::accept_thread_loop()
 		// 접속 받을 유저 소켓을 생성 한다.
 		int idx = 0;
 
+		g_clients_lock.lock();
 		while (idx < MAX_USER) {
-			lock_guard<mutex>lock_guard(g_clients_lock);
 			if (g_clients.count(idx) == 0) {
 				cout << "New idx " << idx << " is generated" << endl;
 				g_clients[idx] = new Client(idx);
@@ -150,6 +156,7 @@ void IOCPServer::accept_thread_loop()
 				idx++;
 			}
 		}
+		g_clients_lock.unlock();
 
 		if (idx >= MAX_USER)
 			continue;
@@ -228,8 +235,6 @@ void IOCPServer::send_packet(int user_id, void* p)
 {
 	unsigned char* buf = reinterpret_cast<unsigned char*>(p);
 
-	Client& u = *g_clients[user_id];
-
 	EXOVER* exover = new EXOVER;
 	exover->op = OP_SEND;
 	ZeroMemory(&exover->over, sizeof(exover->over));
@@ -238,7 +243,7 @@ void IOCPServer::send_packet(int user_id, void* p)
 	memcpy(exover->io_buf, buf, buf[0]);
 
 	// IpBuffers 항목에 u의 wsabuf은 이미 Recv에서 쓰고 있기 때문에 사용하면 안됨
-	WSASend(u.m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
+	WSASend(g_clients[user_id]->m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
 }
 
 void IOCPServer::send_login_ok_packet(int user_id)

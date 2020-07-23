@@ -29,6 +29,7 @@ public:
 	void enter_game(int user_id, char name[]);
 	void do_move(int user_id, float xVel, float zVel, float rotAngle, float run_level);
 	void disconnect(int user_id);
+	void login_fail(int user_id);
 
 	void do_construct(int user_id, BuildingInform b_inform);
 	void do_destruct(int user_id, BuildingInform b_inform);

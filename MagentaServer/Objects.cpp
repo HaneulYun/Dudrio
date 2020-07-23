@@ -105,14 +105,14 @@ vector<int> Client::get_near_clients()
 		for (int j = sect_num.first - 1; j <= sect_num.first + 1; ++j) {
 			if (j < 0 || j > WORLD_WIDTH / SECTOR_WIDTH - 1) continue;
 			//g_sector_clients_lock[i][j].EnterReadLock();
-			g_sector_clients_lock[i][j].lock();
+			lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
 			for (auto nearObj : g_sector_clients[i][j]) {
+				if (ST_ACTIVE != nearObj->m_status)	continue;
 				if (nearObj->m_id == m_id) continue;
 				if (true == is_near(*nearObj))
 					near_clients.emplace_back(nearObj->m_id);
 			}
 			//g_sector_clients_lock[i][j].LeaveReadLock();
-			g_sector_clients_lock[i][j].unlock();
 		}
 	}
 	return near_clients;

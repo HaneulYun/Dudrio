@@ -51,7 +51,11 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	break;
 	case S2C_LOGIN_FAIL:
 	{
+		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
+		isConnect = false;
+		tryConnect = false;
 
+		closesocket(serverSocket);
 	}
 	break;
 	case S2C_ENTER:
@@ -81,13 +85,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 			}
 		}
 		else {
-			Builder::builder->DestroyAllBuilding();
-
-			hostId = -1;
-			for (auto& others : otherCharacters)
-				Scene::scene->PushDelete(others.second);
-
-			otherCharacters.clear();
+			Logout();
 		}
 	}
 	break;
@@ -220,4 +218,26 @@ void GuestNetwork::Login()
 	strcpy_s(myCharacter->GetComponent<CharacterMovingBehavior>()->name, l_packet.name);
 	
 	send_packet(&l_packet);
+}
+
+void GuestNetwork::Logout()
+{
+	cs_packet_logout l_packet;
+	l_packet.size = sizeof(l_packet);
+	l_packet.type = C2S_LOGOUT;
+
+	send_packet(&l_packet);
+
+	isConnect = false;
+	tryConnect = false;
+
+	closesocket(serverSocket);
+
+	Builder::builder->DestroyAllBuilding();
+
+	hostId = -1;
+	for (auto& others : otherCharacters)
+		Scene::scene->PushDelete(others.second);
+
+	otherCharacters.clear();
 }

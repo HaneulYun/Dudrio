@@ -11,12 +11,13 @@ constexpr int MAX_USER = 10000;
 
 #define C2S_LOGIN_GUEST		1	// Guest to Server
 #define C2S_LOGIN_HOST		2	// Host to Server
-#define C2S_MOVE_START		3	// Guest to Server
-#define C2S_MOVE			4	// Guest to Server
-#define C2S_CONSTRUCT		5	// Host to Server
-#define C2S_DESTRUCT		6	// Host to Server
-#define C2S_DESTRUCT_ALL	7	// Host to Server
-#define C2S_CHAT			8
+#define C2S_LOGOUT			3
+#define C2S_MOVE_START		4	// Guest to Server
+#define C2S_MOVE			5	// Guest to Server
+#define C2S_CONSTRUCT		6	// Host to Server
+#define C2S_DESTRUCT		7	// Host to Server
+#define C2S_DESTRUCT_ALL	8	// Host to Server
+#define C2S_CHAT			9
 
 #define S2C_LOGIN_OK		1
 #define S2C_LOGIN_FAIL		2

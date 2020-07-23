@@ -61,6 +61,7 @@ public:
 	void send_destruct_all_packet();
 
 	void Login();
+	void Logout();
 
 	void Start()
 	{

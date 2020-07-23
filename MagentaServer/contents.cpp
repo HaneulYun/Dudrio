@@ -61,7 +61,7 @@ void Contents::logic_thread_loop()
 				}
 				else {
 					cout << "Host does not exist" << endl;
-					disconnect(buf.first);
+					login_fail(buf.first);
 				}
 			}
 			break;
@@ -94,8 +94,13 @@ void Contents::logic_thread_loop()
 				}
 				else {
 					cout << "Host is already exist" << endl;
-					disconnect(buf.first);
+					login_fail(buf.first);
 				}
+			}
+			break;
+			case C2S_LOGOUT:
+			{
+				cs_packet_logout* packet = reinterpret_cast<cs_packet_logout*>(buf.second);
 			}
 			break;
 			case C2S_MOVE_START:
@@ -231,10 +236,18 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 	vector<int> near_clients = g_clients[user_id]->get_near_clients();
 	for (auto cl : near_clients) new_vl.insert(cl);
 
+	if (contents.host_id == -1)
+		return;
 	iocp.send_move_packet(user_id, user_id, rotAngle);
 	iocp.send_move_packet(contents.host_id, user_id, rotAngle);
 
 	for (auto new_player : new_vl) {
+		g_clients_lock.lock();
+		if (g_clients.count(new_player) == 0){
+			g_clients_lock.unlock();
+			continue;
+		}
+		g_clients_lock.unlock();
 		if (old_vl.count(new_player) == 0) {
 			iocp.send_enter_packet(user_id, new_player);
 			//g_clients[new_player]->m_cl.EnterReadLock();
@@ -267,6 +280,12 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 	}
 
 	for (auto old_player : old_vl) {
+		g_clients_lock.lock();
+		if (g_clients.count(old_player) == 0) {
+			g_clients_lock.unlock();
+			continue;
+		}
+		g_clients_lock.unlock();
 		if (new_vl.count(old_player) == 0) {
 			iocp.send_leave_packet(user_id, old_player);
 			//g_clients[old_player]->m_cl.EnterReadLock();
@@ -283,35 +302,37 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 		}
 	}
 }
+
 void Contents::disconnect(int user_id)
 {
+	lock_guard<mutex>lock_guard(g_clients_lock);
 	cout << "Disconnect " << user_id << endl;
-	
+
+	iocp.send_leave_packet(user_id, user_id);
+
 	if (host_id != user_id)
 		g_clients[user_id]->erase_client_in_sector();
-	iocp.send_leave_packet(user_id, user_id);
+	g_clients[user_id]->m_cl.lock();
 	g_clients[user_id]->m_status = ST_ALLOC;
 	closesocket(g_clients[user_id]->m_s);
 
 	if (host_id != user_id){
-		g_clients[user_id]->m_cl.lock();
-		for (auto cl = g_clients[user_id]->view_list.begin(); cl != g_clients[user_id]->view_list.end();) {
+		//g_clients[user_id]->m_cl.lock();
+		for (auto cl = g_clients[user_id]->view_list.begin(); cl != g_clients[user_id]->view_list.end(); ++cl) {
 			if (user_id == *cl) continue;
-			if (ST_ACTIVE == g_clients[*cl]->m_status) 
+			if (ST_ACTIVE == g_clients[*cl]->m_status)
 				iocp.send_leave_packet(*cl, user_id);
-			++cl;
 		}
-		g_clients[user_id]->m_cl.unlock();
+		//g_clients[user_id]->m_cl.unlock();
 		if (host_id != -1)
 			iocp.send_leave_packet(host_id, user_id);
 	}
 	else {
-		lock_guard<mutex>lock_guard(g_clients_lock);
 		for (auto cl = g_clients.begin(); cl != g_clients.end();) {
-			if (cl->second->m_id == user_id) continue;
+			if (cl->first == user_id) { ++cl; continue; }
 			if (ST_ACTIVE == cl->second->m_status) {
 				cout << "Disconnect " << cl->second->m_id << endl;
-				iocp.send_leave_packet(cl->second->m_id, cl->second->m_id);
+				iocp.send_leave_packet(cl->first, cl->first);
 				delete cl->second;
 				cl = g_clients.erase(cl);
 			}
@@ -325,7 +346,25 @@ void Contents::disconnect(int user_id)
 
 		cout << "Disconnect the host" << endl;
 	}
+	g_clients[user_id]->m_cl.unlock();
+
+	delete g_clients[user_id];
+	g_clients.erase(user_id);
+}
+
+void Contents::login_fail(int user_id)
+{
+	cout << "Login fail!! user_id : " << user_id << endl;
 	lock_guard<mutex>lock_guard(g_clients_lock);
+
+	if (g_clients.count(user_id) == 0)
+		return;
+	if (host_id != user_id)
+		g_clients[user_id]->erase_client_in_sector();
+	iocp.send_login_fail_packet(user_id);
+	g_clients[user_id]->m_status = ST_ALLOC;
+	closesocket(g_clients[user_id]->m_s);
+
 	delete g_clients[user_id];
 	g_clients.erase(user_id);
 }

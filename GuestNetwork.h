@@ -60,6 +60,7 @@ public:
 	void send_chat_packet(wchar_t msg[]);
 
 	void Login();
+	void Logout();
 
 	void Start()
 	{

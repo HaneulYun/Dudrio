@@ -106,6 +106,7 @@ void Contents::logic_thread_loop()
 			case C2S_MOVE_START:
 			{
 				cs_packet_move_start* packet = reinterpret_cast<cs_packet_move_start*>(buf.second);
+
 				g_clients[buf.first]->m_last_move_time = GetTickCount64();
 				g_clients[buf.first]->m_move_time = packet->move_time;
 				do_move(buf.first, packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
@@ -114,6 +115,7 @@ void Contents::logic_thread_loop()
 			case C2S_MOVE:
 			{
 				cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf.second);
+
 				g_clients[buf.first]->m_move_time = packet->move_time;
 				do_move(buf.first, packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
 			}
@@ -314,7 +316,12 @@ void Contents::disconnect(int user_id)
 		g_clients[user_id]->erase_client_in_sector();
 	g_clients[user_id]->m_cl.lock();
 	g_clients[user_id]->m_status = ST_ALLOC;
+
+	linger sopt_linger = { 0, 0 };	
+	shutdown(g_clients[user_id]->m_s, SD_BOTH);
+	setsockopt(g_clients[user_id]->m_s, SOL_SOCKET, SO_LINGER, (char*)&sopt_linger, sizeof(sopt_linger));
 	closesocket(g_clients[user_id]->m_s);
+	g_clients[user_id]->m_s = INVALID_SOCKET;
 
 	if (host_id != user_id){
 		//g_clients[user_id]->m_cl.lock();
@@ -363,7 +370,11 @@ void Contents::login_fail(int user_id)
 		g_clients[user_id]->erase_client_in_sector();
 	iocp.send_login_fail_packet(user_id);
 	g_clients[user_id]->m_status = ST_ALLOC;
+	linger sopt_linger = { 0, 0 };
+	shutdown(g_clients[user_id]->m_s, SD_BOTH);
+	setsockopt(g_clients[user_id]->m_s, SOL_SOCKET, SO_LINGER, (char*)&sopt_linger, sizeof(sopt_linger));
 	closesocket(g_clients[user_id]->m_s);
+	g_clients[user_id]->m_s = INVALID_SOCKET;
 
 	delete g_clients[user_id];
 	g_clients.erase(user_id);

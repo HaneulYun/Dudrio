@@ -19,7 +19,7 @@ void IOCPServer::init_server()
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
 
-	l_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	l_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, NULL, WSA_FLAG_OVERLAPPED);
 
 	// bind -------------------------------------------------------
 	SOCKADDR_IN s_address;
@@ -31,13 +31,16 @@ void IOCPServer::init_server()
 
 	// listen -----------------------------------------------------
 	listen(l_socket, SOMAXCONN);
+
+	int option = TRUE;
+	setsockopt(l_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 }
 
 void IOCPServer::start_server()
 {
 	init_clients();
 
-	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);// *2 + 1);
+	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, NUM_OF_CPU * 2 + 1);
 
 	create_worker_threads();
 	create_accept_threads();
@@ -57,11 +60,11 @@ void IOCPServer::init_clients()
 // thread ---------------------------------
 void IOCPServer::create_worker_threads()
 {
-	//worker_threads.reserve(NUM_OF_CPU * 2 + 2);
+	worker_threads.reserve(NUM_OF_CPU * 2 + 2);
 	worker_threads.emplace_back([this]() { worker_thread_loop(); });
-	//for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i){
-	//	worker_threads.emplace_back([this]() {worker_thread_loop(); });
-	//}
+	for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i){
+		worker_threads.emplace_back([this]() {worker_thread_loop(); });
+	}
 
 	cout << "Create Worker_Threads Complete" << endl;
 }

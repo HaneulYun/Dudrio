@@ -150,10 +150,30 @@ void TestScene::BuildObjects()
 	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
 
-	for (int i = 0; i < 2; ++i)
+
+	GameObject* sim = CreateEmptyPrefab();
+	//sim->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
+
+	GameObject* model = sim->AddChild();
+	model->transform->Rotate({ 1, 0, 0 }, -90);
+	model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
+	model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+
+	auto anim = model->AddComponent<Animator>();
+	anim->controller = controller;
+	anim->state = &controller->states["Idle"];
+	anim->TimePos = 0;
+
+	//auto simCompo = sim->AddComponent<Sim>();
+	//simCompo->animator = anim;
+
+	AIManager::Instance->simPrefab = sim;
+	
+
+	for (int i = 0; i < 10; ++i)
 	{
-		int x = 500;
-		int z = 500;
+		int x = 500 + rand() % 10;
+		int z = 500 + rand() % 10;
 
 		GameObject* house = CreateEmpty();
 		house->AddComponent<Building>();
@@ -162,25 +182,6 @@ void TestScene::BuildObjects()
 		house->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
 		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
-		GameObject* sim = CreateEmpty();
-		sim->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
-
-		GameObject* model = sim->AddChild();
-		model->transform->Rotate({ 1, 0, 0 }, -90);
-		model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
-		model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
-
-		auto anim = model->AddComponent<Animator>();
-		anim->controller = controller;
-		anim->state = &controller->states["Idle"];
-		anim->TimePos = 0;
-
-		Sim* simCompo = sim->AddComponent<Sim>();
-		simCompo->home = house;
-		simCompo->animator = anim;
-
-		AIManager::Instance->AddSim(simCompo);
-
-		village->sims.push_back(sim);
+		AIManager::Instance->AddSim(house, landmark);
 	}
 }

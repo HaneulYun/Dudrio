@@ -7,5 +7,5 @@ struct BuildingBuilderData
 	GameObject* prefab{ nullptr };
 	Mesh* mesh{ nullptr };
 	Material* material{ nullptr };
-	vector<Material*> materials;
+	std::vector<Material*> materials;
 };

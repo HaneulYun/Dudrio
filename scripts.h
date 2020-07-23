@@ -6,6 +6,17 @@
 #include "HostCameraController.h"
 #include "GuestCameraController.h"
 
+#include "TerrainGenerator.h"
+#include "RotatingBehavior.h"
+#include "CharacterMovingBehavior.h"
+#include "CharacterController.h"
+
+#include "BuildingType.h"
+#include "BuildingBuilderData.h"
+#include "BuildingBuilder.h"
+#include "BuildingSelector.h"
+#include "BuildingTypeSelector.h"
+
 #include "Message.h"
 #include "Telegram.h"
 
@@ -19,18 +30,6 @@
 
 #include "Village.h"
 #include "AIManager.h"
-
-
-#include "TerrainGenerator.h"
-#include "RotatingBehavior.h"
-#include "CharacterMovingBehavior.h"
-#include "CharacterController.h"
-
-#include "BuildingType.h"
-#include "BuildingBuilderData.h"
-#include "BuildingBuilder.h"
-#include "BuildingSelector.h"
-#include "BuildingTypeSelector.h"
 
 #include "GuestController.h"
 #include "GuestNetwork.h"

@@ -1,31 +1,15 @@
 #include "pch.h"
 #include "TestScene.h"
 
-AIManager* AIManager::Instance;
+AIManager* AIManager::Instance; 
 
 void TestScene::BuildObjects()
 {
-	///*** Asset ***///
-	//*** Texture ***//
-	ASSET AddTexture("ground", L"Textures\\grass.dds");
-	ASSET AddTexture("grass", L"Texture\\grass.dds");
-	ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
-	ASSET AddTexture("house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
-	ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
+	LoadTextureAsset();
+	LoadMaterialAsset();
+	LoadMeshAsset();
 
-	//*** Material ***//
-	ASSET AddMaterial("ground", ASSET TEXTURE("ground"), nullptr, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
-	ASSET AddMaterial("grass", ASSET TEXTURE("grass"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
-	ASSET AddMaterial("house01", ASSET TEXTURE("house01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-	ASSET AddMaterial("house02", ASSET TEXTURE("house02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-	ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-
-	//*** Mesh 
-	ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
-	ASSET AddFbxForMesh("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
-	ASSET AddMesh("Cube", Mesh::CreateCube());
-
-	ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+	LoadPrefab();
 
 	///*** Game Object ***///
 	auto menuSceneButton = CreateImage();
@@ -101,7 +85,6 @@ void TestScene::BuildObjects()
 	}
 	PathFinder::Instance()->SetTerrainData(&terrainData->terrainData);
 
-
 	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
@@ -121,7 +104,9 @@ void TestScene::BuildObjects()
 
 	GameObject* manager = CreateEmpty();
 	{
-		manager->AddComponent<BuildingBuilder>();
+		auto buildingBuilder = manager->AddComponent<BuildingBuilder>();
+		buildingBuilder->serializeBuildings();
+		buildingBuilder->terrain = terrainData;
 		//BuildManager* buildManager = manager->AddComponent<BuildManager>();
 		//buildManager->terrain = terrain;
 		//buildManager->heightMap = &terrainData->terrainData;
@@ -152,10 +137,10 @@ void TestScene::BuildObjects()
 	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
 
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
-		int x = rand() % 200 + 400;
-		int z = rand() % 200 + 400;
+		int x = 500;
+		int z = 500;
 
 		GameObject* house = CreateEmpty();
 		house->AddComponent<Building>();
@@ -165,7 +150,7 @@ void TestScene::BuildObjects()
 		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
 		GameObject* sim = CreateEmpty();
-		sim->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z - 5), z - 5);
+		sim->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
 		GameObject* model = sim->AddChild();
 		model->AddComponent<MeshFilter>()->mesh = ASSET MESH("ApprenticeSK");
 		model->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
@@ -175,6 +160,5 @@ void TestScene::BuildObjects()
 		AIManager::Instance->AddSim(simCompo);
 
 		village->sims.push_back(sim);
-		simCompo->prefab = pref;
 	}
 }

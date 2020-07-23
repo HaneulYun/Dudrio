@@ -38,7 +38,7 @@ public:
 				info->buildingIndex = rand() % BuildingBuilder::buildingBuilder->getBuildingCount(info->buildingType);
 				info->simList = &sims;
 
-				timeDelay = rand() % 10 + 20;
+				timeDelay = rand() % 10 + 30;
 				Messenger->CreateMessage(0, -1, -1, Msg_Build, info);
 			}
 			

@@ -11,6 +11,19 @@ void TestScene::BuildObjects()
 
 	LoadPrefab();
 
+	//*** AnimatorController ***//
+	AnimatorController* controller = new AnimatorController();
+	{
+		controller->AddParameterFloat("Walking");
+
+		controller->AddState("Idle", ASSET animationClips["Idle_BowAnim"].get());
+		controller->AddState("Walk", ASSET animationClips["Walk_BowAnim"].get());
+
+		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("Walking", Greater, 1));
+		controller->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("Walking", Less, 1));
+	}
+
+
 	///*** Game Object ***///
 	auto menuSceneButton = CreateImage();
 	{
@@ -137,7 +150,7 @@ void TestScene::BuildObjects()
 	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
 
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		int x = 500;
 		int z = 500;
@@ -151,12 +164,21 @@ void TestScene::BuildObjects()
 
 		GameObject* sim = CreateEmpty();
 		sim->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
+
 		GameObject* model = sim->AddChild();
-		model->AddComponent<MeshFilter>()->mesh = ASSET MESH("ApprenticeSK");
-		model->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
 		model->transform->Rotate({ 1, 0, 0 }, -90);
+		model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
+		model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+
+		auto anim = model->AddComponent<Animator>();
+		anim->controller = controller;
+		anim->state = &controller->states["Idle"];
+		anim->TimePos = 0;
+
 		Sim* simCompo = sim->AddComponent<Sim>();
 		simCompo->home = house;
+		simCompo->animator = anim;
+
 		AIManager::Instance->AddSim(simCompo);
 
 		village->sims.push_back(sim);

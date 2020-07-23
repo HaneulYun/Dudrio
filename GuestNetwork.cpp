@@ -235,7 +235,7 @@ void GuestNetwork::Logout()
 
 	closesocket(serverSocket);
 
-	Builder::builder->DestroyAllBuilding();
+	//Builder::builder->DestroyAllBuilding();
 
 	hostId = -1;
 	for (auto& others : otherCharacters)

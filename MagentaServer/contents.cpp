@@ -140,9 +140,9 @@ void Contents::logic_thread_loop()
 			}
 			break;
 			default:
-				cout << "Unknown Packet Type Error!\n";
-				DebugBreak();
-				exit(-1);
+				cout << "Unknown Packet Type Error!\n" << buf.first << ", " << buf.second << endl;
+				//DebugBreak();
+				//exit(-1);
 				break;
 			}
 		}
@@ -294,16 +294,19 @@ void Contents::disconnect(int user_id)
 	closesocket(g_clients[user_id]->m_s);
 
 	if (host_id != user_id){
+		g_clients[user_id]->m_cl.lock();
 		for (auto cl = g_clients[user_id]->view_list.begin(); cl != g_clients[user_id]->view_list.end();) {
 			if (user_id == *cl) continue;
 			if (ST_ACTIVE == g_clients[*cl]->m_status) 
 				iocp.send_leave_packet(*cl, user_id);
+			++cl;
 		}
-
+		g_clients[user_id]->m_cl.unlock();
 		if (host_id != -1)
 			iocp.send_leave_packet(host_id, user_id);
 	}
 	else {
+		lock_guard<mutex>lock_guard(g_clients_lock);
 		for (auto cl = g_clients.begin(); cl != g_clients.end();) {
 			if (cl->second->m_id == user_id) continue;
 			if (ST_ACTIVE == cl->second->m_status) {
@@ -322,6 +325,7 @@ void Contents::disconnect(int user_id)
 
 		cout << "Disconnect the host" << endl;
 	}
+	lock_guard<mutex>lock_guard(g_clients_lock);
 	delete g_clients[user_id];
 	g_clients.erase(user_id);
 }
@@ -368,7 +372,7 @@ void Contents::destruct_all(int user_id)
 	}
 }
 
-void Contents::add_packet(int user_id, char* buf)
+void Contents::add_packet(int user_id, unsigned char* buf)
 {
 	//logic_lock.EnterWriteLock();
 	logic_lock.lock();

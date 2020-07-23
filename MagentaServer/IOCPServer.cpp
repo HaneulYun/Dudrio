@@ -48,6 +48,8 @@ void IOCPServer::init_clients()
 	for (auto& cl : g_clients)
 		delete cl.second;
 	g_clients.clear();
+
+	g_clients.reserve(MAX_USER);
 }
 
 // thread ---------------------------------
@@ -98,8 +100,10 @@ void IOCPServer::worker_thread_loop()
 		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
 		int user_id = static_cast<int>(key);
 
+		g_clients_lock.lock();
 		if (g_clients.count(user_id) == 0)
-			cout << "@@@@@씨 발 ㅋㅋ@@@@@" << endl;
+			cout << "저한테 왜그러세요" << endl;
+		g_clients_lock.unlock();
 
 		switch (exover->op) {
 		case OP_RECV:
@@ -135,6 +139,7 @@ void IOCPServer::accept_thread_loop()
 		int idx = 0;
 
 		while (idx < MAX_USER) {
+			lock_guard<mutex>lock_guard(g_clients_lock);
 			if (g_clients.count(idx) == 0) {
 				cout << "New idx " << idx << " is generated" << endl;
 				g_clients[idx] = new Client(idx);
@@ -155,6 +160,7 @@ void IOCPServer::accept_thread_loop()
 
 		bool retval = CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_clients[idx]->m_s), g_iocp, idx, 0);
 		if (false == retval) {
+			lock_guard<mutex>lock_guard(g_clients_lock);
 			cout << "Bind IO Completion Port Error" << GetLastError() << endl;
 			closesocket(g_clients[idx]->m_s);
 			delete g_clients[idx];
@@ -171,6 +177,7 @@ void IOCPServer::accept_thread_loop()
 		retval = WSARecv(g_clients[idx]->m_s, &g_clients[idx]->m_recv_over.wsabuf, 1, NULL, &flags, &g_clients[idx]->m_recv_over.over, NULL);
 
 		if (retval == SOCKET_ERROR && (WSAGetLastError() != ERROR_IO_PENDING)) {
+			lock_guard<mutex>lock_guard(g_clients_lock);
 			cout << "Bind Recv Operation Error" << WSAGetLastError() << endl;
 			closesocket(g_clients[idx]->m_s);
 			delete g_clients[idx];

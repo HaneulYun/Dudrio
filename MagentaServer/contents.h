@@ -4,7 +4,7 @@
 class Contents
 {
 private:
-	queue<pair<int, char*>> recvQueue;
+	queue<pair<int, unsigned char*>> recvQueue;
 	thread		logic_thread;
 	//RWLock		logic_lock;
 	mutex		logic_lock;
@@ -24,7 +24,7 @@ public:
 	void start_contents();
 	void stop_contents();
 
-	void add_packet(int user_id, char* buf);
+	void add_packet(int user_id, unsigned char* buf);
 
 	void enter_game(int user_id, char name[]);
 	void do_move(int user_id, float xVel, float zVel, float rotAngle, float run_level);

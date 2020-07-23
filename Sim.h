@@ -10,14 +10,14 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	float speed = 1.f;
 
 	GameObject* home;
-	GameObject* prefab;
 
 	StateMachine<Sim> stateMachine;
-
 	std::deque<Vector2> targetPos;
 	std::deque<Vector2> path;
-
 	BuildMessageInfo buildInfo;
+
+	Animator* animator;
+
 private:
 	friend class GameObject;
 	friend class MonoBehavior<Sim>;

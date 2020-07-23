@@ -34,11 +34,11 @@ public:
 			{
 				BuildMessageInfo* info = new BuildMessageInfo;
 				info->pos = Vector2(gameObject->transform->position.x + (rand() % 30) - 15, gameObject->transform->position.z + (rand() % 30) - 15);
-				info->type = BuildingType::House_01;
+				info->buildingType = rand() % 1 + 3;
+				info->buildingIndex = rand() % BuildingBuilder::buildingBuilder->getBuildingCount(info->buildingType);
 				info->simList = &sims;
 
-
-				timeDelay = rand() % 10 + 60;
+				timeDelay = rand() % 10 + 30;
 				Messenger->CreateMessage(0, -1, -1, Msg_Build, info);
 			}
 			

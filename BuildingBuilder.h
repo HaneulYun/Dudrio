@@ -119,6 +119,38 @@ public:
 		return data;
 	}
 
+	void build(Vector2 position, float angle, int type, int index)
+	{
+		if (index < building[type].size())
+		{
+			GameObject* obj;
+
+			auto data = building[type][index];
+			if (data.prefab)
+				obj = Scene::scene->Duplicate(data.prefab);
+			else
+			{
+				obj = Scene::scene->Duplicate(ASSET PREFAB("MRC"));
+				obj->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+				obj->GetComponent<MeshFilter>()->mesh = data.mesh;
+				if (data.material)
+					obj->GetComponent<Renderer>()->materials.push_back(data.material);
+				else
+				{
+					auto renderer = obj->GetComponent<Renderer>();
+					int i = 0;
+					for (auto& sm : data.mesh->DrawArgs)
+						renderer->materials.push_back(data.materials[i++]);
+				}
+				obj->GetComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+			}
+
+			Vector3 pos{ position.x, terrain->terrainData.GetHeight(position.x,position.y), position.y };
+			obj->transform->position = pos;
+			obj->transform->Rotate(Vector3(0, 1, 0), angle);
+		}
+	}
+
 	void build(Vector3 position)
 	{
 		prefab->transform->position = position;
@@ -154,6 +186,24 @@ public:
 				prefab->GetComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
 			}
 		}
+	}
+
+	float getBoundingBox(int type, int index)
+	{
+		if (index < building[type].size())
+		{
+			auto data = building[type][index];
+
+			XMFLOAT3 bound;
+
+			if (data.prefab)
+				bound = data.prefab->GetComponent<BoxCollider>()->boundingBox.Extents;
+			else
+				bound = data.mesh->Bounds.Extents;
+
+			return bound.x > bound.z ? bound.x : bound.z;
+		}
+		return 0;
 	}
 
 	int getBuildingCount(int type)

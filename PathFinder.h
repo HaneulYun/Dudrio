@@ -54,7 +54,12 @@ public:
 		return node;
 	}
 
-	void FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector2>& path)
+	float distance(Node a, Node b)
+	{
+		return sqrt((a.posX - b.posX) * (a.posX - b.posX) + (a.posZ - b.posZ) * (a.posZ - b.posZ));
+	}
+
+	void FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector2>& path, float targetPosOffset = 0)
 	{
 		const int height = terrainData->heightmapHeight;
 		const int width = terrainData->heightmapWidth;
@@ -85,7 +90,7 @@ public:
 			closedList.push_back(currentNode);
 
 			// 목적지를 찾으면 path에 경로를 저장하고 리턴
-			if (currentNode == dest)
+			if ((distance(currentNode, dest) - targetPosOffset) <= 0.01f)
 			{
 				while (!(currentNode == start))
 				{

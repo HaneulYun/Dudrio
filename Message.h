@@ -12,7 +12,8 @@ enum message_type
 struct BuildMessageInfo
 {
 	Vector2 pos;
-	BuildingType type;
+	int buildingType;
+	int buildingIndex;
 
 	std::vector<GameObject*>* simList;
 };

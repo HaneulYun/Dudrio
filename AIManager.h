@@ -13,6 +13,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	std::map<int, Sim*> sims;
 	std::vector<Village*> villages;
 
+	GameObject* simPrefab;
+
 private:
 	friend class GameObject;
 	friend class MonoBehavior<AIManager>;
@@ -31,25 +33,33 @@ public:
 	{
 		time += Time::deltaTime;
 		
-		if (time > 100.f)
+		if (time > 60.f)
 		{
 			for (auto s : AIManager::Instance->sims)
 			{
 				Messenger->CreateMessage(0, s.first, s.first, Msg_Sleep);
 			}
-			time -= 100.f;
+			time -= 60.f;
 		}
 
 		Messenger->Timer();
 	}
 
-	int AddSim(Sim* sim)
+	int AddSim(GameObject* house, GameObject* landMark)
 	{
-		sim->id = simIndex;
-		sims[simIndex++] = sim;
+		GameObject* sim = Scene::scene->Duplicate(simPrefab);
+		sim->transform->position = house->transform->position;
 
-		sim->stateMachine.PushState(IdleState::Instance());
-		sim->stateMachine.GetCurrentState()->Enter(sim);
+		auto simComponent = sim->AddComponent<Sim>();
+		simComponent->animator = sim->children[0]->GetComponent<Animator>();
+		simComponent->home = house;
+		simComponent->id = simIndex;
+		sims[simIndex++] = simComponent;
+
+		simComponent->stateMachine.PushState(IdleState::Instance());
+		simComponent->stateMachine.GetCurrentState()->Enter(simComponent);
+
+		landMark->GetComponent<Village>()->sims.push_back(sim);
 
 		return simIndex;
 	}

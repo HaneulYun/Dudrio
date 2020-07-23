@@ -13,6 +13,7 @@ IdleState* IdleState::Instance()
 
 void IdleState::Enter(Sim* sim)
 {
+
 	if (sim->stateMachine.HaveNextState())
 		return;
 
@@ -22,6 +23,7 @@ void IdleState::Enter(Sim* sim)
 
 void IdleState::Execute(Sim* sim)
 {
+	sim->animator->SetFloat("Walking", 0);
 
 };
 
@@ -79,11 +81,18 @@ MoveState* MoveState::Instance()
 
 void MoveState::Enter(Sim* sim)
 {
-	PathFinder::Instance()->FindPath(sim->targetPos.front(), Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path);
+
+	if (sim->stateMachine.IsNextState(BuildState::Instance()))
+		PathFinder::Instance()->FindPath(sim->targetPos.front(), Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path,
+			BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1);
+	else
+		PathFinder::Instance()->FindPath(sim->targetPos.front(), Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path);
 };
 
 void MoveState::Execute(Sim* sim)
 {
+	sim->animator->SetFloat("Walking", 2);
+
 	if (sim->path.empty())
 	{
 		sim->targetPos.pop_front();
@@ -215,9 +224,10 @@ void BuildState::Enter(Sim* sim)
 
 void BuildState::Execute(Sim* sim)
 {
-	// 건물 짓고 바로 다음 상태로 전이
-	GameObject* building = Scene::scene->Duplicate(sim->prefab);
-	building->transform->position = sim->gameObject->transform->position;
+	// 건물 건설
+	BuildingBuilder::buildingBuilder->build(sim->buildInfo.pos, 0, sim->buildInfo.buildingType, sim->buildInfo.buildingIndex);
+
+	// 다음 상태로 전이
 	if (sim->stateMachine.HaveNextState())
 		sim->stateMachine.ChangeState();
 	else

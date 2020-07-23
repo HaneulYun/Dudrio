@@ -55,4 +55,14 @@ public:
 		stateStack.push_back(newState);
 		stateStack.front()->Enter(owner);
 	}
+
+	bool IsNextState(const State<entity>* st)
+	{
+		if (stateStack.size() < 2)
+			return false;
+
+		if (typeid(*(stateStack.at(1))) == typeid(*st))
+			return true;
+		return false;
+	}
 };

@@ -92,8 +92,8 @@ public:
 					path.push_front(Vector2 { (float)currentNode.posX, (float)currentNode.posZ });
 					currentNode = *currentNode.parent;
 
-					auto d = Scene::scene->Duplicate(prefab);
-					d->transform->position = Vector3(currentNode.posX, terrainData->GetHeight(currentNode.posX, currentNode.posZ), currentNode.posZ);
+					//auto d = Scene::scene->Duplicate(prefab);
+					//d->transform->position = Vector3(currentNode.posX, terrainData->GetHeight(currentNode.posX, currentNode.posZ), currentNode.posZ);
 				}
 				return;
 			}
@@ -162,7 +162,7 @@ public:
 		Vector3 dir{ targetPos.x - object->position.x, 0, targetPos.y - object->position.z };
 		
 		float angle = XMConvertToDegrees(Vector3::Angle(currentDir, dir));
-		if (angle < 3.f || angle > 177.f)
+		if (angle < 3.f * speed)
 		{
 			currentDir = dir;
 			Vector3 newPos = object->position + currentDir.Normalize() * speed * Time::deltaTime;
@@ -176,7 +176,7 @@ public:
 		bool isRight = Vector3::DotProduct(cross, up) > 0 ? true : false;
 
 
-		float rotSpeed = 180.f * Time::deltaTime;
+		float rotSpeed = 180.f * Time::deltaTime * speed;
 		if (!isRight) rotSpeed *= -1;
 
 		object->Rotate(Vector3{ 0,1,0 }, rotSpeed);

@@ -63,7 +63,7 @@ public:
 	int		m_id;
 	EXOVER	m_recv_over;
 	int		m_prev_size;
-	unsigned char	m_packet_buf[MAX_PACKET_SIZE];
+	char	m_packet_buf[MAX_PACKET_SIZE];
 	atomic	<C_STATUS> m_status;
 	unsigned m_move_time;
 	DWORD	m_last_move_time;

@@ -28,7 +28,12 @@ void Contents::init_contents()
 void Contents::start_contents()
 {
 	logic_run = true;
-	logic_thread = thread([this]() { logic_thread_loop(); });
+	//logic_thread = thread([this]() { logic_thread_loop(); });
+	logic_threads.reserve(NUM_OF_CPU * 2 + 2);
+	
+	for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
+		logic_threads.emplace_back([this]() {logic_thread_loop(); });
+	}
 
 	init_contents();
 }
@@ -36,17 +41,20 @@ void Contents::start_contents()
 void Contents::stop_contents()
 {
 	logic_run = false;
-	if (logic_thread.joinable())
-		logic_thread.join();
+	//if (logic_thread.joinable())
+	//	logic_thread.join();
+	for (auto& ths : logic_threads)
+		if (ths.joinable())
+			ths.join();
 }
 
 void Contents::logic_thread_loop()
 {
 	while (logic_run) {
+		logic_lock.lock();
 		if (!recvQueue.empty()) {
 			//logic_lock.LeaveReadLock();
 			//logic_lock.EnterWriteLock();
-			logic_lock.lock();
 			auto buf = recvQueue.front();
 			recvQueue.pop();
 			//logic_lock.LeaveWriteLock();
@@ -153,9 +161,9 @@ void Contents::logic_thread_loop()
 				break;
 			}
 		}
-		//else
+		else
 		//	//logic_lock.LeaveReadLock();
-		//	logic_lock.unlock();
+			logic_lock.unlock();
 	}
 }
 
@@ -422,7 +430,7 @@ void Contents::destruct_all(int user_id)
 	}
 }
 
-void Contents::add_packet(int user_id, unsigned char* buf)
+void Contents::add_packet(int user_id, char* buf)
 {
 	//logic_lock.EnterWriteLock();
 	logic_lock.lock();

@@ -11,6 +11,7 @@
 #include <fstream>
 #include <thread>
 #include <windows.h>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
@@ -59,7 +60,9 @@ extern class Contents contents;
 extern unordered_map<int, class Client*> g_clients;
 extern unordered_map<BuildingInform, class Building*, BuildingInformHasher> g_buildings;
 
-extern RWLock g_sector_clients_lock[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
+//extern RWLock g_sector_clients_lock[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
+extern mutex g_clients_lock;
+extern mutex g_sector_clients_lock[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
 extern unordered_set <class Client*> g_sector_clients[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
 extern unordered_set <class Building*> g_sector_buildings[WORLD_HEIGHT / SECTOR_WIDTH][WORLD_WIDTH / SECTOR_WIDTH];
 

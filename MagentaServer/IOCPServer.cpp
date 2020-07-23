@@ -14,10 +14,12 @@ IOCPServer::~IOCPServer()
 
 void IOCPServer::init_server()
 {
+	cur_listen_socket = 0;
+
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
 
-	l_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	l_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, NULL, WSA_FLAG_OVERLAPPED);
 
 	// bind -------------------------------------------------------
 	SOCKADDR_IN s_address;
@@ -29,13 +31,16 @@ void IOCPServer::init_server()
 
 	// listen -----------------------------------------------------
 	listen(l_socket, SOMAXCONN);
+
+	int option = TRUE;
+	setsockopt(l_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 }
 
 void IOCPServer::start_server()
 {
 	init_clients();
 
-	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);// *2 + 1);
+	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, NUM_OF_CPU * 2 + 1);
 
 	create_worker_threads();
 	create_accept_threads();
@@ -48,6 +53,8 @@ void IOCPServer::init_clients()
 	for (auto& cl : g_clients)
 		delete cl.second;
 	g_clients.clear();
+
+	g_clients.reserve(MAX_USER);
 }
 
 // thread ---------------------------------
@@ -98,6 +105,15 @@ void IOCPServer::worker_thread_loop()
 		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
 		int user_id = static_cast<int>(key);
 
+		g_clients_lock.lock();
+		if (g_clients.count(user_id) == 0)
+		{
+			cout << "저한테 왜그러세요" << user_id << endl;
+			g_clients_lock.unlock();
+			continue;
+		}
+		g_clients_lock.unlock();
+
 		switch (exover->op) {
 		case OP_RECV:
 			if (0 == io_byte)
@@ -130,35 +146,23 @@ void IOCPServer::accept_thread_loop()
 	{
 		// 접속 받을 유저 소켓을 생성 한다.
 		int idx = 0;
-		bool flag = false;
 
-		for (auto& cl : g_clients) {
-			if (idx != cl.first) {
+		g_clients_lock.lock();
+		while (idx < MAX_USER) {
+			if (g_clients.count(idx) == 0) {
 				cout << "New idx " << idx << " is generated" << endl;
 				g_clients[idx] = new Client(idx);
 				g_clients[idx]->m_status = ST_ALLOC;
-				flag = true;
 				break;
 			}
-			else
+			else {
 				idx++;
-			if (idx >= MAX_USER)
-				break;
+			}
 		}
+		g_clients_lock.unlock();
 
 		if (idx >= MAX_USER)
 			continue;
-
-		if (g_clients.empty()){
-			cout << "New idx " << idx << " is generated" << endl;
-			g_clients[idx] = new Client(idx);
-			flag = true;
-		}
-		else if (idx == g_clients.size() && !flag){
-			cout << "New idx " << idx << " is generated" << endl;
-			g_clients[idx] = new Client(idx);
-			flag = true;
-		}
 
 		ZeroMemory(&g_clients[idx]->m_recv_over.over, sizeof(g_clients[idx]->m_recv_over.over));
 		g_clients[idx]->m_s = WSAAccept(l_socket, reinterpret_cast<sockaddr*>(&client_addr), &client_len, NULL, NULL);
@@ -166,6 +170,7 @@ void IOCPServer::accept_thread_loop()
 
 		bool retval = CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_clients[idx]->m_s), g_iocp, idx, 0);
 		if (false == retval) {
+			lock_guard<mutex>lock_guard(g_clients_lock);
 			cout << "Bind IO Completion Port Error" << GetLastError() << endl;
 			closesocket(g_clients[idx]->m_s);
 			delete g_clients[idx];
@@ -182,6 +187,7 @@ void IOCPServer::accept_thread_loop()
 		retval = WSARecv(g_clients[idx]->m_s, &g_clients[idx]->m_recv_over.wsabuf, 1, NULL, &flags, &g_clients[idx]->m_recv_over.over, NULL);
 
 		if (retval == SOCKET_ERROR && (WSAGetLastError() != ERROR_IO_PENDING)) {
+			lock_guard<mutex>lock_guard(g_clients_lock);
 			cout << "Bind Recv Operation Error" << WSAGetLastError() << endl;
 			closesocket(g_clients[idx]->m_s);
 			delete g_clients[idx];
@@ -207,7 +213,7 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 	{
 		// 우리가 처리해야 되는 패킷을 전에 처리해본 적이 없을 때
 		// == 패킷의 시작 부분이 있다
-		if (0 == packet_size)	packet_size = *p;
+		if (0 == packet_size)	packet_size = (unsigned char)*p;
 		// 패킷을 완성할 수 있다
 		if (packet_size <= rest_byte + g_clients[user_id]->m_prev_size) {
 			memcpy(g_clients[user_id]->m_packet_buf + g_clients[user_id]->m_prev_size, p, packet_size - g_clients[user_id]->m_prev_size);
@@ -230,9 +236,7 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 
 void IOCPServer::send_packet(int user_id, void* p)
 {
-	char* buf = reinterpret_cast<char*>(p);
-
-	//CLIENT& u = g_clients[user_id];
+	unsigned char* buf = reinterpret_cast<unsigned char*>(p);
 
 	EXOVER* exover = new EXOVER;
 	exover->op = OP_SEND;
@@ -240,6 +244,7 @@ void IOCPServer::send_packet(int user_id, void* p)
 	exover->wsabuf.buf = exover->io_buf;
 	exover->wsabuf.len = buf[0];
 	memcpy(exover->io_buf, buf, buf[0]);
+
 	// IpBuffers 항목에 u의 wsabuf은 이미 Recv에서 쓰고 있기 때문에 사용하면 안됨
 	WSASend(g_clients[user_id]->m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
 }
@@ -295,9 +300,11 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
-		g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->m_cl.lock();
+		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.insert(o_id);
-		g_clients[user_id]->m_cl.LeaveWriteLock();
+		//g_clients[user_id]->m_cl.LeaveWriteLock();
+		g_clients[user_id]->m_cl.unlock();
 	}
 
 	send_packet(user_id, &p);
@@ -312,9 +319,11 @@ void IOCPServer::send_leave_packet(int user_id, int o_id)
 
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
-		g_clients[user_id]->m_cl.EnterWriteLock();
+		g_clients[user_id]->m_cl.lock();
+		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.erase(o_id);
-		g_clients[user_id]->m_cl.LeaveWriteLock();
+		//g_clients[user_id]->m_cl.LeaveWriteLock();
+		g_clients[user_id]->m_cl.unlock();
 	}
 
 	send_packet(user_id, &p);
@@ -331,6 +340,7 @@ void IOCPServer::send_move_packet(int user_id, int mover, float dAngle)
 	p.xVel = g_clients[mover]->m_xVel;
 	p.zVel = g_clients[mover]->m_zVel;
 	p.rotAngle = dAngle;
+	p.move_time = g_clients[mover]->m_move_time;
 
 	send_packet(user_id, &p);
 }

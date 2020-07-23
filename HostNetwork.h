@@ -61,9 +61,11 @@ public:
 	void send_destruct_all_packet();
 
 	void Login();
+	void Logout();
 
 	void Start()
 	{
+		players.reserve(MAX_USER);
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 		serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
 	}

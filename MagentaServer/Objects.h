@@ -1,29 +1,31 @@
 #pragma once
 #include "main.h"
 
-class Object
-{
-public:
-	float	m_xPos, m_yPos, m_zPos;
-	float	m_rotAngle;
+//class Object
+//{
+//public:
+//	float	m_xPos, m_yPos, m_zPos;
+//	float	m_rotAngle;
+//
+//public:
+//	Object() {}
+//	~Object() {}
+//
+//	bool is_near(const Object& other)
+//	{
+//		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
+//		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
+//		return true;
+//	}
+//};
 
-public:
-	Object() {}
-	~Object() {}
-
-	bool is_near(const Object& other)
-	{
-		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
-		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
-		return true;
-	}
-};
-
-class Building : public Object
+class Building //: public Object
 {
 public:
 	BuildingType m_type;
 	
+	float	m_xPos, m_yPos, m_zPos;
+	float	m_rotAngle;
 	float m_halfwidth;
 	float m_halfLength;
 
@@ -43,12 +45,20 @@ public:
 		return ((m_xPos == b.m_xPos) && (m_yPos == b.m_yPos)
 			&& (m_zPos == b.m_zPos));
 	}
+
+	bool is_near(const Building& other)
+	{
+		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
+		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
+		return true;
+	}
 };
 
-class Client : public Object
+class Client //: public Object
 {
 public:
-	RWLock	m_cl;
+	//RWLock	m_cl;
+	mutex	m_cl;
 	SOCKET	m_s;
 	int		m_id;
 	EXOVER	m_recv_over;
@@ -58,8 +68,9 @@ public:
 	unsigned m_move_time;
 	DWORD	m_last_move_time;
 	unordered_set<int> view_list;
-	
-	bool	is_host;
+
+	float	m_xPos, m_yPos, m_zPos;
+	float	m_rotAngle;
 	float	m_xVel, m_zVel;
 	char	m_name[MAX_ID_LEN + 1];
 
@@ -68,13 +79,17 @@ public:
 	Client(int id);
 	~Client();
 
-	void enter_game(char name[]);
-	void do_move(float xVel, float zVel, float rotAngle, float run_level);
-
 	bool is_sector_change(float prevX, float prevZ);
 	void erase_client_in_sector(float x, float z);
 	void erase_client_in_sector();
 	void insert_client_in_sector();
 
 	vector<int> get_near_clients();
+
+	bool is_near(const Client& other)
+	{
+		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
+		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
+		return true;
+	}
 };

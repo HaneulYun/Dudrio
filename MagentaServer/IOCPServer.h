@@ -13,6 +13,7 @@ private:
 	bool			worker_run;
 	thread			accept_thread;
 	bool			accept_run;
+	int				cur_listen_socket;
 
 public:
 	IOCPServer();

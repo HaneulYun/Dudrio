@@ -11,12 +11,13 @@ constexpr int MAX_USER = 10000;
 
 #define C2S_LOGIN_GUEST		1	// Guest to Server
 #define C2S_LOGIN_HOST		2	// Host to Server
-#define C2S_MOVE_START		3	// Guest to Server
-#define C2S_MOVE			4	// Guest to Server
-#define C2S_CONSTRUCT		5	// Host to Server
-#define C2S_DESTRUCT		6	// Host to Server
-#define C2S_DESTRUCT_ALL	7	// Host to Server
-#define C2S_CHAT			8
+#define C2S_LOGOUT			3
+#define C2S_MOVE_START		4	// Guest to Server
+#define C2S_MOVE			5	// Guest to Server
+#define C2S_CONSTRUCT		6	// Host to Server
+#define C2S_DESTRUCT		7	// Host to Server
+#define C2S_DESTRUCT_ALL	8	// Host to Server
+#define C2S_CHAT			9
 
 #define S2C_LOGIN_OK		1
 #define S2C_LOGIN_FAIL		2
@@ -68,7 +69,7 @@ enum class BuildingType
 
 
 struct sc_packet_login_ok {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 	float xPos, zPos;
@@ -93,12 +94,13 @@ struct sc_packet_chat {
 };
 
 struct sc_packet_move {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 	float xPos, zPos;
 	float xVel, zVel;
 	float rotAngle;
+	unsigned move_time;
 };
 
 struct BuildingInform
@@ -145,7 +147,7 @@ static std::istream& operator>>(std::istream& in, BuildingInform& b)
 
 struct sc_packet_construct
 {
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
@@ -153,7 +155,7 @@ struct sc_packet_construct
 
 struct sc_packet_destruct
 {
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
@@ -161,7 +163,7 @@ struct sc_packet_destruct
 
 struct sc_packet_destruct_all
 {
-	char size;
+	unsigned char size;
 	char type;
 };
 
@@ -169,7 +171,7 @@ constexpr unsigned char O_GUEST = 0;
 constexpr unsigned char O_HOST = 1;
 
 struct sc_packet_enter {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 	char name[MAX_ID_LEN];
@@ -180,19 +182,19 @@ struct sc_packet_enter {
 };
 
 struct sc_packet_leave {
-	char size;
+	unsigned char size;
 	char type;
 	int id;
 };
 
 struct cs_packet_login_guest {
-	char	size;
+	unsigned char	size;
 	char	type;
 	char	name[MAX_ID_LEN];
 };
 
 struct cs_packet_login_host {
-	char	size;
+	unsigned char	size;
 	char	type;
 	char	name[MAX_ID_LEN];
 	float	terrainSize;
@@ -213,37 +215,39 @@ struct cs_packet_chat {
 };
 
 struct cs_packet_move_start {
-	char size;
+	unsigned char size;
 	char type;
 	float xVel, zVel;
 	float rotAngle;
 	float run_level;
+	unsigned move_time;
 };
 
 struct cs_packet_move {
-	char size;
+	unsigned char size;
 	char type;
 	float xVel, zVel;
 	float rotAngle;
 	float run_level;
+	unsigned move_time;
 };
 
 struct cs_packet_construct{
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
 };
 
 struct cs_packet_destruct{
-	char size;
+	unsigned char size;
 	char type;
 
 	BuildingInform b_inform;
 };
 
 struct cs_packet_destruct_all{
-	char size;
+	unsigned char size;
 	char type;
 };
 #pragma pack (pop)

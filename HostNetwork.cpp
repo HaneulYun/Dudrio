@@ -18,7 +18,15 @@ void HostNetwork::ProcessPacket(char* ptr)
 		//	send_construct_packet(p.first);
 	}
 	break;
+	case S2C_LOGIN_FAIL:
+	{
+		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
+		isConnect = false;
+		tryConnect = false;
 
+		closesocket(serverSocket);
+	}
+	break;
 	case S2C_ENTER:
 	{
 		sc_packet_enter* my_packet = reinterpret_cast<sc_packet_enter*>(ptr);
@@ -50,11 +58,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_leave* my_packet = reinterpret_cast<sc_packet_leave*>(ptr);
 		int other_id = my_packet->id;
 		if (other_id == myId) {
-			for (auto& p : players)			
-				Scene::scene->PushDelete(p.second);
-			players.clear();
-			closesocket(serverSocket);
-			isConnect = false;
+			Logout();
 		}
 		else {
 			if (0 != players.count(other_id))
@@ -74,8 +78,6 @@ void HostNetwork::ProcessPacket(char* ptr)
 		break;
 	case S2C_CHAT:
 		break;
-	case S2C_LOGIN_FAIL:
-		break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
@@ -89,7 +91,7 @@ void HostNetwork::process_data(char* net_buf, size_t io_byte)
 	static char packet_buffer[BUFSIZE];
 
 	while (0 != io_byte) {
-		if (0 == in_packet_size) in_packet_size = ptr[0];
+		if (0 == in_packet_size) in_packet_size = (unsigned char)ptr[0];
 		if (io_byte + saved_packet_size >= in_packet_size) {
 			memcpy(packet_buffer + saved_packet_size, ptr, in_packet_size - saved_packet_size);
 			ProcessPacket(packet_buffer);
@@ -117,7 +119,7 @@ void HostNetwork::Receiver()
 void HostNetwork::send_packet(void* packet)
 {
 	char* p = reinterpret_cast<char*>(packet);
-	send(serverSocket, p, p[0], 0);
+	send(serverSocket, p, (unsigned char)p[0], 0);
 }
 
 void HostNetwork::send_construct_packet(BuildingInform b_inform)
@@ -163,4 +165,22 @@ void HostNetwork::Login()
 	l_packet.terrainSize = terrainSize;
 
 	send_packet(&l_packet);
+}
+
+void HostNetwork::Logout()
+{
+	cs_packet_logout l_packet;
+	l_packet.size = sizeof(l_packet);
+	l_packet.type = C2S_LOGOUT;
+
+	send_packet(&l_packet);
+
+	isConnect = false;
+	tryConnect = false;
+
+	closesocket(serverSocket);
+
+	for (auto& p : players)
+		Scene::scene->PushDelete(p.second);
+	players.clear();
 }

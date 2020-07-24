@@ -96,7 +96,9 @@ void TestScene::BuildObjects()
 		}
 		terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
-	PathFinder::Instance()->SetTerrainData(&terrainData->terrainData);
+	TerrainNodeData* terrainNodeData = new TerrainNodeData(&terrainData->terrainData);
+
+	PathFinder::Instance()->SetTerrainData(&terrainData->terrainData, terrainNodeData);
 
 	GameObject* mainCamera = CreateEmpty();
 	{
@@ -115,11 +117,20 @@ void TestScene::BuildObjects()
 		ritem->layer = (int)RenderLayer::Sky;
 	}
 
+	GameObject* node = CreateEmptyPrefab();
+	node->transform->Scale({ 2.f, 2.f, 2.f });
+	node->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
+	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("gray"));
+	//PathFinder::Instance()->prefab = node;
+
+
 	GameObject* manager = CreateEmpty();
 	{
 		auto buildingBuilder = manager->AddComponent<BuildingBuilder>();
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
+		buildingBuilder->cube = node;
+		buildingBuilder->terrainNodeData = terrainNodeData;
 		//BuildManager* buildManager = manager->AddComponent<BuildManager>();
 		//buildManager->terrain = terrain;
 		//buildManager->heightMap = &terrainData->terrainData;
@@ -134,11 +145,6 @@ void TestScene::BuildObjects()
 	pref->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
 	pref->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
 
-	GameObject* node = CreateEmptyPrefab();
-	node->transform->Scale({2.f, 2.f, 2.f });
-	node->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
-	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("gray"));
-	PathFinder::Instance()->prefab = node;
 
 
 	GameObject* landmark = CreateEmpty();

@@ -190,6 +190,7 @@
     <ClInclude Include="GuestController.h" />
     <ClInclude Include="HostCameraController.h" />
     <ClInclude Include="HostNetwork.h" />
+    <ClInclude Include="TerrainNodeData.h" />
     <ClInclude Include="Village.h" />
     <ClInclude Include="MagentaServer\protocol.h" />
     <ClInclude Include="MessageManager.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="MaterialScene.cpp" />
     <ClCompile Include="GuestNetwork.cpp" />
     <ClCompile Include="ParticleScene.cpp" />
+    <ClCompile Include="PathFinder.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -1,6 +1,7 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
 #include "HostNetwork.h"
+#include "TerrainNodeData.h"
 
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
@@ -14,6 +15,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	static BuildingBuilder* buildingBuilder;
 
 	Terrain* terrain{ nullptr };
+	TerrainNodeData* terrainNodeData; 
+	GameObject* cube;
 	float distance;
 
 protected:
@@ -119,6 +122,36 @@ public:
 		return data;
 	}
 
+	void updateTerrainNodeData(GameObject* building)
+	{
+		Vector3 pos = building->transform->position;
+		Vector3 right = Vector3::Normalize(building->transform->right);
+		Vector3 forward = Vector3::Normalize(building->transform->forward);
+
+		for (int x = (pos - right).x; x <= (pos + right).x; ++x)
+		{
+			for (int z = (pos - forward).z; z <= (pos + forward).z; ++z)
+			{
+				BoundingBox boundingBox = building->GetComponent<BoxCollider>()->boundingBox;
+
+				BoundingOrientedBox obbBox{};
+				obbBox.Center = boundingBox.Center;
+				obbBox.Extents = boundingBox.Extents;
+				obbBox.Orientation = gameObject->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
+
+				if (obbBox.Contains(XMLoadFloat3(&XMFLOAT3(x, 0, z))))
+				{
+					terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].canMove = false;
+
+					// 노드 확인용
+					auto go = Scene::scene->Duplicate(cube);
+					go->transform->position = Vector3(x, 0, z);
+				}
+			}
+		}
+		
+	}
+
 	void build(Vector2 position, float angle, int type, int index)
 	{
 		if (index < building[type].size())
@@ -148,12 +181,15 @@ public:
 			Vector3 pos{ position.x, terrain->terrainData.GetHeight(position.x,position.y), position.y };
 			obj->transform->position = pos;
 			obj->transform->Rotate(Vector3(0, 1, 0), angle);
+
+			updateTerrainNodeData(obj);
 		}
 	}
 
 	void build(Vector3 position)
 	{
 		prefab->transform->position = position;
+		updateTerrainNodeData(prefab);
 		prefab = nullptr;
 	}
 

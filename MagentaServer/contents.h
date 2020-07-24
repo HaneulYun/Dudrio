@@ -21,6 +21,7 @@ public:
 	Contents();
 	~Contents();
 
+	void init_buildings();
 	void init_contents();
 	void start_contents();
 	void stop_contents();
@@ -32,8 +33,8 @@ public:
 	void disconnect(int user_id);
 	void login_fail(int user_id);
 
-	void do_construct(int user_id, BuildingInform b_inform);
-	void do_destruct(int user_id, BuildingInform b_inform);
+	void do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle);
+	void do_destruct(int user_id);
 	void destruct_all(int user_id);
 
 	pair<int, int> calculate_sector_num(float xPos, float zPos);

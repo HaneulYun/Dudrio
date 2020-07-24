@@ -56,8 +56,8 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_construct_packet(BuildingInform b_inform);
-	void send_destruct_packet(BuildingInform b_inform);
+	void send_construct_packet(int type, int name, float x, float z, float angle);
+	void send_destruct_packet(int type, int name, float x, float z, float angle);
 	void send_destruct_all_packet();
 
 	void Login();

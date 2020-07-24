@@ -13,16 +13,21 @@ Contents::~Contents()
 
 void Contents::init_contents()
 {
-	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
-		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
-			g_sector_buildings[i][j].clear();
-
-	for (auto& b : g_buildings)
-		delete b.second;
-	g_buildings.clear();
+	init_buildings();
 
 	if (terrain_data != nullptr)
 		delete terrain_data;
+}
+
+void Contents::init_buildings()
+{
+	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
+		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j) {
+			for (auto b : g_buildings[i][j])
+				delete b;
+			g_buildings[i][j].clear();
+			g_buildings[i][j].reserve(100);
+		}
 }
 
 void Contents::start_contents()
@@ -53,11 +58,8 @@ void Contents::logic_thread_loop()
 	while (logic_run) {
 		logic_lock.lock();
 		if (!recvQueue.empty()) {
-			//logic_lock.LeaveReadLock();
-			//logic_lock.EnterWriteLock();
 			auto buf = recvQueue.front();
 			recvQueue.pop();
-			//logic_lock.LeaveWriteLock();
 			logic_lock.unlock();
 
 			switch (buf.second[1]) {
@@ -132,14 +134,14 @@ void Contents::logic_thread_loop()
 			{
 				cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf.second);
 				if (buf.first == host_id)
-					do_construct(buf.first, packet->b_inform);
+					do_construct(buf.first, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle);
 			}
 			break;
 			case C2S_DESTRUCT:
 			{
 				cs_packet_destruct* packet = reinterpret_cast<cs_packet_destruct*>(buf.second);
 				if (buf.first == host_id)
-					do_destruct(buf.first, packet->b_inform);
+					do_destruct(buf.first);
 			}
 			break;
 			case C2S_DESTRUCT_ALL:
@@ -162,19 +164,16 @@ void Contents::logic_thread_loop()
 			}
 		}
 		else
-		//	//logic_lock.LeaveReadLock();
 			logic_lock.unlock();
 	}
 }
 
 void Contents::enter_game(int user_id, char name[])
 {
-	//g_clients[user_id]->m_cl.EnterWriteLock();
 	g_clients[user_id]->m_cl.lock();
 	strcpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
 	iocp.send_login_ok_packet(user_id);
-	//g_clients[user_id]->m_cl.LeaveWriteLock();
 	g_clients[user_id]->m_cl.unlock();
 	g_clients[user_id]->m_status = ST_ACTIVE;
 
@@ -191,8 +190,10 @@ void Contents::enter_game(int user_id, char name[])
 			}
 		}
 
-		for (auto b : g_buildings)
-			iocp.send_construct_packet(user_id, b.first);
+		for(int i=0;i< WORLD_HEIGHT / SECTOR_WIDTH;++i)
+			for(int j=0;j< WORLD_WIDTH / SECTOR_WIDTH;++j)
+				for (auto b : g_buildings[i][j])
+					iocp.send_construct_packet(user_id, b->building_type, b->building_name, b->m_xPos, b->m_zPos, b->m_angle);
 	}
 	else {
 		for (auto cl : g_clients) {
@@ -236,11 +237,9 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 		g_clients[user_id]->insert_client_in_sector();
 	}
 
-	//g_clients[user_id]->m_cl.EnterReadLock();
 	g_clients[user_id]->m_cl.lock();
 	unordered_set<int> old_vl = g_clients[user_id]->view_list;
 	unordered_set<int> new_vl;
-	//g_clients[user_id]->m_cl.LeaveReadLock();
 	g_clients[user_id]->m_cl.unlock();
 
 	vector<int> near_clients = g_clients[user_id]->get_near_clients();
@@ -260,29 +259,23 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 		g_clients_lock.unlock();
 		if (old_vl.count(new_player) == 0) {
 			iocp.send_enter_packet(user_id, new_player);
-			//g_clients[new_player]->m_cl.EnterReadLock();
 			g_clients[new_player]->m_cl.lock();
 			if (g_clients[new_player]->view_list.count(user_id) == 0) {
-				//g_clients[new_player]->m_cl.LeaveReadLock();
 				g_clients[new_player]->m_cl.unlock();
 				iocp.send_enter_packet(new_player, user_id);
 			}
 			else {
-				//g_clients[new_player]->m_cl.LeaveReadLock();
 				g_clients[new_player]->m_cl.unlock();
 				iocp.send_move_packet(new_player, user_id, rotAngle);
 			}
 		}
 		else {
-			//g_clients[new_player]->m_cl.EnterReadLock();
 			g_clients[new_player]->m_cl.lock();
 			if (0 != g_clients[new_player]->view_list.count(user_id)) {
-				//g_clients[new_player]->m_cl.LeaveReadLock();
 				g_clients[new_player]->m_cl.unlock();
 				iocp.send_move_packet(new_player, user_id, rotAngle);
 			}
 			else {
-				//g_clients[new_player]->m_cl.LeaveReadLock();
 				g_clients[new_player]->m_cl.unlock();
 				iocp.send_enter_packet(new_player, user_id);
 			}
@@ -298,16 +291,13 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 		g_clients_lock.unlock();
 		if (new_vl.count(old_player) == 0) {
 			iocp.send_leave_packet(user_id, old_player);
-			//g_clients[old_player]->m_cl.EnterReadLock();
 			g_clients[old_player]->m_cl.lock();
 			if (0 != g_clients[old_player]->view_list.count(user_id)) {
-				//g_clients[old_player]->m_cl.LeaveReadLock();
 				g_clients[old_player]->m_cl.unlock();
 				iocp.send_leave_packet(old_player, user_id);
 			}
 			else {
 				g_clients[old_player]->m_cl.unlock();
-				//g_clients[old_player]->m_cl.LeaveReadLock();
 			}
 		}
 	}
@@ -332,13 +322,11 @@ void Contents::disconnect(int user_id)
 	g_clients[user_id]->m_s = INVALID_SOCKET;
 
 	if (host_id != user_id){
-		//g_clients[user_id]->m_cl.lock();
 		for (auto cl = g_clients[user_id]->view_list.begin(); cl != g_clients[user_id]->view_list.end(); ++cl) {
 			if (user_id == *cl) continue;
 			if (ST_ACTIVE == g_clients[*cl]->m_status)
 				iocp.send_leave_packet(*cl, user_id);
 		}
-		//g_clients[user_id]->m_cl.unlock();
 		if (host_id != -1)
 			iocp.send_leave_packet(host_id, user_id);
 	}
@@ -388,39 +376,38 @@ void Contents::login_fail(int user_id)
 	g_clients.erase(user_id);
 }
 
-void Contents::do_construct(int user_id, BuildingInform b_inform)
+void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle)
 {
-	g_buildings[b_inform] = new Building(b_inform);
-	pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
-	g_sector_buildings[b_sectnum.second][b_sectnum.first].insert(g_buildings[b_inform]);
-	
+	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
+	g_buildings[b_sectnum.second][b_sectnum.first].insert(new Building(b_type, b_name, xpos, zpos, angle));
+
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;
 		if (ST_ACTIVE == cl.second->m_status)
-			iocp.send_construct_packet(cl.second->m_id, b_inform);
+			iocp.send_construct_packet(cl.second->m_id, b_type, b_name, xpos, zpos, angle);
 	}
 }
 
-void Contents::do_destruct(int user_id, BuildingInform b_inform)
+void Contents::do_destruct(int user_id)
 {
-	pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
-	g_sector_buildings[b_sectnum.second][b_sectnum.first].erase(g_buildings[b_inform]);
-	
-	delete g_buildings[b_inform];
-	g_buildings.erase(b_inform);
-
-	for (auto& cl : g_clients){
-		if (user_id == cl.second->m_id)
-			continue;
-		if (ST_ACTIVE == cl.second->m_status)
-			iocp.send_destruct_packet(cl.second->m_id, b_inform);
-	}
+	//pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
+	//g_sector_buildings[b_sectnum.second][b_sectnum.first].erase(g_buildings[b_inform]);
+	//
+	//delete g_buildings[b_inform];
+	//g_buildings.erase(b_inform);
+	//
+	//for (auto& cl : g_clients){
+	//	if (user_id == cl.second->m_id)
+	//		continue;
+	//	if (ST_ACTIVE == cl.second->m_status)
+	//		iocp.send_destruct_packet(cl.second->m_id, b_inform);
+	//}
 }
 
 void Contents::destruct_all(int user_id)
 {
-	init_contents();
+	init_buildings();
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -432,10 +419,8 @@ void Contents::destruct_all(int user_id)
 
 void Contents::add_packet(int user_id, char* buf)
 {
-	//logic_lock.EnterWriteLock();
 	logic_lock.lock();
 	recvQueue.push(make_pair(user_id, buf));
-	//logic_lock.LeaveWriteLock();
 	logic_lock.unlock();
 }
 

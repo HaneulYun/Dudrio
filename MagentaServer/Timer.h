@@ -21,7 +21,7 @@ class Timer
 private:
 	HANDLE	g_iocp;
 	thread	timer_thread;
-	RWLock	timer_lock;
+	mutex	timer_lock;
 	priority_queue<timer_event>	timer_queue;
 	bool	timer_run;
 

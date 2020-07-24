@@ -13,6 +13,9 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static BuildingBuilder* buildingBuilder;
 
+	int curPrefabType;
+	int curPrefabIndex;
+
 	Terrain* terrain{ nullptr };
 	float distance;
 
@@ -39,9 +42,19 @@ public:
 			if (Input::GetMouseButtonUp(0))
 			{
 				auto p = prefab->transform->position;
-				BuildingInform inform{ ::BuildingType::Well_01, p.x, p.y, p.z, 0 };
-				if (HostNetwork::network->isConnect)
-					HostNetwork::network->send_construct_packet(inform);
+				
+				if (HostNetwork::network->isConnect) {
+					Vector3 prefabForward{ prefab->transform->forward };
+					prefabForward.y = 0;
+					prefabForward.Normalize();
+					Vector3 forward{ 0,0,1 };
+					float angle = Vector3::DotProduct(forward, prefabForward);
+					Vector3 dir = Vector3::CrossProduct(forward, prefabForward);
+					angle = XMConvertToDegrees(acos(angle));
+					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+					
+					HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle);
+				}
 				prefab = nullptr;
 			}
 		}
@@ -185,6 +198,9 @@ public:
 				}
 				prefab->GetComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
 			}
+
+			curPrefabType = type;
+			curPrefabIndex = index;
 		}
 	}
 

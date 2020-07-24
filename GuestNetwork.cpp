@@ -40,6 +40,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 				Graphics::Instance()->commandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 			}
 			terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
+			BuildingBuilder::buildingBuilder->terrain = terrainData;
 		}
 
 		myCharacter->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
@@ -108,9 +109,8 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	case S2C_CONSTRUCT:
 	{
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
-		BuildingBuilder::buildingBuilder->enterBuildMode(0, 0);
-		BuildingBuilder::buildingBuilder->build({ my_packet->b_inform.xPos, my_packet->b_inform.yPos, my_packet->b_inform.zPos });
-		//Builder::builder->BuildNewBuilding(my_packet->b_inform);
+		Vector2 building_pos{ my_packet->xPos, my_packet->zPos };
+		BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name);
 	}
 	break;
 	case S2C_DESTRUCT:

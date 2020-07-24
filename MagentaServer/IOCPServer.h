@@ -41,8 +41,8 @@ public:
 	void send_leave_packet(int user_id, int o_id);
 	void send_move_packet(int user_id, int mover, float dAngle);	// move + rotate
 
-	void send_construct_packet(int user_id, BuildingInform b_inform);
-	void send_destruct_packet(int user_id, BuildingInform b_inform);
+	void send_construct_packet(int user_id, int type, int name, float x, float z, float angle);
+	void send_destruct_packet(int user_id, int type, int name, float x, float z, float angle);
 	void send_destruct_all_packet(int user_id);
 
 	void send_chat_packet(int user_id, int chatter, wchar_t mess[]);

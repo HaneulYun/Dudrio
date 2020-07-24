@@ -207,7 +207,7 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 	char* p = r_o.io_buf;
 	int packet_size = 0;
 	// 미리 받아논 게 있다면?
-	if (0 != g_clients[user_id]->m_prev_size)	packet_size = g_clients[user_id]->m_packet_buf[0];
+	if (0 != g_clients[user_id]->m_prev_size)	packet_size = (unsigned char)g_clients[user_id]->m_packet_buf[0];
 	// 처리할 데이터가 남아있다면?
 	while (rest_byte > 0)
 	{
@@ -301,9 +301,7 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
 		g_clients[user_id]->m_cl.lock();
-		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.insert(o_id);
-		//g_clients[user_id]->m_cl.LeaveWriteLock();
 		g_clients[user_id]->m_cl.unlock();
 	}
 
@@ -320,9 +318,7 @@ void IOCPServer::send_leave_packet(int user_id, int o_id)
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
 		g_clients[user_id]->m_cl.lock();
-		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.erase(o_id);
-		//g_clients[user_id]->m_cl.LeaveWriteLock();
 		g_clients[user_id]->m_cl.unlock();
 	}
 
@@ -345,22 +341,30 @@ void IOCPServer::send_move_packet(int user_id, int mover, float dAngle)
 	send_packet(user_id, &p);
 }
 
-void IOCPServer::send_construct_packet(int user_id, BuildingInform b_inform)
+void IOCPServer::send_construct_packet(int user_id, int type, int name, float x, float z, float angle)
 {
 	sc_packet_construct p;
 	p.size = sizeof(p);
 	p.type = S2C_CONSTRUCT;
-	p.b_inform = b_inform;
+	p.building_name = name;
+	p.building_type = type;
+	p.xPos = x;
+	p.zPos = z;
+	p.angle = angle;
 
 	send_packet(user_id, &p);
 }
 
-void IOCPServer::send_destruct_packet(int user_id, BuildingInform b_inform)
+void IOCPServer::send_destruct_packet(int user_id, int type, int name, float x, float z, float angle)
 {
 	sc_packet_destruct p;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT;
-	p.b_inform = b_inform;
+	//p.building_name = name;
+	//p.building_type = type;
+	//p.xPos = x;
+	//p.zPos = z;
+	//p.angle = angle;
 
 	send_packet(user_id, &p);
 }

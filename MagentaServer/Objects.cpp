@@ -11,12 +11,12 @@ Client::Client(SOCKET& sock, int id)
 	m_status = ST_FREE;
 	m_s = sock;
 	// StressTest ----------------------------------------
-	random_device rd;
-	default_random_engine dre;
-	uniform_real_distribution<>urd(0.0f, 1000.0f);
-	m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
+	//random_device rd;
+	//default_random_engine dre;
+	//uniform_real_distribution<>urd(0.0f, 1000.0f);
+	//m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
 	// ---------------------------------------------------
-	//m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
+	m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
@@ -32,12 +32,12 @@ Client::Client(int id)
 	m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 	m_status = ST_FREE;
 	// StressTest ----------------------------------------
-	random_device rd;
-	default_random_engine dre(rd());
-	uniform_real_distribution<>urd(0.0f, 1000.0f);
-	m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
+	//random_device rd;
+	//default_random_engine dre(rd());
+	//uniform_real_distribution<>urd(0.0f, 1000.0f);
+	//m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
 	// ---------------------------------------------------
-	//m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
+	m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
@@ -62,11 +62,9 @@ void Client::erase_client_in_sector(float x, float z)
 {
 	pair<int, int> sect_num = contents.calculate_sector_num(x, z);
 	g_sector_clients_lock[sect_num.second][sect_num.first].lock();
-	//g_sector_clients_lock[sect_num.second][sect_num.first].EnterWriteLock();
 	if (g_sector_clients[sect_num.second][sect_num.first].count(this) != 0)
 		g_sector_clients[sect_num.second][sect_num.first].erase(this);
 	g_sector_clients_lock[sect_num.second][sect_num.first].unlock();
-	//g_sector_clients_lock[sect_num.second][sect_num.first].LeaveWriteLock();
 }
 
 void Client::erase_client_in_sector()
@@ -75,11 +73,9 @@ void Client::erase_client_in_sector()
 	pair<int, int> sect_num = contents.calculate_sector_num(m_xPos, m_zPos);
 	m_cl.unlock();
 	g_sector_clients_lock[sect_num.second][sect_num.first].lock();
-	//g_sector_clients_lock[sect_num.second][sect_num.first].EnterWriteLock();
 	if (g_sector_clients[sect_num.second][sect_num.first].count(this) != 0)
 		g_sector_clients[sect_num.second][sect_num.first].erase(this);
 	g_sector_clients_lock[sect_num.second][sect_num.first].unlock();
-	//g_sector_clients_lock[sect_num.second][sect_num.first].LeaveWriteLock();
 }
 
 void Client::insert_client_in_sector()
@@ -88,10 +84,8 @@ void Client::insert_client_in_sector()
 	pair<int, int> sect_num = contents.calculate_sector_num(m_xPos, m_zPos);
 	m_cl.unlock();
 	g_sector_clients_lock[sect_num.second][sect_num.first].lock();
-	//g_sector_clients_lock[sect_num.second][sect_num.first].EnterWriteLock();
 	g_sector_clients[sect_num.second][sect_num.first].insert(this);
 	g_sector_clients_lock[sect_num.second][sect_num.first].unlock();
-	//g_sector_clients_lock[sect_num.second][sect_num.first].LeaveWriteLock();
 }
 
 vector<int> Client::get_near_clients()
@@ -104,7 +98,6 @@ vector<int> Client::get_near_clients()
 		if (i < 0 || i > WORLD_HEIGHT / SECTOR_WIDTH - 1) continue;
 		for (int j = sect_num.first - 1; j <= sect_num.first + 1; ++j) {
 			if (j < 0 || j > WORLD_WIDTH / SECTOR_WIDTH - 1) continue;
-			//g_sector_clients_lock[i][j].EnterReadLock();
 			lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
 			for (auto nearObj : g_sector_clients[i][j]) {
 				if (ST_ACTIVE != nearObj->m_status)	continue;
@@ -112,7 +105,6 @@ vector<int> Client::get_near_clients()
 				if (true == is_near(*nearObj))
 					near_clients.emplace_back(nearObj->m_id);
 			}
-			//g_sector_clients_lock[i][j].LeaveReadLock();
 		}
 	}
 	return near_clients;

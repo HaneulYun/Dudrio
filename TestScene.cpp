@@ -124,22 +124,22 @@ void TestScene::BuildObjects()
 	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("gray"));
 	//PathFinder::Instance()->prefab = node;
 
-
-	GameObject* manager = CreateEmpty();
-	{
-		auto buildingBuilder = manager->AddComponent<BuildingBuilder>();
-		buildingBuilder->serializeBuildings();
-		buildingBuilder->terrain = terrainData;
-		buildingBuilder->cube = node;
-		buildingBuilder->terrainNodeData = terrainNodeData;
-		//BuildManager* buildManager = manager->AddComponent<BuildManager>();
-		//buildManager->terrain = terrain;
-		//buildManager->heightMap = &terrainData->terrainData;
-		//buildManager->terrainMesh = terrainData->terrainData.heightmapTexture;
-		//BuildManager::buildManager = buildManager;
-
-		AIManager::Instance = manager->AddComponent<AIManager>();
-	}
+//
+//GameObject* manager = CreateEmpty();
+//{
+//	auto buildingBuilder = manager->AddComponent<BuildingBuilder>();
+//	buildingBuilder->serializeBuildings();
+//	buildingBuilder->terrain = terrainData;
+//	buildingBuilder->cube = node;
+//	buildingBuilder->terrainNodeData = terrainNodeData;
+//	//BuildManager* buildManager = manager->AddComponent<BuildManager>();
+//	//buildManager->terrain = terrain;
+//	//buildManager->heightMap = &terrainData->terrainData;
+//	//buildManager->terrainMesh = terrainData->terrainData.heightmapTexture;
+//	//BuildManager::buildManager = buildManager;
+//
+//	AIManager::Instance = manager->AddComponent<AIManager>();
+//}
 
 	GameObject* pref = CreateEmptyPrefab();
 	pref->transform->Scale({ 5.f, 5.f, 5.f });
@@ -174,18 +174,44 @@ void TestScene::BuildObjects()
 	//auto simCompo = sim->AddComponent<Sim>();
 	//simCompo->animator = anim;
 
-	AIManager::Instance->simPrefab = sim;
+	//AIManager::Instance->simPrefab = sim;
 	
 
-	for (int i = 0; i < 10; ++i)
+
+	auto object = CreateUI();
+	{
+		auto rt = object->GetComponent<RectTransform>();
+		rt->width = CyanFW::Instance()->GetWidth();
+		rt->height = CyanFW::Instance()->GetHeight();
+
+		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
+		buildingBuilder->serializeBuildings();
+		buildingBuilder->terrain = terrainData;
+		buildingBuilder->terrainNodeData = terrainNodeData;
+		buildingBuilder->cube = node;
+		AIManager::Instance = object->AddComponent<AIManager>();
+		AIManager::Instance->simPrefab = sim;
+
+		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
+		buildingTypeSelector->builder = buildingBuilder;
+
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, L"랜드\n마크", -80, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::House, L"주거\n건물", -40, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, L"테마\n건물", 0, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landscape, L"조경", 40, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, L"소품", 80, 0);
+	}
+
+
+	for (int i = 0; i < 1; ++i)
 	{
 		int x = 500 + rand() % 10;
 		int z = 500 + rand() % 10;
 
 		GameObject* house = CreateEmpty();
 		house->AddComponent<Building>();
-		house->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var01");
-		house->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
+		//house->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var01");
+		//house->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
 		house->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
 		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 

@@ -36,9 +36,6 @@ void PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 	const int height = terrainData->heightmapHeight;
 	const int width = terrainData->heightmapWidth;
 
-	const int halfX = 0;
-	const int halfZ = 0;
-
 	std::vector<Node> openList;
 	std::vector<Node> closedList;
 	closedList.reserve(400);
@@ -78,29 +75,29 @@ void PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 		// 새로 갈 수 있는 경로를 추가
 		std::vector<Node> childs;
 		Node& parent = closedList.back();
-		if (currentNode.posX > -halfX)
+		if (currentNode.posX > 0)
 		{
 			childs.emplace_back(CreateNode(currentNode.posX - 1, currentNode.posZ, parent, dest));
-			if (currentNode.posZ > -halfZ)
+			if (currentNode.posZ > 0)
 			{
 				childs.emplace_back(CreateNode(currentNode.posX, currentNode.posZ - 1, parent, dest));
 				childs.emplace_back(CreateNode(currentNode.posX - 1, currentNode.posZ - 1, parent, dest));
 			}
-			if (currentNode.posZ < -halfZ + height - 1)
+			if (currentNode.posZ < height - 1)
 			{
 				childs.emplace_back(CreateNode(currentNode.posX, currentNode.posZ + 1, parent, dest));
 				childs.emplace_back(CreateNode(currentNode.posX - 1, currentNode.posZ + 1, parent, dest));
 
 			}
 		}
-		if (currentNode.posX < -halfX + width - 1)
+		if (currentNode.posX < width - 1)
 		{
 			childs.emplace_back(CreateNode(currentNode.posX + 1, currentNode.posZ, parent, dest));
-			if (currentNode.posZ > -halfZ)
+			if (currentNode.posZ > 0)
 			{
 				childs.emplace_back(CreateNode(currentNode.posX + 1, currentNode.posZ - 1, parent, dest));
 			}
-			if (currentNode.posZ < -halfZ + height - 1)
+			if (currentNode.posZ < height - 1)
 			{
 				childs.emplace_back(CreateNode(currentNode.posX + 1, currentNode.posZ + 1, parent, dest));
 
@@ -110,7 +107,7 @@ void PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 		for (auto node : childs)
 		{
 			// 장애물이면
-			//if (terrainData->bytes[(node.posX + halfX) + (node.posZ + halfZ) * width] != 0) continue;
+			if (terrainNodeData->extraData[node.posX + node.posZ * width].collision) continue;
 			// closedList에 존재하면
 			if (find(closedList.begin(), closedList.end(), node) != closedList.end()) continue;
 			// openList에 없으면

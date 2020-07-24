@@ -43,8 +43,8 @@ public:
 			{
 				auto p = prefab->transform->position;
 				BuildingInform inform{ ::BuildingType::Well_01, p.x, p.y, p.z, 0 };
-				if (HostNetwork::network->isConnect)
-					HostNetwork::network->send_construct_packet(inform);
+				//if (HostNetwork::network->isConnect)
+				//	HostNetwork::network->send_construct_packet(inform);
 				updateTerrainNodeData(prefab);
 				prefab = nullptr;
 			}
@@ -143,7 +143,7 @@ public:
 
 				if (obbBox.Contains(XMLoadFloat3(&XMFLOAT3(x, pos.y, z))))
 				{
-					terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].canMove = false;
+					terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].collision = true;
 
 					// 노드 확인용
 					auto go = Scene::scene->Duplicate(cube);

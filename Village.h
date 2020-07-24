@@ -39,7 +39,7 @@ public:
 				info->simList = &sims;
 
 				timeDelay = rand() % 10 + 30;
-				Messenger->CreateMessage(0, -1, -1, Msg_Build, info);
+				//Messenger->CreateMessage(0, -1, -1, Msg_Build, info);
 			}
 			
 			timeDelay -= Time::deltaTime;

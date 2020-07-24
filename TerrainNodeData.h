@@ -2,7 +2,7 @@
 
 struct ExtraNodeData
 {
-	bool canMove;
+	bool collision = 0;
 };
 
 class TerrainNodeData
@@ -13,6 +13,6 @@ public:
 
 	TerrainNodeData(TerrainData* terrainData) : data(terrainData)
 	{
-		extraData = new ExtraNodeData[terrainData->heightmapWidth + terrainData->heightmapWidth]{ false };
+		extraData = new ExtraNodeData[terrainData->heightmapWidth * terrainData->heightmapHeight];
 	}
 };

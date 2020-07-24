@@ -37,7 +37,13 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 	switch (telegram.msg)
 	{
 	case Msg_Move:
-		sim->targetPos.push_back(Vector2(sim->gameObject->transform->position.x + (rand() % 30) -15, sim->gameObject->transform->position.z + (rand() % 30) - 15));
+		Vector2 targetPos;
+		do
+		{
+			targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 30) + 15, sim->gameObject->transform->position.z - (rand() % 30) + 15);
+		} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+
+		sim->targetPos.push_back(targetPos);
 		sim->stateMachine.ChangeState(MoveState::Instance());
 		return true;
 	case Msg_Sleep:

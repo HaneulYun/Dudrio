@@ -67,7 +67,6 @@ public:
 	{
 		players.reserve(MAX_USER);
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
-		serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
 	}
 
 	void Update()
@@ -76,6 +75,7 @@ public:
 		{
 			if (Input::GetKeyDown(KeyCode::Return) && ip != nullptr && ipImage != nullptr)
 			{
+				serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
 				std::string serverIp;
 				serverIp.assign(wserverIp.begin(), wserverIp.end());
 

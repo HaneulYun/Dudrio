@@ -43,13 +43,36 @@
 //	return in;
 //}
 
-class Building 
-{
-public:
+struct BuildingInfo {
 	int		building_type;
 	int		building_name;
 	float	m_xPos, m_zPos;
 	float	m_angle;
+
+	bool operator== (const BuildingInfo& b) const
+	{
+		return ((building_type == b.building_type) && (building_name == b.building_name)
+			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos)
+			&& (m_angle == b.m_angle));
+	}
+};
+
+struct BuildingInfoHasher
+{
+	std::size_t operator()(const BuildingInfo& b) const
+	{
+		using std::size_t;
+		using std::hash;
+
+		return ((hash<float>()(b.m_xPos)
+			^ (hash<float>()(b.m_zPos) << 1)) >> 1) ^ (hash<float>()(b.m_angle) << 1);
+	}
+};
+
+class Building 
+{
+public:
+	BuildingInfo m_info;
 
 	float	m_halfwidth;
 	float	m_halfLength;
@@ -57,22 +80,15 @@ public:
 public:
 	Building(int type, int name, float x, float z, float angle)
 	{
-		building_type = type;
-		building_name = name;
-		m_xPos = x;
-		m_zPos = z;
-		m_angle = angle;
+		m_info.building_type = type;
+		m_info.building_name = name;
+		m_info.m_xPos = x;
+		m_info.m_zPos = z;
+		m_info.m_angle = angle;
 	}
 
 	~Building() {}
 
-	bool operator== (const Building& b) const
-	{
-		return ((building_type == b.building_type) && (building_name == b.building_name)
-			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos)
-			&& (m_angle == b.m_angle));
-	}
-	
 	//bool is_near(const Building& other)
 	//{
 	//	if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;

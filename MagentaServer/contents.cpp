@@ -24,7 +24,7 @@ void Contents::init_buildings()
 	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
 		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j) {
 			for (auto b : g_buildings[i][j])
-				delete b;
+				delete b.second;
 			g_buildings[i][j].clear();
 			g_buildings[i][j].reserve(100);
 		}
@@ -193,7 +193,7 @@ void Contents::enter_game(int user_id, char name[])
 		for(int i=0;i< WORLD_HEIGHT / SECTOR_WIDTH;++i)
 			for(int j=0;j< WORLD_WIDTH / SECTOR_WIDTH;++j)
 				for (auto b : g_buildings[i][j])
-					iocp.send_construct_packet(user_id, b->building_type, b->building_name, b->m_xPos, b->m_zPos, b->m_angle);
+					iocp.send_construct_packet(user_id, b.second->m_info.building_type, b.second->m_info.building_name, b.second->m_info.m_xPos, b.second->m_info.m_zPos, b.second->m_info.m_angle);
 	}
 	else {
 		for (auto cl : g_clients) {
@@ -378,8 +378,9 @@ void Contents::login_fail(int user_id)
 
 void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle)
 {
+	BuildingInfo b{ b_type, b_name, xpos, zpos, angle };
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
-	g_buildings[b_sectnum.second][b_sectnum.first].insert(new Building(b_type, b_name, xpos, zpos, angle));
+	g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -391,12 +392,14 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 
 void Contents::do_destruct(int user_id)
 {
-	//pair<int, int> b_sectnum = calculate_sector_num(b_inform.xPos, b_inform.zPos);
-	//g_sector_buildings[b_sectnum.second][b_sectnum.first].erase(g_buildings[b_inform]);
-	//
-	//delete g_buildings[b_inform];
-	//g_buildings.erase(b_inform);
-	//
+	//pair<int, int> b_sectnum = calculate_sector_num(x, z);
+	//Building b{ type, name, x, z, angle };
+	//if (g_buildings[b_sectnum.second][b_sectnum.first].count(b) != 0) {
+	//	cout << "destruct" << endl;
+	//	delete g_buildings[b_sectnum.second][b_sectnum.first][b];
+	//	g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
+	//}
+
 	//for (auto& cl : g_clients){
 	//	if (user_id == cl.second->m_id)
 	//		continue;

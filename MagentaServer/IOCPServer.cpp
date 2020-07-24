@@ -14,8 +14,6 @@ IOCPServer::~IOCPServer()
 
 void IOCPServer::init_server()
 {
-	cur_listen_socket = 0;
-
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
 

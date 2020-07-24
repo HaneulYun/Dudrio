@@ -138,7 +138,6 @@
     <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="protocol.h" />
-    <ClInclude Include="RWLock.h" />
     <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>

@@ -15,6 +15,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	int curPrefabType;
 	int curPrefabIndex;
+	float curPrefabAngle;
 
 	Terrain* terrain{ nullptr };
 	float distance;
@@ -43,18 +44,9 @@ public:
 			{
 				auto p = prefab->transform->position;
 				
-				if (HostNetwork::network->isConnect) {
-					Vector3 prefabForward{ prefab->transform->forward };
-					prefabForward.y = 0;
-					prefabForward.Normalize();
-					Vector3 forward{ 0,0,1 };
-					float angle = Vector3::DotProduct(forward, prefabForward);
-					Vector3 dir = Vector3::CrossProduct(forward, prefabForward);
-					angle = XMConvertToDegrees(acos(angle));
-					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
-					
-					HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle);
-				}
+				if (HostNetwork::network->isConnect) 
+					HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, curPrefabAngle);
+				
 				prefab = nullptr;
 			}
 		}

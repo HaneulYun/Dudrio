@@ -12,12 +12,12 @@ Client::Client(SOCKET& sock, int id)
 	m_status = ST_FREE;
 	m_s = sock;
 	// StressTest ----------------------------------------
-	//random_device rd;
-	//default_random_engine dre;
-	//uniform_real_distribution<>urd(0.0f, 1000.0f);
-	//m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
+	random_device rd;
+	default_random_engine dre;
+	uniform_real_distribution<>urd(0.0f, 1000.0f);
+	m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
 	// ---------------------------------------------------
-	m_xPos = 500.0;	m_yPos = 0.0; m_zPos = 500.0;
+	//m_xPos = 500.0;	m_yPos = 0.0; m_zPos = 500.0;
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
@@ -35,10 +35,10 @@ Client::Client(int id)
 	m_recv_over.wsabuf.len = MAX_BUF_SIZE;
 	m_status = ST_FREE;
 	// StressTest ----------------------------------------
-	//random_device rd;
-	//default_random_engine dre(rd());
-	//uniform_real_distribution<>urd(0.0f, 1000.0f);
-	//m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
+	random_device rd;
+	default_random_engine dre(rd());
+	uniform_real_distribution<>urd(0.0f, 1000.0f);
+	m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
 	// ---------------------------------------------------
 	m_xPos = 500.0;	m_yPos = 0.0; m_zPos = 500.0;
 	// ---------------------------------------------------

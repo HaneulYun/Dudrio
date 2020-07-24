@@ -3,29 +3,18 @@
 
 class Contents
 {
-private:
-	queue<pair<int, char*>> recvQueue;
-	//thread		logic_thread;
-	vector<thread> logic_threads;
-	mutex		logic_lock;
-	bool		logic_run;
-
 public:
 	int		host_id;
-
-private:
-	void logic_thread_loop();
 
 public:
 	Contents();
 	~Contents();
 
 	void init_buildings();
+	void init_sector();
 	void init_contents();
-	void start_contents();
-	void stop_contents();
 
-	void add_packet(int user_id, char* buf);
+	void process_packet(int user_id, char* buf);
 
 	void enter_game(int user_id, char name[]);
 	void do_move(int user_id, float xVel, float zVel, float rotAngle, float run_level);

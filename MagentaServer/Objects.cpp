@@ -2,6 +2,7 @@
 
 Client::Client(SOCKET& sock, int id)
 {
+	m_cl.lock();
 	m_id = id;
 	m_prev_size = 0;
 	m_recv_over.op = OP_RECV;
@@ -16,14 +17,16 @@ Client::Client(SOCKET& sock, int id)
 	//uniform_real_distribution<>urd(0.0f, 1000.0f);
 	//m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
 	// ---------------------------------------------------
-	m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
+	m_xPos = 500.0;	m_yPos = 0.0; m_zPos = 500.0;
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
+	m_cl.unlock();
 }
 
 Client::Client(int id)
 {
+	m_cl.lock();
 	m_id = id;
 	m_prev_size = 0;
 	m_recv_over.op = OP_RECV;
@@ -37,10 +40,11 @@ Client::Client(int id)
 	//uniform_real_distribution<>urd(0.0f, 1000.0f);
 	//m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
 	// ---------------------------------------------------
-	m_xPos = 540.0;	m_yPos = 0.0; m_zPos = 540.0;
+	m_xPos = 500.0;	m_yPos = 0.0; m_zPos = 500.0;
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
+	m_cl.unlock();
 }
 
 Client::~Client()
@@ -69,9 +73,7 @@ void Client::erase_client_in_sector(float x, float z)
 
 void Client::erase_client_in_sector()
 {
-	m_cl.lock();
 	pair<int, int> sect_num = contents.calculate_sector_num(m_xPos, m_zPos);
-	m_cl.unlock();
 	g_sector_clients_lock[sect_num.second][sect_num.first].lock();
 	if (g_sector_clients[sect_num.second][sect_num.first].count(this) != 0)
 		g_sector_clients[sect_num.second][sect_num.first].erase(this);
@@ -80,9 +82,7 @@ void Client::erase_client_in_sector()
 
 void Client::insert_client_in_sector()
 {
-	m_cl.lock();
 	pair<int, int> sect_num = contents.calculate_sector_num(m_xPos, m_zPos);
-	m_cl.unlock();
 	g_sector_clients_lock[sect_num.second][sect_num.first].lock();
 	g_sector_clients[sect_num.second][sect_num.first].insert(this);
 	g_sector_clients_lock[sect_num.second][sect_num.first].unlock();

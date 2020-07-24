@@ -2,18 +2,19 @@
 
 Contents::Contents()
 {
-	logic_run = false;
 	host_id = -1;
 }
 
 Contents::~Contents()
 {
-	stop_contents();
 }
 
 void Contents::init_contents()
 {
+	host_id = -1;
+
 	init_buildings();
+	init_sector();
 
 	if (terrain_data != nullptr)
 		delete terrain_data;
@@ -21,152 +22,130 @@ void Contents::init_contents()
 
 void Contents::init_buildings()
 {
+	lock_guard<mutex>lock_guard(g_buildings_lock);
 	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
 		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j) {
 			for (auto b : g_buildings[i][j])
 				delete b.second;
 			g_buildings[i][j].clear();
-			g_buildings[i][j].reserve(100);
+			g_buildings[i][j].reserve(500);
 		}
 }
 
-void Contents::start_contents()
+void Contents::init_sector()
 {
-	logic_run = true;
-	//logic_thread = thread([this]() { logic_thread_loop(); });
-	logic_threads.reserve(NUM_OF_CPU * 2 + 2);
-	
-	for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
-		logic_threads.emplace_back([this]() {logic_thread_loop(); });
-	}
-
-	init_contents();
+	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
+		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
+			for (auto b : g_buildings[i][j]) {
+				lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
+				g_sector_clients[i][j].clear();
+			}
 }
 
-void Contents::stop_contents()
+void Contents::process_packet(int user_id, char* buf)
 {
-	logic_run = false;
-	//if (logic_thread.joinable())
-	//	logic_thread.join();
-	for (auto& ths : logic_threads)
-		if (ths.joinable())
-			ths.join();
-}
-
-void Contents::logic_thread_loop()
-{
-	while (logic_run) {
-		logic_lock.lock();
-		if (!recvQueue.empty()) {
-			auto buf = recvQueue.front();
-			recvQueue.pop();
-			logic_lock.unlock();
-
-			switch (buf.second[1]) {
-			case C2S_LOGIN_GUEST: {
-				if (host_id != -1) {
-					cout << "The Guest " << buf.first << " is connected" << endl;
-					cs_packet_login_guest* packet = reinterpret_cast<cs_packet_login_guest*>(buf.second);
-					enter_game(buf.first, packet->name);
-				}
-				else {
-					cout << "Host does not exist" << endl;
-					login_fail(buf.first);
-				}
-			}
-			break;
-			case C2S_LOGIN_HOST:
-			{
-				if (host_id == -1) {
-					cout << "The host " << buf.first << " is connected" << endl;
-					cs_packet_login_host* packet = reinterpret_cast<cs_packet_login_host*>(buf.second);
-					host_id = buf.first;
-
-					TerrainGenerator terrainGenerator(packet->terrainSize, packet->terrainSize);
-					string fileName = terrainGenerator.createHeightMap(packet->frequency, packet->octaves, packet->seed, (char*)"square");
-					terrain_data = new Terrain;
-					terrain_data->frequency = packet->frequency;
-					terrain_data->terrain_size = packet->terrainSize;
-					terrain_data->octaves = packet->octaves;
-					terrain_data->seed = packet->seed;
-
-					wstring name;
-					name.assign(fileName.begin(), fileName.end());
-					terrain_data->AlphamapTextureName = name.c_str();
-					terrain_data->heightmapHeight = terrain_data->terrain_size;
-					terrain_data->heightmapWidth = terrain_data->terrain_size;
-					terrain_data->x_size = terrain_data->terrain_size;
-					terrain_data->y_size = 255;
-					terrain_data->z_size = terrain_data->terrain_size;
-					terrain_data->Load();
-
-					enter_game(buf.first, packet->name);
-				}
-				else {
-					cout << "Host is already exist" << endl;
-					login_fail(buf.first);
-				}
-			}
-			break;
-			case C2S_LOGOUT:
-			{
-				cs_packet_logout* packet = reinterpret_cast<cs_packet_logout*>(buf.second);
-			}
-			break;
-			case C2S_MOVE_START:
-			{
-				cs_packet_move_start* packet = reinterpret_cast<cs_packet_move_start*>(buf.second);
-
-				g_clients[buf.first]->m_last_move_time = GetTickCount64();
-				g_clients[buf.first]->m_move_time = packet->move_time;
-				do_move(buf.first, packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
-			}
-			break;
-			case C2S_MOVE:
-			{
-				cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf.second);
-
-				g_clients[buf.first]->m_move_time = packet->move_time;
-				do_move(buf.first, packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
-			}
-			break;
-			case C2S_CONSTRUCT:
-			{
-				cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf.second);
-				if (buf.first == host_id)
-					do_construct(buf.first, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle);
-			}
-			break;
-			case C2S_DESTRUCT:
-			{
-				cs_packet_destruct* packet = reinterpret_cast<cs_packet_destruct*>(buf.second);
-				if (buf.first == host_id)
-					do_destruct(buf.first);
-			}
-			break;
-			case C2S_DESTRUCT_ALL:
-			{
-				cs_packet_destruct_all* packet = reinterpret_cast<cs_packet_destruct_all*>(buf.second);
-				if (buf.first == host_id)
-					destruct_all(buf.first);
-			}
-			break;
-			case C2S_CHAT:
-			{
-
-			}
-			break;
-			default:
-				cout << "Unknown Packet Type Error!\n" << buf.first << ", " << buf.second << endl;
-				//DebugBreak();
-				//exit(-1);
-				break;
-			}
+	switch (buf[1]) {
+	case C2S_LOGIN_GUEST: {
+		if (host_id != -1) {
+			cout << "The Guest " << user_id << " is connected" << endl;
+			cs_packet_login_guest* packet = reinterpret_cast<cs_packet_login_guest*>(buf);
+			enter_game(user_id, packet->name);
 		}
-		else
-			logic_lock.unlock();
+		else {
+			cout << "Host does not exist" << endl;
+			login_fail(user_id);
+		}
+	}
+						break;
+	case C2S_LOGIN_HOST:
+	{
+		if (host_id == -1) {
+			cout << "The host " << user_id << " is connected" << endl;
+			cs_packet_login_host* packet = reinterpret_cast<cs_packet_login_host*>(buf);
+			host_id = user_id;
+
+			TerrainGenerator terrainGenerator(packet->terrainSize, packet->terrainSize);
+			string fileName = terrainGenerator.createHeightMap(packet->frequency, packet->octaves, packet->seed, (char*)"square");
+			terrain_data = new Terrain;
+			terrain_data->frequency = packet->frequency;
+			terrain_data->terrain_size = packet->terrainSize;
+			terrain_data->octaves = packet->octaves;
+			terrain_data->seed = packet->seed;
+
+			wstring name;
+			name.assign(fileName.begin(), fileName.end());
+			terrain_data->AlphamapTextureName = name.c_str();
+			terrain_data->heightmapHeight = terrain_data->terrain_size;
+			terrain_data->heightmapWidth = terrain_data->terrain_size;
+			terrain_data->x_size = terrain_data->terrain_size;
+			terrain_data->y_size = 255;
+			terrain_data->z_size = terrain_data->terrain_size;
+			terrain_data->Load();
+
+			enter_game(user_id, packet->name);
+		}
+		else {
+			cout << "Host is already exist" << endl;
+			login_fail(user_id);
+		}
+	}
+	break;
+	case C2S_LOGOUT:
+	{
+		cs_packet_logout* packet = reinterpret_cast<cs_packet_logout*>(buf);
+	}
+	break;
+	case C2S_MOVE_START:
+	{
+		cs_packet_move_start* packet = reinterpret_cast<cs_packet_move_start*>(buf);
+
+		g_clients[user_id]->m_last_move_time = GetTickCount64();
+		g_clients[user_id]->m_move_time = packet->move_time;
+		do_move(user_id, packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
+	}
+	break;
+	case C2S_MOVE:
+	{
+		cs_packet_move* packet = reinterpret_cast<cs_packet_move*>(buf);
+
+		g_clients[user_id]->m_move_time = packet->move_time;
+		do_move(user_id, packet->xVel, packet->zVel, packet->rotAngle, packet->run_level);
+	}
+	break;
+	case C2S_CONSTRUCT:
+	{
+		cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf);
+		if (user_id == host_id)
+			do_construct(user_id, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle);
+	}
+	break;
+	case C2S_DESTRUCT:
+	{
+		cs_packet_destruct* packet = reinterpret_cast<cs_packet_destruct*>(buf);
+		if (user_id == host_id)
+			do_destruct(user_id);
+	}
+	break;
+	case C2S_DESTRUCT_ALL:
+	{
+		cs_packet_destruct_all* packet = reinterpret_cast<cs_packet_destruct_all*>(buf);
+		if (user_id == host_id)
+			destruct_all(user_id);
+	}
+	break;
+	case C2S_CHAT:
+	{
+
+	}
+	break;
+	default:
+		cout << "Unknown Packet Type Error!\n" << user_id << ", " << buf << endl;
+		//DebugBreak();
+		//exit(-1);
+		break;
 	}
 }
+
 
 void Contents::enter_game(int user_id, char name[])
 {
@@ -174,14 +153,16 @@ void Contents::enter_game(int user_id, char name[])
 	strcpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
 	iocp.send_login_ok_packet(user_id);
-	g_clients[user_id]->m_cl.unlock();
 	g_clients[user_id]->m_status = ST_ACTIVE;
+	g_clients[user_id]->m_cl.unlock();
 
 	if (host_id != user_id) {
 		iocp.send_enter_packet(contents.host_id, user_id);
 
+		g_clients[user_id]->m_cl.lock();
 		g_clients[user_id]->insert_client_in_sector();
 		vector<int> near_clients = g_clients[user_id]->get_near_clients();
+		g_clients[user_id]->m_cl.unlock();
 
 		for (auto cl : near_clients) {
 			if (ST_ACTIVE == g_clients[cl]->m_status) {
@@ -190,19 +171,12 @@ void Contents::enter_game(int user_id, char name[])
 			}
 		}
 
+		g_buildings_lock.lock();
 		for(int i=0;i< WORLD_HEIGHT / SECTOR_WIDTH;++i)
 			for(int j=0;j< WORLD_WIDTH / SECTOR_WIDTH;++j)
 				for (auto b : g_buildings[i][j])
 					iocp.send_construct_packet(user_id, b.second->m_info.building_type, b.second->m_info.building_name, b.second->m_info.m_xPos, b.second->m_info.m_zPos, b.second->m_info.m_angle);
-	}
-	else {
-		for (auto cl : g_clients) {
-			if (cl.second->m_id == user_id) continue;
-			if (ST_ACTIVE == cl.second->m_status) {
-				iocp.send_enter_packet(user_id, cl.second->m_id);
-				iocp.send_enter_packet(cl.second->m_id, user_id);
-			}
-		}
+		g_buildings_lock.unlock();
 	}
 }
 
@@ -245,8 +219,6 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 	vector<int> near_clients = g_clients[user_id]->get_near_clients();
 	for (auto cl : near_clients) new_vl.insert(cl);
 
-	if (contents.host_id == -1)
-		return;
 	iocp.send_move_packet(user_id, user_id, rotAngle);
 	iocp.send_move_packet(contents.host_id, user_id, rotAngle);
 
@@ -336,14 +308,23 @@ void Contents::disconnect(int user_id)
 			if (ST_ACTIVE == cl->second->m_status) {
 				cout << "Disconnect " << cl->second->m_id << endl;
 				iocp.send_leave_packet(cl->first, cl->first);
+
+				cl->second->m_cl.lock();
+				cl->second->m_status = ST_ALLOC;
+
+				linger sopt_linger = { 0, 0 };
+				shutdown(g_clients[user_id]->m_s, SD_BOTH);
+				setsockopt(g_clients[user_id]->m_s, SOL_SOCKET, SO_LINGER, (char*)&sopt_linger, sizeof(sopt_linger));
+				closesocket(g_clients[user_id]->m_s);
+				g_clients[user_id]->m_s = INVALID_SOCKET;
+
+				cl->second->m_cl.unlock();
 				delete cl->second;
 				cl = g_clients.erase(cl);
 			}
 			else
 				++cl;
 		}
-
-		host_id = -1;
 
 		init_contents();
 
@@ -358,29 +339,17 @@ void Contents::disconnect(int user_id)
 void Contents::login_fail(int user_id)
 {
 	cout << "Login fail!! user_id : " << user_id << endl;
-	lock_guard<mutex>lock_guard(g_clients_lock);
 
-	if (g_clients.count(user_id) == 0)
-		return;
-	if (host_id != user_id)
-		g_clients[user_id]->erase_client_in_sector();
 	iocp.send_login_fail_packet(user_id);
-	g_clients[user_id]->m_status = ST_ALLOC;
-	linger sopt_linger = { 0, 0 };
-	shutdown(g_clients[user_id]->m_s, SD_BOTH);
-	setsockopt(g_clients[user_id]->m_s, SOL_SOCKET, SO_LINGER, (char*)&sopt_linger, sizeof(sopt_linger));
-	closesocket(g_clients[user_id]->m_s);
-	g_clients[user_id]->m_s = INVALID_SOCKET;
-
-	delete g_clients[user_id];
-	g_clients.erase(user_id);
 }
 
 void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle)
 {
 	BuildingInfo b{ b_type, b_name, xpos, zpos, angle };
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
+	g_buildings_lock.lock();
 	g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
+	g_buildings_lock.unlock();
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -418,13 +387,6 @@ void Contents::destruct_all(int user_id)
 		if (ST_ACTIVE == cl.second->m_status)
 			iocp.send_destruct_all_packet(cl.second->m_id);
 	}
-}
-
-void Contents::add_packet(int user_id, char* buf)
-{
-	logic_lock.lock();
-	recvQueue.push(make_pair(user_id, buf));
-	logic_lock.unlock();
 }
 
 pair<int, int> Contents::calculate_sector_num(float xPos, float zPos)

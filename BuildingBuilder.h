@@ -45,6 +45,7 @@ public:
 				BuildingInform inform{ ::BuildingType::Well_01, p.x, p.y, p.z, 0 };
 				if (HostNetwork::network->isConnect)
 					HostNetwork::network->send_construct_packet(inform);
+				updateTerrainNodeData(prefab);
 				prefab = nullptr;
 			}
 		}
@@ -124,28 +125,29 @@ public:
 
 	void updateTerrainNodeData(GameObject* building)
 	{
+		BoundingBox boundingBox = building->GetComponent<BoxCollider>()->boundingBox;
+
 		Vector3 pos = building->transform->position;
-		Vector3 right = Vector3::Normalize(building->transform->right);
-		Vector3 forward = Vector3::Normalize(building->transform->forward);
+		Vector3 right = Vector3::Normalize(building->transform->right) + boundingBox.Extents.x;
+		Vector3 forward = Vector3::Normalize(building->transform->forward) + boundingBox.Extents.z;
 
 		for (int x = (pos - right).x; x <= (pos + right).x; ++x)
 		{
 			for (int z = (pos - forward).z; z <= (pos + forward).z; ++z)
 			{
-				BoundingBox boundingBox = building->GetComponent<BoxCollider>()->boundingBox;
 
 				BoundingOrientedBox obbBox{};
-				obbBox.Center = boundingBox.Center;
+				obbBox.Center = pos.xmf3;
 				obbBox.Extents = boundingBox.Extents;
 				obbBox.Orientation = gameObject->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
 
-				if (obbBox.Contains(XMLoadFloat3(&XMFLOAT3(x, 0, z))))
+				if (obbBox.Contains(XMLoadFloat3(&XMFLOAT3(x, pos.y, z))))
 				{
 					terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].canMove = false;
 
 					// 노드 확인용
 					auto go = Scene::scene->Duplicate(cube);
-					go->transform->position = Vector3(x, 0, z);
+					go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
 				}
 			}
 		}
@@ -189,7 +191,6 @@ public:
 	void build(Vector3 position)
 	{
 		prefab->transform->position = position;
-		updateTerrainNodeData(prefab);
 		prefab = nullptr;
 	}
 

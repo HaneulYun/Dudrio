@@ -100,6 +100,7 @@ void TestScene::BuildObjects()
 
 	PathFinder::Instance()->SetTerrainData(&terrainData->terrainData, terrainNodeData);
 
+
 	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();

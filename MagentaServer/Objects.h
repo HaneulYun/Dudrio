@@ -1,57 +1,84 @@
 #pragma once
 #include "main.h"
 
-//class Object
+//struct BuildingInform
 //{
-//public:
-//	float	m_xPos, m_yPos, m_zPos;
-//	float	m_rotAngle;
+//	BuildingType buildingType;
+//	float xPos, yPos, zPos;
+//	float rotAngle;
 //
-//public:
-//	Object() {}
-//	~Object() {}
-//
-//	bool is_near(const Object& other)
+//	bool operator== (const BuildingInform& b) const
 //	{
-//		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
-//		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
-//		return true;
+//		return ((xPos == b.xPos) && (yPos == b.yPos)
+//			&& (zPos == b.zPos));
+//	}
+//
+//	friend std::ostream& operator<<(std::ostream& os, const BuildingInform& b);
+//	friend std::istream& operator>>(std::istream& in, BuildingInform& b);
+//};
+//
+//struct BuildingInformHasher
+//{
+//	std::size_t operator()(const BuildingInform& b) const
+//	{
+//		using std::size_t;
+//		using std::hash;
+//
+//		return ((hash<float>()(b.xPos)
+//			^ (hash<float>()(b.yPos) << 1)) >> 1) ^ (hash<float>()(b.zPos) << 1);
 //	}
 //};
+//
+//static std::ostream& operator<<(std::ostream& os, const BuildingInform& b)
+//{
+//	os << static_cast<int>(b.buildingType) << " " << b.xPos << " " << b.yPos << " " << b.zPos << " " << b.rotAngle << std::endl;
+//	return os;
+//}
+//
+//static std::istream& operator>>(std::istream& in, BuildingInform& b)
+//{
+//	int input;
+//	in >> input >> b.xPos >> b.yPos >> b.zPos >> b.rotAngle;
+//	b.buildingType = static_cast<BuildingType>(input);
+//	return in;
+//}
 
-class Building //: public Object
+class Building 
 {
 public:
-	BuildingType m_type;
-	
-	float	m_xPos, m_yPos, m_zPos;
-	float	m_rotAngle;
-	float m_halfwidth;
-	float m_halfLength;
+	int		building_type;
+	int		building_name;
+	float	m_xPos, m_zPos;
+	float	m_angle;
+
+	float	m_halfwidth;
+	float	m_halfLength;
 
 public:
-	Building(BuildingInform b_inform)
+	Building(int type, int name, float x, float z, float angle)
 	{
-		m_type = b_inform.buildingType;
-		m_xPos = b_inform.xPos;
-		m_yPos = b_inform.yPos;
-		m_zPos = b_inform.zPos;
+		building_type = type;
+		building_name = name;
+		m_xPos = x;
+		m_zPos = z;
+		m_angle = angle;
 	}
 
 	~Building() {}
 
 	bool operator== (const Building& b) const
 	{
-		return ((m_xPos == b.m_xPos) && (m_yPos == b.m_yPos)
-			&& (m_zPos == b.m_zPos));
+		return ((building_type == b.building_type) && (building_name == b.building_name)
+			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos)
+			&& (m_angle == b.m_angle));
 	}
-
-	bool is_near(const Building& other)
-	{
-		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
-		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
-		return true;
-	}
+	
+	//bool is_near(const Building& other)
+	//{
+	//	if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
+	//	if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
+	//	return true;
+	//}
 };
 
 class Client //: public Object

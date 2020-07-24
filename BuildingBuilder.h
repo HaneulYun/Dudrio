@@ -99,6 +99,23 @@ public:
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_Tomato",		ASSET MESH("SM_Sack_Tomato"),		ASSET MATERIAL("material_02")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_01",			ASSET MESH("SM_Sack_Var01"),		ASSET MATERIAL("material_02")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"Sack_02",			ASSET MESH("SM_Sack_Var02"),		ASSET MATERIAL("material_02")));
+
+		//ofstream out("colliders.txt");
+		//for (int i = 0; i < BuildingType::Count; ++i) {
+		//	int j = 0;
+		//	for (auto b : building[i]) {
+		//		if (b.prefab) {
+		//			auto box = b.prefab->GetComponent<BoxCollider>();
+		//			out << i << " " << j << " " << box->center.x - box->extents.x << " " << box->center.y - box->extents.y << " " << box->center.x + box->extents.x << " " << box->center.y + box->extents.y << endl;
+		//		}
+		//		else {
+		//			auto box = b.mesh->Bounds;
+		//			out << i << " " << j << " " << box.Center.x - box.Extents.x << " " << box.Center.x - box.Extents.y << " " << box.Center.x + box.Extents.x << " " << box.Center.x + box.Extents.y << endl;
+		//		}
+		//		++j;
+		//	}
+		//}
+		//out.close();
 	}
 
 	BuildingBuilderData makeBuilderDataAsPrefab(wstring name, GameObject* prefab)

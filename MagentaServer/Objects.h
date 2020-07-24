@@ -74,6 +74,8 @@ class Building
 public:
 	BuildingInfo m_info;
 
+	//center - x ~ center + x
+	//center - y ~ center + y
 	float	m_halfwidth;
 	float	m_halfLength;
 

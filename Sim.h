@@ -7,7 +7,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	int id;
-	float speed = 1.f;
+	float speed = 4.f;
 
 	GameObject* home;
 
@@ -29,6 +29,7 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
+		Time::deltaTime = 0;
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)

@@ -87,7 +87,6 @@ MoveState* MoveState::Instance()
 
 void MoveState::Enter(Sim* sim)
 {
-
 	if (sim->stateMachine.IsNextState(BuildState::Instance()))
 		PathFinder::Instance()->FindPath(sim->targetPos.front(), Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path,
 			BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1);

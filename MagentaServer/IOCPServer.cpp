@@ -58,11 +58,11 @@ void IOCPServer::init_clients()
 // thread ---------------------------------
 void IOCPServer::create_worker_threads()
 {
-	//worker_threads.reserve(NUM_OF_CPU * 2 + 2);
-	worker_threads.emplace_back([this]() { worker_thread_loop(); });
-	//for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i){
-	//	worker_threads.emplace_back([this]() {worker_thread_loop(); });
-	//}
+	worker_threads.reserve(NUM_OF_CPU * 2 + 2);
+	//worker_threads.emplace_back([this]() { worker_thread_loop(); });
+	for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
+		worker_threads.emplace_back([this]() {worker_thread_loop(); });
+	}
 
 	cout << "Create Worker_Threads Complete" << endl;
 }

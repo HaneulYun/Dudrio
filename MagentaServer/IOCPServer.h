@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 
-#define NUM_OF_CPU 1
+#define NUM_OF_CPU 4
 
 class IOCPServer {
 private:

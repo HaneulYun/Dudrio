@@ -13,11 +13,22 @@ void Contents::init_contents()
 {
 	host_id = -1;
 
-	init_buildings();
 	init_sector();
+	init_buildings();
+	init_colliders_inform();
 
 	if (terrain_data != nullptr)
 		delete terrain_data;
+}
+
+void Contents::init_sector()
+{
+	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
+		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
+			for (auto b : g_buildings[i][j]) {
+				lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
+				g_sector_clients[i][j].clear();
+			}
 }
 
 void Contents::init_buildings()
@@ -32,14 +43,23 @@ void Contents::init_buildings()
 		}
 }
 
-void Contents::init_sector()
+void Contents::init_colliders_inform()
 {
-	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
-		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
-			for (auto b : g_buildings[i][j]) {
-				lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
-				g_sector_clients[i][j].clear();
-			}
+	ifstream in("colliders.txt");
+	istream_iterator<float> p(in);
+	while (p != istream_iterator<float>()) {
+		int type = *p++; int name = *p++;
+		float x1 = *p++, z1 = *p++, x2 = *p++, z2 = *p++;
+		if (type == 1 && name == 1) {
+			x1 = collider_info[1][0].m_x1;
+			z1 = collider_info[1][0].m_z1;
+			x2 = collider_info[1][0].m_x2;
+			z2 = collider_info[1][0].m_z2;
+		}
+		collider_info[type].push_back({ x1, z1, x2, z2 });
+		cout << type << " " << name << " " << x1 << " " << z1 << " " << x2 << " " << z2<< endl;
+	}
+	in.close();
 }
 
 void Contents::process_packet(int user_id, char* buf)
@@ -56,7 +76,7 @@ void Contents::process_packet(int user_id, char* buf)
 			login_fail(user_id);
 		}
 	}
-						break;
+	break;
 	case C2S_LOGIN_HOST:
 	{
 		if (host_id == -1) {
@@ -197,9 +217,12 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 		g_clients[user_id]->m_xVel = 0.0f;
 		g_clients[user_id]->m_zVel = 0.0f;
 	}
+
 	g_clients[user_id]->m_xPos += g_clients[user_id]->m_xVel * (GetTickCount64() - g_clients[user_id]->m_last_move_time) / 1000.f;
 	g_clients[user_id]->m_zPos += g_clients[user_id]->m_zVel * (GetTickCount64() - g_clients[user_id]->m_last_move_time) / 1000.f;
 	g_clients[user_id]->m_last_move_time = GetTickCount64();
+
+	g_clients[user_id]->is_collide(prev_x, prev_z);
 
 	if (g_clients[user_id]->m_xPos < 0.0f) g_clients[user_id]->m_xPos = 0.0f;
 	if (g_clients[user_id]->m_zPos < 0.0f) g_clients[user_id]->m_zPos = 0.0f;
@@ -349,6 +372,7 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
 	g_buildings_lock.lock();
 	g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
+	g_buildings[b_sectnum.second][b_sectnum.first][b]->m_collider = collider_info[b_type][b_name];
 	g_buildings_lock.unlock();
 
 	for (auto& cl : g_clients){

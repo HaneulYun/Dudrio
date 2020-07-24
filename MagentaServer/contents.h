@@ -3,6 +3,10 @@
 
 class Contents
 {
+private:
+	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Count, None = -1 };
+	vector<struct Collider> collider_info[BuildingType::Count];
+
 public:
 	int		host_id;
 
@@ -10,9 +14,10 @@ public:
 	Contents();
 	~Contents();
 
-	void init_buildings();
-	void init_sector();
 	void init_contents();
+	void init_sector();
+	void init_buildings();
+	void init_colliders_inform();
 
 	void process_packet(int user_id, char* buf);
 

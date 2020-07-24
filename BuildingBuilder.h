@@ -238,7 +238,7 @@ public:
 			else
 				bound = data.mesh->Bounds.Extents;
 
-			return bound.x > bound.z ? bound.x : bound.z;
+			return bound.x > bound.y ? bound.x : bound.y;
 		}
 		return 0;
 	}

@@ -46,6 +46,7 @@ struct EXOVER {
 #define VIEW_RADIUS	 20
 
 #include "protocol.h"
+#include "math.h"
 #include "TerrainGenerator.h"
 #include "Timer.h"
 #include "IOCPServer.h"

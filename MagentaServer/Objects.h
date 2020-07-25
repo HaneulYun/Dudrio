@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#define DEGTORAD(x) x*(3.141592654f / 180.0f)
+
 //struct BuildingInform
 //{
 //	BuildingType buildingType;
@@ -105,61 +105,7 @@ public:
 
 	~Building() {}
 
-	bool is_collide(float x, float z, float prevX, float prevZ)
-	{
-		// leftup 1, leftdown 2, rightdown 3, rightup 4
-		pair<float, float> point[4];
-
-		point[0] = make_pair(m_info.m_xPos + m_collider.m_x1, m_info.m_zPos + m_collider.m_z2);
-		point[1] = make_pair(m_info.m_xPos + m_collider.m_x1, m_info.m_zPos + m_collider.m_z1);
-		point[2] = make_pair(m_info.m_xPos + m_collider.m_x2, m_info.m_zPos + m_collider.m_z1);
-		point[3] = make_pair(m_info.m_xPos + m_collider.m_x2, m_info.m_zPos + m_collider.m_z2);
-	
-		// 좌표 회전 코드 삽입하기
-
-		double increase[5], constant[5], samevalue[5];
-		pair<double, double> intersect_coord[4];
-		double dist[4]; double min_dist = sqrt(pow(x - prevX, 2) + pow(z - prevZ, 2)); int min_index = 10;
-
-		// 직선 방정식 -----------------------------------------
-		if (x == prevX)
-			samevalue[0] = prevX;
-		else {
-			increase[0] = (float)(z - prevZ) / (x - prevX);
-			constant[0] = prevZ - increase[0] * prevX;
-		}
-
-		for (int i = 0; i < 4; ++i) {
-			int j = i + 1;
-			if (j > 3) j = 0;
-			if (point[i].first == point[j].first)
-				samevalue[i + 1] = point[i].first;
-			else {
-				increase[i + 1] = (float)(point[j].second - point[i].second) / (point[j].first - point[i].first);
-				constant[i + 1] = point[i].second - increase[i + 1] * point[i].first;
-			}
-		}
-		// -----------------------------------------------------
-		for (int i = 0; i < 4; ++i) {
-			int j = i + 1;
-			if (j > 3)j = 0;
-			if (x == prevX && point[i].first == point[j].first) { intersect_coord[i] = make_pair(-1, -1); continue; }
-			if (x == prevX)
-				intersect_coord[i] = make_pair(samevalue[0], increase[i + 1] * samevalue[0] + constant[i + 1]);
-			else if (point[i].first == point[j].first)
-				intersect_coord[i] = make_pair(samevalue[i + 1], increase[0] * samevalue[i + 1] + constant[0]);
-			else {
-				intersect_coord[i].first = -1 * (constant[0] - constant[i + 1]) / (increase[0] - increase[i + 1]);
-				intersect_coord[i].second = increase[0] * intersect_coord[i].first + constant[0];
-			}
-		}
-
-		for (int i = 0; i < 4; ++i) {
-			dist[i] = sqrt(pow(intersect_coord[i].first - prevX, 2) + pow(intersect_coord[i].second - prevZ, 2));
-			if (dist[i] <= min_dist) { return true; }
-		}
-		return false;
-	}
+	bool is_collide(float player_x, float player_z, float player_angle);
 };
 
 class Client //: public Object

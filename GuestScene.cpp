@@ -85,6 +85,14 @@ void GuestScene::BuildObjects()
 		ritem->layer = (int)RenderLayer::Sky;
 	}
 
+	auto directionalLight = CreateEmpty();
+	{
+		directionalLight->transform->Rotate({ 1, 0, 0 }, 60);
+		auto light = directionalLight->AddComponent<Light>();
+		light->Strength = { 0.9f, 0.8f, 0.7f };
+		light->shadowType = Light::Shadows;
+	}
+
 	auto SimsPrefab = CreateEmptyPrefab();
 	{
 		auto model = SimsPrefab->AddChild();

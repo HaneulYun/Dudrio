@@ -203,15 +203,15 @@ void TestScene::BuildObjects()
 	}
 
 
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
-		int x = 500 + rand() % 10;
-		int z = 500 + rand() % 10;
+		int x = 450 + rand() % 100;
+		int z = 450 + rand() % 100;
 
 		GameObject* house = CreateEmpty();
 		house->AddComponent<Building>();
-		//house->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var01");
-		//house->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
+		house->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var01");
+		house->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
 		house->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
 		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 

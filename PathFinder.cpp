@@ -159,7 +159,7 @@ bool PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 		{
 			for (int i = 0; i < childs.size(); ++i)
 			{
-				if (collisionCheckOn && terrainNodeData->extraData[childs[i].posX + childs[i].posZ * width].collision == false)
+				if (!collisionCheckOn || !terrainNodeData->extraData[childs[i].posX + childs[i].posZ * width].collision)
 					break;
 
 				// 주변 8칸이 모두 막혔으면

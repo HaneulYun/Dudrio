@@ -182,6 +182,12 @@ void Contents::enter_game(int user_id, char name[])
 		g_clients[user_id]->m_cl.lock();
 		g_clients[user_id]->insert_client_in_sector();
 		vector<int> near_clients = g_clients[user_id]->get_near_clients();
+		vector<pair<BuildingInfo, pair<int, int>>> near_buildings = g_clients[user_id]->get_near_buildings();
+		g_buildings_lock.lock();
+		for (auto cl : near_buildings)
+			if (g_buildings[cl.second.first][cl.second.second][cl.first]->is_collide(g_clients[user_id]->m_xPos, g_clients[user_id]->m_zPos, g_clients[user_id]->m_rotAngle))
+				g_clients[user_id]->m_collide_invincible = true;
+		g_buildings_lock.unlock();
 		g_clients[user_id]->m_cl.unlock();
 
 		for (auto cl : near_clients) {
@@ -190,7 +196,7 @@ void Contents::enter_game(int user_id, char name[])
 				iocp.send_enter_packet(cl, user_id);
 			}
 		}
-
+		
 		g_buildings_lock.lock();
 		for(int i=0;i< WORLD_HEIGHT / SECTOR_WIDTH;++i)
 			for(int j=0;j< WORLD_WIDTH / SECTOR_WIDTH;++j)
@@ -375,6 +381,14 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	g_buildings[b_sectnum.second][b_sectnum.first][b]->m_collider = collider_info[b_type][b_name];
 	g_buildings_lock.unlock();
 
+	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].lock();
+	for (auto cl : g_sector_clients[b_sectnum.second][b_sectnum.first]) {
+		lock_guard<mutex>lock_guard(cl->m_cl);
+		if (g_buildings[b_sectnum.second][b_sectnum.first][b]->is_collide(cl->m_xPos, cl->m_zPos, cl->m_rotAngle)) 
+			cl->m_collide_invincible = true;
+	}
+	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].unlock();
+	
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;

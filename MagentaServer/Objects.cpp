@@ -21,6 +21,7 @@ Client::Client(SOCKET& sock, int id)
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
+	m_collide_invincible = false;
 	m_cl.unlock();
 }
 
@@ -44,6 +45,7 @@ Client::Client(int id)
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;
+	m_collide_invincible = false;
 	m_cl.unlock();
 }
 
@@ -130,18 +132,41 @@ vector<pair<BuildingInfo, pair<int, int>>> Client::get_near_buildings(float x, f
 	return near_buildings;
 }
 
+vector<pair<BuildingInfo, pair<int, int>>> Client::get_near_buildings()
+{
+	pair<int, int> sect_num = contents.calculate_sector_num(m_xPos, m_zPos);
+	vector<pair<BuildingInfo, pair<int, int>>> near_buildings;
+	near_buildings.clear();
+
+	lock_guard<mutex>lock_guard(g_buildings_lock);
+	for (int i = sect_num.second - 1; i <= sect_num.second + 1; ++i) {
+		if (i < 0 || i > WORLD_HEIGHT / SECTOR_WIDTH - 1) continue;
+		for (int j = sect_num.first - 1; j <= sect_num.first + 1; ++j) {
+			if (j < 0 || j > WORLD_WIDTH / SECTOR_WIDTH - 1) continue;
+			for (auto nearObj : g_buildings[i][j]) {
+				if (true == nearObj.first.is_near(m_xPos, m_zPos))
+					near_buildings.emplace_back(make_pair(nearObj.first, make_pair(i, j)));
+			}
+		}
+	}
+	return near_buildings;
+}
+
 void Client::is_collide(float prevX, float prevZ)
 {
 	vector<pair<BuildingInfo, pair<int, int>>> near_buildings = get_near_buildings(m_xPos, m_zPos);
 	float min_dist = 100.f;
 	for (auto b : near_buildings){
-		if (g_buildings[b.second.first][b.second.second][b.first]->is_collide(m_xPos, m_zPos, m_rotAngle))
-		{
+		if (g_buildings[b.second.first][b.second.second][b.first]->is_collide(m_xPos, m_zPos, m_rotAngle)){
+			if (m_collide_invincible) 
+				return;
 			m_xPos = prevX;
 			m_zPos = prevZ;
 			return;
 		}
 	}
+	if (m_collide_invincible)
+		m_collide_invincible = false;
 }
 
 bool Building::is_collide(float player_x, float player_z, float player_angle)

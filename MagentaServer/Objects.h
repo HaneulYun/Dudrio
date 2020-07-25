@@ -141,7 +141,6 @@ public:
 	void	insert_client_in_sector();
 
 	vector<int>	get_near_clients();
-	vector<pair<BuildingInfo, pair<int, int>>> get_near_buildings(float x, float z);
 	vector<pair<BuildingInfo, pair<int, int>>> get_near_buildings();
 	void	is_collide(float prevX, float prevZ);
 

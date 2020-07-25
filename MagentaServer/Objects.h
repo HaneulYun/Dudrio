@@ -128,6 +128,8 @@ public:
 	float	m_xVel, m_zVel;
 	char	m_name[MAX_ID_LEN + 1];
 
+	bool	m_collide_invincible;
+
 public:
 	Client(SOCKET& sock, int id);
 	Client(int id);
@@ -140,6 +142,7 @@ public:
 
 	vector<int>	get_near_clients();
 	vector<pair<BuildingInfo, pair<int, int>>> get_near_buildings(float x, float z);
+	vector<pair<BuildingInfo, pair<int, int>>> get_near_buildings();
 	void	is_collide(float prevX, float prevZ);
 
 	bool is_near(const Client& other)

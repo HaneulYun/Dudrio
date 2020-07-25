@@ -14,8 +14,6 @@ IOCPServer::~IOCPServer()
 
 void IOCPServer::init_server()
 {
-	cur_listen_socket = 0;
-
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
 
@@ -60,11 +58,11 @@ void IOCPServer::init_clients()
 // thread ---------------------------------
 void IOCPServer::create_worker_threads()
 {
-	//worker_threads.reserve(NUM_OF_CPU * 2 + 2);
-	worker_threads.emplace_back([this]() { worker_thread_loop(); });
-	//for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i){
-	//	worker_threads.emplace_back([this]() {worker_thread_loop(); });
-	//}
+	worker_threads.reserve(NUM_OF_CPU * 2 + 2);
+	//worker_threads.emplace_back([this]() { worker_thread_loop(); });
+	for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
+		worker_threads.emplace_back([this]() {worker_thread_loop(); });
+	}
 
 	cout << "Create Worker_Threads Complete" << endl;
 }
@@ -90,7 +88,6 @@ void IOCPServer::destroy_threads()
 	if (accept_thread.joinable())
 		accept_thread.join();
 
-	contents.stop_contents();
 	timer.stop_timer();
 }
 
@@ -164,6 +161,7 @@ void IOCPServer::accept_thread_loop()
 		if (idx >= MAX_USER)
 			continue;
 
+		lock_guard<mutex>lock_guard_client(g_clients[idx]->m_cl);
 		ZeroMemory(&g_clients[idx]->m_recv_over.over, sizeof(g_clients[idx]->m_recv_over.over));
 		g_clients[idx]->m_s = WSAAccept(l_socket, reinterpret_cast<sockaddr*>(&client_addr), &client_len, NULL, NULL);
 		if (INVALID_SOCKET == g_clients[idx]->m_s)	continue;
@@ -207,7 +205,7 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 	char* p = r_o.io_buf;
 	int packet_size = 0;
 	// 미리 받아논 게 있다면?
-	if (0 != g_clients[user_id]->m_prev_size)	packet_size = g_clients[user_id]->m_packet_buf[0];
+	if (0 != g_clients[user_id]->m_prev_size)	packet_size = (unsigned char)g_clients[user_id]->m_packet_buf[0];
 	// 처리할 데이터가 남아있다면?
 	while (rest_byte > 0)
 	{
@@ -220,7 +218,7 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 			p += packet_size - g_clients[user_id]->m_prev_size;
 			rest_byte -= packet_size - g_clients[user_id]->m_prev_size;
 			packet_size = 0;	// 이 패킷은 처리되었다
-			contents.add_packet(user_id, g_clients[user_id]->m_packet_buf);
+			contents.process_packet(user_id, g_clients[user_id]->m_packet_buf);
 			g_clients[user_id]->m_prev_size = 0;
 		}
 		else // 완성할 수 없다
@@ -301,9 +299,7 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
 		g_clients[user_id]->m_cl.lock();
-		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.insert(o_id);
-		//g_clients[user_id]->m_cl.LeaveWriteLock();
 		g_clients[user_id]->m_cl.unlock();
 	}
 
@@ -320,9 +316,7 @@ void IOCPServer::send_leave_packet(int user_id, int o_id)
 	if (user_id != contents.host_id && o_id != contents.host_id
 		&& user_id != o_id) {
 		g_clients[user_id]->m_cl.lock();
-		//g_clients[user_id]->m_cl.EnterWriteLock();
 		g_clients[user_id]->view_list.erase(o_id);
-		//g_clients[user_id]->m_cl.LeaveWriteLock();
 		g_clients[user_id]->m_cl.unlock();
 	}
 
@@ -345,22 +339,30 @@ void IOCPServer::send_move_packet(int user_id, int mover, float dAngle)
 	send_packet(user_id, &p);
 }
 
-void IOCPServer::send_construct_packet(int user_id, BuildingInform b_inform)
+void IOCPServer::send_construct_packet(int user_id, int type, int name, float x, float z, float angle)
 {
 	sc_packet_construct p;
 	p.size = sizeof(p);
 	p.type = S2C_CONSTRUCT;
-	p.b_inform = b_inform;
+	p.building_name = name;
+	p.building_type = type;
+	p.xPos = x;
+	p.zPos = z;
+	p.angle = angle;
 
 	send_packet(user_id, &p);
 }
 
-void IOCPServer::send_destruct_packet(int user_id, BuildingInform b_inform)
+void IOCPServer::send_destruct_packet(int user_id, int type, int name, float x, float z, float angle)
 {
 	sc_packet_destruct p;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT;
-	p.b_inform = b_inform;
+	//p.building_name = name;
+	//p.building_type = type;
+	//p.xPos = x;
+	//p.zPos = z;
+	//p.angle = angle;
 
 	send_packet(user_id, &p);
 }

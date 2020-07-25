@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="math.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="contents.cpp" />
     <ClCompile Include="IOCPServer.cpp" />
@@ -133,12 +134,12 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="math.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="contents.h" />
     <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="protocol.h" />
-    <ClInclude Include="RWLock.h" />
     <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>

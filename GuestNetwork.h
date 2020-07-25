@@ -66,7 +66,6 @@ public:
 	{
 		hostId = -1;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
-		serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
 	}
 
 	int connect_nonblock(SOCKET sockfd, const struct sockaddr FAR* name, int namelen, int timeout)
@@ -117,6 +116,8 @@ public:
 
 			if (Input::GetKeyDown(KeyCode::Return) && ip != nullptr && ipImage != nullptr)
 			{
+				serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
+
 				std::string serverIp;
 				serverIp.assign(wserverIp.begin(), wserverIp.end());
 

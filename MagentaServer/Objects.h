@@ -1,57 +1,111 @@
 #pragma once
 #include "main.h"
 
-//class Object
+//struct BuildingInform
 //{
-//public:
-//	float	m_xPos, m_yPos, m_zPos;
-//	float	m_rotAngle;
+//	BuildingType buildingType;
+//	float xPos, yPos, zPos;
+//	float rotAngle;
 //
-//public:
-//	Object() {}
-//	~Object() {}
-//
-//	bool is_near(const Object& other)
+//	bool operator== (const BuildingInform& b) const
 //	{
-//		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
-//		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
-//		return true;
+//		return ((xPos == b.xPos) && (yPos == b.yPos)
+//			&& (zPos == b.zPos));
+//	}
+//
+//	friend std::ostream& operator<<(std::ostream& os, const BuildingInform& b);
+//	friend std::istream& operator>>(std::istream& in, BuildingInform& b);
+//};
+//
+//struct BuildingInformHasher
+//{
+//	std::size_t operator()(const BuildingInform& b) const
+//	{
+//		using std::size_t;
+//		using std::hash;
+//
+//		return ((hash<float>()(b.xPos)
+//			^ (hash<float>()(b.yPos) << 1)) >> 1) ^ (hash<float>()(b.zPos) << 1);
 //	}
 //};
+//
+//static std::ostream& operator<<(std::ostream& os, const BuildingInform& b)
+//{
+//	os << static_cast<int>(b.buildingType) << " " << b.xPos << " " << b.yPos << " " << b.zPos << " " << b.rotAngle << std::endl;
+//	return os;
+//}
+//
+//static std::istream& operator>>(std::istream& in, BuildingInform& b)
+//{
+//	int input;
+//	in >> input >> b.xPos >> b.yPos >> b.zPos >> b.rotAngle;
+//	b.buildingType = static_cast<BuildingType>(input);
+//	return in;
+//}
 
-class Building //: public Object
+struct Collider {
+	float m_x1, m_z1;
+	float m_x2, m_z2;
+
+	Collider() {}
+	Collider(float x1, float z1, float x2, float z2)
+	{
+		m_x1 = x1; m_z1 = z1; m_x2 = x2; m_z2 = z2;
+	}
+};
+
+struct BuildingInfo {
+	int		building_type;
+	int		building_name;
+	float	m_xPos, m_zPos;
+	float	m_angle;
+
+	bool operator== (const BuildingInfo& b) const
+	{
+		return ((building_type == b.building_type) && (building_name == b.building_name)
+			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos)
+			&& (m_angle == b.m_angle));
+	}
+
+	bool is_near(float x, float z) const
+	{
+		if (fabs(m_xPos - x) > 10)	return false;
+		if (fabs(m_zPos - z) > 10)	return false;
+		return true;
+	}
+};
+
+struct BuildingInfoHasher
+{
+	std::size_t operator()(const BuildingInfo& b) const
+	{
+		using std::size_t;
+		using std::hash;
+
+		return ((hash<float>()(b.m_xPos)
+			^ (hash<float>()(b.m_zPos) << 1)) >> 1) ^ (hash<float>()(b.m_angle) << 1);
+	}
+};
+
+class Building 
 {
 public:
-	BuildingType m_type;
-	
-	float	m_xPos, m_yPos, m_zPos;
-	float	m_rotAngle;
-	float m_halfwidth;
-	float m_halfLength;
+	BuildingInfo	m_info;
+	Collider		m_collider;
 
 public:
-	Building(BuildingInform b_inform)
+	Building(int type, int name, float x, float z, float angle)
 	{
-		m_type = b_inform.buildingType;
-		m_xPos = b_inform.xPos;
-		m_yPos = b_inform.yPos;
-		m_zPos = b_inform.zPos;
+		m_info.building_type = type;
+		m_info.building_name = name;
+		m_info.m_xPos = x;
+		m_info.m_zPos = z;
+		m_info.m_angle = angle;
 	}
 
 	~Building() {}
 
-	bool operator== (const Building& b) const
-	{
-		return ((m_xPos == b.m_xPos) && (m_yPos == b.m_yPos)
-			&& (m_zPos == b.m_zPos));
-	}
-
-	bool is_near(const Building& other)
-	{
-		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
-		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
-		return true;
-	}
+	bool is_collide(float player_x, float player_z, float player_angle);
 };
 
 class Client //: public Object
@@ -79,12 +133,14 @@ public:
 	Client(int id);
 	~Client();
 
-	bool is_sector_change(float prevX, float prevZ);
-	void erase_client_in_sector(float x, float z);
-	void erase_client_in_sector();
-	void insert_client_in_sector();
+	bool	is_sector_change(float prevX, float prevZ);
+	void	erase_client_in_sector(float x, float z);
+	void	erase_client_in_sector();
+	void	insert_client_in_sector();
 
-	vector<int> get_near_clients();
+	vector<int>	get_near_clients();
+	vector<pair<BuildingInfo, pair<int, int>>> get_near_buildings(float x, float z);
+	void	is_collide(float prevX, float prevZ);
 
 	bool is_near(const Client& other)
 	{

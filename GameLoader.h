@@ -43,28 +43,28 @@ public:
 		//}
 		//BuildManager::buildManager->buildings.clear();
 
-		if (HostNetwork::network != nullptr)
-		{
-			if (HostNetwork::network->isConnect)
-			{
-				HostNetwork::network->send_destruct_all_packet();
-			}
-		}
-
-		std::ifstream in("Buildings.txt");
-		istream_iterator<BuildingInform> beg{ in };
-		istream_iterator<BuildingInform> end{};
-
-		while (beg != end)
-		{
-			//auto iter = BuildManager::buildManager->buildings.find(*beg);
-			//
-			//if (iter == BuildManager::buildManager->buildings.end())
-			//{
-			//	Builder::builder->BuildNewBuilding(*beg);
-			//}
-			*beg++;
-		}
+		//if (HostNetwork::network != nullptr)
+		//{
+		//	if (HostNetwork::network->isConnect)
+		//	{
+		//		HostNetwork::network->send_destruct_all_packet();
+		//	}
+		//}
+		//
+		//std::ifstream in("Buildings.txt");
+		//istream_iterator<BuildingInform> beg{ in };
+		//istream_iterator<BuildingInform> end{};
+		//
+		//while (beg != end)
+		//{
+		//	//auto iter = BuildManager::buildManager->buildings.find(*beg);
+		//	//
+		//	//if (iter == BuildManager::buildManager->buildings.end())
+		//	//{
+		//	//	Builder::builder->BuildNewBuilding(*beg);
+		//	//}
+		//	*beg++;
+		//}
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

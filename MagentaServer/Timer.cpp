@@ -28,16 +28,14 @@ void Timer::timer_thread_loop()
 {
 	while (timer_run){
 		if (!timer_queue.empty()) {
-			timer_lock.EnterReadLock();
+			timer_lock.lock();
 			timer_event ev = timer_queue.top();
 			if (ev.wakeup_time > high_resolution_clock::now()) {
-				timer_lock.LeaveReadLock();
+				timer_lock.unlock();
 				continue;
 			}
-			timer_lock.LeaveReadLock();
-			timer_lock.EnterWriteLock();
 			timer_queue.pop();
-			timer_lock.LeaveWriteLock();
+			timer_lock.unlock();
 
 			EXOVER* over = new EXOVER;
 			switch (ev.event_id)
@@ -64,7 +62,6 @@ void Timer::timer_thread_loop()
 
 void Timer::add_event(timer_event ev)
 {
-	timer_lock.EnterWriteLock();
+	lock_guard<mutex>lock_guard(timer_lock);
 	timer_queue.push(ev);
-	timer_lock.LeaveWriteLock();
 }

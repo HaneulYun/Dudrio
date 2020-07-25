@@ -122,22 +122,30 @@ void HostNetwork::send_packet(void* packet)
 	send(serverSocket, p, (unsigned char)p[0], 0);
 }
 
-void HostNetwork::send_construct_packet(BuildingInform b_inform)
+void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle)
 {
 	cs_packet_construct m_packet;
 	m_packet.type = C2S_CONSTRUCT;
 	m_packet.size = sizeof(m_packet);
-	m_packet.b_inform = b_inform;
+	m_packet.building_type = type;
+	m_packet.building_name = name;
+	m_packet.xpos = x;
+	m_packet.zpos = z;
+	m_packet.angle = angle;
 
 	send_packet(&m_packet);
 }
 
-void HostNetwork::send_destruct_packet(BuildingInform b_inform)
+void HostNetwork::send_destruct_packet(int type, int name, float x, float z, float angle)
 {
 	cs_packet_destruct m_packet;
 	m_packet.type = C2S_DESTRUCT;
 	m_packet.size = sizeof(m_packet);
-	m_packet.b_inform = b_inform;
+	//m_packet.building_type = type;
+	//m_packet.building_name = name;
+	//m_packet.xpos = x;
+	//m_packet.zpos = z;
+	//m_packet.angle = angle;
 
 	send_packet(&m_packet);
 }

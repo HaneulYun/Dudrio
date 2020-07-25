@@ -43,7 +43,7 @@ public:
 	float distance(Node a, Node b);
 
 	Vector2 Escape(Vector2 startPos, std::deque<Vector2>& path);
-	void FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector2>& path, bool collisionCheckOn = true, float targetPosOffset = 0);
+	bool FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector2>& path, bool collisionCheckOn = true, float targetPosOffset = 0);
 
 	void MoveToDestination(Vector2& targetPos, Transform* object, float speed);
 };

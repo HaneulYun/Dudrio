@@ -72,7 +72,7 @@ Vector2 PathFinder::Escape(Vector2 startPos, std::deque<Vector2>& path)
 
 }
 
-void PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector2>& path, bool collisionCheckOn, float targetPosOffset)
+bool PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector2>& path, bool collisionCheckOn, float targetPosOffset)
 {
 	const int height = terrainData->heightmapHeight;
 	const int width = terrainData->heightmapWidth;
@@ -93,6 +93,9 @@ void PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 
 	while (!openList.empty())
 	{
+		if (closedList.size() > 1000)
+			return false;
+
 		// 비용이 가장 적은 노드
 		sort(openList.begin(), openList.end());
 		Node currentNode = openList.front();
@@ -116,7 +119,7 @@ void PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 				path.push_back(pathTemp.back());
 				pathTemp.pop_back();
 			}
-			return;
+			return true;
 		}
 
 		// 새로 갈 수 있는 경로를 추가
@@ -166,8 +169,7 @@ void PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 					Vector2 newStartPos = Escape(startPos, path);
 
 					// 해당 위치부터 다시 목적지까지의 경로를 찾는다.
-					FindPath(targetPos, newStartPos, path);
-					return;
+					return FindPath(targetPos, newStartPos, path);
 				}
 			}
 		}

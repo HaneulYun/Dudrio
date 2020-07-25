@@ -41,7 +41,7 @@ Client::Client(int id)
 	uniform_real_distribution<>urd(0.0f, 1000.0f);
 	m_xPos = urd(dre);	m_yPos = 0.0; m_zPos = urd(dre);
 	// ---------------------------------------------------
-	//m_xPos = 500.0;	m_yPos = 0.0; m_zPos = 500.0;
+	m_xPos = 500.0;	m_yPos = 0.0; m_zPos = 500.0;
 	// ---------------------------------------------------
 	m_xVel = 0.0;	m_zVel = 0.0;
 	m_rotAngle = 0.0f;

@@ -68,7 +68,7 @@ public:
 		else if (Input::GetMouseButton(2))
 		{
 			Vector3 currMousePos = Input::mousePosition;
-			float rotateAngle = (Input::mousePosition.x - lastMousePos.x) * Time::deltaTime;
+			float rotateAngle = (Input::mousePosition.x - lastMousePos.x) * Time::deltaTime * 15.0f;
 
 			gameObject->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, rotateAngle);
 

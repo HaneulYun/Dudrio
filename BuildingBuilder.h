@@ -168,8 +168,11 @@ public:
 					terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].collision = true;
 
 					// 노드 확인용
-					auto go = Scene::scene->Duplicate(cube);
-					go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
+					if (cube)
+					{
+						auto go = Scene::scene->Duplicate(cube);
+						go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
+					}
 				}
 			}
 		}

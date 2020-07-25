@@ -40,7 +40,9 @@ void GuestNetwork::ProcessPacket(char* ptr)
 				Graphics::Instance()->commandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 			}
 			terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
+			TerrainNodeData* terrainNodeData = new TerrainNodeData(&terrainData->terrainData);
 			BuildingBuilder::buildingBuilder->terrain = terrainData;
+			BuildingBuilder::buildingBuilder->terrainNodeData = terrainNodeData;
 		}
 
 		myCharacter->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);

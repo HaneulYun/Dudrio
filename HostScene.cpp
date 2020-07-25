@@ -14,6 +14,9 @@ void HostScene::BuildObjects()
 
 	LoadPrefab();
 
+	ASSET AddMesh("Cube", Mesh::CreateCube());
+
+
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
 	{
@@ -68,6 +71,7 @@ void HostScene::BuildObjects()
 		fps->AddComponent<FPS>();
 	}
 
+
 	float TerrainSize = 1024;
 	float frequency = 5;
 	int octaves = 3;
@@ -91,6 +95,9 @@ void HostScene::BuildObjects()
 
 		terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
 	}
+
+	TerrainNodeData* terrainNodeData = new TerrainNodeData(&terrainData->terrainData);
+
 
 	///*** Game Object ***///
 	GameObject* mainCamera = CreateEmpty();
@@ -136,6 +143,11 @@ void HostScene::BuildObjects()
 	//	BuildManager::buildManager->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
 	//}
 
+	GameObject* node = CreateEmptyPrefab();
+	node->transform->Scale({ 2.f, 2.f, 2.f });
+	node->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
+	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
+
 	auto object = CreateUI();
 	{
 		auto rt = object->GetComponent<RectTransform>();
@@ -145,6 +157,8 @@ void HostScene::BuildObjects()
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
+		buildingBuilder->terrainNodeData = terrainNodeData;
+		buildingBuilder->cube = node;
 	
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;

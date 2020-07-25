@@ -37,36 +37,53 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 	switch (telegram.msg)
 	{
 	case Msg_Move:
-		sim->targetPos.push_back(Vector2(sim->gameObject->transform->position.x + (rand() % 30) -15, sim->gameObject->transform->position.z + (rand() % 30) - 15));
+	{
+		Vector2 targetPos;
+		do
+		{
+			targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
+		} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+
+		sim->targetPos.emplace_back(targetPos, 0);
 		sim->stateMachine.ChangeState(MoveState::Instance());
 		return true;
+	}
 	case Msg_Sleep:
+	{
 		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
 		sim->path.clear();
 
-		sim->targetPos.push_back(Vector2(sim->home->transform->position.x, sim->home->transform->position.z));
+		// 집 주변까지 이동 + 집 안으로 이동
+		TargetInfo targetInfo;
+		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
+		targetInfo.posOffset = sim->home->GetComponent<MeshFilter>()->mesh->Bounds.Extents.y * 2.0f;
+
+		sim->targetPos.push_back(targetInfo);
+		sim->stateMachine.PushState(MoveState::Instance());
+
+		sim->targetPos.emplace_back(Vector2(sim->home->transform->position.x, sim->home->transform->position.z), 0);
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(SleepState::Instance());
 
 		sim->stateMachine.ChangeState();
 		return true;
+	}
 	case Msg_Build:
 	{
 		sim->targetPos.clear();
 		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
 
-		sim->targetPos.push_back(info->pos);
+		sim->targetPos.emplace_back(info->pos, BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1);
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(BuildState::Instance());
 
 		sim->stateMachine.ChangeState();
-	}
 		return true;
+	}
 	}
 	return false;
 };
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,12 +98,22 @@ MoveState* MoveState::Instance()
 
 void MoveState::Enter(Sim* sim)
 {
+	float targetPosOffset = sim->targetPos.front().posOffset;
+	int checkCollisionOn = true;
 
-	if (sim->stateMachine.IsNextState(BuildState::Instance()))
-		PathFinder::Instance()->FindPath(sim->targetPos.front(), Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path,
-			BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1);
-	else
-		PathFinder::Instance()->FindPath(sim->targetPos.front(), Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path);
+	//if (sim->stateMachine.IsNextState(BuildState::Instance()))
+	//	targetPosOffset = BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1;
+	
+	if (sim->stateMachine.IsNextState(SleepState::Instance()))
+		checkCollisionOn = false;
+
+
+	if (PathFinder::Instance()->FindPath(sim->targetPos.front().pos, Vector2(sim->gameObject->transform->position.x, sim->gameObject->transform->position.z), sim->path, checkCollisionOn, targetPosOffset) == false)
+	{
+		if (sim->stateMachine.HaveNextState() == false)
+			sim->stateMachine.PushState(IdleState::Instance());
+		sim->stateMachine.ChangeState();
+	}
 };
 
 void MoveState::Execute(Sim* sim)
@@ -97,13 +124,9 @@ void MoveState::Execute(Sim* sim)
 	{
 		sim->targetPos.pop_front();
 
-		if (sim->stateMachine.HaveNextState())
-			sim->stateMachine.ChangeState();
-		else
-			sim->stateMachine.ChangeState(IdleState::Instance());
+		sim->stateMachine.ChangeState();
 		return;
 	}
-
 
 	Vector2 distanceV{ sim->gameObject->transform->position.x - sim->path.front().x, sim->gameObject->transform->position.z - sim->path.front().y };
 	float distance = sqrt(pow(distanceV.x, 2) + pow(distanceV.y, 2));
@@ -118,6 +141,8 @@ void MoveState::Execute(Sim* sim)
 
 void MoveState::Exit(Sim* sim)
 {
+	if (sim->stateMachine.HaveNextState() == false)
+		sim->stateMachine.PushState(IdleState::Instance());
 };
 
 bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
@@ -127,25 +152,31 @@ bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
 	case Msg_Move:
 		return true;
 	case Msg_Sleep:
+	{
 		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
 		sim->path.clear();
 
-		Vector2 dest;
-		dest.x = sim->home->transform->position.x;
-		dest.y = sim->home->transform->position.z;
-		sim->targetPos.push_back(dest);
+		// 집 주변까지 이동 + 집 안으로 이동
+		TargetInfo targetInfo;
+		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
+		targetInfo.posOffset = sim->home->GetComponent<MeshFilter>()->mesh->Bounds.Extents.y * 2.0f;
 
+		sim->targetPos.push_back(targetInfo);
+		sim->stateMachine.PushState(MoveState::Instance());
+
+		sim->targetPos.emplace_back(Vector2(sim->home->transform->position.x, sim->home->transform->position.z), 0);
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(SleepState::Instance());
 
 		sim->stateMachine.ChangeState();
 		return true;
+	}
 	case Msg_Build:
 	{
 		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
 
-		sim->targetPos.push_back(info->pos);
+		sim->targetPos.emplace_back(info->pos, BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1);
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(BuildState::Instance());
 	}
@@ -167,7 +198,7 @@ SleepState* SleepState::Instance()
 
 void SleepState::Enter(Sim* sim)
 {
-	Messenger->CreateMessage(15, sim->id, sim->id, Msg_WakeUp);
+	Messenger->CreateMessage(5, sim->id, sim->id, Msg_WakeUp);
 };
 
 void SleepState::Execute(Sim* sim)
@@ -189,20 +220,27 @@ bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
 	{
 		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
 
-		sim->targetPos.push_back(info->pos);
+		sim->targetPos.emplace_back(info->pos, BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1);
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(BuildState::Instance());
-	}
 		return true;
+	}
 	case Msg_WakeUp:
+	{
 		if (sim->stateMachine.HaveNextState())
 			sim->stateMachine.ChangeState();
 		else
 		{
-			sim->targetPos.push_back(Vector2(sim->gameObject->transform->position.x - (rand() % 10 - 5), sim->gameObject->transform->position.z - (rand() % 10 - 5)));
+			Vector2 targetPos;
+			do
+			{
+				targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
+			} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+			sim->targetPos.emplace_back(targetPos, 0);
 			sim->stateMachine.ChangeState(IdleState::Instance());
 		}
 		return true;
+	}
 	}
 	return false;
 };
@@ -243,11 +281,15 @@ bool BuildState::OnMessage(Sim* sim, const Telegram& telegram)
 	switch (telegram.msg)
 	{
 	case Msg_Sleep:
-		Vector2 dest;
-		dest.x = sim->home->transform->position.x;
-		dest.y = sim->home->transform->position.z;
-		sim->targetPos.push_back(dest);
+		// 집 주변까지 이동 + 집 안으로 이동
+		TargetInfo targetInfo;
+		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
+		targetInfo.posOffset = sim->home->GetComponent<MeshFilter>()->mesh->Bounds.Extents.y * 2.0f;
 
+		sim->targetPos.push_back(targetInfo);
+		sim->stateMachine.PushState(MoveState::Instance());
+
+		sim->targetPos.emplace_back(Vector2(sim->home->transform->position.x, sim->home->transform->position.z), 0);
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(SleepState::Instance());
 

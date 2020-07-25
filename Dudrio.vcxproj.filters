@@ -171,6 +171,9 @@
     <ClInclude Include="BuildingBuilderData.h">
       <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainNodeData.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -217,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="MessageManager.cpp">
       <Filter>Assets\Scripts\AI\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="PathFinder.cpp">
+      <Filter>Assets\Scripts\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

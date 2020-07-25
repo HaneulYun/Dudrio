@@ -1,6 +1,7 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
 #include "HostNetwork.h"
+#include "TerrainNodeData.h"
 
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
@@ -18,6 +19,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	float curPrefabAngle;
 
 	Terrain* terrain{ nullptr };
+	TerrainNodeData* terrainNodeData; 
+	GameObject* cube;
 	float distance;
 
 protected:
@@ -46,6 +49,7 @@ public:
 				
 				if (HostNetwork::network->isConnect) 
 					HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, curPrefabAngle);
+				updateTerrainNodeData(prefab);
 				
 				prefab = nullptr;
 			}
@@ -141,6 +145,37 @@ public:
 		return data;
 	}
 
+	void updateTerrainNodeData(GameObject* building)
+	{
+		BoundingBox boundingBox = building->GetComponent<BoxCollider>()->boundingBox;
+
+		Vector3 pos = building->transform->position;
+		Vector3 right = Vector3::Normalize(building->transform->right) + boundingBox.Extents.x;
+		Vector3 forward = Vector3::Normalize(building->transform->forward) + boundingBox.Extents.z;
+
+		for (int x = (pos - right).x; x <= (pos + right).x; ++x)
+		{
+			for (int z = (pos - forward).z; z <= (pos + forward).z; ++z)
+			{
+
+				BoundingOrientedBox obbBox{};
+				obbBox.Center = pos.xmf3;
+				obbBox.Extents = boundingBox.Extents;
+				obbBox.Orientation = gameObject->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
+
+				if (obbBox.Contains(XMLoadFloat3(&XMFLOAT3(x, pos.y, z))))
+				{
+					terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].collision = true;
+
+					// 노드 확인용
+					auto go = Scene::scene->Duplicate(cube);
+					go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
+				}
+			}
+		}
+		
+	}
+
 	void build(Vector2 position, float angle, int type, int index)
 	{
 		if (index < building[type].size())
@@ -170,6 +205,8 @@ public:
 			Vector3 pos{ position.x, terrain->terrainData.GetHeight(position.x,position.y), position.y };
 			obj->transform->position = pos;
 			obj->transform->Rotate(Vector3(0, 1, 0), angle);
+
+			updateTerrainNodeData(obj);
 		}
 	}
 
@@ -226,7 +263,7 @@ public:
 			else
 				bound = data.mesh->Bounds.Extents;
 
-			return bound.x > bound.z ? bound.x : bound.z;
+			return bound.x > bound.y ? bound.x : bound.y;
 		}
 		return 0;
 	}

@@ -1,6 +1,15 @@
 #pragma once
 #include "CyanEngine\CyanEngine\framework.h"
 
+struct TargetInfo
+{
+	Vector2 pos;
+	float posOffset = 0;
+
+	TargetInfo(Vector2 pos, float posOffset) : pos(pos), posOffset(posOffset) {}
+	TargetInfo() = default;
+};
+
 class Sim : public MonoBehavior<Sim>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
@@ -12,7 +21,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* home;
 
 	StateMachine<Sim> stateMachine;
-	std::deque<Vector2> targetPos;
+	std::deque<TargetInfo> targetPos;
 	std::deque<Vector2> path;
 	BuildMessageInfo buildInfo;
 
@@ -29,6 +38,7 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
+		Time::deltaTime = 0;
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)

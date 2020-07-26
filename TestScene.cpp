@@ -105,7 +105,7 @@ void TestScene::BuildObjects()
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
 		HostCameraController* controller = mainCamera->AddComponent<HostCameraController>();
-		controller->heightmap = &terrainData->terrainData;
+		controller->terrainData = &terrainData->terrainData;
 	}
 
 	{

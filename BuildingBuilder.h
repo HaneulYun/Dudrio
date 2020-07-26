@@ -20,7 +20,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	Terrain* terrain{ nullptr };
 	TerrainNodeData* terrainNodeData; 
-	GameObject* cube;
+	//GameObject* cube;
 	float distance;
 
 protected:
@@ -168,11 +168,11 @@ public:
 					terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].collision = true;
 
 					// 노드 확인용
-					if (cube)
-					{
-						auto go = Scene::scene->Duplicate(cube);
-						go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
-					}
+					//if (cube)
+					//{
+					//	auto go = Scene::scene->Duplicate(cube);
+					//	go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
+					//}
 				}
 			}
 		}
@@ -190,19 +190,21 @@ public:
 				obj = Scene::scene->Duplicate(data.prefab);
 			else
 			{
-				obj = Scene::scene->Duplicate(ASSET PREFAB("MRC"));
-				obj->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				obj->GetComponent<MeshFilter>()->mesh = data.mesh;
+				obj = Scene::scene->CreateEmpty();
+				obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+
+				auto child = obj->AddChild();
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+				child->AddComponent<MeshFilter>()->mesh = data.mesh;
 				if (data.material)
-					obj->GetComponent<Renderer>()->materials.push_back(data.material);
+					child->AddComponent<Renderer>()->materials.push_back(data.material);
 				else
 				{
-					auto renderer = obj->GetComponent<Renderer>();
+					auto renderer = child->AddComponent<Renderer>();
 					int i = 0;
 					for (auto& sm : data.mesh->DrawArgs)
 						renderer->materials.push_back(data.materials[i++]);
 				}
-				obj->GetComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
 			}
 
 			Vector3 pos{ position.x, terrain->terrainData.GetHeight(position.x,position.y), position.y };
@@ -233,19 +235,21 @@ public:
 				prefab = Scene::scene->Duplicate(data.prefab);
 			else
 			{
-				prefab = Scene::scene->Duplicate(ASSET PREFAB("MRC"));
-				prefab->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				prefab->GetComponent<MeshFilter>()->mesh = data.mesh;
+				prefab = Scene::scene->CreateEmpty();
+				prefab->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+
+				auto child = prefab->AddChild();
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+				child->AddComponent<MeshFilter>()->mesh = data.mesh;
 				if (data.material)
-					prefab->GetComponent<Renderer>()->materials.push_back(data.material);
+					child->AddComponent<Renderer>()->materials.push_back(data.material);
 				else
 				{
-					auto renderer = prefab->GetComponent<Renderer>();
+					auto renderer = child->AddComponent<Renderer>();
 					int i = 0;
 					for (auto& sm : data.mesh->DrawArgs)
 						renderer->materials.push_back(data.materials[i++]);
 				}
-				prefab->GetComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
 			}
 
 			curPrefabType = type;

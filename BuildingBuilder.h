@@ -161,7 +161,7 @@ public:
 				BoundingOrientedBox obbBox{};
 				obbBox.Center = pos.xmf3;
 				obbBox.Extents = boundingBox.Extents;
-				obbBox.Orientation = gameObject->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
+				obbBox.Orientation = building->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
 
 				if (obbBox.Contains(XMLoadFloat3(&XMFLOAT3(x, pos.y, z))))
 				{

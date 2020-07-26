@@ -188,7 +188,7 @@ void TestScene::BuildObjects()
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
-		buildingBuilder->cube = node;
+		//buildingBuilder->cube = node;
 		AIManager::Instance = object->AddComponent<AIManager>();
 		AIManager::Instance->simPrefab = sim;
 

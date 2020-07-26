@@ -166,7 +166,7 @@ void HostScene::BuildObjects()
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
-		buildingBuilder->cube = node;
+		//buildingBuilder->cube = node;
 	
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;

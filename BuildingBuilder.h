@@ -23,6 +23,10 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	//GameObject* cube;
 	float distance;
 
+
+	Vector3 lastMousePos;
+	bool rotationToggle = false;
+
 protected:
 	friend class GameObject;
 	friend class MonoBehavior<BuildingBuilder>;
@@ -41,9 +45,27 @@ public:
 	{
 		if (prefab)
 		{
-			prefab->transform->position = getPosOnTerrain();
-
-			if (Input::GetMouseButtonUp(0))
+			if (Input::GetKeyDown(KeyCode::T))
+				rotationToggle = rotationToggle ? false : true;
+			if (Input::GetMouseButtonDown(2))
+				lastMousePos = Input::mousePosition;
+			else if (Input::GetMouseButton(2))
+			{
+				if (rotationToggle)
+				{
+					if (abs(lastMousePos.y - Input::mousePosition.y) > 30)
+					{
+						prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) / abs(lastMousePos.y - Input::mousePosition.y) * 30.0f);
+						lastMousePos = Input::mousePosition;
+					}
+				}
+				else
+				{
+					prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) * Time::deltaTime * 60.0f);
+					lastMousePos = Input::mousePosition;
+				}
+			}
+			else if (Input::GetMouseButtonUp(0))
 			{
 				auto p = prefab->transform->position;
 				
@@ -53,6 +75,8 @@ public:
 				
 				prefab = nullptr;
 			}
+			else
+				prefab->transform->position = getPosOnTerrain();
 		}
 	}
 

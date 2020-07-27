@@ -80,7 +80,6 @@ int GameWorld::addSim(GameObject* landmark, GameObject* house)
 	simComponent->id = simIndex;
 	simList[simIndex++] = sim;
 
-	// 네트워크 연결 안되어있으면
 	simComponent->stateMachine.PushState(IdleState::Instance());
 	simComponent->stateMachine.GetCurrentState()->Enter(simComponent);
 

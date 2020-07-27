@@ -21,14 +21,13 @@ void AIManager::aiUpdate()
 		sim.second->GetComponent<Sim>()->stateMachine.Update();
 	}
 
-	if (time > 30.f)
-	{
-		for (auto sim : GameWorld::gameWorld->simList)
-		{
-			Messenger->CreateMessage(0, sim.first, sim.first, Msg_Sleep);
-		}
-		GameWorld::gameWorld->gameTime -= 30.f;
-	}
+	//if (time > 30.f)
+	//{
+	//	for (auto sim : GameWorld::gameWorld->simList)
+	//	{
+	//		Messenger->CreateMessage(0, sim.first, sim.first, Msg_Sleep);
+	//	}
+	//}
 
 	for (auto landmark : GameWorld::gameWorld->buildingList)
 	{

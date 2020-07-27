@@ -27,10 +27,11 @@ struct Node
 class PathFinder
 {
 private:
+
+public:
 	TerrainData* terrainData;
 	TerrainNodeData* terrainNodeData;
 
-public:
 	//GameObject* prefab;
 	static PathFinder* Instance();
 

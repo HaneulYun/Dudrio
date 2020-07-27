@@ -12,7 +12,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	Vector3 lastMousePos;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	TerrainData* heightmap;
+	TerrainData* terrainData;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<HostCameraController>;
@@ -24,7 +24,8 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
-		lookAtPos = { (float)(heightmap->heightmapWidth / 2), 0, (float)(heightmap->heightmapHeight / 2) };
+		Vector2 posXZ{ (float)terrainData->heightmapWidth * 0.5f, (float)terrainData->heightmapHeight * 0.5f };
+		lookAtPos = { posXZ.x, terrainData->GetHeight(posXZ.x,posXZ.y), posXZ.y };
 		float x = lookAtPos.x + mRadius * sinf(mPhi) * cosf(mTheta);
 		float z = lookAtPos.z + mRadius * sinf(mPhi) * sinf(mTheta);
 		float y = lookAtPos.y + mRadius * cosf(mPhi);
@@ -38,11 +39,33 @@ public:
 		float tTheta = mTheta, tPhi = mPhi, tRadius = mRadius;
 		Vector3 tlookAtPos = lookAtPos;
 
-		if (Input::GetMouseButtonDown(2))
+		Vector3 forward = Vector3::Normalize(gameObject->transform->forward);
+		Vector3 right = Vector3(forward.z, 0, -forward.x);
+
+		if (Input::GetKey(KeyCode::W))
+		{
+			tlookAtPos += forward * mRadius * Time::deltaTime;
+		}
+		if (Input::GetKey(KeyCode::A))
+		{
+			tlookAtPos -= right * mRadius * Time::deltaTime;
+		}
+		if (Input::GetKey(KeyCode::S))
+		{
+			tlookAtPos -= forward * mRadius * Time::deltaTime;
+		}
+		if (Input::GetKey(KeyCode::D))
+		{
+			tlookAtPos += right * mRadius * Time::deltaTime;
+		}
+		tlookAtPos.y = terrainData->GetHeight(tlookAtPos.x, tlookAtPos.z);
+
+
+		if (Input::GetMouseButtonDown(1))
 		{
 			lastMousePos = Input::mousePosition;
 		}
-		else if (Input::GetMouseButton(2))// && BuildManager::buildManager->prefab == nullptr)
+		else if (Input::GetMouseButton(1))
 		{
 			Vector3 currMousePos = Input::mousePosition;
 			Vector3 delta = (currMousePos - lastMousePos) * 0.25f * (XM_PI / 180.0f);
@@ -54,30 +77,14 @@ public:
 
 			lastMousePos = currMousePos;
 		}
-
 		else if (Input::GetMouseWheelDelta())
 		{
 			tRadius = mRadius - Input::GetMouseWheelDelta() * 0.05f;
 		}
 
-		else if (Input::GetMouseButtonDown(0))
-		{
-			lastMousePos = Camera::main->ScreenToWorldPoint(Input::mousePosition);
-		}
-		else if (Input::GetMouseButton(0))
-		{
-			Vector3 currMousePos = Camera::main->ScreenToWorldPoint(Input::mousePosition);
-			Vector3 dir = currMousePos - lastMousePos;
-
-			tlookAtPos.x = lookAtPos.x - dir.x * mRadius;
-			tlookAtPos.z = lookAtPos.z - dir.z * mRadius;
-
-			lastMousePos = currMousePos;
-		}
-
-		float h = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
+		float terrainHeight = terrainData->GetHeight(tlookAtPos.x + tRadius * sinf(tPhi) * cosf(tTheta), tlookAtPos.z + tRadius * sinf(tPhi) * sinf(tTheta));
 		
-		if (tlookAtPos.y + tRadius * cosf(tPhi) - 1.0f < h)
+		if (tlookAtPos.y + tRadius * cosf(tPhi) < terrainHeight)
 			return;
 
 		lookAtPos = tlookAtPos;

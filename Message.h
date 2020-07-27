@@ -15,5 +15,5 @@ struct BuildMessageInfo
 	int buildingType;
 	int buildingIndex;
 
-	std::vector<GameObject*>* simList;
+	//std::vector<GameObject*>* simList;
 };

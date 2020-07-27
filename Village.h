@@ -10,8 +10,8 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	float timeDelay = 0.f;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	// 마을 주민 목록
-	std::vector<GameObject*> sims;
+	//		Home			Sim
+	std::map<GameObject*, GameObject*> sims;
 
 private:
 	friend class GameObject;
@@ -28,7 +28,7 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		if (autoDevelopment)
+		if (autoDevelopment && !sims.empty())
 		{
 			if (timeDelay <= 0.f)
 			{
@@ -36,10 +36,10 @@ public:
 				info->pos = Vector2(gameObject->transform->position.x + (rand() % 30) - 15, gameObject->transform->position.z + (rand() % 30) - 15);
 				info->buildingType = rand() % 1 + 3;
 				info->buildingIndex = rand() % BuildingBuilder::buildingBuilder->getBuildingCount(info->buildingType);
-				info->simList = &sims;
+				//info->simList = &sims;
 
 				timeDelay = rand() % 10 + 30;
-				Messenger->CreateMessage(0, -1, -1, Msg_Build, info);
+				Messenger->CreateMessage(0, rand() % sims.size(), rand() % sims.size(), Msg_Build, info);
 			}
 			
 			timeDelay -= Time::deltaTime;

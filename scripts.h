@@ -37,3 +37,5 @@
 #include "GameLoader.h"
 #include "ParticleManager.h"
 #include "FPS.h"
+
+#include "GameWorld.h"

@@ -45,13 +45,30 @@ struct EXOVER {
 #define SECTOR_WIDTH 20
 #define VIEW_RADIUS	 20
 
-#include "protocol.h"
 #include "math.h"
-#include "TerrainGenerator.h"
+#include "protocol.h"
 #include "Timer.h"
 #include "IOCPServer.h"
 #include "Objects.h"
 #include "contents.h"
+
+// AI --------------------------------
+#include "AIManager.h"
+#include "Sim.h"
+#include "Village.h"
+// Terrain
+#include "TerrainGenerator.h"
+#include "Terrain.h"
+// Path
+#include "PathFinder.h"
+// FSM
+#include "Message.h"
+#include "MessageManager.h"
+#include "Telegram.h"
+#include "SimStates.h"
+#include "State.h"
+#include "StateMachine.h"
+// -----------------------------------
 
 extern class IOCPServer iocp;
 extern class Timer	timer;

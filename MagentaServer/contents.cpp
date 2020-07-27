@@ -97,9 +97,7 @@ void Contents::process_packet(int user_id, char* buf)
 			terrain_data->AlphamapTextureName = name.c_str();
 			terrain_data->heightmapHeight = terrain_data->terrain_size;
 			terrain_data->heightmapWidth = terrain_data->terrain_size;
-			terrain_data->x_size = terrain_data->terrain_size;
-			terrain_data->y_size = 255;
-			terrain_data->z_size = terrain_data->terrain_size;
+			terrain_data->size = Vector3D(terrain_data->terrain_size, 255, terrain_data->terrain_size);
 			terrain_data->Load();
 
 			enter_game(user_id, packet->name);
@@ -389,6 +387,8 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	}
 	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].unlock();
 	
+	// BuildingBuilder::updateTerrainNodeData(GameObject* building);
+
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;

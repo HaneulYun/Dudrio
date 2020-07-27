@@ -125,23 +125,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIManager.cpp" />
     <ClCompile Include="math.cpp" />
+    <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="contents.cpp" />
     <ClCompile Include="IOCPServer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PathFinder.cpp" />
+    <ClCompile Include="SimStates.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainGenerator.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIManager.h" />
     <ClInclude Include="math.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="MessageManager.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="contents.h" />
     <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="PathFinder.h" />
     <ClInclude Include="protocol.h" />
+    <ClInclude Include="Sim.h" />
+    <ClInclude Include="SimStates.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateMachine.h" />
+    <ClInclude Include="Telegram.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Village.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

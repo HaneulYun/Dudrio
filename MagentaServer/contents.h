@@ -3,12 +3,15 @@
 
 class Contents
 {
-private:
+public:
 	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Count, None = -1 };
 	vector<struct Collider> collider_info[BuildingType::Count];
 
-public:
 	int		host_id;
+	float	ingame_time;
+
+	unordered_map<int, Sim*> simList;
+	TerrainNodeData* terrainNodeData;
 
 public:
 	Contents();

@@ -2,23 +2,35 @@
 #include "GameWorld.h"
 
 
+
+void GameWorld::Start(/*초기화 코드를 작성하세요.*/)
+{
+	gameWorld = this;
+}
+
+void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
+{
+	aiUpdate();
+
+	for (auto landmark : buildingList)
+	{
+		for (auto sim : landmark.first->GetComponent<Village>()->simList)
+		{
+
+		}
+		for (auto house : landmark.second[House])
+		{
+
+		}
+		for (auto light : landmark.second[Lighting])
+		{
+		}
+	}
+}
 void GameWorld::aiUpdate()
 {
-	if (simList.empty())
-		return;
-
-	gameTime += Time::deltaTime;
-
-	if (gameTime > 60.f)
-	{
-		for (auto s : simList)
-		{
-			Messenger->CreateMessage(0, s.first, s.first, Msg_Sleep);
-		}
-		gameTime -= 60.f;
-	}
-
-	Messenger->Timer();
+	if (!simList.empty())
+		AIManager::aiManager->aiUpdate();
 }
 
 void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
@@ -58,24 +70,24 @@ int GameWorld::addSim(GameObject* landmark, GameObject* house)
 	simComponent->animator = sim->children[0]->GetComponent<Animator>();
 	simComponent->home = house;
 	simComponent->id = simIndex;
-	simList[simIndex++] = simComponent;
+	simList[simIndex++] = sim;
 
 	// 네트워크 연결 안되어있으면
 	simComponent->stateMachine.PushState(IdleState::Instance());
 	simComponent->stateMachine.GetCurrentState()->Enter(simComponent);
 
-	landmark->GetComponent<Village>()->sims[house] = sim;
+	landmark->GetComponent<Village>()->simList[house] = sim;
 
 	return simIndex;
 }
 
 int GameWorld::eraseSim(GameObject* landmark, GameObject* house)
 {
-	GameObject* sim = landmark->GetComponent<Village>()->sims[house];
+	GameObject* sim = landmark->GetComponent<Village>()->simList[house];
 
 	int id = sim->GetComponent<Sim>()->id;
 
-	landmark->GetComponent<Village>()->sims.erase(house);
+	landmark->GetComponent<Village>()->simList.erase(house);
 	simList.erase(id);
 
 	return id;

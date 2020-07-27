@@ -4,7 +4,7 @@
 GameLoader* GameLoader::gameLoader{ nullptr };
 BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
 GameWorld* GameWorld::gameWorld;
-AIManager* AIManager::Instance;
+AIManager* AIManager::aiManager;
 
 void HostScene::BuildObjects()
 {
@@ -201,8 +201,7 @@ void HostScene::BuildObjects()
 		GameWorld::gameWorld = object->AddComponent<GameWorld>();
 		GameWorld::gameWorld->simPrefab = sim;
 		GameWorld::gameWorld->buildingList[landmark];
-		AIManager::Instance = object->AddComponent<AIManager>();
-		AIManager::Instance->simPrefab = sim;
+		object->AddComponent<AIManager>();
 	
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;

@@ -11,13 +11,11 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static GameWorld* gameWorld;
 
-
-	//		landmark
+	// 랜드마크에 따른 빌딩 목록
 	std::map<GameObject*, std::map<BuildingType, std::vector<GameObject*>>> buildingList;
-	
-	// 랜드마크에 따른 심 목록?
-	std::map<int, Sim*> simList;
-	
+	// 전체 심 목록
+	std::map<int, GameObject*> simList;
+
 
 	float gameTime;
 	float gameDeltaTime;
@@ -37,29 +35,9 @@ private:
 public:
 	~GameWorld() {}
 
-	void Start(/*초기화 코드를 작성하세요.*/)
-	{
-	}
+	void Start(/*초기화 코드를 작성하세요.*/);
 
-	void Update(/*업데이트 코드를 작성하세요.*/)
-	{
-		//aiUpdate();
-
-		for (auto landmark : buildingList)
-		{
-			for (auto sim : landmark.first->GetComponent<Village>()->sims)
-			{
-
-			}
-			for (auto house : landmark.second[House])
-			{
-
-			}
-			for (auto light : landmark.second[Lighting])
-			{
-			}
-		}
-	}
+	void Update(/*업데이트 코드를 작성하세요.*/);
 
 	void aiUpdate();
 

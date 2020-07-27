@@ -187,8 +187,7 @@ void TestScene::BuildObjects()
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		//buildingBuilder->cube = node;
-		AIManager::Instance = object->AddComponent<AIManager>();
-		AIManager::Instance->simPrefab = sim;
+		AIManager::aiManager = object->AddComponent<AIManager>();
 		//GameWorld::gameWorld = object->AddComponent<GameWorld>();
 		//GameWorld::gameWorld->simPrefab = sim;
 
@@ -216,7 +215,6 @@ void TestScene::BuildObjects()
 		house->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
 		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
-		AIManager::Instance->AddSim(landmark, house);
-		//GameWorld::gameWorld->addSim(landmark, house);
+		GameWorld::gameWorld->addSim(landmark, house);
 	}
 }

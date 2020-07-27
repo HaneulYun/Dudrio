@@ -4,7 +4,7 @@
 GameLoader* GameLoader::gameLoader{ nullptr };
 BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
 GameWorld* GameWorld::gameWorld;
-AIManager* AIManager::Instance;
+AIManager* AIManager::aiManager;
 
 void HostScene::BuildObjects()
 {
@@ -40,7 +40,8 @@ void HostScene::BuildObjects()
 		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
 		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("VelocityX", Greater, -0.3));
 	}
-	//*** AnimatorController ***//
+
+	//*** DummySimController ***//
 	AnimatorController* simController = new AnimatorController();
 	{
 		simController->AddParameterFloat("Walking");
@@ -201,8 +202,7 @@ void HostScene::BuildObjects()
 		GameWorld::gameWorld = object->AddComponent<GameWorld>();
 		GameWorld::gameWorld->simPrefab = sim;
 		GameWorld::gameWorld->buildingList[landmark];
-		AIManager::Instance = object->AddComponent<AIManager>();
-		AIManager::Instance->simPrefab = sim;
+		object->AddComponent<AIManager>();
 	
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;

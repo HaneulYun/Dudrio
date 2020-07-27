@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIManager.h" />
     <ClInclude Include="AnimationScene.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="BuildingBuilder.h" />
@@ -217,9 +218,11 @@
     <ClInclude Include="TestScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIManager.cpp" />
     <ClCompile Include="AnimationScene.cpp" />
     <ClCompile Include="BuildingBuilder.cpp" />
     <ClCompile Include="Dudrio.cpp" />
+    <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="HostNetwork.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MaterialScene.cpp" />

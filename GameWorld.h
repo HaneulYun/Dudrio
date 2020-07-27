@@ -11,14 +11,13 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static GameWorld* gameWorld;
 
-
-	//		landmark
+	// 랜드마크에 따른 빌딩 목록
 	std::map<GameObject*, std::map<BuildingType, std::vector<GameObject*>>> buildingList;
-	
-	// 랜드마크에 따른 심 목록?
-	std::map<int, Sim*> simList;
-	
+	// 전체 심 목록
+	std::map<int, GameObject*> simList;
 
+
+	TimeSpeed timeSpeed = X1;
 	float gameTime;
 	float gameDeltaTime;
 
@@ -37,102 +36,19 @@ private:
 public:
 	~GameWorld() {}
 
-	void Start(/*초기화 코드를 작성하세요.*/)
-	{
-	}
+	void Start(/*초기화 코드를 작성하세요.*/);
 
-	void Update(/*업데이트 코드를 작성하세요.*/)
-	{
-		//aiUpdate();
-		
-		for (auto landmark : buildingList)
-		{
-			for (auto sim : landmark.first->GetComponent<Village>()->sims)
-			{
+	void Update(/*업데이트 코드를 작성하세요.*/);
 
-			}
-			for (auto house : landmark.second[House])
-			{
-				
-			}
-			for (auto light : landmark.second[Lighting])
-			{
-			}
-		}
-	}
+	void aiUpdate();
 
-	void aiUpdate()
-	{
-		if (simList.empty())
-			return;
+	void gameTimeUpdate();
 
-		gameTime += Time::deltaTime;
+	void buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
 
-		if (gameTime > 60.f)
-		{
-			for (auto s : simList)
-			{
-				Messenger->CreateMessage(0, s.first, s.first, Msg_Sleep);
-			}
-			gameTime -= 60.f;
-		}
+	void deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
 
-		Messenger->Timer();
-	}
+	int addSim(GameObject* landmark, GameObject* house);
 
-	void buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
-	{
-		if (type == BuildingType::Prop)
-		{
-			if (building->GetComponent<Light>())
-				type = BuildingType::Lighting;
-		}
-		buildingList[landmark][(BuildingType)type].push_back(building);
-		
-		if (type == BuildingType::House)
-			addSim(landmark, building);
-	}
-
-	void deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
-	{
-		if (type == BuildingType::Prop)
-		{
-			if (building->GetComponent<Light>())
-				type = BuildingType::Lighting;
-		}
-		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
-
-		if (type == BuildingType::House)
-		{
-			eraseSim(landmark, building);
-		}
-	}
-
-	int addSim(GameObject* landmark, GameObject* house)
-	{
-		GameObject* sim = Scene::scene->Duplicate(simPrefab);
-		sim->transform->position = house->transform->position;
-
-		auto simComponent = sim->AddComponent<Sim>();
-		simComponent->animator = sim->children[0]->GetComponent<Animator>();
-		simComponent->home = house;
-		simComponent->id = simIndex;
-		simList[simIndex++] = simComponent;
-
-		// 네트워크 연결 안되어있으면
-		simComponent->stateMachine.PushState(IdleState::Instance());
-		simComponent->stateMachine.GetCurrentState()->Enter(simComponent);
-
-		landmark->GetComponent<Village>()->sims[house] = sim;
-
-		return simIndex;
-	}
-
-	int eraseSim(GameObject* landmark, GameObject* house)
-	{
-		GameObject* sim = landmark->GetComponent<Village>()->sims[house];
-
-		landmark->GetComponent<Village>()->sims.erase(house);
-		simList.erase(sim->GetComponent<Sim>()->id);
-	}
+	int eraseSim(GameObject* landmark, GameObject* house);
 };

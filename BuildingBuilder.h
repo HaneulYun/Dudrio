@@ -36,10 +36,7 @@ protected:
 public:
 	~BuildingBuilder() {}
 
-	void Start(/*초기화 코드를 작성하세요.*/)
-	{
-		buildingBuilder = this;
-	}
+	void Start(/*초기화 코드를 작성하세요.*/);
 
 	void Update(/*업데이트 코드를 작성하세요.*/);
 

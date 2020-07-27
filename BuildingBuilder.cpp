@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "BuildingBuilder.h"
 
+
+void BuildingBuilder::Start(/*초기화 코드를 작성하세요.*/)
+{
+	buildingBuilder = this;
+}
+
 void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	if (prefab)

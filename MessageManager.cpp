@@ -27,7 +27,7 @@ void MessageManager::Timer()
 		const Telegram& telegram = *msgQueue.begin();
 
 		//Sim* receiver = AIManager::Instance->simList[telegram.receiver];
-		Sim* receiver = GameWorld::gameWorld->simList[telegram.receiver];
+		Sim* receiver = GameWorld::gameWorld->simList[telegram.receiver]->GetComponent<Sim>();
 		if (receiver == nullptr)
 			return;
 

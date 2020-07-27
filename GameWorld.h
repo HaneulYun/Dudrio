@@ -17,6 +17,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	std::map<int, GameObject*> simList;
 
 
+	TimeSpeed timeSpeed = X1;
 	float gameTime;
 	float gameDeltaTime;
 
@@ -40,6 +41,8 @@ public:
 	void Update(/*업데이트 코드를 작성하세요.*/);
 
 	void aiUpdate();
+
+	void gameTimeUpdate();
 
 	void buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
 

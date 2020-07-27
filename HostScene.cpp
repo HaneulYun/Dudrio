@@ -40,7 +40,8 @@ void HostScene::BuildObjects()
 		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
 		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("VelocityX", Greater, -0.3));
 	}
-	//*** AnimatorController ***//
+
+	//*** DummySimController ***//
 	AnimatorController* simController = new AnimatorController();
 	{
 		simController->AddParameterFloat("Walking");

@@ -10,6 +10,7 @@ void GameWorld::Start(/*초기화 코드를 작성하세요.*/)
 
 void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
+	gameTimeUpdate();
 	aiUpdate();
 
 	for (auto landmark : buildingList)
@@ -27,10 +28,17 @@ void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 		}
 	}
 }
+
 void GameWorld::aiUpdate()
 {
 	if (!simList.empty())
 		AIManager::aiManager->aiUpdate();
+}
+
+void GameWorld::gameTimeUpdate()
+{
+	gameTime += Time::deltaTime * timeSpeed;
+	gameDeltaTime = Time::deltaTime * timeSpeed;
 }
 
 void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)

@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "HostScene.h"
 
-//BuildManager* BuildManager::buildManager{ nullptr };
 GameLoader* GameLoader::gameLoader{ nullptr };
 BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
+GameWorld* GameWorld::gameWorld;
+AIManager* AIManager::Instance;
 
 void HostScene::BuildObjects()
 {
@@ -39,6 +40,18 @@ void HostScene::BuildObjects()
 		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
 		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("VelocityX", Greater, -0.3));
 	}
+	//*** AnimatorController ***//
+	AnimatorController* simController = new AnimatorController();
+	{
+		simController->AddParameterFloat("Walking");
+
+		simController->AddState("Idle", ASSET animationClips["Idle_BowAnim"].get());
+		simController->AddState("Walk", ASSET animationClips["Walk_BowAnim"].get());
+
+		simController->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("Walking", Greater, 1));
+		simController->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("Walking", Less, 1));
+	}
+
 
 	auto simsPrefab = CreateEmptyPrefab();
 	{
@@ -97,6 +110,7 @@ void HostScene::BuildObjects()
 	}
 
 	TerrainNodeData* terrainNodeData = new TerrainNodeData(&terrainData->terrainData);
+	PathFinder::Instance()->SetTerrainData(&terrainData->terrainData, terrainNodeData);
 
 
 	///*** Game Object ***///
@@ -151,10 +165,26 @@ void HostScene::BuildObjects()
 	//	BuildManager::buildManager->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
 	//}
 
-	GameObject* node = CreateEmptyPrefab();
-	node->transform->Scale({ 2.f, 2.f, 2.f });
-	node->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
-	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
+	GameObject* sim = CreateEmptyPrefab();
+
+	GameObject* model = sim->AddChild();
+	model->transform->Rotate({ 1, 0, 0 }, -90);
+	model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
+	model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+
+	auto anim = model->AddComponent<Animator>();
+	anim->controller = simController;
+	anim->state = &simController->states["Idle"];
+	anim->TimePos = 0;
+
+
+	GameObject* landmark = CreateEmpty();
+	landmark->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
+	landmark->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
+	landmark->transform->position = Vector3(500, terrainData->terrainData.GetHeight(500, 500), 500);
+	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+	Village* village = landmark->AddComponent<Village>();
+	village->OnAutoDevelopment();
 
 	auto object = CreateUI();
 	{
@@ -167,6 +197,12 @@ void HostScene::BuildObjects()
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		//buildingBuilder->cube = node;
+
+		GameWorld::gameWorld = object->AddComponent<GameWorld>();
+		GameWorld::gameWorld->simPrefab = sim;
+		GameWorld::gameWorld->buildingList[landmark];
+		AIManager::Instance = object->AddComponent<AIManager>();
+		AIManager::Instance->simPrefab = sim;
 	
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;

@@ -144,9 +144,6 @@
     <ClInclude Include="Telegram.h">
       <Filter>Assets\Scripts\AI\FSM</Filter>
     </ClInclude>
-    <ClInclude Include="AIManager.h">
-      <Filter>Assets\Scripts\AI\FSM</Filter>
-    </ClInclude>
     <ClInclude Include="Village.h">
       <Filter>Assets\Scripts\AI</Filter>
     </ClInclude>
@@ -172,6 +169,9 @@
       <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
     <ClInclude Include="TerrainNodeData.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWorld.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
@@ -223,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="PathFinder.cpp">
       <Filter>Assets\Scripts\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="BuildingBuilder.cpp">
+      <Filter>Assets\Scripts\Build</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -182,10 +182,10 @@
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="CharacterMovingBehavior.h" />
     <ClInclude Include="Dudrio.h" />
-    <ClInclude Include="AIManager.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameLoader.h" />
+    <ClInclude Include="GameWorld.h" />
     <ClInclude Include="GuestCameraController.h" />
     <ClInclude Include="GuestController.h" />
     <ClInclude Include="HostCameraController.h" />
@@ -218,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationScene.cpp" />
+    <ClCompile Include="BuildingBuilder.cpp" />
     <ClCompile Include="Dudrio.cpp" />
     <ClCompile Include="HostNetwork.cpp" />
     <ClCompile Include="MessageManager.cpp" />

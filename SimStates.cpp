@@ -42,7 +42,7 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		do
 		{
 			targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
-		} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+		} while (PathFinder::Instance()->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
 
 		sim->targetPos.emplace_back(targetPos, 0);
 		sim->stateMachine.ChangeState(MoveState::Instance());
@@ -57,7 +57,7 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		// 집 주변까지 이동 + 집 안으로 이동
 		TargetInfo targetInfo;
 		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
-		targetInfo.posOffset = sim->home->GetComponent<MeshFilter>()->mesh->Bounds.Extents.y * 2.0f;
+		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.y * 2.0f;
 
 		sim->targetPos.push_back(targetInfo);
 		sim->stateMachine.PushState(MoveState::Instance());
@@ -160,7 +160,7 @@ bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
 		// 집 주변까지 이동 + 집 안으로 이동
 		TargetInfo targetInfo;
 		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
-		targetInfo.posOffset = sim->home->GetComponent<MeshFilter>()->mesh->Bounds.Extents.y * 2.0f;
+		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.y * 2.0f;
 
 		sim->targetPos.push_back(targetInfo);
 		sim->stateMachine.PushState(MoveState::Instance());
@@ -284,7 +284,7 @@ bool BuildState::OnMessage(Sim* sim, const Telegram& telegram)
 		// 집 주변까지 이동 + 집 안으로 이동
 		TargetInfo targetInfo;
 		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
-		targetInfo.posOffset = sim->home->GetComponent<MeshFilter>()->mesh->Bounds.Extents.y * 2.0f;
+		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.y * 2.0f;
 
 		sim->targetPos.push_back(targetInfo);
 		sim->stateMachine.PushState(MoveState::Instance());

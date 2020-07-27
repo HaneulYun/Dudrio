@@ -221,7 +221,7 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 	bool isRight = Vector3::DotProduct(cross, up) > 0 ? true : false;
 
 
-	float rotSpeed = 180.f * Time::deltaTime * speed;
+	float rotSpeed = 200.f * Time::deltaTime * speed;
 	if (!isRight) rotSpeed *= -1;
 
 	object->Rotate(Vector3{ 0,1,0 }, rotSpeed);

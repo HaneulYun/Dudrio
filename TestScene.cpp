@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "TestScene.h"
 
-AIManager* AIManager::Instance; 
-
 void TestScene::BuildObjects()
 {
 	LoadTextureAsset();
@@ -149,12 +147,12 @@ void TestScene::BuildObjects()
 
 
 	GameObject* landmark = CreateEmpty();
-	Village* village = landmark->AddComponent<Village>();
-	village->OnAutoDevelopment();
 	landmark->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
 	landmark->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
 	landmark->transform->position = Vector3(500, terrainData->terrainData.GetHeight(500, 500), 500);
 	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+	Village* village = landmark->AddComponent<Village>();
+	village->OnAutoDevelopment();
 
 
 
@@ -191,6 +189,8 @@ void TestScene::BuildObjects()
 		//buildingBuilder->cube = node;
 		AIManager::Instance = object->AddComponent<AIManager>();
 		AIManager::Instance->simPrefab = sim;
+		//GameWorld::gameWorld = object->AddComponent<GameWorld>();
+		//GameWorld::gameWorld->simPrefab = sim;
 
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
@@ -212,9 +212,11 @@ void TestScene::BuildObjects()
 		house->AddComponent<Building>();
 		house->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var01");
 		house->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house01"));
+		house->AddComponent<BoxCollider>()->extents = (2.5, 2.5, 2.5);
 		house->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
 		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
-		AIManager::Instance->AddSim(house, landmark);
+		AIManager::Instance->AddSim(landmark, house);
+		//GameWorld::gameWorld->addSim(landmark, house);
 	}
 }

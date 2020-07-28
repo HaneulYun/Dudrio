@@ -11,22 +11,33 @@ void GameWorld::Start(/*초기화 코드를 작성하세요.*/)
 void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	gameTimeUpdate();
+
 	aiUpdate();
 
-	for (auto landmark : buildingList)
-	{
-		for (auto sim : landmark.first->GetComponent<Village>()->simList)
-		{
+	if(Input::GetKeyDown(KeyCode::Alpha1))
+		timeSpeed = X1;
+	else if (Input::GetKeyDown(KeyCode::Alpha2))
+		timeSpeed = X2;
+	else if (Input::GetKeyDown(KeyCode::Alpha4))
+		timeSpeed = X4;
+	else if (Input::GetKeyDown(KeyCode::Alpha8))
+		timeSpeed = X8;
 
-		}
-		for (auto house : landmark.second[House])
-		{
 
-		}
-		for (auto light : landmark.second[Lighting])
-		{
-		}
-	}
+	//for (auto landmark : buildingList)
+	//{
+	//	for (auto sim : landmark.first->GetComponent<Village>()->simList)
+	//	{
+	//
+	//	}
+	//	for (auto house : landmark.second[House])
+	//	{
+	//
+	//	}
+	//	for (auto light : landmark.second[Lighting])
+	//	{
+	//	}
+	//}
 }
 
 void GameWorld::aiUpdate()
@@ -37,9 +48,45 @@ void GameWorld::aiUpdate()
 
 void GameWorld::gameTimeUpdate()
 {
-	gameTime += Time::deltaTime * timeSpeed;
-	gameDeltaTime = Time::deltaTime * timeSpeed;
+	gameDeltaTime = MathHelper::Clamp(Time::deltaTime * timeSpeed, 0.0f, 0.025f * timeSpeed);
+	gameTime += gameDeltaTime;
+	
+	if (gameTime >= timeOfDay)
+	{
+		sun->transform->forward = { 0,0,-1 };
+		gameTime -= timeOfDay;
+	}
+
+	float sunSpeed;
+
+	if (gameTime < 6 * 37.5f)
+	{
+		sun->GetComponent<Light>()->Strength = { 0,0,0 };
+		sunSpeed = 0.8f;
+	}
+	else if (gameTime < 10 * 37.5f)
+	{
+		Light* light = sun->GetComponent<Light>();
+		if (light->Strength.x <= 0.9f)
+			light->Strength += 0.008f * gameDeltaTime;
+		sunSpeed = 0.26666667f;
+	}
+	else if (gameTime < 21 * 37.5f)
+	{
+		sun->GetComponent<Light>()->Strength = { 0.9,0.9,0.9 };
+		sunSpeed = 0.26666667f;
+	}
+	else
+	{
+		Light* light = sun->GetComponent<Light>();
+		if (light->Strength.x > 0.0f)
+			light->Strength -= 0.008f * gameDeltaTime;
+		sunSpeed = 0.26666667f;
+	}
+
+	sun->transform->Rotate({ 1, 0, 0 }, sunSpeed* gameDeltaTime);
 }
+
 
 void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {

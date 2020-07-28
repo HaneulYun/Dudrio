@@ -53,6 +53,18 @@ void HostScene::BuildObjects()
 		simController->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("Walking", Less, 1));
 	}
 
+	{
+		GameObject* fps = CreateUI();
+		auto rectTransform = fps->GetComponent<RectTransform>();
+		rectTransform->anchorMin = { 0, 0 };
+		rectTransform->anchorMax = { 1, 1 };
+
+		Text* text = fps->AddComponent<Text>();
+		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+		text->color = { 1,1,1,1 };
+		textObjects.push_back(fps);
+		fps->AddComponent<FPS>();
+	}
 
 	auto simsPrefab = CreateEmptyPrefab();
 	{
@@ -70,19 +82,6 @@ void HostScene::BuildObjects()
 			anim->TimePos = 0;
 			simsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
 		}
-	}
-
-	{
-		GameObject* fps = CreateUI();
-		auto rectTransform = fps->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 0 };
-		rectTransform->anchorMax = { 1, 1 };
-
-		Text* text = fps->AddComponent<Text>();
-		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-		text->color = { 1,1,1,1 };
-		textObjects.push_back(fps);
-		fps->AddComponent<FPS>();
 	}
 
 
@@ -132,9 +131,9 @@ void HostScene::BuildObjects()
 
 	auto directionalLight = CreateEmpty();
 	{
-		directionalLight->transform->Rotate({ 1, 0, 0 }, 60);
+		//directionalLight->transform->Rotate({ 1, 0, 0 }, 180);
 		auto light = directionalLight->AddComponent<Light>();
-		light->Strength = { 0.9f, 0.8f, 0.7f };
+		light->Strength = { 0.9f, 0.9f, 0.9f };
 		light->shadowType = Light::Shadows;
 	}
 
@@ -199,9 +198,10 @@ void HostScene::BuildObjects()
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		//buildingBuilder->cube = node;
 
-		GameWorld::gameWorld = object->AddComponent<GameWorld>();
-		GameWorld::gameWorld->simPrefab = sim;
-		GameWorld::gameWorld->buildingList[landmark];
+		GameWorld* gameWorld = object->AddComponent<GameWorld>();
+		gameWorld->simPrefab = sim;
+		gameWorld->buildingList[landmark];
+		gameWorld->sun = directionalLight;
 		object->AddComponent<AIManager>();
 	
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();

@@ -16,19 +16,18 @@ void AIManager::aiUpdate()
 	float time = GameWorld::gameWorld->gameTime;
 
 
-	for (auto sim : GameWorld::gameWorld->simList)
-	{
-		sim.second->GetComponent<Sim>()->stateMachine.Update();
-	}
+	//for (auto sim : GameWorld::gameWorld->simList)
+	//{
+	//	sim.second->GetComponent<Sim>()->stateMachine.Update();
+	//}
 
-	if (time > 30.f)
-	{
-		for (auto sim : GameWorld::gameWorld->simList)
-		{
-			Messenger->CreateMessage(0, sim.first, sim.first, Msg_Sleep);
-		}
-		GameWorld::gameWorld->gameTime -= 30.f;
-	}
+	//if (time > 30.f)
+	//{
+	//	for (auto sim : GameWorld::gameWorld->simList)
+	//	{
+	//		Messenger->CreateMessage(0, sim.first, sim.first, Msg_Sleep);
+	//	}
+	//}
 
 	for (auto landmark : GameWorld::gameWorld->buildingList)
 	{
@@ -47,7 +46,7 @@ void AIManager::aiUpdate()
 				Messenger->CreateMessage(0, rand() % village->simList.size(), rand() % village->simList.size(), Msg_Build, info);
 			}
 
-			village->delayTime -= Time::deltaTime;
+			village->delayTime -= GameWorld::gameWorld->gameDeltaTime;
 		}
 	}
 

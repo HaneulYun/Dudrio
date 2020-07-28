@@ -79,7 +79,7 @@ bool PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 
 	std::vector<Node> openList;
 	std::vector<Node> closedList;
-	closedList.reserve(400);
+	closedList.reserve(1000);
 
 	Node start;
 	start.posX = (int)startPos.x;
@@ -93,14 +93,14 @@ bool PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 
 	while (!openList.empty())
 	{
-		if (closedList.size() > 1000)
-			return false;
-
 		// 비용이 가장 적은 노드
 		sort(openList.begin(), openList.end());
 		Node currentNode = openList.front();
 		openList.erase(openList.begin());
 		closedList.push_back(currentNode);
+
+		if (closedList.size() > 1000)
+			return false;
 
 		// 목적지를 찾으면 path에 경로를 저장하고 리턴
 		if ((distance(currentNode, dest) - targetPosOffset) <= 0.01f)
@@ -207,10 +207,11 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 	Vector3 dir{ targetPos.x - object->position.x, 0, targetPos.y - object->position.z };
 
 	float angle = XMConvertToDegrees(Vector3::Angle(currentDir, dir));
+	// 프레임수가 느리면 더 넓게 체크
 	if (angle < 3.f * speed)
 	{
 		currentDir = dir;
-		Vector3 newPos = object->position + currentDir.Normalize() * speed * Time::deltaTime;
+		Vector3 newPos = object->position + currentDir.Normalize() * speed * GameWorld::gameWorld->gameDeltaTime;
 		object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
 
 		return;
@@ -220,12 +221,11 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 	Vector3 up = { 0,1,0 };
 	bool isRight = Vector3::DotProduct(cross, up) > 0 ? true : false;
 
-
-	float rotSpeed = 200.f * Time::deltaTime * speed;
+	float rotSpeed = 180.f * GameWorld::gameWorld->gameDeltaTime * speed;
 	if (!isRight) rotSpeed *= -1;
 
 	object->Rotate(Vector3{ 0,1,0 }, rotSpeed);
 
-	Vector3 newPos = object->position + Vector3::Normalize(object->forward) * speed * 0.016f;// Time::deltaTime;
+	Vector3 newPos = object->position + Vector3::Normalize(object->forward) * speed * GameWorld::gameWorld->gameDeltaTime;
 	object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
 }

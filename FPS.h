@@ -1,5 +1,5 @@
 #pragma once
-#include "..\CyanEngine\framework.h"
+#include "CyanEngine\CyanEngine\framework.h"
 
 class FPS : public MonoBehavior<FPS>
 {

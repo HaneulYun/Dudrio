@@ -11,14 +11,14 @@ struct Node
 
 	Node* parent = NULL;
 
-	constexpr bool operator <(const Node& left) const
+	constexpr bool operator <(const Node& right) const
 	{
-		return (g + h < left.g + left.h);
+		return (g + h < right.g + right.h);
 	}
 
-	constexpr bool operator ==(const Node& left) const
+	constexpr bool operator ==(const Node& right) const
 	{
-		if (posX == left.posX && posZ == left.posZ)
+		if (posX == right.posX && posZ == right.posZ)
 			return true;
 		return false;
 	}

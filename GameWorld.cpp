@@ -48,9 +48,9 @@ void GameWorld::aiUpdate()
 
 void GameWorld::gameTimeUpdate()
 {
-	gameDeltaTime = Time::deltaTime * timeSpeed;
+	gameDeltaTime = MathHelper::Clamp(Time::deltaTime * timeSpeed, 0.0f, 0.025f * timeSpeed);
 	gameTime += gameDeltaTime;
-
+	
 	if (gameTime >= timeOfDay)
 	{
 		sun->transform->forward = { 0,0,-1 };

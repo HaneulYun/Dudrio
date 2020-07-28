@@ -207,6 +207,7 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 	Vector3 dir{ targetPos.x - object->position.x, 0, targetPos.y - object->position.z };
 
 	float angle = XMConvertToDegrees(Vector3::Angle(currentDir, dir));
+	// 프레임수가 느리면 더 넓게 체크
 	if (angle < 3.f * speed)
 	{
 		currentDir = dir;
@@ -219,7 +220,6 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 	Vector3 cross = Vector3::CrossProduct(currentDir, dir);
 	Vector3 up = { 0,1,0 };
 	bool isRight = Vector3::DotProduct(cross, up) > 0 ? true : false;
-
 
 	float rotSpeed = 180.f * GameWorld::gameWorld->gameDeltaTime * speed;
 	if (!isRight) rotSpeed *= -1;

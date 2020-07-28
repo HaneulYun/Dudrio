@@ -203,6 +203,7 @@ void SleepState::Enter(Sim* sim)
 
 void SleepState::Execute(Sim* sim)
 {
+	sim->animator->SetFloat("Walking", 0);
 
 };
 
@@ -258,6 +259,7 @@ BuildState* BuildState::Instance()
 
 void BuildState::Enter(Sim* sim)
 {
+	sim->animator->SetFloat("Walking", 0);
 };
 
 void BuildState::Execute(Sim* sim)

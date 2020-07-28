@@ -16,10 +16,10 @@ void AIManager::aiUpdate()
 	float time = GameWorld::gameWorld->gameTime;
 
 
-	for (auto sim : GameWorld::gameWorld->simList)
-	{
-		sim.second->GetComponent<Sim>()->stateMachine.Update();
-	}
+	//for (auto sim : GameWorld::gameWorld->simList)
+	//{
+	//	sim.second->GetComponent<Sim>()->stateMachine.Update();
+	//}
 
 	//if (time > 30.f)
 	//{

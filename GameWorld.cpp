@@ -14,20 +14,30 @@ void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 
 	aiUpdate();
 
-	for (auto landmark : buildingList)
-	{
-		for (auto sim : landmark.first->GetComponent<Village>()->simList)
-		{
+	if(Input::GetKeyDown(KeyCode::Alpha1))
+		timeSpeed = X1;
+	else if (Input::GetKeyDown(KeyCode::Alpha2))
+		timeSpeed = X2;
+	else if (Input::GetKeyDown(KeyCode::Alpha4))
+		timeSpeed = X4;
+	else if (Input::GetKeyDown(KeyCode::Alpha8))
+		timeSpeed = X8;
 
-		}
-		for (auto house : landmark.second[House])
-		{
 
-		}
-		for (auto light : landmark.second[Lighting])
-		{
-		}
-	}
+	//for (auto landmark : buildingList)
+	//{
+	//	for (auto sim : landmark.first->GetComponent<Village>()->simList)
+	//	{
+	//
+	//	}
+	//	for (auto house : landmark.second[House])
+	//	{
+	//
+	//	}
+	//	for (auto light : landmark.second[Lighting])
+	//	{
+	//	}
+	//}
 }
 
 void GameWorld::aiUpdate()

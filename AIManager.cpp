@@ -46,7 +46,7 @@ void AIManager::aiUpdate()
 				Messenger->CreateMessage(0, rand() % village->simList.size(), rand() % village->simList.size(), Msg_Build, info);
 			}
 
-			village->delayTime -= Time::deltaTime;
+			village->delayTime -= GameWorld::gameWorld->gameDeltaTime;
 		}
 	}
 

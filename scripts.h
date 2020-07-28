@@ -1,16 +1,23 @@
 #pragma once
 
-#include "Building.h"
+#include "GameWorld.h"
+
+#include "TerrainGenerator.h"
+
+#include "Village.h"
+#include "RotatingBehavior.h"
 
 #include "CameraController.h"
 #include "HostCameraController.h"
 #include "GuestCameraController.h"
 
-#include "TerrainGenerator.h"
-#include "RotatingBehavior.h"
 #include "CharacterMovingBehavior.h"
 #include "CharacterController.h"
+#include "GuestController.h"
 
+#include "TerrainGenerator.h"
+
+#include "Building.h"
 #include "BuildingType.h"
 #include "BuildingBuilderData.h"
 #include "BuildingBuilder.h"
@@ -28,14 +35,11 @@
 #include "MessageManager.h"
 #include "SimStates.h"
 
-#include "Village.h"
 #include "AIManager.h"
 
-#include "GuestController.h"
 #include "GuestNetwork.h"
 #include "HostNetwork.h"
 #include "GameLoader.h"
 #include "ParticleManager.h"
-#include "FPS.h"
 
-#include "GameWorld.h"
+#include "FPS.h"

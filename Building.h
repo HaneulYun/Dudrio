@@ -27,8 +27,8 @@ public:
 	{
 		if (!IsZero(positionToAnimate.y))
 		{
-			gameObject->transform->position += {0.0f, 0.5f * Time::deltaTime, 0.0f};
-			time += Time::deltaTime;
+			gameObject->transform->position += {0.0f, 0.5f * GameWorld::gameWorld->gameDeltaTime, 0.0f};
+			time += GameWorld::gameWorld->gameDeltaTime;
 			if (time >= 0.1f)
 			{
 				time -= 0.1f;

@@ -191,6 +191,7 @@
     <ClInclude Include="GuestController.h" />
     <ClInclude Include="HostCameraController.h" />
     <ClInclude Include="HostNetwork.h" />
+    <ClInclude Include="RotatingBehavior.h" />
     <ClInclude Include="TerrainNodeData.h" />
     <ClInclude Include="Village.h" />
     <ClInclude Include="MagentaServer\protocol.h" />
@@ -203,7 +204,6 @@
     <ClInclude Include="PathFinder.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="RotatingBehavior.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="GuestScene.h" />
     <ClInclude Include="scripts.h" />

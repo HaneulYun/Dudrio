@@ -79,7 +79,7 @@ bool PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 
 	std::vector<Node> openList;
 	std::vector<Node> closedList;
-	closedList.reserve(400);
+	closedList.reserve(1000);
 
 	Node start;
 	start.posX = (int)startPos.x;
@@ -93,14 +93,14 @@ bool PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 
 	while (!openList.empty())
 	{
-		if (closedList.size() > 1000)
-			return false;
-
 		// 비용이 가장 적은 노드
 		sort(openList.begin(), openList.end());
 		Node currentNode = openList.front();
 		openList.erase(openList.begin());
 		closedList.push_back(currentNode);
+
+		if (closedList.size() > 1000)
+			return false;
 
 		// 목적지를 찾으면 path에 경로를 저장하고 리턴
 		if ((distance(currentNode, dest) - targetPosOffset) <= 0.01f)

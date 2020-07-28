@@ -10,7 +10,8 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };
 
 class MoveState : public State<Sim>
@@ -22,7 +23,8 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };
 
 class SleepState : public State<Sim>
@@ -34,7 +36,8 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };
 
 class BuildState : public State<Sim>
@@ -46,5 +49,6 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
+	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };

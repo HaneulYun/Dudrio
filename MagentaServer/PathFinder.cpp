@@ -7,10 +7,9 @@ PathFinder* PathFinder::Instance()
 	return &instance;
 }
 
-void PathFinder::SetTerrainData(Terrain* data, TerrainNodeData* nodeData)
+void PathFinder::SetTerrainData(Terrain* data)
 {
 	terrainData = data;
-	terrainNodeData = nodeData;
 }
 
 Node PathFinder::CreateNode(int x, int z, Node& parentNode, Node& dest)
@@ -57,7 +56,7 @@ Vector2D PathFinder::Escape(Vector2D startPos, deque<Vector2D>& path)
 		// 장애물이 아니면 해당 경로를 저장하고 마지막 위치 반환
 		for (int i = 0; i < 4; ++i)
 		{
-			if (terrainNodeData->extraData[(int)escapePath[i].back().x + (int)escapePath[i].back().z * width].collision == false)
+			if (terrainData->extraData[(int)escapePath[i].back().x + (int)escapePath[i].back().z * width].collision == false)
 			{
 				while (!escapePath[i].empty())
 				{
@@ -154,11 +153,11 @@ bool PathFinder::FindPath(Vector2D targetPos, Vector2D startPos, deque<Vector2D>
 		}
 
 		// 시작 위치에서 심이 장애물에 끼였는지 체크
-		if (currentNode == start && terrainNodeData->extraData[currentNode.posX + currentNode.posZ * width].collision)
+		if (currentNode == start && terrainData->extraData[currentNode.posX + currentNode.posZ * width].collision)
 		{
 			for (int i = 0; i < childs.size(); ++i)
 			{
-				if (!collisionCheckOn || !terrainNodeData->extraData[childs[i].posX + childs[i].posZ * width].collision)
+				if (!collisionCheckOn || !terrainData->extraData[childs[i].posX + childs[i].posZ * width].collision)
 					break;
 
 				// 주변 8칸이 모두 막혔으면
@@ -177,7 +176,7 @@ bool PathFinder::FindPath(Vector2D targetPos, Vector2D startPos, deque<Vector2D>
 		for (auto node : childs)
 		{
 			// 장애물이면
-			if (collisionCheckOn && terrainNodeData->extraData[node.posX + node.posZ * width].collision) continue;
+			if (collisionCheckOn && terrainData->extraData[node.posX + node.posZ * width].collision) continue;
 			// closedList에 존재하면
 			if (find(closedList.begin(), closedList.end(), node) != closedList.end()) continue;
 			// openList에 없으면
@@ -209,7 +208,7 @@ void PathFinder::MoveToDestination(Vector2D& targetPos, Sim* sim, float speed)
 	if (angle < 3.f * speed)
 	{
 		currentDir = dir;
-		Vector2D newPos = sim->pos + currentDir.Normalize() * speed * Time::deltaTime;
+		Vector3D newPos = Vector3D(sim->pos.x, 0, sim->pos.z) + currentDir.Normalize() * speed * 0.333;
 		sim->pos = { newPos.x, newPos.z };
 		return;
 	}
@@ -218,11 +217,14 @@ void PathFinder::MoveToDestination(Vector2D& targetPos, Sim* sim, float speed)
 	Vector3D up = { 0,1,0 };
 	bool isRight = dotproduct(cross, up) > 0 ? true : false;
 
-	float rotSpeed = 200.f * Time::deltaTime * speed;
+	float rotSpeed = 200.f * 0.333 * speed;
 	if (!isRight) rotSpeed *= -1;
 
 	sim->rotAngle += rotSpeed;
+	sim->forward.Rotate(rotSpeed);
 
-	Vector2D newPos = sim->pos + sim->forward.Normalize() * speed * 0.016f;// Time::deltaTime;
+	Vector2D newPos = sim->pos + sim->forward.Normalize() * speed * 0.333;// Time::deltaTime;
 	sim->pos = { newPos.x, newPos.z };
+
+	cout << sim->id << " has moved to " << sim->pos.x << ", " << sim->pos.z << endl;
 }

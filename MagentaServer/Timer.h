@@ -1,7 +1,13 @@
 #pragma once
 #include "main.h"
 
-enum EventType {};
+enum EventType {
+	GAME_Update,
+	SIM_Move,
+	SIM_Sleep,
+	SIM_WakeUp,
+	SIM_Build
+};
 
 struct timer_event
 {
@@ -9,6 +15,7 @@ struct timer_event
 	EventType	event_id;
 	high_resolution_clock::time_point	wakeup_time;
 	int			target_id;
+	void*		extra_info = NULL;
 
 	constexpr bool operator <(const timer_event& left) const
 	{
@@ -34,4 +41,5 @@ public:
 	void add_event(timer_event ev);
 	void start_timer(HANDLE& h_iocp);
 	void stop_timer();
+	void clear_timer();
 };

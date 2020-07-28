@@ -15,6 +15,32 @@ public:
 		res.z = z / vect_size;
 		return res;
 	}
+
+	Vector2D Rotate(float angle)
+	{
+		Vector2D res;
+		res.x = (x * cos(degreeToRadian(angle))) - (z * sin(degreeToRadian(angle)));
+		res.z = (x * sin(degreeToRadian(angle))) + (z * cos(degreeToRadian(angle)));
+		x = res.x;
+		z = res.z;
+		return res;
+	}
+
+	Vector2D operator+(const Vector2D lhs)
+	{
+		Vector2D res;
+		res.x = x + lhs.x;
+		res.z = z + lhs.z;
+		return res;
+	}
+
+	Vector2D operator*(const float lhs)
+	{
+		Vector2D res;
+		res.x = x * lhs;
+		res.z = z * lhs;
+		return res;
+	}
 };
 
 
@@ -31,6 +57,24 @@ public:
 		res.x = x / vect_size;
 		res.y = y / vect_size;
 		res.z = z / vect_size;
+		return res;
+	}
+
+	Vector3D operator+(const Vector3D lhs)
+	{
+		Vector3D res;
+		res.x = x + lhs.x;
+		res.y = y + lhs.y;
+		res.z = z + lhs.z;
+		return res;
+	}
+
+	Vector3D operator*(const float lhs)
+	{
+		Vector3D res;
+		res.x = x * lhs;
+		res.y = y * lhs;
+		res.z = z * lhs;
 		return res;
 	}
 };

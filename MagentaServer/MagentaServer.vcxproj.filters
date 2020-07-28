@@ -48,14 +48,8 @@
     <ClCompile Include="TerrainGenerator.cpp">
       <Filter>AI\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="MessageManager.cpp">
-      <Filter>AI\FSM</Filter>
-    </ClCompile>
     <ClCompile Include="SimStates.cpp">
       <Filter>AI\FSM</Filter>
-    </ClCompile>
-    <ClCompile Include="AIManager.cpp">
-      <Filter>AI</Filter>
     </ClCompile>
     <ClCompile Include="PathFinder.cpp">
       <Filter>AI</Filter>
@@ -92,9 +86,6 @@
     <ClInclude Include="Message.h">
       <Filter>AI\FSM</Filter>
     </ClInclude>
-    <ClInclude Include="MessageManager.h">
-      <Filter>AI\FSM</Filter>
-    </ClInclude>
     <ClInclude Include="SimStates.h">
       <Filter>AI\FSM</Filter>
     </ClInclude>
@@ -104,19 +95,10 @@
     <ClInclude Include="StateMachine.h">
       <Filter>AI\FSM</Filter>
     </ClInclude>
-    <ClInclude Include="Telegram.h">
-      <Filter>AI\FSM</Filter>
-    </ClInclude>
-    <ClInclude Include="AIManager.h">
-      <Filter>AI</Filter>
-    </ClInclude>
     <ClInclude Include="PathFinder.h">
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="Sim.h">
-      <Filter>AI</Filter>
-    </ClInclude>
-    <ClInclude Include="Village.h">
       <Filter>AI</Filter>
     </ClInclude>
   </ItemGroup>

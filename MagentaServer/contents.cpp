@@ -11,10 +11,16 @@ Contents::~Contents()
 
 void Contents::init_contents()
 {
+	timer.clear_timer();
+
 	host_id = -1;
+	tick_count = 0.f;
+	ingame_time = 0.f;
+	tmp_sleep_time = 0.f;
 
 	init_sector();
 	init_buildings();
+	init_sims();
 	init_colliders_inform();
 
 	if (terrain_data != nullptr)
@@ -24,11 +30,10 @@ void Contents::init_contents()
 void Contents::init_sector()
 {
 	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
-		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
-			for (auto b : g_buildings[i][j]) {
-				lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
-				g_sector_clients[i][j].clear();
-			}
+		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j) {
+			lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
+			g_sector_clients[i][j].clear();
+		}
 }
 
 void Contents::init_buildings()
@@ -41,6 +46,22 @@ void Contents::init_buildings()
 			g_buildings[i][j].clear();
 			g_buildings[i][j].reserve(500);
 		}
+}
+
+void Contents::init_sims()
+{
+	sim_index = 0;
+
+	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
+		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j) {
+			lock_guard<mutex>lock_guard(g_sector_sims_lock[i][j]);
+			g_sector_sims[i][j].clear();
+		}
+
+	lock_guard<mutex>lock_guard(g_sims_lock);
+	for (auto& sims : g_sims) 
+		delete sims.second;
+	g_sims.clear();
 }
 
 void Contents::init_colliders_inform()
@@ -99,7 +120,9 @@ void Contents::process_packet(int user_id, char* buf)
 			terrain_data->heightmapWidth = terrain_data->terrain_size;
 			terrain_data->size = Vector3D(terrain_data->terrain_size, 255, terrain_data->terrain_size);
 			terrain_data->Load();
+			terrain_data->makeExtraData();
 
+			update();
 			enter_game(user_id, packet->name);
 		}
 		else {
@@ -375,9 +398,25 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	BuildingInfo b{ b_type, b_name, xpos, zpos, angle };
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
 	g_buildings_lock.lock();
-	g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
+	if (b_type == Landmark) {
+		Village* landmark = new Village(b_type, b_name, xpos, zpos, angle);
+		g_buildings[b_sectnum.second][b_sectnum.first][b] = landmark;
+		g_villages.insert(landmark);
+	}
+	else
+		g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
 	g_buildings[b_sectnum.second][b_sectnum.first][b]->m_collider = collider_info[b_type][b_name];
 	g_buildings_lock.unlock();
+
+	if (b_type == House) {
+		g_sims_lock.lock();
+		g_sims[sim_index] = new Sim(sim_index, xpos, zpos);
+		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
+		g_sims[sim_index]->insert_client_in_sector();
+		cout << "Sim " << sim_index << " is created" << endl;
+		++sim_index;
+		g_sims_lock.unlock();
+	}
 
 	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].lock();
 	for (auto cl : g_sector_clients[b_sectnum.second][b_sectnum.first]) {
@@ -386,8 +425,6 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 			cl->m_collide_invincible = true;
 	}
 	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].unlock();
-	
-	// BuildingBuilder::updateTerrainNodeData(GameObject* building);
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -395,6 +432,8 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		if (ST_ACTIVE == cl.second->m_status)
 			iocp.send_construct_packet(cl.second->m_id, b_type, b_name, xpos, zpos, angle);
 	}
+	// 건설 타입이 House일 경우 클라이언트에서 심이 enter된 것으로 인식하게 처리해야 함
+	// 건물에 sim_index를 부여하여 어떤 심이 사는 집인지 알 수 있게 해야 함
 }
 
 void Contents::do_destruct(int user_id)
@@ -407,6 +446,8 @@ void Contents::do_destruct(int user_id)
 	//	g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
 	//}
 
+	// 건물이 house일 경우 심 삭제도 해야 함
+	// 건물이 랜드마크일 경우 처리도 해주자 (g_village에서 삭제 및 랜드마크 안 모든 건물 및 심 삭제)
 	//for (auto& cl : g_clients){
 	//	if (user_id == cl.second->m_id)
 	//		continue;
@@ -424,6 +465,52 @@ void Contents::destruct_all(int user_id)
 			continue;
 		if (ST_ACTIVE == cl.second->m_status)
 			iocp.send_destruct_all_packet(cl.second->m_id);
+	}
+}
+
+void Contents::update()
+{
+	tick_count = GetTickCount64() - ingame_time;
+	ingame_time = GetTickCount64();
+	tmp_sleep_time += tick_count;
+
+	update_sim();
+
+	if (host_id != -1) {
+		timer_event ev = { 0, GAME_Update, high_resolution_clock::now() + milliseconds(333), 0, NULL };
+		timer.add_event(ev);
+	}
+}
+
+void Contents::update_sim()
+{
+	lock_guard<mutex> lock_guard(g_sims_lock);
+	if (tmp_sleep_time > 30.f) {
+		for (auto& sims : g_sims) {
+			timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
+			timer.add_event(ev);
+		}
+		tmp_sleep_time -= 30.f;
+	}
+
+	for (auto& landmark : g_villages){
+		if (landmark->autoDevelopment && !landmark->simList.empty()) {
+			if (landmark->delayTime <= 0.f) {
+				BuildMessageInfo* info = new BuildMessageInfo;
+				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % 30) - 15, landmark->m_info.m_zPos + (rand() % 30) - 15);
+				info->buildingType = rand() % 2 + 3;
+				info->buildingIndex = rand() % collider_info[info->buildingType].size();
+				landmark->delayTime = rand() % 10 + 30;
+
+				timer_event ev = { -1, SIM_Build,  high_resolution_clock::now(), rand() % landmark->simList.size(), info };
+				timer.add_event(ev);
+			}
+			landmark->delayTime -= tick_count;
+		}
+	}
+
+	for (auto& sims : g_sims) {
+		sims.second->Update();
 	}
 }
 

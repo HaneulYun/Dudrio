@@ -5,6 +5,10 @@ Terrain::~Terrain(void)
 	if (bytes)
 		delete[] bytes;
 	bytes = NULL;
+
+	if (extraData)
+		delete[] extraData;
+	extraData = NULL;
 }
 
 void Terrain::Load()
@@ -22,6 +26,13 @@ void Terrain::Load()
 
 	if (pHeightMapPixels)
 		delete[] pHeightMapPixels;
+}
+
+void Terrain::makeExtraData()
+{
+	if (extraData)
+		delete[] extraData;
+	extraData = new ExtraNodeData[heightmapWidth * heightmapHeight];
 }
 
 Vector3D Terrain::GetHeightMapNormal(int x, int z)
@@ -80,3 +91,4 @@ float Terrain::GetHeight(float fx, float fz)
 
 	return(fHeight);
 }
+

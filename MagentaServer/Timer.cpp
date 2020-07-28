@@ -24,6 +24,13 @@ void Timer::stop_timer()
 		timer_thread.join();
 }
 
+void Timer::clear_timer()
+{
+	lock_guard<mutex>lock_guard(timer_lock);
+	while (!timer.timer_queue.empty())
+		timer_queue.pop();
+}
+
 void Timer::timer_thread_loop()
 {
 	while (timer_run){
@@ -40,10 +47,42 @@ void Timer::timer_thread_loop()
 			EXOVER* over = new EXOVER;
 			switch (ev.event_id)
 			{
-			case 1:
+			case GAME_Update:
 			{
-				//over->op = ev.event_id;
-				//over->p_id = ev.target_id;
+				over->op = GAME_UPDATE;
+				over->obj_id = ev.obj_id;
+				over->target_id = ev.target_id;
+			}
+			break;
+			case SIM_Move:
+			{
+				over->op = SIM_MOVE;
+				over->obj_id = ev.obj_id;
+				over->target_id = ev.target_id;
+				over->extra_info = ev.extra_info;
+			}
+			break;
+			case SIM_Sleep:
+			{
+				over->op = SIM_SLEEP;
+				over->obj_id = ev.obj_id;
+				over->target_id = ev.target_id;
+			}
+			break;
+			case SIM_WakeUp:
+			{
+				over->op = SIM_WAKEUP;
+				over->obj_id = ev.obj_id;
+				over->target_id = ev.target_id;
+				//over->extra_info = ev.extra_info;
+			}
+			break;
+			case SIM_Build:
+			{
+				over->op = SIM_BUILD;
+				over->obj_id = ev.obj_id;
+				over->target_id = ev.target_id;
+				over->extra_info = ev.extra_info;
 			}
 			break;
 			default:
@@ -56,7 +95,7 @@ void Timer::timer_thread_loop()
 			PostQueuedCompletionStatus(g_iocp, 1, ev.obj_id, &over->over);
 		}
 		else
-			this_thread::sleep_for(milliseconds(5));
+			this_thread::sleep_for(milliseconds(2));
 	}
 }
 

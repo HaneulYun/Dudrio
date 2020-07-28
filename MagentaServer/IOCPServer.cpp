@@ -127,6 +127,43 @@ void IOCPServer::worker_thread_loop()
 				contents.disconnect(user_id);
 			delete exover;
 			break;
+		// Game Contents
+		case GAME_UPDATE: 
+		{
+			contents.update();
+			delete exover;
+		}
+			break;
+		case SIM_BUILD: 
+		{
+			g_sims[exover->target_id]->buildInfo = *static_cast<BuildMessageInfo*>(exover->extra_info);
+			SIM_Message msg{ SIM_Build, exover->extra_info };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			
+			delete exover;
+		}
+			break;
+		case SIM_MOVE:
+		{
+			SIM_Message msg{ SIM_Move, NULL };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			delete exover;
+		}
+			break;
+		case SIM_SLEEP:
+		{
+			SIM_Message msg{ SIM_Sleep, NULL };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			delete exover;
+		}
+			break;
+		case SIM_WAKEUP:
+		{
+			SIM_Message msg{ SIM_WakeUp, NULL };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			delete exover;
+		}
+			break;
 		default:
 			cout << "Invalid Operation " << exover->op << endl;
 			break;

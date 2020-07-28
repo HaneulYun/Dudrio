@@ -20,7 +20,7 @@ public:
 		if (!stateStack.empty()) stateStack.front()->Execute(owner);
 	}
 
-	bool HandleMessage(const Telegram& msg)const
+	bool HandleMessage(const SIM_Message& msg)const
 	{
 		return (!stateStack.empty() && stateStack.front()->OnMessage(owner, msg));
 		return false;

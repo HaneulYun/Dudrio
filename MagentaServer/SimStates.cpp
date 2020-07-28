@@ -15,13 +15,14 @@ void IdleState::Enter(Sim* sim)
 	if (sim->stateMachine.HaveNextState())
 		return;
 
-	double delay = rand() % 10;
-	Messenger->CreateMessage(delay, sim->id, sim->id, Msg_Move);
+	int delay = rand() % 10;
+
+	timer_event ev = { sim->id, SIM_Move, high_resolution_clock::now() + milliseconds(delay), sim->id };
+	timer.add_event(ev);
 };
 
 void IdleState::Execute(Sim* sim)
 {
-	//sim->animator->SetFloat("Walking", 0);
 
 };
 
@@ -30,23 +31,23 @@ void IdleState::Exit(Sim* sim)
 
 };
 
-bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
+bool IdleState::OnMessage(Sim* sim, const SIM_Message& telegram)
 {
 	switch (telegram.msg)
 	{
-	case Msg_Move:
+	case SIM_Move:
 	{
 		Vector2D targetPos;
 		do
 		{
 			targetPos = Vector2D(sim->pos.x - (rand() % 16) + 8, sim->pos.z - (rand() % 16) + 8);
-		} while (PathFinder::Instance()->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.z * 1024].collision);
+		} while (PathFinder::Instance()->terrainData->extraData[(int)targetPos.x + (int)targetPos.z * 1000].collision);
 
 		sim->targetPos.emplace_back(targetPos, 0);
 		sim->stateMachine.ChangeState(MoveState::Instance());
 		return true;
 	}
-	case Msg_Sleep:
+	case SIM_Sleep:
 	{
 		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
@@ -67,10 +68,10 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		sim->stateMachine.ChangeState();
 		return true;
 	}
-	case Msg_Build:
+	case SIM_Build:
 	{
 		sim->targetPos.clear();
-		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
+		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extra_info);
 
 		sim->targetPos.emplace_back(info->pos, contents.collider_info[sim->buildInfo.buildingType][sim->buildInfo.buildingIndex].getMaxBound() + 1);
 		sim->stateMachine.PushState(MoveState::Instance());
@@ -132,7 +133,7 @@ void MoveState::Execute(Sim* sim)
 		sim->path.pop_front();
 	}
 	else
-		PathFinder::Instance()->MoveToDestination(sim->path.front(), sim, sim->speed);
+		PathFinder::Instance()->MoveToDestination(sim->path.front(), sim, 1.0f);
 };
 
 void MoveState::Exit(Sim* sim)
@@ -141,13 +142,13 @@ void MoveState::Exit(Sim* sim)
 		sim->stateMachine.PushState(IdleState::Instance());
 };
 
-bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
+bool MoveState::OnMessage(Sim* sim, const SIM_Message& telegram)
 {
 	switch (telegram.msg)
 	{
-	case Msg_Move:
+	case SIM_Move:
 		return true;
-	case Msg_Sleep:
+	case SIM_Sleep:
 	{
 		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
@@ -168,9 +169,9 @@ bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
 		sim->stateMachine.ChangeState();
 		return true;
 	}
-	case Msg_Build:
+	case SIM_Build:
 	{
-		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
+		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extra_info);
 
 		sim->targetPos.emplace_back(info->pos, contents.collider_info[sim->buildInfo.buildingType][sim->buildInfo.buildingIndex].getMaxBound() + 1);
 		sim->stateMachine.PushState(MoveState::Instance());
@@ -194,7 +195,8 @@ SleepState* SleepState::Instance()
 
 void SleepState::Enter(Sim* sim)
 {
-	Messenger->CreateMessage(5, sim->id, sim->id, Msg_WakeUp);
+	timer_event ev{ sim->id, SIM_WakeUp, high_resolution_clock::now() + seconds(5), sim->id, NULL };
+	timer.add_event(ev);
 };
 
 void SleepState::Execute(Sim* sim)
@@ -206,22 +208,22 @@ void SleepState::Exit(Sim* sim)
 {
 };
 
-bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
+bool SleepState::OnMessage(Sim* sim, const SIM_Message& telegram)
 {
 	switch (telegram.msg)
 	{
-	case Msg_Move:
+	case SIM_Move:
 		return true;
-	case Msg_Build:
+	case SIM_Build:
 	{
-		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
+		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extra_info);
 
 		sim->targetPos.emplace_back(info->pos, contents.collider_info[sim->buildInfo.buildingType][sim->buildInfo.buildingIndex].getMaxBound() + 1);
 		sim->stateMachine.PushState(MoveState::Instance());
 		sim->stateMachine.PushState(BuildState::Instance());
 		return true;
 	}
-	case Msg_WakeUp:
+	case SIM_WakeUp:
 	{
 		if (sim->stateMachine.HaveNextState())
 			sim->stateMachine.ChangeState();
@@ -231,7 +233,7 @@ bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
 			do
 			{
 				targetPos = Vector2D(sim->pos.x - (rand() % 16) + 8, sim->pos.z - (rand() % 16) + 8);
-			} while (contents.terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.z * 1024].collision);
+			} while (terrain_data->extraData[(int)targetPos.x + (int)targetPos.z * 1000].collision);
 			sim->targetPos.emplace_back(targetPos, 0);
 			sim->stateMachine.ChangeState(IdleState::Instance());
 		}
@@ -243,7 +245,7 @@ bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sleep : 건설 중
+// Build : 건설 중
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 BuildState* BuildState::Instance()
 {
@@ -259,8 +261,8 @@ void BuildState::Enter(Sim* sim)
 void BuildState::Execute(Sim* sim)
 {
 	// 건물 건설
-	BuildingBuilder::buildingBuilder->build(sim->buildInfo.pos, 0, sim->buildInfo.buildingType, sim->buildInfo.buildingIndex);
-
+	contents.do_construct(-1, sim->buildInfo.buildingType, sim->buildInfo.buildingIndex, sim->buildInfo.pos.x, sim->buildInfo.pos.z, 0.f);
+	
 	// 다음 상태로 전이
 	if (sim->stateMachine.HaveNextState())
 		sim->stateMachine.ChangeState();
@@ -272,11 +274,11 @@ void BuildState::Exit(Sim* sim)
 {
 };
 
-bool BuildState::OnMessage(Sim* sim, const Telegram& telegram)
+bool BuildState::OnMessage(Sim* sim, const SIM_Message& telegram)
 {
 	switch (telegram.msg)
 	{
-	case Msg_Sleep:
+	case SIM_Sleep:
 		// 집 주변까지 이동 + 집 안으로 이동
 		TargetInfo targetInfo;
 		targetInfo.pos = Vector2D(sim->home->m_info.m_xPos, sim->home->m_info.m_zPos);

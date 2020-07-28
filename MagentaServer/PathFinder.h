@@ -30,14 +30,13 @@ private:
 
 public:
 	Terrain* terrainData;
-	TerrainNodeData* terrainNodeData;
 
 	//GameObject* prefab;
 	static PathFinder* Instance();
 
 public:
 
-	void SetTerrainData(Terrain* data, TerrainNodeData* nodeData);
+	void SetTerrainData(Terrain* data);
 
 	Node CreateNode(int x, int z, Node& parentNode, Node& dest);
 

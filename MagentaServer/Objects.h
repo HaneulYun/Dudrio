@@ -95,13 +95,14 @@ struct BuildingInfoHasher
 	}
 };
 
-class Building 
+class Building
 {
 public:
 	BuildingInfo	m_info;
 	Collider		m_collider;
 
 public:
+	Building() {}
 	Building(int type, int name, float x, float z, float angle)
 	{
 		m_info.building_type = type;
@@ -109,11 +110,66 @@ public:
 		m_info.m_xPos = x;
 		m_info.m_zPos = z;
 		m_info.m_angle = angle;
+
+		update_terrain_node(true);
 	}
 
-	~Building() {}
+	virtual ~Building() { update_terrain_node(false); }
 
-	bool is_collide(float player_x, float player_z, float player_angle);
+	virtual bool is_collide(float player_x, float player_z, float player_angle);
+	virtual void update_terrain_node(bool create)
+	{
+		Vector2D b_right = (Vector2D(1, 0).Rotate(m_info.m_angle)).Normalize();
+		Vector2D b_forward = (Vector2D(0, 1).Rotate(m_info.m_angle)).Normalize();
+
+		for (int x = m_info.m_xPos + (b_right.x * m_collider.m_x1); x <= m_info.m_xPos + (b_right.x * m_collider.m_x2); ++x) {
+			for (int z = m_info.m_zPos + (b_forward.z * m_collider.m_z1); z <= m_info.m_zPos + (b_forward.z * m_collider.m_z2); ++z)
+			{
+				if (is_collide(x, z, 0)) {
+					terrain_data->extraData[x + (z * terrain_data->heightmapHeight)].collision = create;
+					if (create)
+						cout << "Create Node on x: " << x << ", z: " << z << endl;
+					else
+						cout << "Delete Node on x: " << x << ", z: " << z << endl;
+				}
+			}
+		}
+	}
+};
+
+class Village : public Building
+{
+public:
+	//				Home		Sim
+	unordered_map<BuildingInfo, Sim*> simList;
+
+	float delayTime = 0.f;	// °Ç¼³ ÄðÅ¸ÀÓ
+	bool autoDevelopment;
+
+public:
+	Village(int type, int name, float x, float z, float angle)
+	{
+		autoDevelopment = false;
+		delayTime = 0.f;
+		m_info.building_type = type;
+		m_info.building_name = name;
+		m_info.m_xPos = x;
+		m_info.m_zPos = z;
+		m_info.m_angle = angle;
+	}
+
+	virtual ~Village() {}
+
+	void OnAutoDevelopment()
+	{
+		autoDevelopment = true;
+		delayTime = rand() % 10 + 10;
+	}
+
+	void OffAutoDevelopment()
+	{
+		autoDevelopment = false;
+	}
 };
 
 class Client //: public Object

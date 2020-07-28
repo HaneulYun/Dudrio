@@ -177,6 +177,9 @@
     <ClInclude Include="AIManager.h">
       <Filter>Assets\Scripts\AI</Filter>
     </ClInclude>
+    <ClInclude Include="GuestGameWorld.h">
+      <Filter>Assets\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -234,6 +237,9 @@
       <Filter>Assets\Scripts\AI</Filter>
     </ClCompile>
     <ClCompile Include="GameWorld.cpp">
+      <Filter>Assets\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="GuestGameWorld.cpp">
       <Filter>Assets\Scripts</Filter>
     </ClCompile>
   </ItemGroup>

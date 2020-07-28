@@ -53,21 +53,21 @@ struct EXOVER {
 #include "contents.h"
 
 // AI --------------------------------
-#include "AIManager.h"
-#include "Sim.h"
-#include "Village.h"
+//#include "AIManager.h"
+//#include "Sim.h"
+//#include "Village.h"
 // Terrain
 #include "TerrainGenerator.h"
 #include "Terrain.h"
-// Path
-#include "PathFinder.h"
-// FSM
-#include "Message.h"
-#include "MessageManager.h"
-#include "Telegram.h"
-#include "SimStates.h"
-#include "State.h"
-#include "StateMachine.h"
+//// Path
+//#include "PathFinder.h"
+//// FSM
+//#include "Message.h"
+//#include "MessageManager.h"
+//#include "Telegram.h"
+//#include "SimStates.h"
+//#include "State.h"
+//#include "StateMachine.h"
 // -----------------------------------
 
 extern class IOCPServer iocp;

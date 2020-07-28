@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GuestScene.h"
 
-//Builder* Builder::builder{ nullptr };
+GuestGameWorld* GuestGameWorld::gameWorld;
 
 void GuestScene::BuildObjects()
 {
@@ -141,6 +141,9 @@ void GuestScene::BuildObjects()
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
 		buildingBuilder->serializeBuildings();
 		//buildingBuilder->terrain = terrainData;
+		//buildingBuilder->terrainNodeData = terrainNodeData;
+
+		GuestGameWorld::gameWorld = object->AddComponent<GuestGameWorld>();
 	}
 
 	auto ServerButton = CreateImage();

@@ -10,8 +10,8 @@ public:
 	int		host_id;
 	float	ingame_time;
 
-	unordered_map<int, Sim*> simList;
-	TerrainNodeData* terrainNodeData;
+	//unordered_map<int, Sim*> simList;
+	//TerrainNodeData* terrainNodeData;
 
 public:
 	Contents();

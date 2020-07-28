@@ -14,8 +14,20 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
 
-		//for (auto& p : BuildManager::buildManager->buildings)
-		//	send_construct_packet(p.first);
+		for (auto& p : GameWorld::gameWorld->buildingList)
+			for(auto& q: p.second)
+				for (auto& r : q.second) {
+					Vector3 building_forward = r->transform->forward;
+					building_forward.y = 0;
+					building_forward.Normalize();
+					Vector3 forward = { 0,0,1 };
+					float angle = Vector3::DotProduct(forward, building_forward);
+					Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+					angle = XMConvertToDegrees(acos(angle));
+					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+
+					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle);
+				}
 	}
 	break;
 	case S2C_LOGIN_FAIL:

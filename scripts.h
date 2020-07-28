@@ -39,3 +39,4 @@
 #include "FPS.h"
 
 #include "GameWorld.h"
+#include "GuestGameWorld.h"

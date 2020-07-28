@@ -112,6 +112,26 @@ vector<int> Client::get_near_clients()
 	return near_clients;
 }
 
+vector<int> Client::get_near_sims()
+{
+	pair<int, int> sect_num = contents.calculate_sector_num(m_xPos, m_zPos);
+	vector<int> near_sims;
+	near_sims.clear();
+
+	for (int i = sect_num.second - 1; i <= sect_num.second + 1; ++i) {
+		if (i < 0 || i > WORLD_HEIGHT / SECTOR_WIDTH - 1) continue;
+		for (int j = sect_num.first - 1; j <= sect_num.first + 1; ++j) {
+			if (j < 0 || j > WORLD_WIDTH / SECTOR_WIDTH - 1) continue;
+			lock_guard<mutex>lock_guard(g_sector_sims_lock[i][j]);
+			for (auto nearObj : g_sector_sims[i][j]) {
+				if (true == is_near(*nearObj))
+					near_sims.emplace_back(nearObj->id);
+			}
+		}
+	}
+	return near_sims;
+}
+
 vector<pair<BuildingInfo, pair<int, int>>> Client::get_near_buildings()
 {
 	pair<int, int> sect_num = contents.calculate_sector_num(m_xPos, m_zPos);

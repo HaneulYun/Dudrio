@@ -1,5 +1,6 @@
 #pragma once
-#include "main.h"
+#include "Sim.h"
+//#include "main.h"
 
 class IdleState : public State<Sim>
 {
@@ -10,7 +11,6 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
 	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };
 
@@ -23,7 +23,6 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
 	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };
 
@@ -36,7 +35,6 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
 	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };
 
@@ -49,6 +47,5 @@ public:
 	virtual void Execute(Sim* sim);
 	virtual void Exit(Sim* sim);
 
-	//virtual bool OnMessage(Sim* sim, const Telegram& telegram);
 	virtual bool OnMessage(Sim* sim, const SIM_Message& telegram);
 };

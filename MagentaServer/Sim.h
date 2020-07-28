@@ -1,14 +1,6 @@
 #pragma once
 #include "main.h"
 
-struct SIM_Message {
-	int msg;
-	void* extra_info;
-
-	SIM_Message() : msg(-1) {}
-	SIM_Message(int msg, void* info = NULL) : msg(msg), extra_info(info) {}
-};
-
 struct TargetInfo
 {
 	Vector2D pos;
@@ -33,7 +25,7 @@ public:
 	deque<TargetInfo> targetPos;
 	deque<Vector2D> path;
 	BuildMessageInfo buildInfo;
-
+	vector<int>	prevNearClients;
 public:
 	Sim() :stateMachine(this) {}
 	Sim(int idx, float x, float z) :id(idx), pos(x, z), forward(0, 1), rotAngle(0), stateMachine(this) {}

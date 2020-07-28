@@ -186,6 +186,7 @@ public:
 	unsigned m_move_time;
 	DWORD	m_last_move_time;
 	unordered_set<int> view_list;
+	unordered_set<int> sim_list;
 
 	float	m_xPos, m_yPos, m_zPos;
 	float	m_rotAngle;
@@ -205,6 +206,7 @@ public:
 	void	insert_client_in_sector();
 
 	vector<int>	get_near_clients();
+	vector<int> get_near_sims();
 	vector<pair<BuildingInfo, pair<int, int>>> get_near_buildings();
 	void	is_collide(float prevX, float prevZ);
 
@@ -212,6 +214,13 @@ public:
 	{
 		if (fabs(m_xPos - other.m_xPos) > VIEW_RADIUS)	return false;
 		if (fabs(m_zPos - other.m_zPos) > VIEW_RADIUS)	return false;
+		return true;
+	}
+
+	bool is_near(const Sim& other)
+	{
+		if (fabs(m_xPos - other.pos.x) > VIEW_RADIUS)	return false;
+		if (fabs(m_zPos - other.pos.z) > VIEW_RADIUS)	return false;
 		return true;
 	}
 };

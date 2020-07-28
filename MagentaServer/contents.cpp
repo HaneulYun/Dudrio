@@ -263,7 +263,9 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 
 	g_clients[user_id]->m_cl.lock();
 	unordered_set<int> old_vl = g_clients[user_id]->view_list;
+	unordered_set<int> old_sl = g_clients[user_id]->sim_list;
 	unordered_set<int> new_vl;
+	unordered_set<int> new_sl;
 	g_clients[user_id]->m_cl.unlock();
 
 	vector<int> near_clients = g_clients[user_id]->get_near_clients();
@@ -322,6 +324,31 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 				g_clients[old_player]->m_cl.unlock();
 			}
 		}
+	}
+
+	vector<int> near_sims = g_clients[user_id]->get_near_sims();
+	for (auto sl : near_sims) new_sl.insert(sl);
+
+	for (auto new_sim : new_sl) {
+		g_sims_lock.lock();
+		if (g_sims.count(new_sim) == 0) {
+			g_sims_lock.unlock();
+			continue;
+		}
+		g_sims_lock.unlock();
+		if (old_sl.count(new_sim) == 0) 
+			iocp.send_enter_sim_packet(user_id, new_sim);
+	}
+
+	for (auto old_sim : old_sl) {
+		g_sims_lock.lock();
+		if (g_sims.count(old_sim) == 0) {
+			g_sims_lock.unlock();
+			continue;
+		}
+		g_sims_lock.unlock();
+		if (new_sl.count(old_sim) == 0) 
+			iocp.send_leave_sim_packet(user_id, old_sim);
 	}
 }
 
@@ -414,6 +441,14 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
 		g_sims[sim_index]->insert_client_in_sector();
 		cout << "Sim " << sim_index << " is created" << endl;
+		iocp.send_enter_sim_packet(contents.host_id, sim_index);
+
+		vector<int> near_clients = g_sims[sim_index]->get_near_clients();
+
+		for (auto cl : near_clients) {
+			if (ST_ACTIVE == g_clients[cl]->m_status) 
+				iocp.send_enter_sim_packet(cl, sim_index);
+		}
 		++sim_index;
 		g_sims_lock.unlock();
 	}

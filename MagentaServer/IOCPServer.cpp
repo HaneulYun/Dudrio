@@ -376,6 +376,54 @@ void IOCPServer::send_move_packet(int user_id, int mover, float dAngle)
 	send_packet(user_id, &p);
 }
 
+void IOCPServer::send_enter_sim_packet(int user_id, int o_id)
+{
+	sc_packet_sim_enter p;
+	p.id = o_id;
+	p.size = sizeof(p);
+	p.type = S2C_SIM_ENTER;
+	p.xPos = g_sims[o_id]->pos.x;
+	p.zPos = g_sims[o_id]->pos.z;
+	p.xVel = g_sims[o_id]->forward.x;
+	p.zVel = g_sims[o_id]->forward.z;
+	p.rotAngle = g_sims[o_id]->rotAngle;
+	
+	g_clients[user_id]->m_cl.lock();
+	g_clients[user_id]->sim_list.insert(o_id);
+	g_clients[user_id]->m_cl.unlock();
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_leave_sim_packet(int user_id, int o_id)
+{
+	sc_packet_sim_leave p;
+	p.id = o_id;
+	p.size = sizeof(p);
+	p.type = S2C_SIM_LEAVE;
+
+	g_clients[user_id]->m_cl.lock();
+	g_clients[user_id]->sim_list.erase(o_id);
+	g_clients[user_id]->m_cl.unlock();
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_move_sim_packet(int user_id, int mover, float dAngle)
+{
+	sc_packet_sim_move p;
+	p.id = mover;
+	p.size = sizeof(p);
+	p.type = S2C_SIM_MOVE;
+	p.xPos = g_sims[mover]->pos.x;
+	p.zPos = g_sims[mover]->pos.z;
+	p.xVel = g_sims[mover]->forward.x;
+	p.zVel = g_sims[mover]->forward.z;
+	p.rotAngle = dAngle;
+
+	send_packet(user_id, &p);
+}
+
 void IOCPServer::send_construct_packet(int user_id, int type, int name, float x, float z, float angle)
 {
 	sc_packet_construct p;

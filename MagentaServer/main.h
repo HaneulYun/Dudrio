@@ -64,9 +64,9 @@ struct EXOVER {
 #include "PathFinder.h"
 // FSM
 #include "Message.h"
-#include "SimStates.h"
 #include "State.h"
 #include "StateMachine.h"
+#include "SimStates.h"
 // AI
 #include "Sim.h"
 // -----------------------------------

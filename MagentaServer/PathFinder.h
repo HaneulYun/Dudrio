@@ -31,7 +31,6 @@ private:
 public:
 	Terrain* terrainData;
 
-	//GameObject* prefab;
 	static PathFinder* Instance();
 
 public:

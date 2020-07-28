@@ -36,6 +36,7 @@ public:
 
 public:
 	GameObject* simsPrefab = NULL;
+	unordered_map<int, GameObject*> sims;
 	unordered_map<int, GameObject*> players;
 
 private:

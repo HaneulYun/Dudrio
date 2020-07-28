@@ -108,6 +108,40 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		}
 	}
 	break;
+	case S2C_SIM_ENTER:
+	{
+		sc_packet_sim_enter* my_packet = reinterpret_cast<sc_packet_sim_enter*>(ptr);
+		int id = my_packet->id;
+
+		sims[id] = gameObject->scene->Duplicate(simsPrefab);
+		sims[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
+		auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
+		p->move(my_packet->xPos, my_packet->zPos);
+	}
+	break;
+	case S2C_SIM_MOVE:
+	{
+		sc_packet_sim_move* my_packet = reinterpret_cast<sc_packet_sim_move*>(ptr);
+		int id = my_packet->id;
+
+		if (0 != sims.count(id)) {
+			auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
+			p->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, my_packet->rotAngle);
+		}
+	}
+	break;
+	case S2C_SIM_LEAVE:
+	{
+		sc_packet_sim_leave* my_packet = reinterpret_cast<sc_packet_sim_leave*>(ptr);
+		int id = my_packet->id;
+
+		if (0 != sims.count(id))
+		{
+			Scene::scene->PushDelete(sims[id]);
+			sims.erase(id);
+		}
+	}
+	break;
 	case S2C_CONSTRUCT:
 	{
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);

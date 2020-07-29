@@ -13,7 +13,7 @@ void HostScene::BuildObjects()
 	LoadMaterialAsset();
 	LoadMeshAsset();
 
-	LoadPrefab();
+	//LoadPrefab();
 
 	ASSET AddMesh("Cube", Mesh::CreateCube());
 
@@ -179,8 +179,8 @@ void HostScene::BuildObjects()
 
 
 	GameObject* landmark = CreateEmpty();
-	landmark->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
-	landmark->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
+	//landmark->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
+	//landmark->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
 	landmark->transform->position = Vector3(500, terrainData->terrainData.GetHeight(500, 500), 500);
 	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 	Village* village = landmark->AddComponent<Village>();

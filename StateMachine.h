@@ -9,6 +9,7 @@ private:
 
 public:
 	StateMachine(entity* owner) : owner(owner) {}
+	StateMachine() {}
 
 	State<entity>* GetCurrentState() const
 	{

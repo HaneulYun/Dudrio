@@ -24,6 +24,35 @@ public:
 		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 		ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
 		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
+
+
+		/*HandPaintedEnviroment*/
+		ASSET AddTexture("Baker_house", L"Assets\\HandPaintedEnvironment\\Textures\\Baker_house_texture.dds");
+		ASSET AddTexture("Awning_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Awning_texture.dds");
+		ASSET AddTexture("Barrel_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Barrel_texture.dds");
+		ASSET AddTexture("Boxes_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Boxes_texture.dds");
+		ASSET AddTexture("Cauldron_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Cauldron_texture.dds");
+
+		ASSET AddTexture("Chest_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Chest_texture.dds");
+		ASSET AddTexture("Crystals_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Crystals_texture.dds");
+		ASSET AddTexture("Fence_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Fence_texture.dds");
+		ASSET AddTexture("Fern_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Fern_texture.dds");
+		ASSET AddTexture("Forge_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Forge_texture.dds");
+		ASSET AddTexture("Hammer_anvil_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Hammer_anvil_texture.dds");
+		ASSET AddTexture("Lampposts_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Lampposts_texture.dds");
+		ASSET AddTexture("Large_house_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Large_house_texture.dds");
+		ASSET AddTexture("Log_stump_mushrooms_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Log_stump_mushrooms_texture.dds");
+		ASSET AddTexture("Logs_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Logs_texture.dds");
+
+		ASSET AddTexture("Mill_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Mill_texture.dds");
+		ASSET AddTexture("Mine_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Mine_texture.dds");
+		ASSET AddTexture("Pillars_arch_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Pillars_arch_texture.dds");
+		ASSET AddTexture("Pine_tree_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_texture.dds");
+		ASSET AddTexture("Small_house_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Small_house_texture.dds");
+		ASSET AddTexture("Town_Hall_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Town_Hall_texture.dds");
+		ASSET AddTexture("Trolley_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Trolley_texture.dds");
+		ASSET AddTexture("Witch_house_texture", L"Assets\\HandPaintedEnvironment\\Textures\\Witch_house_texture.dds");
+		ASSET AddTexture("Woodmill", L"Assets\\HandPaintedEnvironment\\Textures\\Woodmill.dds");
 	}
 
 	void LoadMaterialAsset()
@@ -44,6 +73,16 @@ public:
 		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
 		ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
 		ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
+
+
+		/*HandPaintedEnviroment*/
+		ASSET AddMaterial("Baker_house", ASSET TEXTURE("Baker_house"));
+
+		ASSET AddMaterial("Mill", ASSET TEXTURE("Mill_texture"));
+		ASSET AddMaterial("Mine", ASSET TEXTURE("Mine_texture"));
+		ASSET AddMaterial("Pine_tree", ASSET TEXTURE("Pine_tree_texture"));
+		ASSET AddMaterial("Witch_house", ASSET TEXTURE("Witch_house_texture"));
+		ASSET AddMaterial("Woodmill", ASSET TEXTURE("Woodmill"));
 	}
 
 	void LoadMeshAsset()
@@ -94,6 +133,24 @@ public:
 		ASSET AddFbxForMesh("SM_Sack_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Tomato.FBX");
 		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
 		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
+
+
+		/*HandPaintedEnviroment*/
+		ASSET AddFbxForMesh("Baker_house", "Assets\\HandPaintedEnvironment\\Models\\Baker_house.FBX");
+
+
+		ASSET AddFbxForMesh("Mill", "Assets\\HandPaintedEnvironment\\Models\\Mill.FBX");
+		ASSET AddFbxForMesh("Mill_wings", "Assets\\HandPaintedEnvironment\\Models\\Mill_wings.FBX");
+		ASSET AddFbxForMesh("Mine", "Assets\\HandPaintedEnvironment\\Models\\Mine.FBX");
+		ASSET AddFbxForMesh("Pine_tree", "Assets\\HandPaintedEnvironment\\Models\\Pine_tree.FBX");
+		ASSET AddFbxForMesh("Pine_tree_1", "Assets\\HandPaintedEnvironment\\Models\\Pine_tree_1.FBX");
+		ASSET AddFbxForMesh("Pine_tree_2", "Assets\\HandPaintedEnvironment\\Models\\Pine_tree_2.FBX");
+		ASSET AddFbxForMesh("Pine_tree_2_1", "Assets\\HandPaintedEnvironment\\Models\\Pine_tree_2_1.FBX");
+
+		ASSET AddFbxForMesh("Witch_house", "Assets\\HandPaintedEnvironment\\Models\\Witch_house.FBX");
+		ASSET AddFbxForMesh("Woodmill", "Assets\\HandPaintedEnvironment\\Models\\Woodmill.FBX");
+		ASSET AddFbxForMesh("Woodmill_Saw", "Assets\\HandPaintedEnvironment\\Models\\Woodmill_Saw.FBX");
+
 
 		ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
 

@@ -54,6 +54,12 @@ void BuildingBuilder::serializeBuildings()
 
 	building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"House01", ASSET MESH("SM_House_Var01"), ASSET MATERIAL("house01")));
 	building[House].push_back(makeBuilderDataAsPrefab(L"House02", ASSET PREFAB("House01")));
+	building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"Baker_house", ASSET MESH("Baker_house"), ASSET MATERIAL("Baker_house")));
+	building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"Mill", ASSET MESH("Mill"), ASSET MATERIAL("Mill")));
+	building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"Mine", ASSET MESH("Mine"), ASSET MATERIAL("Mine")));
+	building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"Pine_tree", ASSET MESH("Pine_tree"), ASSET MATERIAL("Pine_tree")));
+	building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"Witch_house", ASSET MESH("Witch_house"), ASSET MATERIAL("Witch_house")));
+	building[House].push_back(makeBuilderDataAsMeshAndMaterial(L"Woodmill", ASSET MESH("Woodmill"), ASSET MATERIAL("Woodmill")));
 
 	building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_01", ASSET MESH("SM_Tree_Var01"), { ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
 	building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_02", ASSET MESH("SM_Tree_Var02"), { ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));

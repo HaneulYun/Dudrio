@@ -240,5 +240,8 @@ public:
 			if (ipImage != nullptr)
 				ipImage->SetActive(false);
 		}
+		else if (isConnect) {
+			Logout();
+		}
 	}
 };

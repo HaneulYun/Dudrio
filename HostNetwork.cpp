@@ -246,4 +246,17 @@ void HostNetwork::Logout()
 	for (auto& p : players)
 		Scene::scene->PushDelete(p.second);
 	players.clear();
+
+	for (auto& p : sims)
+		Scene::scene->PushDelete(p.second);
+	sims.clear();
+
+	for (auto& landmark : GameWorld::gameWorld->buildingList){
+		auto iter = landmark.second.find(GameWorld::gameWorld->BuildingType::Landmark);
+		if (iter != landmark.second.end()) {
+			for (auto& house : iter->second) {
+				GameWorld::gameWorld->addSim(landmark.first, house);
+			}
+		}
+	}
 }

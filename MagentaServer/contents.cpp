@@ -125,6 +125,7 @@ void Contents::process_packet(int user_id, char* buf)
 			terrain_data->makeExtraData();
 			PathFinder::Instance()->SetTerrainData(terrain_data);
 
+			ingame_time = GetTickCount64();
 			update();
 			enter_game(user_id, packet->name);
 		}
@@ -430,6 +431,7 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	g_buildings_lock.lock();
 	if (b_type == Landmark) {
 		Village* landmark = new Village(b_type, b_name, xpos, zpos, angle);
+		landmark->autoDevelopment = true;
 		g_buildings[b_sectnum.second][b_sectnum.first][b] = landmark;
 		g_villages.insert(landmark);
 	}
@@ -456,9 +458,15 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 			if (ST_ACTIVE == g_clients[cl]->m_status) 
 				iocp.send_enter_sim_packet(cl, sim_index);
 		}
+
+		// 임시 처리 -----------------
+		for (auto& v : g_villages) {
+			v->simList.insert(g_sims[sim_index]);
+		}
+		// ---------------------------
 		++sim_index;
 		g_sims_lock.unlock();
-	}
+	}	
 
 	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].lock();
 	for (auto cl : g_sector_clients[b_sectnum.second][b_sectnum.first]) {
@@ -527,13 +535,13 @@ void Contents::update()
 void Contents::update_sim()
 {
 	lock_guard<mutex> lock_guard(g_sims_lock);
-	//if (tmp_sleep_time > 30000.f) {
-	//	for (auto& sims : g_sims) {
-	//		timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
-	//		timer.add_event(ev);
-	//	}
-	//	tmp_sleep_time -= 30000.f;
-	//}
+	if (tmp_sleep_time > 30000.f) {
+		for (auto& sims : g_sims) {
+			timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
+			timer.add_event(ev);
+		}
+		tmp_sleep_time -= 30000.f;
+	}
 
 	for (auto& landmark : g_villages){
 		if (landmark->autoDevelopment && !landmark->simList.empty()) {
@@ -542,7 +550,7 @@ void Contents::update_sim()
 				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % 30) - 15, landmark->m_info.m_zPos + (rand() % 30) - 15);
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % collider_info[info->buildingType].size();
-				landmark->delayTime = rand() % 10 + 30;
+				landmark->delayTime = rand() % 10 + 10000.f;
 
 				timer_event ev = { -1, SIM_Build,  high_resolution_clock::now(), rand() % landmark->simList.size(), info };
 				timer.add_event(ev);

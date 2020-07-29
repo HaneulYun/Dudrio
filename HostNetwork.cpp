@@ -124,7 +124,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
 		Vector2 building_pos{ my_packet->xPos, my_packet->zPos };
 		GameObject* building = BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name);
-		GuestGameWorld::gameWorld->buildInGameWorld(building, my_packet->building_type, my_packet->building_name);
+		//GameWorld::gameWorld->buildInGameWorld(landmark, building, my_packet->building_type, my_packet->building_name);
 	}
 		break;
 	case S2C_DESTRUCT:

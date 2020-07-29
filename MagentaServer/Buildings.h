@@ -102,7 +102,8 @@ class Village : public Building
 {
 public:
 	//				Home		Sim
-	unordered_map<struct BuildingInfo, class Sim*, struct BuildingInfoHasher> simList;
+	//unordered_map<struct BuildingInfo, class Sim*, struct BuildingInfoHasher> simList;
+	unordered_set<class Sim*> simList;
 
 	float delayTime = 0.f;	// 건설 쿨타임
 	bool autoDevelopment;

@@ -1,6 +1,7 @@
 #pragma once
 enum EventType {
 	GAME_Update,
+	GAME_Reset,
 	SIM_Move,
 	SIM_Sleep,
 	SIM_WakeUp,

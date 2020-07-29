@@ -206,58 +206,14 @@ void PathFinder::MoveToDestination(Vector2D& targetPos, Sim* sim, float speed)
 	Vector3D currentDir{ sim->forward.x, 0, sim->forward.z }; currentDir.Normalize();
 	Vector3D dir{ targetPos.x - sim->pos.x, 0, targetPos.z - sim->pos.z };
 
-	float rotSpeed = 0.f;
-
 	float angle = getDegreeAngle(currentDir, dir);
-	//if (angle < 3.f * speed)
-	{
-		currentDir = dir;
-		Vector3D newPos = Vector3D(sim->pos.x, 0, sim->pos.z) + currentDir.Normalize() * speed * 0.333;
-		sim->pos = { newPos.x, newPos.z };
+	sim->rotAngle += angle;
+	//sim->forward.x = dir.x;
+	//sim->forward.z = dir.z;
+	sim->forward.Rotate(-angle);
+	currentDir = dir;
 
-		if (sim->is_sector_change(prevX, prevZ)) {
-			sim->erase_sim_in_sector(prevX, prevZ);
-			sim->insert_client_in_sector();
-		}
-
-		iocp.send_move_sim_packet(contents.host_id, sim->id, rotSpeed);
-
-		vector<int> near_clients = sim->get_near_clients();
-		for (auto& cl : sim->prevNearClients) {
-			auto iter = find(near_clients.begin(), near_clients.end(), cl);
-			if (iter == near_clients.end()) {
-				iocp.send_leave_sim_packet(cl, sim->id);
-			}
-		}
-
-		for (auto& cl : near_clients) {
-			g_clients[cl]->m_cl.lock();
-			if (g_clients[cl]->sim_list.count(sim->id) != 0) {
-				g_clients[cl]->m_cl.unlock();
-				iocp.send_move_sim_packet(cl, sim->id, rotSpeed);
-			}
-			else {
-				g_clients[cl]->m_cl.unlock();
-				iocp.send_enter_sim_packet(cl, sim->id);
-			}
-		}
-
-		sim->prevNearClients = near_clients;
-		cout << GetTickCount64() <<": " << sim->id << " has moved to " << sim->pos.x << ", " << sim->pos.z << endl;
-		return;
-	}
-
-	Vector3D cross = crossproduct(currentDir, dir);
-	Vector3D up = { 0,1,0 };
-	bool isRight = dotproduct(cross, up) > 0 ? true : false;
-
-	rotSpeed = 180.f * 0.333 * speed;
-	if (!isRight) rotSpeed *= -1;
-
-	sim->rotAngle += rotSpeed;
-	sim->forward.Rotate(rotSpeed);
-
-	Vector2D newPos = sim->pos + sim->forward.Normalize() * speed * 0.333;// Time::deltaTime;
+	Vector3D newPos = Vector3D(sim->pos.x, 0, sim->pos.z) + currentDir.Normalize() * speed * 0.333;
 	sim->pos = { newPos.x, newPos.z };
 
 	if (sim->is_sector_change(prevX, prevZ)) {
@@ -265,27 +221,28 @@ void PathFinder::MoveToDestination(Vector2D& targetPos, Sim* sim, float speed)
 		sim->insert_client_in_sector();
 	}
 
-	iocp.send_move_sim_packet(contents.host_id, sim->id, rotSpeed);
+	iocp.send_move_sim_packet(contents.host_id, sim->id, angle);
 
 	vector<int> near_clients = sim->get_near_clients();
-	for (auto& cl : sim->prevNearClients){
-		lock_guard<mutex>lock_guard(g_clients[cl]->m_cl);
+	for (auto& cl : sim->prevNearClients) {
 		auto iter = find(near_clients.begin(), near_clients.end(), cl);
-		if (iter == near_clients.end()) {
+		if (iter == near_clients.end() && g_clients.count(cl) != 0) {
 			iocp.send_leave_sim_packet(cl, sim->id);
 		}
 	}
 
 	for (auto& cl : near_clients) {
-		lock_guard<mutex>lock_guard(g_clients[cl]->m_cl);
+		g_clients[cl]->m_cl.lock();
 		if (g_clients[cl]->sim_list.count(sim->id) != 0) {
-			iocp.send_move_sim_packet(cl, sim->id, rotSpeed);
+			g_clients[cl]->m_cl.unlock();
+			iocp.send_move_sim_packet(cl, sim->id, angle);
 		}
 		else {
+			g_clients[cl]->m_cl.unlock();
 			iocp.send_enter_sim_packet(cl, sim->id);
 		}
 	}
 
 	sim->prevNearClients = near_clients;
-	cout << sim->id << " has moved to " << sim->pos.x << ", " << sim->pos.z << endl;
+	cout << GetTickCount64() << ": " << sim->id << " has moved to " << sim->pos.x << ", " << sim->pos.z << ", " << angle << endl;
 }

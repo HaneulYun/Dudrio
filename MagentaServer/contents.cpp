@@ -12,7 +12,8 @@ Contents::~Contents()
 
 void Contents::init_contents()
 {
-	timer.clear_timer();
+	timer_event ev{ 0, GAME_Reset, high_resolution_clock::now(),0, NULL };
+	timer.add_event(ev);
 
 	host_id = -1;
 	tick_count = 0.f;
@@ -473,7 +474,7 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		if (ST_ACTIVE == cl.second->m_status)
 			iocp.send_construct_packet(cl.second->m_id, b_type, b_name, xpos, zpos, angle);
 	}
-	// 건설 타입이 House일 경우 클라이언트에서 심이 enter된 것으로 인식하게 처리해야 함
+
 	// 건물에 sim_index를 부여하여 어떤 심이 사는 집인지 알 수 있게 해야 함
 }
 

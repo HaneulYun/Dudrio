@@ -28,7 +28,7 @@ void Timer::stop_timer()
 void Timer::clear_timer()
 {
 	lock_guard<mutex>lock_guard(timer_lock);
-	while (!timer.timer_queue.empty())
+	while (!timer_queue.empty())
 		timer_queue.pop();
 }
 
@@ -53,6 +53,12 @@ void Timer::timer_thread_loop()
 				over->op = GAME_UPDATE;
 				over->obj_id = ev.obj_id;
 				over->target_id = ev.target_id;
+			}
+			break;
+			case GAME_Reset:
+			{
+				clear_timer();
+				continue;
 			}
 			break;
 			case SIM_Move:

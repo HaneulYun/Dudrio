@@ -72,6 +72,15 @@ public:
 		return res;
 	}
 
+	Vector3D operator-(const Vector3D lhs)
+	{
+		Vector3D res;
+		res.x = x - lhs.x;
+		res.y = y - lhs.y;
+		res.z = z - lhs.z;
+		return res;
+	}
+
 	Vector3D operator*(const float lhs)
 	{
 		Vector3D res;

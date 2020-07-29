@@ -35,16 +35,16 @@ Vector2D getDistanceVector(float ax, float az, float bx, float bz)
 Vector2D getHeightVector(float minZ, float maxZ, float angle)
 {
 	Vector2D res;
-	res.x = (maxZ - minZ) * cos(degreeToRadian(angle - 90)) / 2;
-	res.z = (maxZ - minZ) * sin(degreeToRadian(angle - 90)) / 2;
+	res.x = (maxZ - minZ) * cos(degreeToRadian(-angle + 90)) / 2;
+	res.z = (maxZ - minZ) * sin(degreeToRadian(-angle + 90)) / 2;
 	return res;
 }
 
 Vector2D getWidthVector(float minX, float maxX, float angle)
 {
 	Vector2D res;
-	res.x = (maxX - minX) * cos(degreeToRadian(angle)) / 2;
-	res.z = (maxX - minX) * sin(degreeToRadian(angle)) / 2;
+	res.x = (maxX - minX) * cos(degreeToRadian(-angle)) / 2;
+	res.z = (maxX - minX) * sin(degreeToRadian(-angle)) / 2;
 	return res;
 }
 
@@ -66,6 +66,18 @@ float getDegreeAngle(Vector3D a, Vector3D b)
 {
 	Vector3D v1 = a.Normalize();
 	Vector3D v2 = b.Normalize();
-	float angle = acos(dotproduct(v1, v2));
-	return radianToDegree(fabs(angle));
+
+	//float angle = dotproduct(v1, v2);
+	//if (angle > 1.0f) angle = 1.0f;
+	//else if (angle < -1.0f) angle = -1.0f;
+	//angle = acos(angle);
+	//Vector3D dir = crossproduct(v1, v2);
+	//angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+
+	float angle = atan2((v1.x * v2.z) - (v2.x * v1.z), (v2.x * v1.x) + (v2.z * v1.z));
+	angle = radianToDegree(angle);
+
+	return angle * -1;
+
+	return angle;
 }

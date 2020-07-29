@@ -1,5 +1,4 @@
 #pragma once
-#include "main.h"
 
 #define NUM_OF_CPU 4
 
@@ -43,6 +42,10 @@ public:
 	void send_construct_packet(int user_id, int type, int name, float x, float z, float angle);
 	void send_destruct_packet(int user_id, int type, int name, float x, float z, float angle);
 	void send_destruct_all_packet(int user_id);
+
+	void send_enter_sim_packet(int user_id, int o_id);
+	void send_leave_sim_packet(int user_id, int o_id);
+	void send_move_sim_packet(int user_id, int mover, float dAngle);	// move + rotate
 
 	void send_chat_packet(int user_id, int chatter, wchar_t mess[]);
 

@@ -34,9 +34,18 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 		else if (Input::GetMouseButtonUp(0))
 		{
 			auto p = prefab->transform->position;
-
-			if (HostNetwork::network->isConnect)
-				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, curPrefabAngle);
+			
+			if (HostNetwork::network->isConnect) {
+				Vector3 building_forward = prefab->transform->forward;
+				building_forward.y = 0;
+				building_forward.Normalize();
+				Vector3 forward = { 0,0,1 };
+				float angle = Vector3::DotProduct(forward, building_forward);
+				Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+				angle = XMConvertToDegrees(acos(angle));
+				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle);
+			}
 			updateTerrainNodeData(prefab);
 
 			GameWorld::gameWorld->buildInGameWorld(GameWorld::gameWorld->buildingList.begin()->first, prefab, curPrefabType, curPrefabIndex);
@@ -170,7 +179,7 @@ void BuildingBuilder::updateTerrainNodeData(GameObject* building)
 
 }
 
-void BuildingBuilder::build(Vector2 position, float angle, int type, int index)
+GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int index)
 {
 	if (index < building[type].size())
 	{
@@ -203,7 +212,10 @@ void BuildingBuilder::build(Vector2 position, float angle, int type, int index)
 		obj->transform->Rotate(Vector3(0, 1, 0), angle);
 
 		updateTerrainNodeData(obj);
+
+		return obj;
 	}
+	return nullptr;
 }
 
 void BuildingBuilder::build(Vector3 position)
@@ -243,6 +255,7 @@ void BuildingBuilder::enterBuildMode(int type, int index)
 			}
 		}
 
+		prefab->AddComponent<Building>()->SetBuildingIndex(index);
 		curPrefabType = type;
 		curPrefabIndex = index;
 	}

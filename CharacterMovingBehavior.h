@@ -56,31 +56,31 @@ public:
 			moveQueue.pop();
 			moving = true;
 		}
-
+		
 		if (moving) {
 			if (curPos.Length() < destPos.Length()) {
 				dx = destPos.x * Time::deltaTime * 3;
 				dz = destPos.z * Time::deltaTime * 3;
-
+		
 				if ((curPos + Vector3{ dx, 0, dz }).Length() > destPos.Length()) {
 					dx = destPos.x - curPos.x;
 					dz = destPos.z - curPos.z;
 				}
-
+		
 				gameObject->transform->position += {dx, 0, dz};
 				curPos += {dx, 0, dz};
 			}
 			if (fabs(curAngle) < fabs(destAngle)) {
 				dr = destAngle * Time::deltaTime * 3;
-
+		
 				if (fabs(curAngle + dr) > fabs(destAngle))
 					dr = destAngle - curAngle;
-
+		
 				gameObject->transform->Rotate(Vector3{ 0,1,0 }, dr);
 				curAngle += dr;
 			}
 			if (curPos.Length() >= destPos.Length() && fabs(curAngle) >= fabs(destAngle)) {
-
+		
 				moving = false;
 			}
 		}
@@ -88,7 +88,7 @@ public:
 			dx = 0.0f;
 			dz = 0.0f;
 		}
-
+		
 		Vector3 characterForward = gameObject->transform->forward;
 		characterForward.y = 0;
 		characterForward.Normalize();
@@ -104,14 +104,15 @@ public:
 			gameObject->transform->position.y = heightmap->GetHeight(gameObject->transform->position.x, gameObject->transform->position.z);
 		anim->SetFloat("VelocityX", animVel.x * 1000.f);
 		anim->SetFloat("VelocityZ", animVel.z * 1000.f);
-
+		
 	}
 
-	void move(float xPos, float zPos)
+	void move(float xPos, float zPos, float angle)
 	{
 		gameObject->transform->position.x = xPos;
 		gameObject->transform->position.y = heightmap->GetHeight(xPos, zPos);
 		gameObject->transform->position.z = zPos;
+		gameObject->transform->Rotate({ 0, 1, 0 }, angle);
 	}
 
 	void add_move_queue(Vector3 destPos, float rotAngle)

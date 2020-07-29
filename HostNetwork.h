@@ -36,6 +36,7 @@ public:
 
 public:
 	GameObject* simsPrefab = NULL;
+	unordered_map<int, GameObject*> sims;
 	unordered_map<int, GameObject*> players;
 
 private:
@@ -238,6 +239,9 @@ public:
 				ip->SetActive(false);
 			if (ipImage != nullptr)
 				ipImage->SetActive(false);
+		}
+		else if (isConnect) {
+			Logout();
 		}
 	}
 };

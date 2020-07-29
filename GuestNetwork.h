@@ -35,6 +35,7 @@ public:
 	GameObject* myCharacter = NULL;
 
 	unordered_map<int, GameObject*> otherCharacters;
+	unordered_map<int, GameObject*> sims;
 
 private:
 	friend class GameObject;

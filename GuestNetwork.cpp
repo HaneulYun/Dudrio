@@ -45,11 +45,10 @@ void GuestNetwork::ProcessPacket(char* ptr)
 			BuildingBuilder::buildingBuilder->terrainNodeData = terrainNodeData;
 		}
 
-		myCharacter->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 		myc->heightmap = &terrainData->terrainData;
 		simsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
-		myc->move(my_packet->xPos, my_packet->zPos);
+		myc->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 	}
 	break;
 	case S2C_LOGIN_FAIL:
@@ -69,10 +68,9 @@ void GuestNetwork::ProcessPacket(char* ptr)
 
 		if (id != myId && o_type == O_GUEST){
 			otherCharacters[id] = gameObject->scene->Duplicate(simsPrefab);
-			otherCharacters[id]->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 			auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
 			strcpy_s(oc->name, my_packet->name);
-			oc->move(my_packet->xPos, my_packet->zPos);
+			oc->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 		}
 	}
 	break;
@@ -108,11 +106,45 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		}
 	}
 	break;
+	case S2C_SIM_ENTER:
+	{
+		sc_packet_sim_enter* my_packet = reinterpret_cast<sc_packet_sim_enter*>(ptr);
+		int id = my_packet->id;
+
+		sims[id] = gameObject->scene->Duplicate(simsPrefab);
+		auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
+		p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+	}
+	break;
+	case S2C_SIM_MOVE:
+	{
+		sc_packet_sim_move* my_packet = reinterpret_cast<sc_packet_sim_move*>(ptr);
+		int id = my_packet->id;
+
+		if (0 != sims.count(id)) {
+			auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
+			p->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, my_packet->rotAngle);
+		}
+	}
+	break;
+	case S2C_SIM_LEAVE:
+	{
+		sc_packet_sim_leave* my_packet = reinterpret_cast<sc_packet_sim_leave*>(ptr);
+		int id = my_packet->id;
+
+		if (0 != sims.count(id))
+		{
+			Scene::scene->PushDelete(sims[id]);
+			sims.erase(id);
+		}
+	}
+	break;
 	case S2C_CONSTRUCT:
 	{
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
 		Vector2 building_pos{ my_packet->xPos, my_packet->zPos };
-		BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name);
+		GameObject* building = BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name);
+		GuestGameWorld::gameWorld->buildInGameWorld(building, my_packet->building_type, my_packet->building_name);
 	}
 	break;
 	case S2C_DESTRUCT:

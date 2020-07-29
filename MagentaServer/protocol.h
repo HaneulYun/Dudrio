@@ -28,6 +28,9 @@ constexpr int MAX_USER = 10000;
 #define S2C_DESTRUCT		7	// Server to Guest
 #define S2C_DESTRUCT_ALL	8	// Server to Guest
 #define S2C_CHAT			9
+#define S2C_SIM_ENTER		10
+#define S2C_SIM_LEAVE		11
+#define S2C_SIM_MOVE		12
 
 #pragma pack(push ,1)
 
@@ -66,11 +69,35 @@ struct sc_packet_move {
 	unsigned move_time;
 };
 
+struct sc_packet_sim_enter {
+	unsigned char size;
+	char type;
+	int id;
+	float xPos, zPos;
+	float xVel, zVel;
+	float rotAngle;
+};
+
+struct sc_packet_sim_leave {
+	unsigned char size;
+	char type;
+	int id;
+};
+
+struct sc_packet_sim_move {
+	unsigned char size;
+	char type;
+	int id;
+	float xPos, zPos;
+	float xVel, zVel;
+	float rotAngle;
+};
+
 struct sc_packet_construct
 {
 	unsigned char size;
 	char type;
-
+	int sim_id;
 	int building_type;
 	int building_name;
 	float xPos, zPos;

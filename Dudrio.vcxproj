@@ -189,6 +189,7 @@
     <ClInclude Include="GameWorld.h" />
     <ClInclude Include="GuestCameraController.h" />
     <ClInclude Include="GuestController.h" />
+    <ClInclude Include="GuestGameWorld.h" />
     <ClInclude Include="HostCameraController.h" />
     <ClInclude Include="HostNetwork.h" />
     <ClInclude Include="RotatingBehavior.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="BuildingBuilder.cpp" />
     <ClCompile Include="Dudrio.cpp" />
     <ClCompile Include="GameWorld.cpp" />
+    <ClCompile Include="GuestGameWorld.cpp" />
     <ClCompile Include="HostNetwork.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MaterialScene.cpp" />

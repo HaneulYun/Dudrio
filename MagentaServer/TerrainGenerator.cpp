@@ -1,8 +1,14 @@
+#include "pch.h"
 #include "TerrainGenerator.h"
+
+double TerrainGenerator::Range_From0To60(double x)
+{
+	return x >= 1.0 ? 60 : x <= 0.0 ? 0 : (x * 60.0);
+}
 
 uint8_t TerrainGenerator::ToUint8(double x)
 {
-	return x >= 1.0 ? 255 : x <= 0.0 ? 0 : static_cast<uint8_t>(x * 255.0 + 0.5);
+	return x >= 1.0 ? 255 : x <= 0.0 ? 0 : static_cast<std::uint8_t>(x * 255.0 + 0.5);
 }
 
 float TerrainGenerator::Fade(float t)
@@ -81,8 +87,6 @@ float TerrainGenerator::accumulatedOctaveNoise2D_0_1(float x, float y, int octav
 {
 	return clamp<float>(accumulatedOctaveNoise2D(x, y, octaves) * 0.5 + 0.5, 0, 1);
 }
-
-
 
 void TerrainGenerator::initTable(int seed)
 {

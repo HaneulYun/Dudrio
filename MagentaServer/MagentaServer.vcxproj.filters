@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{a57ad992-9708-4296-85d2-1f819e0b2d6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Terrain">
+      <UniqueIdentifier>{c5a107d5-9682-48c7-aca4-07c3e29c0010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\FSM">
+      <UniqueIdentifier>{ca9bc719-b68b-40ba-bccd-9b8b257d2daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{3ca1e6e9-a399-4889-8980-ef62ecbb3a01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="contents.cpp">
@@ -27,14 +39,29 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainGenerator.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="math.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>AI\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainGenerator.cpp">
+      <Filter>AI\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="SimStates.cpp">
+      <Filter>AI\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="PathFinder.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Clients.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Sim.cpp">
+      <Filter>AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,13 +80,46 @@
     <ClInclude Include="Timer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainGenerator.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="math.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>AI\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainGenerator.h">
+      <Filter>AI\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="SimStates.h">
+      <Filter>AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.h">
+      <Filter>AI\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFinder.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Sim.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Buildings.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Clients.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="headers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

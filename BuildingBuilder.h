@@ -16,7 +16,6 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	int curPrefabType;
 	int curPrefabIndex;
-	float curPrefabAngle;
 
 	Terrain* terrain{ nullptr };
 	TerrainNodeData* terrainNodeData; 
@@ -50,7 +49,7 @@ public:
 
 	void updateTerrainNodeData(GameObject* building);
 
-	void build(Vector2 position, float angle, int type, int index);
+	GameObject* build(Vector2 position, float angle, int type, int index);
 
 	void build(Vector3 position);
 

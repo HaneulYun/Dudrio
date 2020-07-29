@@ -1,14 +1,16 @@
 #pragma once
-#include "main.h"
 
 class Contents
 {
-private:
+public:
 	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Count, None = -1 };
 	vector<struct Collider> collider_info[BuildingType::Count];
 
-public:
 	int		host_id;
+	int		sim_index;
+	float	ingame_time;
+	float	tmp_sleep_time;
+	float	tick_count;
 
 public:
 	Contents();
@@ -17,6 +19,7 @@ public:
 	void init_contents();
 	void init_sector();
 	void init_buildings();
+	void init_sims();
 	void init_colliders_inform();
 
 	void process_packet(int user_id, char* buf);
@@ -29,6 +32,9 @@ public:
 	void do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle);
 	void do_destruct(int user_id);
 	void destruct_all(int user_id);
+
+	void update();
+	void update_sim();
 
 	pair<int, int> calculate_sector_num(float xPos, float zPos);
 };

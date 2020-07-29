@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameWorld.h"
-
+#include "GuestGameWorld.h"
 #include "TerrainGenerator.h"
 
 #include "Village.h"

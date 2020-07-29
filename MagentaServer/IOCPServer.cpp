@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "IOCPServer.h"
 
 IOCPServer::IOCPServer()
@@ -103,7 +104,7 @@ void IOCPServer::worker_thread_loop()
 		int user_id = static_cast<int>(key);
 
 		g_clients_lock.lock();
-		if (g_clients.count(user_id) == 0)
+		if (g_clients.count(user_id) == 0 && (exover->op == OP_RECV || exover->op == OP_SEND))
 		{
 			cout << "저한테 왜그러세요" << user_id << endl;
 			g_clients_lock.unlock();
@@ -126,6 +127,43 @@ void IOCPServer::worker_thread_loop()
 			if (0 == io_byte)
 				contents.disconnect(user_id);
 			delete exover;
+			break;
+		// Game Contents
+		case GAME_UPDATE: 
+		{
+			contents.update();
+			delete exover;
+		}
+			break;
+		case SIM_BUILD: 
+		{
+			g_sims[exover->target_id]->buildInfo = *static_cast<BuildMessageInfo*>(exover->extra_info);
+			SIM_Message msg{ SIM_Build, exover->extra_info };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			
+			delete exover;
+		}
+			break;
+		case SIM_MOVE:
+		{
+			SIM_Message msg{ SIM_Move, NULL };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			delete exover;
+		}
+			break;
+		case SIM_SLEEP:
+		{
+			SIM_Message msg{ SIM_Sleep, NULL };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			delete exover;
+		}
+			break;
+		case SIM_WAKEUP:
+		{
+			SIM_Message msg{ SIM_WakeUp, NULL };
+			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			delete exover;
+		}
 			break;
 		default:
 			cout << "Invalid Operation " << exover->op << endl;
@@ -335,6 +373,54 @@ void IOCPServer::send_move_packet(int user_id, int mover, float dAngle)
 	p.zVel = g_clients[mover]->m_zVel;
 	p.rotAngle = dAngle;
 	p.move_time = g_clients[mover]->m_move_time;
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_enter_sim_packet(int user_id, int o_id)
+{
+	sc_packet_sim_enter p;
+	p.id = o_id;
+	p.size = sizeof(p);
+	p.type = S2C_SIM_ENTER;
+	p.xPos = g_sims[o_id]->pos.x;
+	p.zPos = g_sims[o_id]->pos.z;
+	p.xVel = g_sims[o_id]->forward.x;
+	p.zVel = g_sims[o_id]->forward.z;
+	p.rotAngle = g_sims[o_id]->rotAngle;
+	
+	g_clients[user_id]->m_cl.lock();
+	g_clients[user_id]->sim_list.insert(o_id);
+	g_clients[user_id]->m_cl.unlock();
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_leave_sim_packet(int user_id, int o_id)
+{
+	sc_packet_sim_leave p;
+	p.id = o_id;
+	p.size = sizeof(p);
+	p.type = S2C_SIM_LEAVE;
+
+	g_clients[user_id]->m_cl.lock();
+	g_clients[user_id]->sim_list.erase(o_id);
+	g_clients[user_id]->m_cl.unlock();
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_move_sim_packet(int user_id, int mover, float dAngle)
+{
+	sc_packet_sim_move p;
+	p.id = mover;
+	p.size = sizeof(p);
+	p.type = S2C_SIM_MOVE;
+	p.xPos = g_sims[mover]->pos.x;
+	p.zPos = g_sims[mover]->pos.z;
+	p.xVel = g_sims[mover]->forward.x;
+	p.zVel = g_sims[mover]->forward.z;
+	p.rotAngle = dAngle;
 
 	send_packet(user_id, &p);
 }

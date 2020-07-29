@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "TerrainGenerator.h"
 
 double TerrainGenerator::Range_From0To60(double x)

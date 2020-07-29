@@ -1,4 +1,5 @@
-#include "Objects.h"
+#include "pch.h"
+#include "Clients.h"
 
 Client::Client(SOCKET& sock, int id)
 {
@@ -167,25 +168,4 @@ void Client::is_collide(float prevX, float prevZ)
 	}
 	if (m_collide_invincible)
 		m_collide_invincible = false;
-}
-
-bool Building::is_collide(float player_x, float player_z, float player_angle)
-{
-	Vector2D dist_vector = getDistanceVector(m_info.m_xPos, m_info.m_zPos, player_x, player_z);
-	Vector2D vectors[4];
-	vectors[0] = getHeightVector(m_collider.m_z1, m_collider.m_z2, m_info.m_angle);
-	vectors[1] = getHeightVector(player_z - 0.25, player_z + 0.25, player_angle);
-	vectors[2] = getWidthVector(m_collider.m_x1, m_collider.m_x2, m_info.m_angle);
-	vectors[3] = getWidthVector(player_x - 0.25, player_x + 0.25, player_angle);
-
-	for (int i = 0; i < 4; ++i) {
-		double sum = 0;
-		Vector2D unit_vector = vectors[i].Normalize();
-		for (int j = 0; j < 4; ++j)
-			sum += dotproduct(vectors[j], unit_vector);
-		if (dotproduct(dist_vector, unit_vector) > sum)
-			return false;
-	}
-
-	return true;
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include "Sim.h"
-//#include "main.h"
 
 class IdleState : public State<Sim>
 {

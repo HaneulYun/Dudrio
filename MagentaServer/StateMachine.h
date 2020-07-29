@@ -1,4 +1,5 @@
 #pragma once
+#include "State.h"
 
 template <typename entity>
 class StateMachine
@@ -8,7 +9,9 @@ private:
 	std::deque<State<entity>*> stateStack;
 
 public:
-	StateMachine(entity* owner) : owner(owner) {}
+	StateMachine() {}
+
+	void SetOwner(entity* own) { owner = own; }
 
 	State<entity>* GetCurrentState() const
 	{

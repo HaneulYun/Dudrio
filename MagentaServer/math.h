@@ -1,6 +1,9 @@
 #pragma once
 #include <math.h>
 
+double degreeToRadian(double degree);
+double radianToDegree(double radian);
+
 class Vector2D {
 public:
 	float x, z;
@@ -89,6 +92,3 @@ Vector2D getWidthVector(float minX, float maxX, float angle);
 float dotproduct(Vector3D a, Vector3D b);
 Vector3D crossproduct(Vector3D a, Vector3D b);
 float getDegreeAngle(Vector3D a, Vector3D b);
-
-double degreeToRadian(double degree);
-double radianToDegree(double radian);

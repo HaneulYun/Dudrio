@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "math.h"
 
 Vector2D addVector(Vector2D a, Vector2D b)

@@ -1,6 +1,4 @@
 #pragma once
-#include "main.h"
-
 enum EventType {
 	GAME_Update,
 	SIM_Move,

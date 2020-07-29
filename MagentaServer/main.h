@@ -49,28 +49,6 @@ struct EXOVER {
 #define SECTOR_WIDTH 20
 #define VIEW_RADIUS	 20
 
-#include "math.h"
-#include "protocol.h"
-#include "Timer.h"
-#include "IOCPServer.h"
-#include "Objects.h"
-#include "contents.h"
-
-// AI --------------------------------
-// Terrain
-#include "TerrainGenerator.h"
-#include "Terrain.h"
-// Path
-#include "PathFinder.h"
-// FSM
-#include "Message.h"
-#include "State.h"
-#include "StateMachine.h"
-#include "SimStates.h"
-// AI
-#include "Sim.h"
-// -----------------------------------
-
 extern class IOCPServer iocp;
 extern class Timer	timer;
 extern class Contents contents;

@@ -22,6 +22,9 @@
     <Filter Include="AI\FSM">
       <UniqueIdentifier>{ca9bc719-b68b-40ba-bccd-9b8b257d2daf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{3ca1e6e9-a399-4889-8980-ef62ecbb3a01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="contents.cpp">
@@ -34,9 +37,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="math.cpp">
@@ -54,6 +54,15 @@
     <ClCompile Include="PathFinder.cpp">
       <Filter>AI</Filter>
     </ClCompile>
+    <ClCompile Include="Clients.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Sim.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="protocol.h">
@@ -69,9 +78,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="math.h">
@@ -100,6 +106,21 @@
     </ClInclude>
     <ClInclude Include="Sim.h">
       <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Buildings.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Clients.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="headers.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

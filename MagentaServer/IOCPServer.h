@@ -1,5 +1,4 @@
 #pragma once
-#include "main.h"
 
 #define NUM_OF_CPU 4
 

@@ -76,11 +76,12 @@ void HostScene::BuildObjects()
 			for (auto& sm : mesh->DrawArgs)
 				renderer->materials.push_back(ASSET MATERIAL("PolyArt"));
 		}
+		auto behavior = simsPrefab->AddComponent<CharacterMovingBehavior>();
 		auto anim = simsPrefab->AddComponent<Animator>();
 		anim->controller = controller;
 		anim->state = &controller->states["Idle"];
 		anim->TimePos = 0;
-		simsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
+		behavior->anim = anim;
 	}
 
 

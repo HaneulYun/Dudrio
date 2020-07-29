@@ -244,5 +244,5 @@ void PathFinder::MoveToDestination(Vector2D& targetPos, Sim* sim, float speed)
 	}
 
 	sim->prevNearClients = near_clients;
-	cout << GetTickCount64() << ": " << sim->id << " has moved to " << sim->pos.x << ", " << sim->pos.z << ", " << angle << endl;
+	//cout << GetTickCount64() << ": " << sim->id << " has moved to " << sim->pos.x << ", " << sim->pos.z << ", " << angle << endl;
 }

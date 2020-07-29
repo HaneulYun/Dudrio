@@ -78,12 +78,13 @@ void GuestScene::BuildObjects()
 			model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
 		}
+
+		auto behavior = simPrefab->AddComponent<CharacterMovingBehavior>();
 		auto anim = simPrefab->AddComponent<Animator>();
 		anim->controller = controller;
 		anim->state = &controller->states["Idle"];
 		anim->TimePos = 0;
-
-		simPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
+		behavior->anim = anim;
 	}
 
 	auto network = CreateEmpty();

@@ -70,10 +70,37 @@ public:
 		//ASSET AddTexture("Well", L"Assets\\HandPaintedEnvironment\\Textures\\Well_texture.dds");
 		//ASSET AddTexture("Witch_house", L"Assets\\HandPaintedEnvironment\\Textures\\Witch_house_texture.dds");
 		//ASSET AddTexture("Woodmill", L"Assets\\HandPaintedEnvironment\\Textures\\Woodmill.dds");
+
+
+
+		/*SpringEnvironment*/
+		ASSET AddTexture("SE_Baloons", L"Assets\\SpringEnvironment\\Textures\\SE_Baloons_Diffuse.dds");
+		ASSET AddTexture("SE_Bench_01a", L"Assets\\SpringEnvironment\\Textures\\SE_Bench_01a_Diffuse.dds");
+		ASSET AddTexture("SE_Bench_01b", L"Assets\\SpringEnvironment\\Textures\\SE_Bench_01b_Diffuse.dds");
+		ASSET AddTexture("SE_Birch", L"Assets\\SpringEnvironment\\Textures\\SE_Birch_Diffuse.dds");
+		ASSET AddTexture("SE_Birch_01b", L"Assets\\SpringEnvironment\\Textures\\SE_Birch_01b_Diffuse.dds");
+		ASSET AddTexture("SE_Blanket", L"Assets\\SpringEnvironment\\Textures\\SE_Blanket_Diffuse.dds");
+		ASSET AddTexture("SE_Bushese", L"Assets\\SpringEnvironment\\Textures\\SE_Bushes_Diffuse.dds");
+		ASSET AddTexture("SE_Bonsai", L"Assets\\SpringEnvironment\\Textures\\SE_Bonsai_Diffuse.dds");
+		ASSET AddTexture("SE_Booth", L"Assets\\SpringEnvironment\\Textures\\SE_Booth_Diffuse.dds");
+
 	}
 
 	void LoadMaterialAsset()
 	{
+		/*SpringEnvironment*/
+		ASSET AddMaterial("SE_Baloons", ASSET TEXTURE("SE_Baloons"));
+		ASSET AddMaterial("SE_Bench_01a", ASSET TEXTURE("SE_Bench_01a"));
+		ASSET AddMaterial("SE_Bench_01b", ASSET TEXTURE("SE_Bench_01b"));
+		ASSET AddMaterial("SE_Birch", ASSET TEXTURE("SE_Birch"));
+		ASSET AddMaterial("SE_Birch_01b", ASSET TEXTURE("SE_Birch_01b"));
+		ASSET AddMaterial("SE_Blanket", ASSET TEXTURE("SE_Blanket"));
+		ASSET AddMaterial("SE_Bushese", ASSET TEXTURE("SE_Bushese"));
+		ASSET AddMaterial("SE_Bonsai", ASSET TEXTURE("SE_Bonsai"));
+		ASSET AddMaterial("SE_Booth", ASSET TEXTURE("SE_Booth"));
+
+
+
 		//ASSET AddMaterial("none", ASSET TEXTURE("none"));
 		//ASSET AddMaterial("yellow", ASSET TEXTURE("none"), -1, { 0.8f, 0.7f, 0.1f, 1.0f });
 		ASSET AddMaterial("none", ASSET TEXTURE("none"));
@@ -192,7 +219,6 @@ public:
 
 
 		/*HandPaintedEnviroment*/
-
 		//ASSET AddFbxForMesh("Altar", "Assets\\HandPaintedEnvironment\\Models\\Altar.FBX");
 		//ASSET AddFbxForMesh("Anvil", "Assets\\HandPaintedEnvironment\\Models\\Anvil.FBX");
 		//ASSET AddFbxForMesh("Baker_house", "Assets\\HandPaintedEnvironment\\Models\\Baker_house.FBX");
@@ -266,6 +292,37 @@ public:
 		//ASSET AddFbxForMesh("Woodmill_Saw", "Assets\\HandPaintedEnvironment\\Models\\Woodmill_Saw.FBX");
 
 
+		/*SpringEnvironment*/
+		ASSET AddFbxForMesh("SE_Baloon_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Baloon_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_02_SM.FBX");
+		ASSET AddFbxForMesh("SE_Baloon_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_03_SM.FBX");
+		ASSET AddFbxForMesh("SE_Baloon_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_04_SM.FBX");
+		ASSET AddFbxForMesh("SE_Baloons_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloons_01_SM.FBX");
+		
+		ASSET AddFbxForMesh("SE_Bench_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Bench_01a_SM.FBX");
+		ASSET AddFbxForMesh("SE_Bench_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Bench_01b_SM.FBX");
+
+		ASSET AddFbxForMesh("SE_Birch_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Birch_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_01b_SM.FBX");
+		ASSET AddFbxForMesh("SE_Birch_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_02_SM.FBX");
+		ASSET AddFbxForMesh("SE_Birch_02b_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_02b_SM.FBX");
+
+		ASSET AddFbxForMesh("SE_Blanket_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Blanket_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Blanket_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Blanket_02_SM.FBX");
+		ASSET AddFbxForMesh("SE_Blossom_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Blossom_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_02_SM.FBX");
+		ASSET AddFbxForMesh("SE_Bonsai_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Bonsai_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Bonsai_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Bonsai_02_SM.FBX");
+		ASSET AddFbxForMesh("SE_Booth_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Booth_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Booth_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Booth_02_SM.FBX");
+
+		ASSET AddFbxForMesh("SE_Branch_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Branch_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Branch_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Branch_02_SM.FBX");
+		ASSET AddFbxForMesh("SE_Blossom_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_01_SM.FBX");
+		ASSET AddFbxForMesh("SE_Blossom_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_02_SM.FBX");
+
+		ASSET AddFbxForMesh("SE_Bush_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Bush_06_SM.FBX");
+		ASSET AddFbxForMesh("SE_Bush_07_SM", "Assets\\SpringEnvironment\\Models\\SE_Bush_07_SM.FBX");
 
 
 		ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");

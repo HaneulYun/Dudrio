@@ -75,13 +75,12 @@ void HostScene::BuildObjects()
 			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
 			for (auto& sm : mesh->DrawArgs)
 				renderer->materials.push_back(ASSET MATERIAL("PolyArt"));
-	
-			auto anim = model->AddComponent<Animator>();
-			anim->controller = controller;
-			anim->state = &controller->states["Idle"];
-			anim->TimePos = 0;
-			simsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
 		}
+		auto anim = simsPrefab->AddComponent<Animator>();
+		anim->controller = controller;
+		anim->state = &controller->states["Idle"];
+		anim->TimePos = 0;
+		simsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
 	}
 
 
@@ -131,7 +130,7 @@ void HostScene::BuildObjects()
 
 	auto directionalLight = CreateEmpty();
 	{
-		//directionalLight->transform->Rotate({ 1, 0, 0 }, 180);
+		//directionalLight->transform->Rotate({ 1, 0, 0 }, 60);
 		auto light = directionalLight->AddComponent<Light>();
 		light->Strength = { 0.9f, 0.9f, 0.9f };
 		light->shadowType = Light::Shadows;
@@ -165,17 +164,21 @@ void HostScene::BuildObjects()
 	//	BuildManager::buildManager->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
 	//}
 
-	GameObject* sim = CreateEmptyPrefab();
+	auto sim = CreateEmptyPrefab();
+	{
+		auto model = sim->AddChild();
+		{
+			model->transform->Rotate({ 1, 0, 0 }, -90);
+			model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
+			model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+		}
+		sim->AddComponent<Sim>();
 
-	GameObject* model = sim->AddChild();
-	model->transform->Rotate({ 1, 0, 0 }, -90);
-	model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
-	model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
-
-	auto anim = model->AddComponent<Animator>();
-	anim->controller = simController;
-	anim->state = &simController->states["Idle"];
-	anim->TimePos = 0;
+		auto anim = sim->AddComponent<Animator>();
+		anim->controller = simController;
+		anim->state = &simController->states["Idle"];
+		anim->TimePos = 0;
+	}
 
 
 	GameObject* landmark = CreateEmpty();
@@ -183,6 +186,7 @@ void HostScene::BuildObjects()
 	landmark->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
 	landmark->transform->position = Vector3(500, terrainData->terrainData.GetHeight(500, 500), 500);
 	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+
 	Village* village = landmark->AddComponent<Village>();
 	village->OnAutoDevelopment();
 

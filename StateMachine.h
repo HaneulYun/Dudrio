@@ -8,7 +8,13 @@ private:
 	std::deque<State<entity>*> stateStack;
 
 public:
+	StateMachine() = default;
 	StateMachine(entity* owner) : owner(owner) {}
+
+	void setOwner(entity* owner)
+	{
+		this->owner = owner;
+	}
 
 	State<entity>* GetCurrentState() const
 	{

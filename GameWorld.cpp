@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "GameWorld.h"
 
-
-
 void GameWorld::Start(/*초기화 코드를 작성하세요.*/)
 {
 	gameWorld = this;
+	sun->transform->Rotate({ 1, 0, 0 }, 90);
+	sun->transform->Rotate({ 0, 1, 0 }, -90);
 }
 
 void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
@@ -53,7 +53,7 @@ void GameWorld::gameTimeUpdate()
 	
 	if (gameTime >= timeOfDay)
 	{
-		sun->transform->forward = { 0,0,-1 };
+		sun->transform->forward = { 1, 0, 0 };
 		gameTime -= timeOfDay;
 	}
 
@@ -83,8 +83,8 @@ void GameWorld::gameTimeUpdate()
 			light->Strength -= 0.008f * gameDeltaTime;
 		sunSpeed = 0.26666667f;
 	}
-
-	sun->transform->Rotate({ 1, 0, 0 }, sunSpeed* gameDeltaTime);
+	sun->transform->Rotate({ 0, 1, 0 }, sunSpeed * gameDeltaTime);
+	//sun->transform->Rotate({ 1, 0, 0 }, sunSpeed* gameDeltaTime);
 }
 
 
@@ -121,8 +121,8 @@ int GameWorld::addSim(GameObject* landmark, GameObject* house)
 	GameObject* sim = Scene::scene->Duplicate(simPrefab);
 	sim->transform->position = house->transform->position;
 
-	auto simComponent = sim->AddComponent<Sim>();
-	simComponent->animator = sim->children[0]->GetComponent<Animator>();
+	auto simComponent = sim->GetComponent<Sim>();
+	simComponent->animator = sim->GetComponent<Animator>();
 	simComponent->home = house;
 	simComponent->id = simIndex;
 	simList[simIndex++] = sim;

@@ -29,27 +29,6 @@ void GuestScene::BuildObjects()
 	int octaves = 3;
 	int seed = 1024;
 
-	//TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
-	//string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
-	//delete terrainGenerator;
-	//
-	//GameObject* terrain = CreateEmpty();
-	//auto terrainData = terrain->AddComponent<Terrain>();
-	//{
-	//	{
-	//		wstring name;
-	//		name.assign(fileName.begin(), fileName.end());
-	//		terrainData->terrainData.AlphamapTextureName = name.c_str();
-	//		terrainData->terrainData.heightmapHeight = TerrainSize;
-	//		terrainData->terrainData.heightmapWidth = TerrainSize;
-	//
-	//		terrainData->terrainData.size = { TerrainSize - 1.0f, 255, TerrainSize - 1.0f };
-	//
-	//		terrainData->Set();
-	//	}
-	//	terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
-	//}
-
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
 	{
@@ -76,13 +55,11 @@ void GuestScene::BuildObjects()
 	///*** Game Object ***///
 
 	{
-		auto ritem = CreateEmpty();
-		ritem->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
-		auto mesh = ritem->AddComponent<MeshFilter>()->mesh = ASSET MESH("Sphere");
-		auto renderer = ritem->AddComponent<Renderer>();
-		for (auto& sm : mesh->DrawArgs)
-			renderer->materials.push_back(ASSET MATERIAL("none"));
-		ritem->layer = (int)RenderLayer::Sky;
+		auto skybox = CreateEmpty();
+		skybox->GetComponent<Transform>()->Scale({ 5000.0f, 5000.0f, 5000.0f });
+		skybox->AddComponent<MeshFilter>()->mesh = ASSET MESH("Sphere");
+		skybox->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
+		skybox->layer = (int)RenderLayer::Sky;
 	}
 
 	auto directionalLight = CreateEmpty();
@@ -93,30 +70,28 @@ void GuestScene::BuildObjects()
 		light->shadowType = Light::Shadows;
 	}
 
-	auto SimsPrefab = CreateEmptyPrefab();
+	auto simPrefab = CreateEmptyPrefab();
 	{
-		auto model = SimsPrefab->AddChild();
+		auto model = simPrefab->AddChild();
 		{
-			//model->GetComponent<Transform>()->Scale({ 0.01, 0.01, 0.01 });
 			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
 			model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
 			model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
-
-			auto anim = model->AddComponent<Animator>();
-			anim->controller = controller;
-			anim->state = &controller->states["Idle"];
-			anim->TimePos = 0;
-
-			SimsPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
-			//SimsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
 		}
+		auto anim = simPrefab->AddComponent<Animator>();
+		anim->controller = controller;
+		anim->state = &controller->states["Idle"];
+		anim->TimePos = 0;
+
+		simPrefab->AddComponent<CharacterMovingBehavior>()->anim = anim;
 	}
 
 	auto network = CreateEmpty();
 	{
 		GuestNetwork* gn = network->AddComponent<GuestNetwork>();
-		gn->simsPrefab = SimsPrefab;
-		auto player = gn->myCharacter = Duplicate(SimsPrefab);
+		gn->simsPrefab = simPrefab;
+
+		auto player = gn->myCharacter = Duplicate(simPrefab);
 		player->GetComponent<Transform>()->position = { 540.0, 0.0, 540.0 };
 		player->AddComponent<CharacterController>();
 		GuestNetwork::network = gn;

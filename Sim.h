@@ -30,7 +30,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 private:
 	friend class GameObject;
 	friend class MonoBehavior<Sim>;
-	Sim() : stateMachine(this) {};
+	Sim() = default;
 	Sim(Sim&) = default;
 
 public:
@@ -38,6 +38,7 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
+		stateMachine.setOwner(this);
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)

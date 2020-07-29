@@ -11,7 +11,8 @@ void GameWorld::Start(/*초기화 코드를 작성하세요.*/)
 void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	gameTimeUpdate();
-	aiUpdate();
+	if(!HostNetwork::network->isConnect)
+		aiUpdate();
 
 	for (auto landmark : buildingList)
 	{
@@ -50,7 +51,7 @@ void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int
 	}
 	buildingList[landmark][(BuildingType)type].push_back(building);
 
-	if (type == BuildingType::House)
+	if (type == BuildingType::House &&!HostNetwork::network->isConnect)
 		addSim(landmark, building);
 }
 

@@ -226,6 +226,6 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 
 	object->Rotate(Vector3{ 0,1,0 }, rotSpeed);
 
-	Vector3 newPos = object->position + Vector3::Normalize(object->forward) * speed * 0.016f;// Time::deltaTime;
+	Vector3 newPos = object->position + Vector3::Normalize(object->forward) * speed * Time::deltaTime;
 	object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
 }

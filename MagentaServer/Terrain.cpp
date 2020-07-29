@@ -31,8 +31,8 @@ void Terrain::Load()
 
 void Terrain::makeExtraData()
 {
-	if (extraData)
-		delete[] extraData;
+	//if (extraData != nullptr)
+	//	delete[] extraData;
 	extraData = new ExtraNodeData[heightmapWidth * heightmapHeight];
 }
 

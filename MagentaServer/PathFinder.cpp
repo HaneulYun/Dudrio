@@ -242,6 +242,7 @@ void PathFinder::MoveToDestination(Vector2D& targetPos, Sim* sim, float speed)
 		}
 
 		sim->prevNearClients = near_clients;
+		cout << sim->id << " has moved to " << sim->pos.x << ", " << sim->pos.z << endl;
 		return;
 	}
 
@@ -249,7 +250,7 @@ void PathFinder::MoveToDestination(Vector2D& targetPos, Sim* sim, float speed)
 	Vector3D up = { 0,1,0 };
 	bool isRight = dotproduct(cross, up) > 0 ? true : false;
 
-	rotSpeed = 200.f * 0.333 * speed;
+	rotSpeed = 180.f * 0.333 * speed;
 	if (!isRight) rotSpeed *= -1;
 
 	sim->rotAngle += rotSpeed;

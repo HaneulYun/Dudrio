@@ -104,7 +104,7 @@ void IOCPServer::worker_thread_loop()
 		int user_id = static_cast<int>(key);
 
 		g_clients_lock.lock();
-		if (g_clients.count(user_id) == 0)
+		if (g_clients.count(user_id) == 0 && (exover->op == OP_RECV || exover->op == OP_SEND))
 		{
 			cout << "저한테 왜그러세요" << user_id << endl;
 			g_clients_lock.unlock();

@@ -53,8 +53,6 @@ public:
 		m_info.m_xPos = x;
 		m_info.m_zPos = z;
 		m_info.m_angle = angle;
-
-		update_terrain_node(true);
 	}
 
 	virtual ~Building() { update_terrain_node(false); }

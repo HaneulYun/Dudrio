@@ -122,6 +122,7 @@ void Contents::process_packet(int user_id, char* buf)
 			terrain_data->size = Vector3D(terrain_data->terrain_size, 255, terrain_data->terrain_size);
 			terrain_data->Load();
 			terrain_data->makeExtraData();
+			PathFinder::Instance()->SetTerrainData(terrain_data);
 
 			update();
 			enter_game(user_id, packet->name);
@@ -434,12 +435,16 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	else
 		g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
 	g_buildings[b_sectnum.second][b_sectnum.first][b]->m_collider = collider_info[b_type][b_name];
+	g_buildings[b_sectnum.second][b_sectnum.first][b]->update_terrain_node(true);
+
 	g_buildings_lock.unlock();
 
 	if (b_type == House) {
 		g_sims_lock.lock();
 		g_sims[sim_index] = new Sim(sim_index, xpos, zpos);
 		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
+		g_sims[sim_index]->stateMachine.PushState(IdleState::Instance());
+		g_sims[sim_index]->stateMachine.GetCurrentState()->Enter(g_sims[sim_index]);
 		g_sims[sim_index]->insert_client_in_sector();
 		cout << "Sim " << sim_index << " is created" << endl;
 		iocp.send_enter_sim_packet(contents.host_id, sim_index);
@@ -521,13 +526,13 @@ void Contents::update()
 void Contents::update_sim()
 {
 	lock_guard<mutex> lock_guard(g_sims_lock);
-	if (tmp_sleep_time > 30.f) {
-		for (auto& sims : g_sims) {
-			timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
-			timer.add_event(ev);
-		}
-		tmp_sleep_time -= 30.f;
-	}
+	//if (tmp_sleep_time > 30000.f) {
+	//	for (auto& sims : g_sims) {
+	//		timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
+	//		timer.add_event(ev);
+	//	}
+	//	tmp_sleep_time -= 30000.f;
+	//}
 
 	for (auto& landmark : g_villages){
 		if (landmark->autoDevelopment && !landmark->simList.empty()) {

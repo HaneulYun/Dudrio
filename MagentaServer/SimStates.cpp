@@ -129,11 +129,12 @@ void MoveState::Execute(Sim* sim)
 	Vector2D distanceV{ sim->pos.x - sim->path.front().x, sim->pos.z - sim->path.front().z };
 	float distance = sqrt(pow(distanceV.x, 2) + pow(distanceV.z, 2));
 	
-	if (distance < 0.1f)
+	if (distance < 0.35f)
 	{
 		sim->path.pop_front();
 	}
-	else
+
+	if(!sim->path.empty())
 		PathFinder::Instance()->MoveToDestination(sim->path.front(), sim, 1.0f);
 };
 

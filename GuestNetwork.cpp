@@ -45,7 +45,6 @@ void GuestNetwork::ProcessPacket(char* ptr)
 			BuildingBuilder::buildingBuilder->terrainNodeData = terrainNodeData;
 		}
 
-		//myCharacter->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 		myc->heightmap = &terrainData->terrainData;
 		simsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
@@ -69,7 +68,6 @@ void GuestNetwork::ProcessPacket(char* ptr)
 
 		if (id != myId && o_type == O_GUEST){
 			otherCharacters[id] = gameObject->scene->Duplicate(simsPrefab);
-			//otherCharacters[id]->transform->Rotate(Vector3{ 0,1,0 }, my_packet->rotAngle);
 			auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
 			strcpy_s(oc->name, my_packet->name);
 			oc->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
@@ -114,7 +112,6 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 
 		sims[id] = gameObject->scene->Duplicate(simsPrefab);
-		//sims[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
 		auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
 		p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 	}

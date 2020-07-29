@@ -51,7 +51,6 @@ void HostNetwork::ProcessPacket(char* ptr)
 
 		if (id != myId) {
 			players[id] = gameObject->scene->Duplicate(simsPrefab);
-			//players[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
 			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
 			p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 		}
@@ -92,7 +91,6 @@ void HostNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 
 		sims[id] = gameObject->scene->Duplicate(simsPrefab);
-		//sims[id]->transform->Rotate(Vector3{ 0.0f, 1.0f, 0.0f }, my_packet->rotAngle);
 		auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
 		p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 	}
@@ -104,8 +102,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 
 		if (0 != sims.count(id)) {
 			auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
-			//p->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, my_packet->rotAngle);
-			p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+			p->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, my_packet->rotAngle);
 		}
 	}
 	break;

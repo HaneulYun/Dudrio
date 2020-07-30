@@ -2,6 +2,7 @@
 enum EventType {
 	GAME_Update,
 	GAME_Reset,
+	GAME_Time, 
 	SIM_Move,
 	SIM_Sleep,
 	SIM_WakeUp,

@@ -134,6 +134,12 @@ void HostNetwork::ProcessPacket(char* ptr)
 		break;
 	case S2C_DESTRUCT_ALL:
 		break;
+	case S2C_GAME_TIME:
+	{
+		sc_packet_game_time* my_packet = reinterpret_cast<sc_packet_game_time*>(ptr);
+		GameWorld::gameWorld->gameTime = my_packet->game_time;
+	}
+		break;
 	case S2C_CHAT:
 		break;
 	default:

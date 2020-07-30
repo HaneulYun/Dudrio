@@ -170,6 +170,12 @@ void GuestNetwork::ProcessPacket(char* ptr)
 
 	}
 	break;
+	case S2C_GAME_TIME:
+	{
+		sc_packet_game_time* my_packet = reinterpret_cast<sc_packet_game_time*>(ptr);
+		GuestGameWorld::gameWorld->gameTime = my_packet->game_time;
+	}
+	break; 
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
@@ -274,6 +280,7 @@ void GuestNetwork::Logout()
 	pressButton = false;
 	isConnect = false;
 	tryConnect = false;
+	gameTime->SetActive(false);
 
 	closesocket(serverSocket);
 

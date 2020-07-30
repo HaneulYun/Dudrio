@@ -31,6 +31,7 @@ constexpr int MAX_USER = 10000;
 #define S2C_SIM_ENTER		10
 #define S2C_SIM_LEAVE		11
 #define S2C_SIM_MOVE		12
+#define S2C_GAME_TIME		13
 
 #pragma pack(push ,1)
 
@@ -55,6 +56,12 @@ struct sc_packet_login_ok {
 struct sc_packet_login_fail {
 	unsigned char size;
 	char type;
+};
+
+struct sc_packet_game_time {
+	unsigned char size;
+	char type;
+	float game_time;
 };
 
 struct sc_packet_chat {

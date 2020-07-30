@@ -135,6 +135,17 @@ void IOCPServer::worker_thread_loop()
 			delete exover;
 		}
 			break;
+		case GAME_TIME:
+		{
+			g_clients_lock.lock();
+			for (auto cl : g_clients) {
+				if (ST_ACTIVE == cl.second->m_status)
+					send_game_time_packet(cl.second->m_id);
+			}
+			g_clients_lock.unlock();
+			delete exover;
+		}
+		break;
 		case SIM_BUILD: 
 		{
 			g_sims_lock.lock();
@@ -483,6 +494,16 @@ void IOCPServer::send_destruct_all_packet(int user_id)
 	sc_packet_destruct_all p;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT_ALL;
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_game_time_packet(int user_id)
+{
+	sc_packet_game_time p;
+	p.size = sizeof(p);
+	p.type = S2C_GAME_TIME;
+	p.game_time = contents.ingame_time;
 
 	send_packet(user_id, &p);
 }

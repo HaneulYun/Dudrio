@@ -42,4 +42,6 @@ public:
 	void buildInGameWorld(GameObject* building, int type, int index);
 	void deleteInGameWorld(GameObject* building, int type, int index);
 	void calculateSunInfo();
+
+	std::wstring convertTimeToText();
 };

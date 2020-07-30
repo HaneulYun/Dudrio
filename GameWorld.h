@@ -53,4 +53,6 @@ public:
 	int eraseSim(GameObject* landmark, GameObject* house);
 
 	void calculateSunInfo();
+
+	std::wstring convertTimeToText();
 };

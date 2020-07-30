@@ -14,6 +14,7 @@ class GuestNetwork : public MonoBehavior<GuestNetwork>
 private:
 	InputField* inputField{ nullptr };
 	GameObject* inputIpGuide{ nullptr };
+	GameObject* gameTime{ nullptr };
 
 public:
 	Text* connectButtonText{ nullptr };
@@ -96,6 +97,20 @@ public:
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
 		}
 
+		gameTime = Scene::scene->CreateUI();
+		{
+			auto rt = gameTime->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0, 1);
+			rt->setPosAndSize(200, -50, 150, -30);
+
+			Text* text = gameTime->AddComponent<Text>();
+			text->text = GuestGameWorld::gameWorld->convertTimeToText();
+			text->fontSize = 30;
+			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		}
+		gameTime->SetActive(false);
 		inputField->gameObject->SetActive(false);
 		inputIpGuide->SetActive(false);
 	}
@@ -175,13 +190,17 @@ public:
 				connectButtonText->text = L"Logout";
 				tryConnect = false;
 				isConnect = true;
+				gameTime->SetActive(true);
 				unsigned long on = true;
 				int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
 				Login();
 			}
 		}
-		if(isConnect)
+		if (isConnect)
+		{
+			gameTime->GetComponent<Text>()->text = GuestGameWorld::gameWorld->convertTimeToText();
 			Receiver();
+		}
 	}
 
 	void PressButton()

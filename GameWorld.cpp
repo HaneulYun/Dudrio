@@ -154,3 +154,15 @@ void GameWorld::calculateSunInfo()
 
 	sun->transform->Rotate({ 0,1,0 }, sunRotAngle);
 }
+
+std::wstring GameWorld::convertTimeToText()
+{
+	int hour;
+	int minute;
+
+	hour = std::floor(gameTime / 37.5f);
+	minute = std::floor((gameTime - (hour * 37.5f)) / 0.625f);
+
+	std::wstring text = to_wstring(hour) + L":" + to_wstring(minute);
+	return text;
+}

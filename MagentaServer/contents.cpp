@@ -19,6 +19,11 @@ void Contents::init_contents()
 	tick_count = 0.f;
 	ingame_time = 0.f;
 
+	sleep_flag = false;
+	wakeup_flag = false;
+	for (int i = 0; i < 4; ++i)
+		send_packet_flag[i] = false;
+
 	init_sector();
 	init_buildings();
 	init_sims();
@@ -532,7 +537,35 @@ void Contents::update()
 		ingame_time -= max_oneday;
 		wakeup_flag = false;
 		sleep_flag = false;
+		for (int i = 0; i < 4; ++i)
+			send_packet_flag[i] = false;
+
+		send_packet_flag[0] = true;
+		timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+		timer.add_event(ev);
 	}
+	else if (ingame_time > night_start_time) {
+		if (!send_packet_flag[3]) {
+			send_packet_flag[3] = true;
+			timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+			timer.add_event(ev);
+		}
+	}
+	else if (ingame_time > day_start_time) {
+		if (!send_packet_flag[2]) {
+			send_packet_flag[2] = true;
+			timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+			timer.add_event(ev);
+		}
+	}
+	else if (ingame_time > dawn_start_time) {
+		if (!send_packet_flag[1]) {
+			send_packet_flag[1] = true;
+			timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+			timer.add_event(ev);
+		}
+	}
+
 
 	update_sim();
 

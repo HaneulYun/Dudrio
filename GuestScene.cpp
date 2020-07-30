@@ -86,6 +86,17 @@ void GuestScene::BuildObjects()
 		behavior->anim = anim;
 	}
 
+	auto object = CreateUI();
+	{
+		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
+		buildingBuilder->serializeBuildings();
+		//buildingBuilder->terrain = terrainData;
+		//buildingBuilder->terrainNodeData = terrainNodeData;
+
+		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
+		gameWorld->sun = directionalLight;
+	}
+
 	auto network = CreateEmpty();
 	GuestNetwork* guestNetwork = network->AddComponent<GuestNetwork>();
 	{
@@ -110,17 +121,6 @@ void GuestScene::BuildObjects()
 	//	BuildManager* bm = manager->AddComponent<BuildManager>();
 	//	BuildManager::buildManager = bm;
 	//}
-
-	auto object = CreateUI();
-	{
-		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
-		buildingBuilder->serializeBuildings();
-		//buildingBuilder->terrain = terrainData;
-		//buildingBuilder->terrainNodeData = terrainNodeData;
-
-		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
-		gameWorld->sun = directionalLight;
-	}
 
 	auto ServerButton = CreateImage();
 	{

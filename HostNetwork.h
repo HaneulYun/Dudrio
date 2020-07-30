@@ -14,6 +14,7 @@ class HostNetwork : public MonoBehavior<HostNetwork>
 private:
 	InputField* inputField{ nullptr };
 	GameObject* inputIpGuide{ nullptr };
+	GameObject* gameTime{ nullptr };
 
 public:
 	Text* connectButtonText{ nullptr };
@@ -97,12 +98,28 @@ public:
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
 		}
 
+		gameTime = Scene::scene->CreateUI();
+		{
+			auto rt = gameTime->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0, 1);
+			rt->setPosAndSize(200, -50, 150, -30);
+
+			Text* text = gameTime->AddComponent<Text>();
+			text->text = GameWorld::gameWorld->convertTimeToText();
+			text->fontSize = 30;
+			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		}
+		gameTime->SetActive(true);
+
 		inputField->gameObject->SetActive(false);
 		inputIpGuide->SetActive(false);
 	}
 
 	void Update()
 	{
+		gameTime->GetComponent<Text>()->text = GameWorld::gameWorld->convertTimeToText();
 		if (inputField->gameObject->active)
 		{
 			if (inputField->isFocused)

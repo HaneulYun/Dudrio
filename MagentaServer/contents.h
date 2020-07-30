@@ -23,6 +23,8 @@ private:
 
 	bool	sleep_flag = false;
 	bool	wakeup_flag = false;
+
+	bool	send_packet_flag[4]{ false };	// 0½Ã, »õº®, ³·, ¹ã
 public:
 	Contents();
 	~Contents();

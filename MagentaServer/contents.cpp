@@ -447,7 +447,10 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		g_sims_lock.lock();
 		g_sims[sim_index] = new Sim(sim_index, xpos, zpos);
 		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
-		g_sims[sim_index]->stateMachine.PushState(IdleState::Instance());
+		if(ingame_time < night_start_time && ingame_time > dawn_start_time)
+			g_sims[sim_index]->stateMachine.PushState(IdleState::Instance());
+		else
+			g_sims[sim_index]->stateMachine.PushState(SleepState::Instance());
 		g_sims[sim_index]->stateMachine.GetCurrentState()->Enter(g_sims[sim_index]);
 		g_sims[sim_index]->insert_client_in_sector();
 		cout << "Sim " << sim_index << " is created" << endl;
@@ -523,7 +526,7 @@ void Contents::update()
 {
 	tick_count = (GetTickCount64() - server_time) / second;
 	server_time = GetTickCount64();
-	ingame_time += tick_count;
+	ingame_time += tick_count * 8;
 
 	if (ingame_time >= max_oneday){
 		ingame_time -= max_oneday;
@@ -531,7 +534,7 @@ void Contents::update()
 		sleep_flag = false;
 	}
 
-	update_sim(tick_count);
+	update_sim();
 
 	if (host_id != -1) {
 		timer_event ev = { 0, GAME_Update, high_resolution_clock::now() + milliseconds(333), 0, NULL };

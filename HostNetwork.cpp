@@ -225,7 +225,7 @@ void HostNetwork::Login()
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
 	strcpy_s(name, l_packet.name);
-	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X1;
+	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X8;
 	l_packet.game_time = GameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;
 	l_packet.octaves = octaves;

@@ -15,6 +15,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
 		GuestGameWorld::gameWorld->gameTime = my_packet->game_time;
+		GuestGameWorld::gameWorld->timeSpeed = GuestGameWorld::gameWorld->TimeSpeed::X8;
 
 		// 지형 생성
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(my_packet->terrainSize, my_packet->terrainSize);

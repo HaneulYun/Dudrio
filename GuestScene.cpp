@@ -118,7 +118,8 @@ void GuestScene::BuildObjects()
 		//buildingBuilder->terrain = terrainData;
 		//buildingBuilder->terrainNodeData = terrainNodeData;
 
-		GuestGameWorld::gameWorld = object->AddComponent<GuestGameWorld>();
+		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
+		gameWorld->sun = directionalLight;
 	}
 
 	auto ServerButton = CreateImage();
@@ -143,7 +144,7 @@ void GuestScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"connect";
+			text->text = L"Connect";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 

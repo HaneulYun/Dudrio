@@ -6,12 +6,23 @@ public:
 	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Count, None = -1 };
 	vector<struct Collider> collider_info[BuildingType::Count];
 
+
 	int		host_id;
 	int		sim_index;
 	float	ingame_time;
-	float	tmp_sleep_time;
 	float	tick_count;
 
+private:
+	float	server_time;
+
+	float	second = 1000.f;
+	float	max_oneday = 60 * 15;	// 하루
+	float	dawn_start_time = 6 * 37.5f;	// 새벽 시작 시간
+	float	day_start_time = 10 * 37.5f;	// 낮의 시작 시간
+	float	night_start_time = 21 * 37.5f;	// 밤의 시작 시간
+
+	bool	sleep_flag = false;
+	bool	wakeup_flag = false;
 public:
 	Contents();
 	~Contents();

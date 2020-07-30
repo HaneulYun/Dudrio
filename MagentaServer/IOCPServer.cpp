@@ -137,31 +137,54 @@ void IOCPServer::worker_thread_loop()
 			break;
 		case SIM_BUILD: 
 		{
-			g_sims[exover->target_id]->buildInfo = *static_cast<BuildMessageInfo*>(exover->extra_info);
-			SIM_Message msg{ SIM_Build, exover->extra_info };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
-			
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				g_sims[exover->target_id]->buildInfo = *static_cast<BuildMessageInfo*>(exover->extra_info);
+				SIM_Message msg{ SIM_Build, exover->extra_info };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
 		case SIM_MOVE:
 		{
-			SIM_Message msg{ SIM_Move, NULL };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				SIM_Message msg{ SIM_Move, NULL };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
 		case SIM_SLEEP:
 		{
-			SIM_Message msg{ SIM_Sleep, NULL };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				SIM_Message msg{ SIM_Sleep, NULL };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
 		case SIM_WAKEUP:
 		{
-			SIM_Message msg{ SIM_WakeUp, NULL };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				SIM_Message msg{ SIM_WakeUp, NULL };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
@@ -296,7 +319,8 @@ void IOCPServer::send_login_ok_packet(int user_id)
 	p.xVel = g_clients[user_id]->m_xVel;
 	p.zVel = g_clients[user_id]->m_zVel;
 	p.rotAngle = g_clients[user_id]->m_rotAngle;
-	
+	p.game_time = contents.ingame_time;
+
 	if (terrain_data != nullptr) {
 		p.frequency = terrain_data->frequency;
 		p.terrainSize = terrain_data->terrain_size;
@@ -304,6 +328,7 @@ void IOCPServer::send_login_ok_packet(int user_id)
 		p.seed = terrain_data->seed;
 	}
 
+	cout << "Ingame time: " << p.game_time << endl;
 	send_packet(user_id, &p);
 }
 

@@ -11,17 +11,19 @@ void GameWorld::Start(/*초기화 코드를 작성하세요.*/)
 void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	gameTimeUpdate();
-	if(!HostNetwork::network->isConnect)
+
+	if (!HostNetwork::network->isConnect){
 		aiUpdate();
 
-	if(Input::GetKeyDown(KeyCode::Alpha1))
-		timeSpeed = X1;
-	else if (Input::GetKeyDown(KeyCode::Alpha2))
-		timeSpeed = X2;
-	else if (Input::GetKeyDown(KeyCode::Alpha4))
-		timeSpeed = X4;
-	else if (Input::GetKeyDown(KeyCode::Alpha8))
-		timeSpeed = X8;
+		if (Input::GetKeyDown(KeyCode::Alpha1))
+			timeSpeed = X1;
+		else if (Input::GetKeyDown(KeyCode::Alpha2))
+			timeSpeed = X2;
+		else if (Input::GetKeyDown(KeyCode::Alpha4))
+			timeSpeed = X4;
+		else if (Input::GetKeyDown(KeyCode::Alpha8))
+			timeSpeed = X8;
+	}
 
 
 	//for (auto landmark : buildingList)
@@ -57,36 +59,8 @@ void GameWorld::gameTimeUpdate()
 		gameTime -= timeOfDay;
 	}
 
-	float sunSpeed;
-
-	if (gameTime < 6 * 37.5f)
-	{
-		sun->GetComponent<Light>()->Strength = { 0,0,0 };
-		sunSpeed = 0.8f;
-	}
-	else if (gameTime < 10 * 37.5f)
-	{
-		Light* light = sun->GetComponent<Light>();
-		if (light->Strength.x <= 0.9f)
-			light->Strength += 0.008f * gameDeltaTime;
-		sunSpeed = 0.26666667f;
-	}
-	else if (gameTime < 21 * 37.5f)
-	{
-		sun->GetComponent<Light>()->Strength = { 0.9,0.9,0.9 };
-		sunSpeed = 0.26666667f;
-	}
-	else
-	{
-		Light* light = sun->GetComponent<Light>();
-		if (light->Strength.x > 0.0f)
-			light->Strength -= 0.008f * gameDeltaTime;
-		sunSpeed = 0.26666667f;
-	}
-	sun->transform->Rotate({ 0, 1, 0 }, sunSpeed * gameDeltaTime);
-	//sun->transform->Rotate({ 1, 0, 0 }, sunSpeed* gameDeltaTime);
+	calculateSunInfo();
 }
-
 
 void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
@@ -145,4 +119,38 @@ int GameWorld::eraseSim(GameObject* landmark, GameObject* house)
 	simList.erase(id);
 
 	return id;
+}
+
+void GameWorld::calculateSunInfo()
+{
+	sun->transform->forward = { 1,0,0 };
+	Light* light = sun->GetComponent<Light>();
+	light->Strength = { 0,0,0 };
+
+	float sunRotAngle = 0.0f;
+	if (gameTime < 6 * 37.5f) {
+		sunRotAngle += 0.8 * gameTime;
+	}
+	else if (gameTime < 10 * 37.5f) {
+		sunRotAngle += 0.8 * 6 * 37.5f;
+		sunRotAngle += (gameTime - (6 * 37.5f)) * 0.26666667f;
+		light->Strength += (gameTime - (6 * 37.5f)) * 0.008f;
+		if (light->Strength.x > 0.9f)
+			light->Strength = { 0.9, 0.9, 0.9 };
+	}
+	else if (gameTime < 21 * 37.5f) {
+		sunRotAngle += 0.8 * 6 * 37.5f;
+		sunRotAngle += (gameTime - (6 * 37.5f)) * 0.26666667f;
+		light->Strength = { 0.9, 0.9, 0.9 };
+	}
+	else {
+		sunRotAngle += 0.8 * 6 * 37.5f;
+		sunRotAngle += (gameTime - (6 * 37.5f)) * 0.26666667f;
+		light->Strength = { 0.9, 0.9, 0.9 };
+		light->Strength -= (gameTime - (21 * 37.5f)) * 0.008f;
+		if (light->Strength.x < 0.0f)
+			light->Strength = { 0,0,0 };
+	}
+
+	sun->transform->Rotate({ 0,1,0 }, sunRotAngle);
 }

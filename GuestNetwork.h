@@ -172,6 +172,7 @@ public:
 			}
 			else if (retval == 0)
 			{
+				connectButtonText->text = L"Logout";
 				tryConnect = false;
 				isConnect = true;
 				unsigned long on = true;

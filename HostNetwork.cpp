@@ -13,12 +13,15 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
+		GameWorld::gameWorld->gameTime = my_packet->game_time;
 
+		// 심 초기화
 		for (auto& sims : GameWorld::gameWorld->simList){
 			Scene::scene->PushDelete(sims.second);
 		}
 		GameWorld::gameWorld->simList.clear();
 
+		// 빌딩 정보 전송
 		for (auto& p : GameWorld::gameWorld->buildingList)
 			for(auto& q: p.second)
 				for (auto& r : q.second) {
@@ -222,6 +225,8 @@ void HostNetwork::Login()
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
 	strcpy_s(name, l_packet.name);
+	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X1;
+	l_packet.game_time = GameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;
 	l_packet.octaves = octaves;
 	l_packet.seed = seed;
@@ -242,6 +247,7 @@ void HostNetwork::Logout()
 	isConnect = false;
 	tryConnect = false;
 
+	connectButtonText->text = L"Open";
 	closesocket(serverSocket);
 
 	for (auto& p : players)

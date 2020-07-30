@@ -18,7 +18,6 @@ void Contents::init_contents()
 	host_id = -1;
 	tick_count = 0.f;
 	ingame_time = 0.f;
-	tmp_sleep_time = 0.f;
 
 	init_sector();
 	init_buildings();
@@ -125,7 +124,8 @@ void Contents::process_packet(int user_id, char* buf)
 			terrain_data->makeExtraData();
 			PathFinder::Instance()->SetTerrainData(terrain_data);
 
-			ingame_time = GetTickCount64();
+			server_time = GetTickCount64();
+			ingame_time = packet->game_time;
 			update();
 			enter_game(user_id, packet->name);
 		}
@@ -249,8 +249,9 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 		g_clients[user_id]->m_zVel = 0.0f;
 	}
 
-	g_clients[user_id]->m_xPos += g_clients[user_id]->m_xVel * (GetTickCount64() - g_clients[user_id]->m_last_move_time) / 1000.f;
-	g_clients[user_id]->m_zPos += g_clients[user_id]->m_zVel * (GetTickCount64() - g_clients[user_id]->m_last_move_time) / 1000.f;
+	double tick = (GetTickCount64() - g_clients[user_id]->m_last_move_time) * 0.001f;
+	g_clients[user_id]->m_xPos += g_clients[user_id]->m_xVel * tick;
+	g_clients[user_id]->m_zPos += g_clients[user_id]->m_zVel * tick;
 	g_clients[user_id]->m_last_move_time = GetTickCount64();
 
 	g_clients[user_id]->is_collide(prev_x, prev_z);
@@ -520,11 +521,17 @@ void Contents::destruct_all(int user_id)
 
 void Contents::update()
 {
-	tick_count = GetTickCount64() - ingame_time;
-	ingame_time = GetTickCount64();
-	tmp_sleep_time += tick_count;
+	tick_count = (GetTickCount64() - server_time) / second;
+	server_time = GetTickCount64();
+	ingame_time += tick_count;
 
-	update_sim();
+	if (ingame_time >= max_oneday){
+		ingame_time -= max_oneday;
+		wakeup_flag = false;
+		sleep_flag = false;
+	}
+
+	update_sim(tick_count);
 
 	if (host_id != -1) {
 		timer_event ev = { 0, GAME_Update, high_resolution_clock::now() + milliseconds(333), 0, NULL };
@@ -535,12 +542,20 @@ void Contents::update()
 void Contents::update_sim()
 {
 	lock_guard<mutex> lock_guard(g_sims_lock);
-	if (tmp_sleep_time > 30000.f) {
+	if (ingame_time > night_start_time && !sleep_flag) {
 		for (auto& sims : g_sims) {
 			timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
 			timer.add_event(ev);
 		}
-		tmp_sleep_time -= 30000.f;
+		sleep_flag = true;
+	}
+
+	if (ingame_time > dawn_start_time && !wakeup_flag) {
+		for (auto& sims : g_sims) {
+			timer_event ev = { sims.first, SIM_WakeUp, high_resolution_clock::now(), sims.first, NULL };
+			timer.add_event(ev);
+		}
+		wakeup_flag = true;
 	}
 
 	for (auto& landmark : g_villages){
@@ -550,7 +565,7 @@ void Contents::update_sim()
 				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % 30) - 15, landmark->m_info.m_zPos + (rand() % 30) - 15);
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % collider_info[info->buildingType].size();
-				landmark->delayTime = rand() % 10 + 10000.f;
+				landmark->delayTime = rand() % 10 + 10.f;
 
 				timer_event ev = { -1, SIM_Build,  high_resolution_clock::now(), rand() % landmark->simList.size(), info };
 				timer.add_event(ev);

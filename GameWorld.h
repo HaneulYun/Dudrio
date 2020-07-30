@@ -51,4 +51,6 @@ public:
 	int addSim(GameObject* landmark, GameObject* house);
 
 	int eraseSim(GameObject* landmark, GameObject* house);
+
+	void calculateSunInfo();
 };

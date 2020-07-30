@@ -14,7 +14,9 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
-		
+		GuestGameWorld::gameWorld->gameTime = my_packet->game_time;
+
+		// 지형 생성
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(my_packet->terrainSize, my_packet->terrainSize);
 		string fileName = terrainGenerator->createHeightMap(my_packet->frequency, my_packet->octaves, my_packet->seed, (char*)"square");
 		delete terrainGenerator;
@@ -45,6 +47,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 			BuildingBuilder::buildingBuilder->terrainNodeData = terrainNodeData;
 		}
 
+		// 내 캐릭터 정보 지정
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 		myc->heightmap = &terrainData->terrainData;
 		simsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
@@ -96,7 +99,9 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 		if (id == myId){
 			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
-			myc->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, 0);
+			auto mycPos = myCharacter->transform->position;
+			if (Vector3{ my_packet->xPos, 0, my_packet->zPos } != Vector3{ mycPos.x, 0, mycPos.z })
+				myc->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, 0);
 		}
 		else if (id != hostId) {
 			if (0 != otherCharacters.count(id)){
@@ -264,6 +269,8 @@ void GuestNetwork::Logout()
 
 	send_packet(&l_packet);
 
+	connectButtonText->text = L"Connect";
+	pressButton = false;
 	isConnect = false;
 	tryConnect = false;
 
@@ -272,8 +279,11 @@ void GuestNetwork::Logout()
 	//Builder::builder->DestroyAllBuilding();
 
 	hostId = -1;
+	for (auto& sim : sims)
+		Scene::scene->PushDelete(sim.second);
+	sims.clear();
+
 	for (auto& others : otherCharacters)
 		Scene::scene->PushDelete(others.second);
-
 	otherCharacters.clear();
 }

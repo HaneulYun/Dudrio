@@ -86,7 +86,7 @@ void HostScene::BuildObjects()
 
 
 	float TerrainSize = 1024;
-	float frequency = 5;
+	float frequency = 3;
 	int octaves = 3;
 	int seed = 1024;
 

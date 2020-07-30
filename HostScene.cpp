@@ -13,7 +13,7 @@ void HostScene::BuildObjects()
 	LoadMaterialAsset();
 	LoadMeshAsset();
 
-	//LoadPrefab();
+	LoadPrefab();
 
 	ASSET AddMesh("Cube", Mesh::CreateCube());
 

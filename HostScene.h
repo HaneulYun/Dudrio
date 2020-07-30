@@ -17,17 +17,18 @@ public:
 
 		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 
-		ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
-		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
+		//ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
+		//ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
+
 
 		/*AdvancedVillagePack*/
-		//ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
-		//ASSET AddTexture("house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
-		//ASSET AddTexture("material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
-		//ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
-		//ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
-		//ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
-		//ASSET AddTexture("TreeTrunks", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeTrunks_D.dds");
+		ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
+		ASSET AddTexture("house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
+		ASSET AddTexture("material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
+		ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
+		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
+		ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
+		ASSET AddTexture("TreeTrunks", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeTrunks_D.dds");
 
 
 		/*HandPaintedEnviroment*/
@@ -43,11 +44,11 @@ public:
 		//ASSET AddTexture("Hammer_anvil", L"Assets\\HandPaintedEnvironment\\Textures\\Hammer_anvil_texture.dds");
 		//ASSET AddTexture("Lampposts", L"Assets\\HandPaintedEnvironment\\Textures\\Lampposts_texture.dds");
 		//ASSET AddTexture("Large_house", L"Assets\\HandPaintedEnvironment\\Textures\\Large_house_texture.dds");
-		ASSET AddTexture("Log_stump_mushrooms", L"Assets\\HandPaintedEnvironment\\Textures\\Log_stump_mushrooms_texture.dds");
+		//ASSET AddTexture("Log_stump_mushrooms", L"Assets\\HandPaintedEnvironment\\Textures\\Log_stump_mushrooms_texture.dds");
 		//ASSET AddTexture("Logs", L"Assets\\HandPaintedEnvironment\\Textures\\Logs_texture.dds");
 		//ASSET AddTexture("Mill", L"Assets\\HandPaintedEnvironment\\Textures\\Mill_texture.dds");
 		//ASSET AddTexture("Mine", L"Assets\\HandPaintedEnvironment\\Textures\\Mine_texture.dds");
-		ASSET AddTexture("Pillars_arch", L"Assets\\HandPaintedEnvironment\\Textures\\Pillars_arch_texture.dds");
+		//ASSET AddTexture("Pillars_arch", L"Assets\\HandPaintedEnvironment\\Textures\\Pillars_arch_texture.dds");
 		//ASSET AddTexture("Pine_tree", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_texture.dds");
 		//ASSET AddTexture("Pine_tree_2", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_2_texture.dds");
 		//ASSET AddTexture("Plant", L"Assets\\HandPaintedEnvironment\\Textures\\Plant_texture.dds");
@@ -95,20 +96,110 @@ public:
 		//ASSET AddTexture("SE_Fence_01a_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Fence_01a_Diffuse.dds");
 		//ASSET AddTexture("SE_Fence_01b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Fence_01b_Diffuse.dds");
 		//ASSET AddTexture("SE_Flowers_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Flowers_Diffuse.dds");
-
 		//ASSET AddTexture("SE_Gate_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Gate_Diffuse.dds");
 		//ASSET AddTexture("SE_Gazebo_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Gazebo_Diffuse.dds");
-		//ASSET AddTexture("SE_Greenhouse_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Greenhouse_Diffuse.dds");
 		//ASSET AddTexture("SE_Grill_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Grill_Diffuse.dds");
 		//ASSET AddTexture("SE_HeartHouse_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_HeartHouse_Diffuse.dds");
 		//ASSET AddTexture("SE_Hedges_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Hedges_Diffuse.dds");
 		//ASSET AddTexture("SE_HotAirBaloon_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_HotAirBaloon_Diffuse.dds");
-
-		
+		//ASSET AddTexture("SE_House_01a_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_01a_Diffuse.dds");
+		//ASSET AddTexture("SE_House_01b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_01b_Diffuse.dds");
+		//ASSET AddTexture("SE_House_01c_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_01c_Diffuse.dds");
+		//ASSET AddTexture("SE_House_01d_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_01d_Diffuse.dds");
+		//ASSET AddTexture("SE_House_02a_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_02a_Diffuse.dds");
+		//ASSET AddTexture("SE_House_02b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_02b_Diffuse.dds");
+		//ASSET AddTexture("SE_House_02c_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_02c_Diffuse.dds");
+		//ASSET AddTexture("SE_House_02d_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_02d_Diffuse.dds");
+		//ASSET AddTexture("SE_House_03d_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_03d_Diffuse.dds");
+		//ASSET AddTexture("SE_House_03a_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_03a_Diffuse.dds");
+		//ASSET AddTexture("SE_House_03b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_03b_Diffuse.dds");
+		//ASSET AddTexture("SE_House_03c_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_03c_Diffuse.dds");
+		//ASSET AddTexture("SE_House_04a_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_04a_Diffuse.dds");
+		//ASSET AddTexture("SE_House_04b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_04b_Diffuse.dds");
+		//ASSET AddTexture("SE_House_05a_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_05a_Diffuse.dds");
+		//ASSET AddTexture("SE_House_05b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_House_05b_Diffuse.dds");
+		//ASSET AddTexture("SE_Lamps_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Lamps_Diffuse.dds");
+		//ASSET AddTexture("SE_Maypole_01_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Maypole_01_Diffuse.dds");
+		//ASSET AddTexture("SE_Presents_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Presents_Diffuse.dds");
+		//ASSET AddTexture("SE_Pump_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Pump_Diffuse.dds");
+		//ASSET AddTexture("SE_Roses_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Roses_Diffuse.dds");
+		//ASSET AddTexture("SE_Seesaw_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Seesaw_Diffuse.dds");
+		//ASSET AddTexture("SE_Sign_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Sign_Diffuse.dds");
+		//ASSET AddTexture("SE_Slide_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Slide_Diffuse.dds");
+		//ASSET AddTexture("SE_Stones_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Stones_Diffuse.dds");
+		//ASSET AddTexture("SE_Swing_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Swing_Diffuse.dds");
+		//ASSET AddTexture("SE_Tables_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Tables_Diffuse.dds");
+		//ASSET AddTexture("SE_Theater_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Theater_Diffuse.dds");
+		//ASSET AddTexture("SE_TownHall_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_TownHall_Diffuse.dds");
+		//ASSET AddTexture("SE_Trampoline_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Trampoline_Diffuse.dds");
+		//ASSET AddTexture("SE_Willow_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Willow_Diffuse.dds");
 	}
 
 	void LoadMaterialAsset()
 	{
+		ASSET AddMaterial("none", ASSET TEXTURE("none"));
+		ASSET AddMaterial("gray", ASSET TEXTURE("none"), nullptr, { 0.5, 0.5, 0.5, 1.0 });
+		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), nullptr, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
+		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+
+		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+
+		//ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
+		//ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
+
+
+		/*AdvancedVillagePack*/
+		ASSET AddMaterial("house01", ASSET TEXTURE("house01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("house02", ASSET TEXTURE("house02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("material_01", ASSET TEXTURE("material_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("material_02", ASSET TEXTURE("material_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("material_03", ASSET TEXTURE("material_03"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
+		ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
+
+
+		/*HandPaintedEnviroment*/
+		//ASSET AddMaterial("Baker_house", ASSET TEXTURE("Baker_house"));
+		//ASSET AddMaterial("Barrel", ASSET TEXTURE("Barrel"));
+		//ASSET AddMaterial("Boxes", ASSET TEXTURE("Boxes"));
+		//ASSET AddMaterial("Cauldron", ASSET TEXTURE("Cauldron"));
+		//ASSET AddMaterial("Chest", ASSET TEXTURE("Chest"));
+		//ASSET AddMaterial("Crystals", ASSET TEXTURE("Crystals"));
+		//ASSET AddMaterial("Fence", ASSET TEXTURE("Fence"));
+		//ASSET AddMaterial("Fern", ASSET TEXTURE("Fern"));
+		//ASSET AddMaterial("Forge", ASSET TEXTURE("Forge"));
+		//ASSET AddMaterial("Hammer_anvil", ASSET TEXTURE("Hammer_anvil"));
+		//ASSET AddMaterial("Lampposts", ASSET TEXTURE("Lampposts"));
+		//ASSET AddMaterial("Large_house", ASSET TEXTURE("Large_house"));
+		//ASSET AddMaterial("Log_stump_mushrooms", ASSET TEXTURE("Log_stump_mushrooms"));
+		//ASSET AddMaterial("Logs", ASSET TEXTURE("Logs"));
+		//ASSET AddMaterial("Mill", ASSET TEXTURE("Mill"));
+		//ASSET AddMaterial("Mine", ASSET TEXTURE("Mine"));
+		//ASSET AddMaterial("Pillars_arch", ASSET TEXTURE("Pillars_arch"));
+		//ASSET AddMaterial("Pine_tree", ASSET TEXTURE("Pine_tree"));
+		//ASSET AddMaterial("Pine_tree_2", ASSET TEXTURE("Pine_tree_2"));
+		//ASSET AddMaterial("Plant", ASSET TEXTURE("Plant"));
+		//ASSET AddMaterial("Plants", ASSET TEXTURE("Plants"));
+		//ASSET AddMaterial("Rocks_1_2", ASSET TEXTURE("Rocks_1_2"));
+		//ASSET AddMaterial("Rocks_3_4", ASSET TEXTURE("Rocks_3_4"));
+		//ASSET AddMaterial("Ruined_tower", ASSET TEXTURE("Ruined_tower"));
+		//ASSET AddMaterial("Ruined_walls", ASSET TEXTURE("Ruined_walls"));
+		//ASSET AddMaterial("Small_house", ASSET TEXTURE("Small_house"));
+		//ASSET AddMaterial("Stone_fence", ASSET TEXTURE("Stone_fence"));
+		//ASSET AddMaterial("Stone_tiles", ASSET TEXTURE("Stone_tiles"));
+		//ASSET AddMaterial("Street_light", ASSET TEXTURE("Street_light"));
+		//ASSET AddMaterial("Tavern", ASSET TEXTURE("Tavern"));
+		//ASSET AddMaterial("Town_Hall", ASSET TEXTURE("Town_Hall"));
+		//ASSET AddMaterial("Tree_1_1", ASSET TEXTURE("Tree_1_1"));
+		//ASSET AddMaterial("Tree_1_2", ASSET TEXTURE("Tree_1_2"));
+		//ASSET AddMaterial("Tree_2_1", ASSET TEXTURE("Tree_2_1"));
+		//ASSET AddMaterial("Tree_2_2", ASSET TEXTURE("Tree_2_2"));
+		//ASSET AddMaterial("Trolley", ASSET TEXTURE("Trolley"));
+		//ASSET AddMaterial("Well", ASSET TEXTURE("Well"));
+		//ASSET AddMaterial("Witch_house", ASSET TEXTURE("Witch_house"));
+		//ASSET AddMaterial("Woodmill", ASSET TEXTURE("Woodmill"));
+
+
 		/*SpringEnvironment*/
 		//ASSET AddMaterial("SE_Baloons", ASSET TEXTURE("SE_Baloons_Diffuse"));
 		//ASSET AddMaterial("SE_Bench_01a", ASSET TEXTURE("SE_Bench_01a_Diffuse"));
@@ -132,77 +223,41 @@ public:
 		//ASSET AddMaterial("SE_Flowers", ASSET TEXTURE("SE_Flowers_Diffuse"));
 		//ASSET AddMaterial("SE_Gate", ASSET TEXTURE("SE_Gate_Diffuse"));
 		//ASSET AddMaterial("SE_Gazebo", ASSET TEXTURE("SE_Gazebo_Diffuse"));
-		//ASSET AddMaterial("SE_Greenhouse", ASSET TEXTURE("SE_Greenhouse_Diffuse"));
 		//ASSET AddMaterial("SE_Grill", ASSET TEXTURE("SE_Grill_Diffuse"));
 		//ASSET AddMaterial("SE_HeartHouse", ASSET TEXTURE("SE_HeartHouse_Diffuse"));
 		//ASSET AddMaterial("SE_Hedges", ASSET TEXTURE("SE_Hedges_Diffuse"));
 		//ASSET AddMaterial("SE_HotAirBaloon", ASSET TEXTURE("SE_HotAirBaloon_Diffuse"));
-
-
-
-		//ASSET AddMaterial("none", ASSET TEXTURE("none"));
-		//ASSET AddMaterial("yellow", ASSET TEXTURE("none"), -1, { 0.8f, 0.7f, 0.1f, 1.0f });
-		ASSET AddMaterial("none", ASSET TEXTURE("none"));
-		ASSET AddMaterial("gray", ASSET TEXTURE("none"), nullptr, { 0.5, 0.5, 0.5, 1.0 });
-		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), nullptr, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
-		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
-
-		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-
-		ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
-		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
-
-
-		/*AdvancedVillagePack*/
-		//ASSET AddMaterial("house01", ASSET TEXTURE("house01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		//ASSET AddMaterial("house02", ASSET TEXTURE("house02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		//ASSET AddMaterial("material_01", ASSET TEXTURE("material_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		//ASSET AddMaterial("material_02", ASSET TEXTURE("material_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		//ASSET AddMaterial("material_03", ASSET TEXTURE("material_03"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		//ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
-		//ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
-
-
-		/*HandPaintedEnviroment*/
-		//ASSET AddMaterial("Baker_house", ASSET TEXTURE("Baker_house"));
-		//ASSET AddMaterial("Barrel", ASSET TEXTURE("Barrel"));
-		//ASSET AddMaterial("Boxes", ASSET TEXTURE("Boxes"));
-		//ASSET AddMaterial("Cauldron", ASSET TEXTURE("Cauldron"));
-		//ASSET AddMaterial("Chest", ASSET TEXTURE("Chest"));
-		//ASSET AddMaterial("Crystals", ASSET TEXTURE("Crystals"));
-		//ASSET AddMaterial("Fence", ASSET TEXTURE("Fence"));
-		//ASSET AddMaterial("Fern", ASSET TEXTURE("Fern"));
-		//ASSET AddMaterial("Forge", ASSET TEXTURE("Forge"));
-		//ASSET AddMaterial("Hammer_anvil", ASSET TEXTURE("Hammer_anvil"));
-		//ASSET AddMaterial("Lampposts", ASSET TEXTURE("Lampposts"));
-		//ASSET AddMaterial("Large_house", ASSET TEXTURE("Large_house"));
-		ASSET AddMaterial("Log_stump_mushrooms", ASSET TEXTURE("Log_stump_mushrooms"));
-		//ASSET AddMaterial("Logs", ASSET TEXTURE("Logs"));
-		//ASSET AddMaterial("Mill", ASSET TEXTURE("Mill"));
-		//ASSET AddMaterial("Mine", ASSET TEXTURE("Mine"));
-		ASSET AddMaterial("Pillars_arch", ASSET TEXTURE("Pillars_arch"));
-		//ASSET AddMaterial("Pine_tree", ASSET TEXTURE("Pine_tree"));
-		//ASSET AddMaterial("Pine_tree_2", ASSET TEXTURE("Pine_tree_2"));
-		//ASSET AddMaterial("Plant", ASSET TEXTURE("Plant"));
-		//ASSET AddMaterial("Plants", ASSET TEXTURE("Plants"));
-		//ASSET AddMaterial("Rocks_1_2", ASSET TEXTURE("Rocks_1_2"));
-		//ASSET AddMaterial("Rocks_3_4", ASSET TEXTURE("Rocks_3_4"));
-		//ASSET AddMaterial("Ruined_tower", ASSET TEXTURE("Ruined_tower"));
-		//ASSET AddMaterial("Ruined_walls", ASSET TEXTURE("Ruined_walls"));
-		//ASSET AddMaterial("Small_house", ASSET TEXTURE("Small_house"));
-		//ASSET AddMaterial("Stone_fence", ASSET TEXTURE("Stone_fence"));
-		//ASSET AddMaterial("Stone_tiles", ASSET TEXTURE("Stone_tiles"));
-		//ASSET AddMaterial("Street_light", ASSET TEXTURE("Street_light"));
-		//ASSET AddMaterial("Tavern", ASSET TEXTURE("Tavern"));
-		//ASSET AddMaterial("Town_Hall", ASSET TEXTURE("Town_Hall"));
-		//ASSET AddMaterial("Tree_1_1", ASSET TEXTURE("Tree_1_1"));
-		//ASSET AddMaterial("Tree_1_2", ASSET TEXTURE("Tree_1_2"));
-		//ASSET AddMaterial("Tree_2_1", ASSET TEXTURE("Tree_2_1"));
-		//ASSET AddMaterial("Tree_2_2", ASSET TEXTURE("Tree_2_2"));
-		//ASSET AddMaterial("Trolley", ASSET TEXTURE("Trolley"));
-		//ASSET AddMaterial("Well", ASSET TEXTURE("Well"));
-		//ASSET AddMaterial("Witch_house", ASSET TEXTURE("Witch_house"));
-		//ASSET AddMaterial("Woodmill", ASSET TEXTURE("Woodmill"));
+		//ASSET AddMaterial("SE_House_01a", ASSET TEXTURE("SE_House_01a_Diffuse"));
+		//ASSET AddMaterial("SE_House_01b", ASSET TEXTURE("SE_House_01b_Diffuse"));
+		//ASSET AddMaterial("SE_House_01c", ASSET TEXTURE("SE_House_01c_Diffuse"));
+		//ASSET AddMaterial("SE_House_01d", ASSET TEXTURE("SE_House_01d_Diffuse"));
+		//ASSET AddMaterial("SE_House_02a", ASSET TEXTURE("SE_House_02a_Diffuse"));
+		//ASSET AddMaterial("SE_House_02b", ASSET TEXTURE("SE_House_02b_Diffuse"));
+		//ASSET AddMaterial("SE_House_02c", ASSET TEXTURE("SE_House_02c_Diffuse"));
+		//ASSET AddMaterial("SE_House_02d", ASSET TEXTURE("SE_House_02d_Diffuse"));
+		//ASSET AddMaterial("SE_House_03d", ASSET TEXTURE("SE_House_03d_Diffuse"));
+		//ASSET AddMaterial("SE_House_03a", ASSET TEXTURE("SE_House_03a_Diffuse"));
+		//ASSET AddMaterial("SE_House_03b", ASSET TEXTURE("SE_House_03b_Diffuse"));
+		//ASSET AddMaterial("SE_House_03c", ASSET TEXTURE("SE_House_03c_Diffuse"));
+		//ASSET AddMaterial("SE_House_04a", ASSET TEXTURE("SE_House_04a_Diffuse"));
+		//ASSET AddMaterial("SE_House_04b", ASSET TEXTURE("SE_House_04b_Diffuse"));
+		//ASSET AddMaterial("SE_House_05a", ASSET TEXTURE("SE_House_05a_Diffuse"));
+		//ASSET AddMaterial("SE_House_05b", ASSET TEXTURE("SE_House_05b_Diffuse"));
+		//ASSET AddMaterial("SE_Lamps", ASSET TEXTURE("SE_Lamps_Diffuse"));
+		//ASSET AddMaterial("SE_Maypole_01", ASSET TEXTURE("SE_Maypole_01_Diffuse"));
+		//ASSET AddMaterial("SE_Presents", ASSET TEXTURE("SE_Presents_Diffuse"));
+		//ASSET AddMaterial("SE_Pump", ASSET TEXTURE("SE_Pump_Diffuse"));
+		//ASSET AddMaterial("SE_Roses", ASSET TEXTURE("SE_Roses_Diffuse"));
+		//ASSET AddMaterial("SE_Seesaw", ASSET TEXTURE("SE_Seesaw_Diffuse"));
+		//ASSET AddMaterial("SE_Sign", ASSET TEXTURE("SE_Sign_Diffuse"));
+		//ASSET AddMaterial("SE_Slide", ASSET TEXTURE("SE_Slide_Diffuse"));
+		//ASSET AddMaterial("SE_Stones", ASSET TEXTURE("SE_Stones_Diffuse"));
+		//ASSET AddMaterial("SE_Swing", ASSET TEXTURE("SE_Swing_Diffuse"));
+		//ASSET AddMaterial("SE_Tables", ASSET TEXTURE("SE_Tables_Diffuse"));
+		//ASSET AddMaterial("SE_Theater", ASSET TEXTURE("SE_Theater_Diffuse"));
+		//ASSET AddMaterial("SE_TownHall", ASSET TEXTURE("SE_TownHall_Diffuse"));
+		//ASSET AddMaterial("SE_Trampoline", ASSET TEXTURE("SE_Trampoline_Diffuse"));
+		//ASSET AddMaterial("SE_Willow", ASSET TEXTURE("SE_Willow_Diffuse"));
 	}
 
 	void LoadMeshAsset()
@@ -211,50 +266,50 @@ public:
 		//ASSET AddMesh("Sphere", Mesh::CreateSphere());
 
 		/*AdvancedVillagePack*/
-		//ASSET AddFbxForMesh("SM_Well", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well.FBX");
-		//ASSET AddFbxForMesh("SM_Well_Extra02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra02.FBX");
-		//ASSET AddFbxForMesh("SM_Well_Extra03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra03.FBX");
-		//ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
-		//ASSET AddFbxForMesh("SM_House_Var02_Extra", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02_Extra.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var02.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var03.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var04.FBX");
-		//ASSET AddFbxForMesh("SM_Tree_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var05.FBX");
-		//ASSET AddFbxForMesh("SM_Mushroom_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_Mushroom_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var02.FBX");
-		//ASSET AddFbxForMesh("SM_Mushroom_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var03.FBX");
-		//ASSET AddFbxForMesh("SM_Mushroom_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var04.FBX");
-		//ASSET AddFbxForMesh("SM_Mushroom_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var05.FBX");
-		//ASSET AddFbxForMesh("SM_Mushroom_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var06.FBX");
-		//ASSET AddFbxForMesh("SM_Cart_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_Cart_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var02.FBX");
-		//ASSET AddFbxForMesh("SM_Barrel", "Assets\\AdvancedVillagePack\\Meshes\\SM_Barrel.FBX");
-		//ASSET AddFbxForMesh("SM_Bucket", "Assets\\AdvancedVillagePack\\Meshes\\SM_Bucket.FBX");
-		//ASSET AddFbxForMesh("SM_Fence_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_Fence_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
-		//ASSET AddFbxForMesh("SM_Fence_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
-		//ASSET AddFbxForMesh("SM_Fence_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
-		//ASSET AddFbxForMesh("SM_Cauldron", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cauldron.FBX");
-		//ASSET AddFbxForMesh("SM_Spike", "Assets\\AdvancedVillagePack\\Meshes\\SM_Spike.FBX");
-		//ASSET AddFbxForMesh("SM_Fish", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fish.FBX");
-		//ASSET AddFbxForMesh("SM_Pot_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_Pot_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var02.FBX");
-		//ASSET AddFbxForMesh("SM_Pot_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var03.FBX");
-		//ASSET AddFbxForMesh("SM_Pot_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var04.FBX");
-		//ASSET AddFbxForMesh("SM_Pot_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var05.FBX");
-		//ASSET AddFbxForMesh("SM_Pot_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var06.FBX");
-		//ASSET AddFbxForMesh("SM_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Apple.FBX");
-		//ASSET AddFbxForMesh("SM_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Potato.FBX");
-		//ASSET AddFbxForMesh("SM_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tomato.FBX");
-		//ASSET AddFbxForMesh("SM_Watermellon", "Assets\\AdvancedVillagePack\\Meshes\\SM_Watermellon.FBX");
-		//ASSET AddFbxForMesh("SM_Sack_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Apple.FBX");
-		//ASSET AddFbxForMesh("SM_Sack_Flour", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Flour.FBX");
-		//ASSET AddFbxForMesh("SM_Sack_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Potato.FBX");
-		//ASSET AddFbxForMesh("SM_Sack_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Tomato.FBX");
-		//ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
-		//ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Well", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well.FBX");
+		ASSET AddFbxForMesh("SM_Well_Extra02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra02.FBX");
+		ASSET AddFbxForMesh("SM_Well_Extra03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra03.FBX");
+		ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
+		ASSET AddFbxForMesh("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
+		ASSET AddFbxForMesh("SM_House_Var02_Extra", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02_Extra.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Tree_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var05.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var05.FBX");
+		ASSET AddFbxForMesh("SM_Mushroom_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var06.FBX");
+		ASSET AddFbxForMesh("SM_Cart_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Cart_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Barrel", "Assets\\AdvancedVillagePack\\Meshes\\SM_Barrel.FBX");
+		ASSET AddFbxForMesh("SM_Bucket", "Assets\\AdvancedVillagePack\\Meshes\\SM_Bucket.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Fence_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Cauldron", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cauldron.FBX");
+		ASSET AddFbxForMesh("SM_Spike", "Assets\\AdvancedVillagePack\\Meshes\\SM_Spike.FBX");
+		ASSET AddFbxForMesh("SM_Fish", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fish.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var02.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var03.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var04.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var05.FBX");
+		ASSET AddFbxForMesh("SM_Pot_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var06.FBX");
+		ASSET AddFbxForMesh("SM_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Apple.FBX");
+		ASSET AddFbxForMesh("SM_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Potato.FBX");
+		ASSET AddFbxForMesh("SM_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tomato.FBX");
+		ASSET AddFbxForMesh("SM_Watermellon", "Assets\\AdvancedVillagePack\\Meshes\\SM_Watermellon.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Apple.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Flour", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Flour.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Potato.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Tomato.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
+		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
 
 		/*HandPaintedEnviroment*/
 		//ASSET AddFbxForMesh("Altar", "Assets\\HandPaintedEnvironment\\Models\\Altar.FBX");
@@ -295,8 +350,8 @@ public:
 		//ASSET AddFbxForMesh("Mushroom_2", "Assets\\HandPaintedEnvironment\\Models\\Mushroom_2.FBX");
 		//ASSET AddFbxForMesh("Mushroom_3", "Assets\\HandPaintedEnvironment\\Models\\Mushroom_3.FBX");
 		//ASSET AddFbxForMesh("Mushroom_4", "Assets\\HandPaintedEnvironment\\Models\\Mushroom_4.FBX");
-		ASSET AddFbxForMesh("Pillar", "Assets\\HandPaintedEnvironment\\Models\\Pillar.FBX");
-		ASSET AddFbxForMesh("Pillar_ruined_1", "Assets\\HandPaintedEnvironment\\Models\\Pillar_ruined_1.FBX");
+		//ASSET AddFbxForMesh("Pillar", "Assets\\HandPaintedEnvironment\\Models\\Pillar.FBX");
+		//ASSET AddFbxForMesh("Pillar_ruined_1", "Assets\\HandPaintedEnvironment\\Models\\Pillar_ruined_1.FBX");
 		//ASSET AddFbxForMesh("Pine_tree", "Assets\\HandPaintedEnvironment\\Models\\Pine_tree.FBX");
 		//ASSET AddFbxForMesh("Pine_tree_2", "Assets\\HandPaintedEnvironment\\Models\\Pine_tree_2.FBX");
 		//ASSET AddFbxForMesh("Plant", "Assets\\HandPaintedEnvironment\\Models\\Plant.FBX");
@@ -331,108 +386,148 @@ public:
 
 
 		/*SpringEnvironment*/
-		//ASSET AddFbxForMesh("SE_Baloon_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Baloon_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Baloon_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Baloon_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Baloon_03_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Baloon_03_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Baloon_04_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Baloon_04_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Baloons_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Baloons_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Bench_01a_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Bench_01a_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Bench_01b_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Bench_01b_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Birch_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Birch_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Birch_01b_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Birch_01b_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Birch_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Birch_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Birch_02b_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Birch_02b_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Birch_03_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Birch_03_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Birch_03b_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Birch_03b_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Blanket_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Blanket_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Blanket_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Blanket_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Blossom_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Blossom_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Blossom_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Blossom_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Bonsai_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Bonsai_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Bonsai_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Bonsai_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Booth_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Booth_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Booth_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Booth_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Branch_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Branch_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Branch_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Branch_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Blossom_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Blossom_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Blossom_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Blossom_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Bush_06_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Bush_06_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Bush_07_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Bush_07_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Candy_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Candy_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Candy_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Candy_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Candy_03_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Candy_03_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Candy_04_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Candy_04_SM.FBX");
-		//ASSET AddFbxForMesh("SE_CandyHouse_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_CandyHouse_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Carousel_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Carousel_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Cart_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Cart_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Chair_01a_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Chair_01a_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Climber_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Climber_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Climber_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Climber_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_CottonCandy_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_CottonCandy_01_SM.FBX");
-		//ASSET AddFbxForMesh("E_CottonCandyTree_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_CottonCandyTree_01_SM.FBX");
-		//ASSET AddFbxForMesh("E_CottonCandyTree_02_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_CottonCandyTree_02_SM.FBX");
-		//ASSET AddFbxForMesh("E_CottonCandyTree_03_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_CottonCandyTree_03_SM.FBX");
-		//ASSET AddFbxForMesh("SE_FabricHouse_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_FabricHouse_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Factory_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Factory_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Fence_07a_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Fence_07a_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Fence_07b_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Fence_07b_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Fence_08a_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Fence_08a_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Fence_08b_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Fence_08b_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_01_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_03_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_03_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_04_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_04_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_06_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_06_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_07_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_07_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_08_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_08_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_10_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_10_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_11_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_11_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_13_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_13_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_14_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_14_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_16_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_16_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_40_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_40_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_41_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_41_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_42_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_42_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_43_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_43_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_44_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_44_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_45_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_45_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_46_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_46_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_47_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_47_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_48_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_48_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_49_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_49_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_50_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_50_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_51_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_51_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_52_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_52_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_71_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_71_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_72_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_72_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_73_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_73_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_74_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_74_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_75_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_75_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Flower_76_SM_LOD0", "Assets\\SpringEnvironment\\Models\\SE_Flower_76_SM.FBX");
-
+		//ASSET AddFbxForMesh("SE_Baloon_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Baloon_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Baloon_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Baloon_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloon_04_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Baloons_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Baloons_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Bench_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Bench_01a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Bench_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Bench_01b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Birch_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Birch_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_01b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Birch_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Birch_02b_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_02b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Birch_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Birch_03b_SM", "Assets\\SpringEnvironment\\Models\\SE_Birch_03b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Blanket_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Blanket_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Blanket_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Blanket_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Blossom_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Blossom_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Bonsai_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Bonsai_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Bonsai_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Bonsai_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Booth_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Booth_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Booth_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Booth_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Branch_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Branch_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Branch_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Branch_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Blossom_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Blossom_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Blossom_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Bush_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Bush_06_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Bush_07_SM", "Assets\\SpringEnvironment\\Models\\SE_Bush_07_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Candy_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Candy_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Candy_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Candy_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Candy_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Candy_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Candy_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Candy_04_SM.FBX");
+		//ASSET AddFbxForMesh("SE_CandyHouse_01_SM", "Assets\\SpringEnvironment\\Models\\SE_CandyHouse_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Carousel_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Carousel_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Cart_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Cart_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Chair_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Chair_01a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Climber_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Climber_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Climber_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Climber_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_CottonCandy_01_SM", "Assets\\SpringEnvironment\\Models\\SE_CottonCandy_01_SM.FBX");
+		//ASSET AddFbxForMesh("E_CottonCandyTree_01_SM", "Assets\\SpringEnvironment\\Models\\SE_CottonCandyTree_01_SM.FBX");
+		//ASSET AddFbxForMesh("E_CottonCandyTree_02_SM", "Assets\\SpringEnvironment\\Models\\SE_CottonCandyTree_02_SM.FBX");
+		//ASSET AddFbxForMesh("E_CottonCandyTree_03_SM", "Assets\\SpringEnvironment\\Models\\SE_CottonCandyTree_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_FabricHouse_01_SM", "Assets\\SpringEnvironment\\Models\\SE_FabricHouse_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Factory_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Factory_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Fence_07a_SM", "Assets\\SpringEnvironment\\Models\\SE_Fence_07a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Fence_07b_SM", "Assets\\SpringEnvironment\\Models\\SE_Fence_07b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Fence_08a_SM", "Assets\\SpringEnvironment\\Models\\SE_Fence_08a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Fence_08b_SM", "Assets\\SpringEnvironment\\Models\\SE_Fence_08b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_04_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_06_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_07_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_07_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_08_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_08_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_10_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_10_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_11_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_11_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_13_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_13_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_14_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_14_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_16_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_16_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_40_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_40_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_41_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_41_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_42_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_42_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_43_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_43_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_44_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_44_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_45_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_45_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_46_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_46_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_47_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_47_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_48_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_48_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_49_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_49_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_50_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_50_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_51_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_51_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_52_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_52_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_71_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_71_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_72_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_72_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_73_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_73_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_74_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_74_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_75_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_75_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Flower_76_SM", "Assets\\SpringEnvironment\\Models\\SE_Flower_76_SM.FBX");
 		//ASSET AddFbxForMesh("SE_Gate_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Gate_01b_SM.FBX");
 		//ASSET AddFbxForMesh("SE_Gazebo_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Gazebo_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_GreenHouse_01_SM", "Assets\\SpringEnvironment\\Models\\SE_GreenHouse_01_SM.FBX");
 		//ASSET AddFbxForMesh("SE_Grill_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Grill_02_SM.FBX");
 		//ASSET AddFbxForMesh("SE_HeartHouse_01_SM", "Assets\\SpringEnvironment\\Models\\SE_HeartHouse_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Gazebo_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Gazebo_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_GreenHouse_01_SM", "Assets\\SpringEnvironment\\Models\\SE_GreenHouse_01_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Grill_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Grill_02_SM.FBX");
-		//ASSET AddFbxForMesh("SE_Hedge_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_01_SM");
-		//ASSET AddFbxForMesh("SE_Hedge_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_02_SM");
-		//ASSET AddFbxForMesh("SE_Hedge_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_03_SM");
-		//ASSET AddFbxForMesh("SE_Hedge_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_04_SM");
-		//ASSET AddFbxForMesh("SE_Hedge_05_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_05_SM");
-		//ASSET AddFbxForMesh("SE_Hedge_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_06_SM");
-		//ASSET AddFbxForMesh("SE_Hedge_07_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_07_SM");
-		//ASSET AddFbxForMesh("SE_Hedge_08_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_08_SM");
+		//ASSET AddFbxForMesh("SE_Hedge_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Hedge_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Hedge_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Hedge_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_04_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Hedge_05_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_05_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Hedge_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_06_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Hedge_07_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_07_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Hedge_08_SM", "Assets\\SpringEnvironment\\Models\\SE_Hedge_08_SM.FBX");
 		//ASSET AddFbxForMesh("SE_HotAirBaloon_SM", "Assets\\SpringEnvironment\\Models\\SE_HotAirBaloon_SM.FBX");
-
-
-
-
-
-
-
+		//ASSET AddFbxForMesh("SE_House_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_House_01a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_House_01b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_01c_SM", "Assets\\SpringEnvironment\\Models\\SE_House_01c_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_01d_SM", "Assets\\SpringEnvironment\\Models\\SE_House_01d_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_02a_SM", "Assets\\SpringEnvironment\\Models\\SE_House_02a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_02b_SM", "Assets\\SpringEnvironment\\Models\\SE_House_02b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_02c_SM", "Assets\\SpringEnvironment\\Models\\SE_House_02c_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_02d_SM", "Assets\\SpringEnvironment\\Models\\SE_House_02d_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_03d_SM", "Assets\\SpringEnvironment\\Models\\SE_House_03d_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_03a_SM", "Assets\\SpringEnvironment\\Models\\SE_House_03a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_03b_SM", "Assets\\SpringEnvironment\\Models\\SE_House_03b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_03c_SM", "Assets\\SpringEnvironment\\Models\\SE_House_03c_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_04a_SM", "Assets\\SpringEnvironment\\Models\\SE_House_04a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_04b_SM", "Assets\\SpringEnvironment\\Models\\SE_House_04b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_05a_SM", "Assets\\SpringEnvironment\\Models\\SE_House_05a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_House_05b_SM", "Assets\\SpringEnvironment\\Models\\SE_House_05b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Lamp_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Lamp_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Lamp_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Lamp_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Maypole_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Maypole_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Present_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Present_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Present_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Present_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Present_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Present_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Present_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Present_04_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Present_05_SM", "Assets\\SpringEnvironment\\Models\\SE_Present_05_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Present_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Present_06_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Pump_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Pump_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Rose_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Rose_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Rose_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Rose_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Rose_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Rose_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Rose_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Rose_04_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Rose_05_SM", "Assets\\SpringEnvironment\\Models\\SE_Rose_05_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Rose_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Rose_06_SM.FBX");
+		//ASSET AddFbxForMesh("SE_SeeSaw_01_SM", "Assets\\SpringEnvironment\\Models\\SE_SeeSaw_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Sign_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Sign_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Slide_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Slide_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Stone_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Stone_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Stone_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Stone_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Stone_03_SM", "Assets\\SpringEnvironment\\Models\\SE_Stone_03_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Stone_04_SM", "Assets\\SpringEnvironment\\Models\\SE_Stone_04_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Stone_05_SM", "Assets\\SpringEnvironment\\Models\\SE_Stone_05_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Stone_06_SM", "Assets\\SpringEnvironment\\Models\\SE_Stone_06_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Swing_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Swing_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Swing_02_SM", "Assets\\SpringEnvironment\\Models\\SE_Swing_02_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Table_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Table_01a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Table_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Table_01b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Table_02a_SM", "Assets\\SpringEnvironment\\Models\\SE_Table_02a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Table_02b_SM", "Assets\\SpringEnvironment\\Models\\SE_Table_02b_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Theater_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Theater_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_TownHall_SM", "Assets\\SpringEnvironment\\Models\\SE_TownHall_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Trampoline_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Trampoline_01_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Willow_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01a_SM.FBX");
+		//ASSET AddFbxForMesh("SE_Willow_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01b_SM.FBX");
 
 
 		ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");

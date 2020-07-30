@@ -16,6 +16,9 @@ private:
 	GameObject* inputIpGuide{ nullptr };
 	GameObject* gameTime{ nullptr };
 
+	// Chat
+	InputField* chatField{ nullptr };
+	GameObject* chatting[10];
 public:
 	Text* connectButtonText{ nullptr };
 
@@ -24,6 +27,7 @@ public:
 	int myId;
 	int hostId;
 	int retval;
+	char host_name[MAX_ID_LEN + 1];
 
 	bool isConnect{ false };
 	bool tryConnect{ false };
@@ -111,8 +115,50 @@ public:
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 		gameTime->SetActive(false);
+
+		auto chatFieldObject = Scene::scene->CreateImage();
+		{
+			auto rt = chatFieldObject->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0, 1);
+			rt->setPosAndSize(0, -785, 500, 15);
+
+			chatField = chatFieldObject->AddComponent<InputField>();
+			auto text = chatField->Text();
+			text->fontSize = 10;
+			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+		}
+		chatField->gameObject->SetActive(true);
+
+		for (int i = 0; i < 10; ++i) {
+			chatting[i] = Scene::scene->CreateUI();
+			{
+				auto rt = chatting[i]->GetComponent<RectTransform>();
+				rt->setAnchorAndPivot(0, 1);
+				rt->setPosAndSize(0, -785 + ((i + 1) * 15), 500, 15);
+
+				Text* text = chatting[i]->AddComponent<Text>();
+				text->text = L"";
+				text->fontSize = 10;
+				text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+				text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			}
+		}
+
 		inputField->gameObject->SetActive(false);
 		inputIpGuide->SetActive(false);
+	}
+
+	void add_chat(wchar_t chatter[], wchar_t chat[])
+	{
+		for (int i = 8; i >= 0; --i) {
+			chatting[i + 1]->GetComponent<Text>()->text = chatting[i]->GetComponent<Text>()->text;
+		}
+		wstring name = chatter;
+		wstring msg = chat;
+		chatting[0]->GetComponent<Text>()->text = name + L": " + msg;
 	}
 
 	int connect_nonblock(SOCKET sockfd, const struct sockaddr FAR* name, int namelen, int timeout)
@@ -200,6 +246,19 @@ public:
 		{
 			gameTime->GetComponent<Text>()->text = GuestGameWorld::gameWorld->convertTimeToText();
 			Receiver();
+
+			if (chatField->isFocused) {
+				if (Input::GetKeyDown(KeyCode::Return)) {
+					if (chatField->text.size() > MAX_STR_LEN - 1) {
+						int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
+						for (int i = 0; i < oversize; ++i)
+							chatField->text.pop_back();
+					}
+					send_chat_packet(_wcsdup(chatField->text.c_str()));
+					chatField->clear();
+					chatField->setFocus(false);
+				}
+			}
 		}
 	}
 

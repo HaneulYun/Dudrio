@@ -9,7 +9,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	Animator* anim{ nullptr };
 	Vector3 animVel{ 0,0,0 };
-	char name[MAX_ID_LEN];
+	char name[MAX_ID_LEN + 1];
 
 	std::queue<std::pair<Vector3, float>> moveQueue;
 	Vector3 destPos{ 0,0,0 };

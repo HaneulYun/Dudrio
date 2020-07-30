@@ -331,6 +331,8 @@ void IOCPServer::send_login_ok_packet(int user_id)
 	p.zVel = g_clients[user_id]->m_zVel;
 	p.rotAngle = g_clients[user_id]->m_rotAngle;
 	p.game_time = contents.ingame_time;
+	p.host_id = contents.host_id;
+	strcpy(p.host_name, g_clients[contents.host_id]->m_name);
 
 	if (terrain_data != nullptr) {
 		p.frequency = terrain_data->frequency;

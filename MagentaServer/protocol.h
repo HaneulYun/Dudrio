@@ -1,7 +1,7 @@
 #pragma once
 
-constexpr int MAX_ID_LEN = 50;
-constexpr int MAX_STR_LEN = 255;
+constexpr int MAX_ID_LEN = 16;
+constexpr int MAX_STR_LEN = 100 - MAX_ID_LEN + 1;
 constexpr int MAX_USER = 10000;
 
 #define WORLD_WIDTH		1000
@@ -43,6 +43,8 @@ struct sc_packet_login_ok {
 	unsigned char size;
 	char type;
 	int id;
+	int host_id;
+	char host_name[MAX_ID_LEN + 1];
 	float game_time;
 	float xPos, zPos;
 	float xVel, zVel;
@@ -79,7 +81,7 @@ struct sc_packet_enter {
 	unsigned char size;
 	char type;
 	int id;
-	char name[MAX_ID_LEN];
+	char name[MAX_ID_LEN + 1];
 	char o_type;
 	float xPos, zPos;
 	float xVel, zVel;
@@ -160,13 +162,13 @@ struct sc_packet_destruct_all
 struct cs_packet_login_guest {
 	unsigned char	size;
 	char	type;
-	char	name[MAX_ID_LEN];
+	char	name[MAX_ID_LEN + 1];
 };
 
 struct cs_packet_login_host {
 	unsigned char	size;
 	char	type;
-	char	name[MAX_ID_LEN];
+	char	name[MAX_ID_LEN + 1];
 	float	terrainSize;
 	float	frequency;
 	int		octaves;

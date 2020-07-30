@@ -185,7 +185,8 @@ void Contents::process_packet(int user_id, char* buf)
 	break;
 	case C2S_CHAT:
 	{
-
+		cs_packet_chat* packet = reinterpret_cast<cs_packet_chat*>(buf);
+		chatting(user_id, packet->message);
 	}
 	break;
 	default:
@@ -200,6 +201,7 @@ void Contents::process_packet(int user_id, char* buf)
 void Contents::enter_game(int user_id, char name[])
 {
 	g_clients[user_id]->m_cl.lock();
+	g_clients[user_id]->m_name[0] = '\0';
 	strcpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
 	iocp.send_login_ok_packet(user_id);
@@ -421,6 +423,16 @@ void Contents::disconnect(int user_id)
 
 	delete g_clients[user_id];
 	g_clients.erase(user_id);
+}
+
+void Contents::chatting(int user_id, wchar_t mess[])
+{
+	g_clients_lock.lock();
+	for (auto& cl : g_clients) {
+		if (ST_ACTIVE == cl.second->m_status)
+			iocp.send_chat_packet(cl.second->m_id, user_id, mess);
+	}
+	g_clients_lock.unlock();
 }
 
 void Contents::login_fail(int user_id)

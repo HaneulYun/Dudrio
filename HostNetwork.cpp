@@ -41,6 +41,9 @@ void HostNetwork::ProcessPacket(char* ptr)
 	case S2C_LOGIN_FAIL:
 	{
 		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
+		
+		connectButtonText->text = L"Open";
+		pressButton = false;
 		isConnect = false;
 		tryConnect = false;
 
@@ -55,6 +58,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		if (id != myId) {
 			players[id] = gameObject->scene->Duplicate(simsPrefab);
 			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
+			strcpy_s(p->name, my_packet->name);
 			p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 		}
 	}
@@ -141,6 +145,24 @@ void HostNetwork::ProcessPacket(char* ptr)
 	}
 		break;
 	case S2C_CHAT:
+	{
+		sc_packet_chat* my_packet = reinterpret_cast<sc_packet_chat*>(ptr);
+		int id = my_packet->id;
+		if (id == myId)
+		{
+			wstring wname;
+			string cname = name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+		else
+		{
+			wstring wname;
+			string cname = players[id]->GetComponent<CharacterMovingBehavior>()->name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+	}
 		break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
@@ -219,6 +241,16 @@ void HostNetwork::send_destruct_all_packet()
 	cs_packet_destruct_all m_packet;
 	m_packet.type = C2S_DESTRUCT_ALL;
 	m_packet.size = sizeof(m_packet);
+
+	send_packet(&m_packet);
+}
+
+void HostNetwork::send_chat_packet(wchar_t msg[])
+{
+	cs_packet_chat m_packet;
+	m_packet.type = C2S_CHAT;
+	m_packet.size = sizeof(m_packet);
+	wcscpy_s(m_packet.message, msg);
 
 	send_packet(&m_packet);
 }

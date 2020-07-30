@@ -17,6 +17,10 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		GuestGameWorld::gameWorld->gameTime = my_packet->game_time;
 		GuestGameWorld::gameWorld->timeSpeed = GuestGameWorld::gameWorld->TimeSpeed::X8;
 
+		// 호스트 이름 저장
+		hostId = my_packet->host_id;
+		strcpy_s(host_name, my_packet->host_name);
+
 		// 지형 생성
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(my_packet->terrainSize, my_packet->terrainSize);
 		string fileName = terrainGenerator->createHeightMap(my_packet->frequency, my_packet->octaves, my_packet->seed, (char*)"square");
@@ -58,8 +62,12 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	case S2C_LOGIN_FAIL:
 	{
 		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
+
+		connectButtonText->text = L"Connect";
+		pressButton = false;
 		isConnect = false;
 		tryConnect = false;
+		gameTime->SetActive(false);
 
 		closesocket(serverSocket);
 	}
@@ -167,7 +175,26 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	break;
 	case S2C_CHAT:
 	{
-
+		sc_packet_chat* my_packet = reinterpret_cast<sc_packet_chat*>(ptr);
+		int id = my_packet->id;
+		if (id == myId){
+			wstring wname;
+			string cname = myCharacter->GetComponent<CharacterMovingBehavior>()->name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+		else if (id == hostId){
+			wstring wname;
+			string cname = host_name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+		else{
+			wstring wname;
+			string cname = otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
 	}
 	break;
 	case S2C_GAME_TIME:

@@ -40,7 +40,6 @@ void MenuScene::BuildObjects()
 		text->color = { 1, 1, 1, 1 };
 		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		textObjects.push_back(background);
 
 
 		auto GuestSceneButton = CreateImage();
@@ -70,7 +69,6 @@ void MenuScene::BuildObjects()
 				text->font = L"메이플스토리";
 				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-				textObjects.push_back(textobject);
 			}
 			GuestSceneButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("none");
 		}
@@ -101,7 +99,6 @@ void MenuScene::BuildObjects()
 				text->font = L"메이플스토리";
 				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-				textObjects.push_back(textobject);
 			}
 			materialSceneButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("none");
 		}
@@ -132,7 +129,6 @@ void MenuScene::BuildObjects()
 				text->font = L"메이플스토리";
 				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-				textObjects.push_back(textobject);
 			}
 		}
 
@@ -162,7 +158,6 @@ void MenuScene::BuildObjects()
 				text->font = L"메이플스토리";
 				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-				textObjects.push_back(textobject);
 			}
 		}
 
@@ -192,7 +187,6 @@ void MenuScene::BuildObjects()
 				text->font = L"메이플스토리";
 				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-				textObjects.push_back(textobject);
 			}
 		}
 
@@ -222,7 +216,6 @@ void MenuScene::BuildObjects()
 				text->font = L"메이플스토리";
 				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-				textObjects.push_back(textobject);
 			}
 		}
 

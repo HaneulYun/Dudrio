@@ -48,7 +48,6 @@ void TestScene::BuildObjects()
 			text->text = L"Menu Scene";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
 		}
 	}
 
@@ -61,7 +60,6 @@ void TestScene::BuildObjects()
 		Text* text = fps->AddComponent<Text>();
 		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 		text->color = { 1,1,1,1 };
-		textObjects.push_back(fps);
 		fps->AddComponent<FPS>();
 	}
 

@@ -62,7 +62,6 @@ void HostScene::BuildObjects()
 		Text* text = fps->AddComponent<Text>();
 		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 		text->color = { 1,1,1,1 };
-		textObjects.push_back(fps);
 		fps->AddComponent<FPS>();
 	}
 
@@ -220,14 +219,14 @@ void HostScene::BuildObjects()
 	}
 
 	auto network = CreateEmpty();
+	HostNetwork* hostNetwork = network->AddComponent<HostNetwork>();
 	{
-		HostNetwork* hn = network->AddComponent<HostNetwork>();
-		hn->simsPrefab = simsPrefab;
-		HostNetwork::network = hn;
-		hn->terrainSize = TerrainSize;
-		hn->frequency = frequency;
-		hn->octaves = octaves;
-		hn->seed = seed;
+		HostNetwork::network = hostNetwork;
+		hostNetwork->simsPrefab = simsPrefab;
+		hostNetwork->terrainSize = TerrainSize;
+		hostNetwork->frequency = frequency;
+		hostNetwork->octaves = octaves;
+		hostNetwork->seed = seed;
 	}
 
 	auto ServerButton = CreateImage();
@@ -250,7 +249,8 @@ void HostScene::BuildObjects()
 			text->text = L"Open";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
+
+			hostNetwork->connectButtonText = text;
 		}
 	}
 
@@ -274,7 +274,6 @@ void HostScene::BuildObjects()
 			text->text = L"Load";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
 		}
 	}
 
@@ -298,7 +297,6 @@ void HostScene::BuildObjects()
 			text->text = L"Save";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
 		}
 	}
 
@@ -322,7 +320,6 @@ void HostScene::BuildObjects()
 			text->text = L"Menu Scene";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
 		}
 	}
 }

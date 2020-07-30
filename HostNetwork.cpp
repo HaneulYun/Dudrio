@@ -238,6 +238,7 @@ void HostNetwork::Logout()
 
 	send_packet(&l_packet);
 
+	pressButton = false;
 	isConnect = false;
 	tryConnect = false;
 

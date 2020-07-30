@@ -20,7 +20,6 @@ void GuestScene::BuildObjects()
 		Text* text = fps->AddComponent<Text>();
 		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 		text->color = { 1,1,1,1 };
-		textObjects.push_back(fps);
 		fps->AddComponent<FPS>();
 	}
 
@@ -88,14 +87,14 @@ void GuestScene::BuildObjects()
 	}
 
 	auto network = CreateEmpty();
+	GuestNetwork* guestNetwork = network->AddComponent<GuestNetwork>();
 	{
-		GuestNetwork* gn = network->AddComponent<GuestNetwork>();
-		gn->simsPrefab = simPrefab;
+		guestNetwork->simsPrefab = simPrefab;
 
-		auto player = gn->myCharacter = Duplicate(simPrefab);
+		auto player = guestNetwork->myCharacter = Duplicate(simPrefab);
 		player->GetComponent<Transform>()->position = { 540.0, 0.0, 540.0 };
 		player->AddComponent<CharacterController>();
-		GuestNetwork::network = gn;
+		GuestNetwork::network = guestNetwork;
 
 		auto cameraOffset = player->AddChild();
 		{
@@ -147,7 +146,8 @@ void GuestScene::BuildObjects()
 			text->text = L"connect";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
+
+			guestNetwork->connectButtonText = text;
 		}
 	}
 
@@ -176,7 +176,6 @@ void GuestScene::BuildObjects()
 			text->text = L"Menu Scene";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			textObjects.push_back(textobject);
 		}
 	}
 

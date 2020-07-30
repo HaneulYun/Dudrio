@@ -197,8 +197,6 @@ SleepState* SleepState::Instance()
 
 void SleepState::Enter(Sim* sim)
 {
-	timer_event ev{ sim->id, SIM_WakeUp, high_resolution_clock::now() + seconds(5), sim->id, NULL };
-	timer.add_event(ev);
 };
 
 void SleepState::Execute(Sim* sim)

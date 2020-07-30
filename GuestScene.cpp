@@ -86,6 +86,17 @@ void GuestScene::BuildObjects()
 		behavior->anim = anim;
 	}
 
+	auto object = CreateUI();
+	{
+		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
+		buildingBuilder->serializeBuildings();
+		//buildingBuilder->terrain = terrainData;
+		//buildingBuilder->terrainNodeData = terrainNodeData;
+
+		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
+		gameWorld->sun = directionalLight;
+	}
+
 	auto network = CreateEmpty();
 	GuestNetwork* guestNetwork = network->AddComponent<GuestNetwork>();
 	{
@@ -111,16 +122,6 @@ void GuestScene::BuildObjects()
 	//	BuildManager::buildManager = bm;
 	//}
 
-	auto object = CreateUI();
-	{
-		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
-		buildingBuilder->serializeBuildings();
-		//buildingBuilder->terrain = terrainData;
-		//buildingBuilder->terrainNodeData = terrainNodeData;
-
-		GuestGameWorld::gameWorld = object->AddComponent<GuestGameWorld>();
-	}
-
 	auto ServerButton = CreateImage();
 	{
 		auto rectTransform = ServerButton->GetComponent<RectTransform>();
@@ -143,7 +144,7 @@ void GuestScene::BuildObjects()
 			rectTransform->anchorMax = { 1, 1 };
 
 			Text* text = textobject->AddComponent<Text>();
-			text->text = L"connect";
+			text->text = L"Connect";
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 

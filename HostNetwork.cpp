@@ -13,12 +13,15 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
+		GameWorld::gameWorld->gameTime = my_packet->game_time;
 
+		// 심 초기화
 		for (auto& sims : GameWorld::gameWorld->simList){
 			Scene::scene->PushDelete(sims.second);
 		}
 		GameWorld::gameWorld->simList.clear();
 
+		// 빌딩 정보 전송
 		for (auto& p : GameWorld::gameWorld->buildingList)
 			for(auto& q: p.second)
 				for (auto& r : q.second) {
@@ -38,6 +41,9 @@ void HostNetwork::ProcessPacket(char* ptr)
 	case S2C_LOGIN_FAIL:
 	{
 		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
+		
+		connectButtonText->text = L"Open";
+		pressButton = false;
 		isConnect = false;
 		tryConnect = false;
 
@@ -52,6 +58,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		if (id != myId) {
 			players[id] = gameObject->scene->Duplicate(simsPrefab);
 			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
+			strcpy_s(p->name, my_packet->name);
 			p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 		}
 	}
@@ -131,7 +138,31 @@ void HostNetwork::ProcessPacket(char* ptr)
 		break;
 	case S2C_DESTRUCT_ALL:
 		break;
+	case S2C_GAME_TIME:
+	{
+		sc_packet_game_time* my_packet = reinterpret_cast<sc_packet_game_time*>(ptr);
+		GameWorld::gameWorld->gameTime = my_packet->game_time;
+	}
+		break;
 	case S2C_CHAT:
+	{
+		sc_packet_chat* my_packet = reinterpret_cast<sc_packet_chat*>(ptr);
+		int id = my_packet->id;
+		if (id == myId)
+		{
+			wstring wname;
+			string cname = name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+		else
+		{
+			wstring wname;
+			string cname = players[id]->GetComponent<CharacterMovingBehavior>()->name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+	}
 		break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
@@ -214,6 +245,16 @@ void HostNetwork::send_destruct_all_packet()
 	send_packet(&m_packet);
 }
 
+void HostNetwork::send_chat_packet(wchar_t msg[])
+{
+	cs_packet_chat m_packet;
+	m_packet.type = C2S_CHAT;
+	m_packet.size = sizeof(m_packet);
+	wcscpy_s(m_packet.message, msg);
+
+	send_packet(&m_packet);
+}
+
 void HostNetwork::Login()
 {
 	cs_packet_login_host l_packet;
@@ -222,6 +263,8 @@ void HostNetwork::Login()
 	int t_id = GetCurrentProcessId();
 	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
 	strcpy_s(name, l_packet.name);
+	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X8;
+	l_packet.game_time = GameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;
 	l_packet.octaves = octaves;
 	l_packet.seed = seed;
@@ -242,6 +285,7 @@ void HostNetwork::Logout()
 	isConnect = false;
 	tryConnect = false;
 
+	connectButtonText->text = L"Open";
 	closesocket(serverSocket);
 
 	for (auto& p : players)

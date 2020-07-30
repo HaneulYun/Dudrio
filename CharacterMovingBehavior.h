@@ -9,7 +9,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	Animator* anim{ nullptr };
 	Vector3 animVel{ 0,0,0 };
-	char name[MAX_ID_LEN];
+	char name[MAX_ID_LEN + 1];
 
 	std::queue<std::pair<Vector3, float>> moveQueue;
 	Vector3 destPos{ 0,0,0 };
@@ -61,7 +61,7 @@ public:
 			if (curPos.Length() < destPos.Length()) {
 				dx = destPos.x * Time::deltaTime * 3;
 				dz = destPos.z * Time::deltaTime * 3;
-		
+
 				if ((curPos + Vector3{ dx, 0, dz }).Length() > destPos.Length()) {
 					dx = destPos.x - curPos.x;
 					dz = destPos.z - curPos.z;
@@ -72,10 +72,10 @@ public:
 			}
 			if (fabs(curAngle) < fabs(destAngle)) {
 				dr = destAngle * Time::deltaTime * 3;
-		
+
 				if (fabs(curAngle + dr) > fabs(destAngle))
 					dr = destAngle - curAngle;
-		
+
 				gameObject->transform->Rotate(Vector3{ 0,1,0 }, dr);
 				curAngle += dr;
 			}

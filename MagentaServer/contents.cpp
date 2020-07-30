@@ -18,7 +18,11 @@ void Contents::init_contents()
 	host_id = -1;
 	tick_count = 0.f;
 	ingame_time = 0.f;
-	tmp_sleep_time = 0.f;
+
+	sleep_flag = false;
+	wakeup_flag = false;
+	for (int i = 0; i < 4; ++i)
+		send_packet_flag[i] = false;
 
 	init_sector();
 	init_buildings();
@@ -125,7 +129,8 @@ void Contents::process_packet(int user_id, char* buf)
 			terrain_data->makeExtraData();
 			PathFinder::Instance()->SetTerrainData(terrain_data);
 
-			ingame_time = GetTickCount64();
+			server_time = GetTickCount64();
+			ingame_time = packet->game_time;
 			update();
 			enter_game(user_id, packet->name);
 		}
@@ -180,7 +185,8 @@ void Contents::process_packet(int user_id, char* buf)
 	break;
 	case C2S_CHAT:
 	{
-
+		cs_packet_chat* packet = reinterpret_cast<cs_packet_chat*>(buf);
+		chatting(user_id, packet->message);
 	}
 	break;
 	default:
@@ -195,6 +201,7 @@ void Contents::process_packet(int user_id, char* buf)
 void Contents::enter_game(int user_id, char name[])
 {
 	g_clients[user_id]->m_cl.lock();
+	g_clients[user_id]->m_name[0] = '\0';
 	strcpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
 	iocp.send_login_ok_packet(user_id);
@@ -249,8 +256,9 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 		g_clients[user_id]->m_zVel = 0.0f;
 	}
 
-	g_clients[user_id]->m_xPos += g_clients[user_id]->m_xVel * (GetTickCount64() - g_clients[user_id]->m_last_move_time) / 1000.f;
-	g_clients[user_id]->m_zPos += g_clients[user_id]->m_zVel * (GetTickCount64() - g_clients[user_id]->m_last_move_time) / 1000.f;
+	double tick = (GetTickCount64() - g_clients[user_id]->m_last_move_time) * 0.001f;
+	g_clients[user_id]->m_xPos += g_clients[user_id]->m_xVel * tick;
+	g_clients[user_id]->m_zPos += g_clients[user_id]->m_zVel * tick;
 	g_clients[user_id]->m_last_move_time = GetTickCount64();
 
 	g_clients[user_id]->is_collide(prev_x, prev_z);
@@ -417,6 +425,16 @@ void Contents::disconnect(int user_id)
 	g_clients.erase(user_id);
 }
 
+void Contents::chatting(int user_id, wchar_t mess[])
+{
+	g_clients_lock.lock();
+	for (auto& cl : g_clients) {
+		if (ST_ACTIVE == cl.second->m_status)
+			iocp.send_chat_packet(cl.second->m_id, user_id, mess);
+	}
+	g_clients_lock.unlock();
+}
+
 void Contents::login_fail(int user_id)
 {
 	cout << "Login fail!! user_id : " << user_id << endl;
@@ -446,7 +464,10 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		g_sims_lock.lock();
 		g_sims[sim_index] = new Sim(sim_index, xpos, zpos);
 		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
-		g_sims[sim_index]->stateMachine.PushState(IdleState::Instance());
+		if(ingame_time < night_start_time && ingame_time > dawn_start_time)
+			g_sims[sim_index]->stateMachine.PushState(IdleState::Instance());
+		else
+			g_sims[sim_index]->stateMachine.PushState(SleepState::Instance());
 		g_sims[sim_index]->stateMachine.GetCurrentState()->Enter(g_sims[sim_index]);
 		g_sims[sim_index]->insert_client_in_sector();
 		cout << "Sim " << sim_index << " is created" << endl;
@@ -520,9 +541,43 @@ void Contents::destruct_all(int user_id)
 
 void Contents::update()
 {
-	tick_count = GetTickCount64() - ingame_time;
-	ingame_time = GetTickCount64();
-	tmp_sleep_time += tick_count;
+	tick_count = (GetTickCount64() - server_time) / second;
+	server_time = GetTickCount64();
+	ingame_time += tick_count * 8;
+
+	if (ingame_time >= max_oneday){
+		ingame_time -= max_oneday;
+		wakeup_flag = false;
+		sleep_flag = false;
+		for (int i = 0; i < 4; ++i)
+			send_packet_flag[i] = false;
+
+		send_packet_flag[0] = true;
+		timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+		timer.add_event(ev);
+	}
+	else if (ingame_time > night_start_time) {
+		if (!send_packet_flag[3]) {
+			send_packet_flag[3] = true;
+			timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+			timer.add_event(ev);
+		}
+	}
+	else if (ingame_time > day_start_time) {
+		if (!send_packet_flag[2]) {
+			send_packet_flag[2] = true;
+			timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+			timer.add_event(ev);
+		}
+	}
+	else if (ingame_time > dawn_start_time) {
+		if (!send_packet_flag[1]) {
+			send_packet_flag[1] = true;
+			timer_event ev = { 0, GAME_Time, high_resolution_clock::now(), 0, NULL };
+			timer.add_event(ev);
+		}
+	}
+
 
 	update_sim();
 
@@ -535,12 +590,20 @@ void Contents::update()
 void Contents::update_sim()
 {
 	lock_guard<mutex> lock_guard(g_sims_lock);
-	if (tmp_sleep_time > 30000.f) {
+	if (ingame_time > night_start_time && !sleep_flag) {
 		for (auto& sims : g_sims) {
 			timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
 			timer.add_event(ev);
 		}
-		tmp_sleep_time -= 30000.f;
+		sleep_flag = true;
+	}
+
+	if (ingame_time > dawn_start_time && !wakeup_flag) {
+		for (auto& sims : g_sims) {
+			timer_event ev = { sims.first, SIM_WakeUp, high_resolution_clock::now(), sims.first, NULL };
+			timer.add_event(ev);
+		}
+		wakeup_flag = true;
 	}
 
 	for (auto& landmark : g_villages){
@@ -550,7 +613,7 @@ void Contents::update_sim()
 				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % 30) - 15, landmark->m_info.m_zPos + (rand() % 30) - 15);
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % collider_info[info->buildingType].size();
-				landmark->delayTime = rand() % 10 + 10000.f;
+				landmark->delayTime = rand() % 10 + 10.f;
 
 				timer_event ev = { -1, SIM_Build,  high_resolution_clock::now(), rand() % landmark->simList.size(), info };
 				timer.add_event(ev);

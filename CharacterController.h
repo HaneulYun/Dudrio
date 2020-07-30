@@ -61,19 +61,21 @@ public:
 
 		averageCount++;
 
-		if (Input::GetMouseButtonDown(2))
-		{
-			lastMousePos = Input::mousePosition;
-		}
-		else if (Input::GetMouseButton(2))
-		{
-			Vector3 currMousePos = Input::mousePosition;
-			float rotateAngle = (Input::mousePosition.x - lastMousePos.x) * Time::deltaTime * 15.0f;
+		if (GuestNetwork::network->isConnect) {
+			if (Input::GetMouseButtonDown(2))
+			{
+				lastMousePos = Input::mousePosition;
+			}
+			else if (Input::GetMouseButton(2))
+			{
+				Vector3 currMousePos = Input::mousePosition;
+				float rotateAngle = (Input::mousePosition.x - lastMousePos.x) * Time::deltaTime * 15.0f;
 
-			gameObject->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, rotateAngle);
+				gameObject->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, rotateAngle);
 
-			rotAngleSum += rotateAngle;
-			lastMousePos = Input::mousePosition;
+				rotAngleSum += rotateAngle;
+				lastMousePos = Input::mousePosition;
+			}
 		}
 
 		if(GuestNetwork::network->isConnect && chrono::high_resolution_clock::now() - last_packet_time >= chrono::milliseconds(333))

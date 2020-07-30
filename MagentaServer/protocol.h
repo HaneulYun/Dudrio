@@ -1,7 +1,7 @@
 #pragma once
 
-constexpr int MAX_ID_LEN = 50;
-constexpr int MAX_STR_LEN = 255;
+constexpr int MAX_ID_LEN = 16;
+constexpr int MAX_STR_LEN = 100 - MAX_ID_LEN + 1;
 constexpr int MAX_USER = 10000;
 
 #define WORLD_WIDTH		1000
@@ -31,13 +31,21 @@ constexpr int MAX_USER = 10000;
 #define S2C_SIM_ENTER		10
 #define S2C_SIM_LEAVE		11
 #define S2C_SIM_MOVE		12
+#define S2C_GAME_TIME		13
 
 #pragma pack(push ,1)
 
+///////////////////////////////////////////////
+// SERVER TO CLIENT
+///////////////////////////////////////////////
+// LOGIN ---------------------
 struct sc_packet_login_ok {
 	unsigned char size;
 	char type;
 	int id;
+	int host_id;
+	char host_name[MAX_ID_LEN + 1];
+	float game_time;
 	float xPos, zPos;
 	float xVel, zVel;
 	float rotAngle;
@@ -52,11 +60,38 @@ struct sc_packet_login_fail {
 	char type;
 };
 
+struct sc_packet_game_time {
+	unsigned char size;
+	char type;
+	float game_time;
+};
+
 struct sc_packet_chat {
 	unsigned char size;
 	char type;
 	int	 id;
 	wchar_t mess[MAX_STR_LEN];
+};
+
+// PLAYER ----------------------
+constexpr unsigned char O_GUEST = 0;
+constexpr unsigned char O_HOST = 1;
+
+struct sc_packet_enter {
+	unsigned char size;
+	char type;
+	int id;
+	char name[MAX_ID_LEN + 1];
+	char o_type;
+	float xPos, zPos;
+	float xVel, zVel;
+	float rotAngle;
+};
+
+struct sc_packet_leave {
+	unsigned char size;
+	char type;
+	int id;
 };
 
 struct sc_packet_move {
@@ -69,6 +104,7 @@ struct sc_packet_move {
 	unsigned move_time;
 };
 
+// SIM -------------------------
 struct sc_packet_sim_enter {
 	unsigned char size;
 	char type;
@@ -93,6 +129,7 @@ struct sc_packet_sim_move {
 	float rotAngle;
 };
 
+// CONSTRUCT -------------------
 struct sc_packet_construct
 {
 	unsigned char size;
@@ -118,40 +155,25 @@ struct sc_packet_destruct_all
 	char type;
 };
 
-constexpr unsigned char O_GUEST = 0;
-constexpr unsigned char O_HOST = 1;
-
-struct sc_packet_enter {
-	unsigned char size;
-	char type;
-	int id;
-	char name[MAX_ID_LEN];
-	char o_type;
-	float xPos, zPos;
-	float xVel, zVel;
-	float rotAngle;
-};
-
-struct sc_packet_leave {
-	unsigned char size;
-	char type;
-	int id;
-};
-
+///////////////////////////////////////////////
+// CLIENT TO SERVER
+///////////////////////////////////////////////
+// LOGIN------------------------
 struct cs_packet_login_guest {
 	unsigned char	size;
 	char	type;
-	char	name[MAX_ID_LEN];
+	char	name[MAX_ID_LEN + 1];
 };
 
 struct cs_packet_login_host {
 	unsigned char	size;
 	char	type;
-	char	name[MAX_ID_LEN];
+	char	name[MAX_ID_LEN + 1];
 	float	terrainSize;
 	float	frequency;
 	int		octaves;
 	int		seed;
+	float	game_time;
 };
 
 struct cs_packet_logout {
@@ -165,6 +187,7 @@ struct cs_packet_chat {
 	wchar_t message[MAX_STR_LEN];
 };
 
+// PLAYER ------------------------
 struct cs_packet_move_start {
 	unsigned char size;
 	char type;
@@ -183,6 +206,7 @@ struct cs_packet_move {
 	unsigned move_time;
 };
 
+// CONSTRUCT ---------------------
 struct cs_packet_construct{
 	unsigned char size;
 	char type;

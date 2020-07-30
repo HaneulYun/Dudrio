@@ -5,8 +5,10 @@ class GuestGameWorld : public MonoBehavior<GuestGameWorld>
 {
 public:
 	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Lighting };
+	enum TimeSpeed { X1 = 1, X2 = 2, X4 = 4, X8 = 8 };
 
 private /*이 영역에 private 변수를 선언하세요.*/:
+	const int timeOfDay = 60 * 15;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static GuestGameWorld* gameWorld;
@@ -16,11 +18,14 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	// 전체 심 목록
 	std::map<int, GameObject*> simList;
 
-	float gameTime;
-	float gameDeltaTime;
+	/*Time*/
+	GameObject* sun;
+	TimeSpeed		timeSpeed = X1;
+	float			gameTime = 37.5f * 6;
+	float			gameDeltaTime;
 
-	int simIndex = 0;
-	GameObject* simPrefab;
+	/*money*/
+	int				gameMoney;
 
 private:
 	friend class GameObject;
@@ -36,4 +41,7 @@ public:
 	void gameTimeUpdate(); 
 	void buildInGameWorld(GameObject* building, int type, int index);
 	void deleteInGameWorld(GameObject* building, int type, int index);
+	void calculateSunInfo();
+
+	std::wstring convertTimeToText();
 };

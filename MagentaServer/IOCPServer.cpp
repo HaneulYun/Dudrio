@@ -135,33 +135,67 @@ void IOCPServer::worker_thread_loop()
 			delete exover;
 		}
 			break;
+		case GAME_TIME:
+		{
+			g_clients_lock.lock();
+			for (auto cl : g_clients) {
+				if (ST_ACTIVE == cl.second->m_status)
+					send_game_time_packet(cl.second->m_id);
+			}
+			g_clients_lock.unlock();
+			delete exover;
+		}
+		break;
 		case SIM_BUILD: 
 		{
-			g_sims[exover->target_id]->buildInfo = *static_cast<BuildMessageInfo*>(exover->extra_info);
-			SIM_Message msg{ SIM_Build, exover->extra_info };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
-			
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				g_sims[exover->target_id]->buildInfo = *static_cast<BuildMessageInfo*>(exover->extra_info);
+				SIM_Message msg{ SIM_Build, exover->extra_info };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
 		case SIM_MOVE:
 		{
-			SIM_Message msg{ SIM_Move, NULL };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				SIM_Message msg{ SIM_Move, NULL };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
 		case SIM_SLEEP:
 		{
-			SIM_Message msg{ SIM_Sleep, NULL };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				SIM_Message msg{ SIM_Sleep, NULL };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
 		case SIM_WAKEUP:
 		{
-			SIM_Message msg{ SIM_WakeUp, NULL };
-			g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			g_sims_lock.lock();
+			if (g_sims.count(exover->target_id) != 0) {
+				g_sims_lock.unlock();
+				SIM_Message msg{ SIM_WakeUp, NULL };
+				g_sims[exover->target_id]->stateMachine.HandleMessage(msg);
+			}
+			else
+				g_sims_lock.unlock();
 			delete exover;
 		}
 			break;
@@ -296,7 +330,10 @@ void IOCPServer::send_login_ok_packet(int user_id)
 	p.xVel = g_clients[user_id]->m_xVel;
 	p.zVel = g_clients[user_id]->m_zVel;
 	p.rotAngle = g_clients[user_id]->m_rotAngle;
-	
+	p.game_time = contents.ingame_time;
+	p.host_id = contents.host_id;
+	strcpy(p.host_name, g_clients[contents.host_id]->m_name);
+
 	if (terrain_data != nullptr) {
 		p.frequency = terrain_data->frequency;
 		p.terrainSize = terrain_data->terrain_size;
@@ -304,6 +341,7 @@ void IOCPServer::send_login_ok_packet(int user_id)
 		p.seed = terrain_data->seed;
 	}
 
+	cout << "Ingame time: " << p.game_time << endl;
 	send_packet(user_id, &p);
 }
 
@@ -458,6 +496,16 @@ void IOCPServer::send_destruct_all_packet(int user_id)
 	sc_packet_destruct_all p;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT_ALL;
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_game_time_packet(int user_id)
+{
+	sc_packet_game_time p;
+	p.size = sizeof(p);
+	p.type = S2C_GAME_TIME;
+	p.game_time = contents.ingame_time;
 
 	send_packet(user_id, &p);
 }

@@ -58,7 +58,15 @@ void Timer::timer_thread_loop()
 			case GAME_Reset:
 			{
 				clear_timer();
+				delete over;
 				continue;
+			}
+			break;
+			case GAME_Time:
+			{
+				over->op = GAME_TIME;
+				over->obj_id = ev.obj_id;
+				over->target_id = ev.target_id;
 			}
 			break;
 			case SIM_Move:
@@ -81,7 +89,6 @@ void Timer::timer_thread_loop()
 				over->op = SIM_WAKEUP;
 				over->obj_id = ev.obj_id;
 				over->target_id = ev.target_id;
-				//over->extra_info = ev.extra_info;
 			}
 			break;
 			case SIM_Build:

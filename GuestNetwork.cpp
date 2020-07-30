@@ -14,7 +14,14 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
-		
+		GuestGameWorld::gameWorld->gameTime = my_packet->game_time;
+		GuestGameWorld::gameWorld->timeSpeed = GuestGameWorld::gameWorld->TimeSpeed::X8;
+
+		// 호스트 이름 저장
+		hostId = my_packet->host_id;
+		strcpy_s(host_name, my_packet->host_name);
+
+		// 지형 생성
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(my_packet->terrainSize, my_packet->terrainSize);
 		string fileName = terrainGenerator->createHeightMap(my_packet->frequency, my_packet->octaves, my_packet->seed, (char*)"square");
 		delete terrainGenerator;
@@ -45,6 +52,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 			BuildingBuilder::buildingBuilder->terrainNodeData = terrainNodeData;
 		}
 
+		// 내 캐릭터 정보 지정
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
 		myc->heightmap = &terrainData->terrainData;
 		simsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
@@ -54,8 +62,12 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	case S2C_LOGIN_FAIL:
 	{
 		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
+
+		connectButtonText->text = L"Connect";
+		pressButton = false;
 		isConnect = false;
 		tryConnect = false;
+		gameTime->SetActive(false);
 
 		closesocket(serverSocket);
 	}
@@ -96,7 +108,9 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 		if (id == myId){
 			auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
-			myc->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, 0);
+			auto mycPos = myCharacter->transform->position;
+			if (Vector3{ my_packet->xPos, 0, my_packet->zPos } != Vector3{ mycPos.x, 0, mycPos.z })
+				myc->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, 0);
 		}
 		else if (id != hostId) {
 			if (0 != otherCharacters.count(id)){
@@ -161,9 +175,34 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	break;
 	case S2C_CHAT:
 	{
-
+		sc_packet_chat* my_packet = reinterpret_cast<sc_packet_chat*>(ptr);
+		int id = my_packet->id;
+		if (id == myId){
+			wstring wname;
+			string cname = myCharacter->GetComponent<CharacterMovingBehavior>()->name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+		else if (id == hostId){
+			wstring wname;
+			string cname = host_name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
+		else{
+			wstring wname;
+			string cname = otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name;
+			wname.assign(cname.begin(), cname.end());
+			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+		}
 	}
 	break;
+	case S2C_GAME_TIME:
+	{
+		sc_packet_game_time* my_packet = reinterpret_cast<sc_packet_game_time*>(ptr);
+		GuestGameWorld::gameWorld->gameTime = my_packet->game_time;
+	}
+	break; 
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
@@ -264,16 +303,22 @@ void GuestNetwork::Logout()
 
 	send_packet(&l_packet);
 
+	connectButtonText->text = L"Connect";
+	pressButton = false;
 	isConnect = false;
 	tryConnect = false;
+	gameTime->SetActive(false);
 
 	closesocket(serverSocket);
 
 	//Builder::builder->DestroyAllBuilding();
 
 	hostId = -1;
+	for (auto& sim : sims)
+		Scene::scene->PushDelete(sim.second);
+	sims.clear();
+
 	for (auto& others : otherCharacters)
 		Scene::scene->PushDelete(others.second);
-
 	otherCharacters.clear();
 }

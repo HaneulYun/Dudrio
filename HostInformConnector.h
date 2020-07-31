@@ -133,7 +133,7 @@ public:
 		{
 			auto rt = prevButton->GetComponent<RectTransform>();
 			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(30, -50, 30, 30);
+			rt->setPosAndSize(30, -50, 40, 40);
 
 			prevButton->AddComponent<Button>()->AddEvent(
 				[](void*) {
@@ -274,10 +274,11 @@ public:
 
 			button->AddComponent<Button>()->AddEvent(
 				[](void*) {
+					connector->clearFields();
 					if (connector->insertInform())
 						SceneManager::LoadScene("HostScene");
 					else
-						Debug::Log("싸발");
+						Debug::Log("범위 초과");
 				});
 			{
 				auto textobject = button->AddChildUI();

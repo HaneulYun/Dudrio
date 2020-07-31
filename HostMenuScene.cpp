@@ -88,7 +88,7 @@ void HostMenuScene::BuildObjects()
 			loadVillage->AddComponent<Button>()->AddEvent(
 				[](void*) {
 					Debug::Log("이게 되네;;\n");
-					SceneManager::LoadScene("HostScene");
+				//	SceneManager::LoadScene("HostScene");
 				});
 			{
 				auto textobject = loadVillage->AddChildUI();

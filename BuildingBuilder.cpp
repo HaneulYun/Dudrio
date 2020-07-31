@@ -63,6 +63,9 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 		else
 			prefab->transform->position = getPosOnTerrain();
 	}
+
+	else if (Input::GetKey(KeyCode::X))
+		pickObject();
 }
 
 void BuildingBuilder::serializeBuildings()
@@ -528,6 +531,36 @@ wstring BuildingBuilder::getBuildingName(int type, int index)
 	if (index < building[type].size())
 		return building[type][index].buildingName;
 	return L"X";
+}
+
+void BuildingBuilder::pickObject()
+{
+	Vector3 mousePosInWorld = getPosOnTerrain();
+
+	int x = mousePosInWorld.x / gameObject->scene->spatialPartitioningManager.sectorWidth;
+	int y = mousePosInWorld.z / gameObject->scene->spatialPartitioningManager.sectorHeight;
+
+
+	for (auto& tagList : gameObject->scene->spatialPartitioningManager.sectorList[x][y].list)
+	{
+		for (auto& Object : tagList.second)
+		{
+			BoxCollider* collider = Object->GetComponent<BoxCollider>();
+			if (collider)
+			{
+				BoundingOrientedBox boundingBox{};
+				boundingBox.Center = Object->transform->position.xmf3;
+				boundingBox.Extents = collider->boundingBox.Extents;
+				boundingBox.Orientation = Object->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
+
+				if (boundingBox.Contains(XMLoadFloat3(&XMFLOAT3(mousePosInWorld.x, mousePosInWorld.y, mousePosInWorld.z))))
+				{
+					if (Input::GetMouseButtonUp(0))
+						gameObject->scene->PushDelete(Object);
+				}
+			}
+		}
+	}
 }
 
 Vector3 BuildingBuilder::getPosOnTerrain()

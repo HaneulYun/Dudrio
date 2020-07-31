@@ -65,6 +65,8 @@ public:
 
 	wstring getBuildingName(int type, int index);
 
+	void pickObject();
+
 	Vector3 getPosOnTerrain();
 
 	bool IntersectPlane(Vector3 rayOrigin, Vector3 rayDirection, Vector3 v0, Vector3 v1, Vector3 v2);

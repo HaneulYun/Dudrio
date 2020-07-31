@@ -53,7 +53,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle);
 			}
-			updateTerrainNodeData(prefab);
+			updateTerrainNodeData(prefab, true);
 
 			GameWorld::gameWorld->buildInGameWorld(GameWorld::gameWorld->buildingList.begin()->first, prefab, curPrefabType, curPrefabIndex);
 
@@ -372,7 +372,7 @@ BuildingBuilderData BuildingBuilder::makeBuilderDataAsMeshAndMaterials(wstring n
 	return data;
 }
 
-void BuildingBuilder::updateTerrainNodeData(GameObject* building)
+void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision)
 {
 	BoundingBox boundingBox = building->GetComponent<BoxCollider>()->boundingBox;
 
@@ -392,14 +392,14 @@ void BuildingBuilder::updateTerrainNodeData(GameObject* building)
 
 			if (obbBox.Contains(XMLoadFloat3(&XMFLOAT3(x, pos.y, z))))
 			{
-				terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].collision = true;
+				terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].collision = collision;
 
 				// 노드 확인용
-				//if (cube)
-				//{
-				//	auto go = Scene::scene->Duplicate(cube);
-				//	go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
-				//}
+				if (cube)
+				{
+					auto go = Scene::scene->Duplicate(cube);
+					go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
+				}
 			}
 		}
 	}
@@ -438,7 +438,7 @@ GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int 
 		obj->transform->position = pos;
 		obj->transform->Rotate(Vector3(0, 1, 0), angle);
 
-		updateTerrainNodeData(obj);
+		updateTerrainNodeData(obj, true);
 
 		return obj;
 	}
@@ -556,7 +556,10 @@ void BuildingBuilder::pickObject()
 				if (boundingBox.Contains(XMLoadFloat3(&XMFLOAT3(mousePosInWorld.x, mousePosInWorld.y, mousePosInWorld.z))))
 				{
 					if (Input::GetMouseButtonUp(0))
+					{
 						gameObject->scene->PushDelete(Object);
+						updateTerrainNodeData(Object, false);
+					}
 				}
 			}
 		}

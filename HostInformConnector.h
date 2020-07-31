@@ -48,26 +48,34 @@ public:
 
 	bool checkRangeInField()
 	{
-		if (nameField->text.length() > MAX_STR_LEN || nameField->text.length() < 2)
+		if (nameField->text.length() > MAX_ID_LEN || nameField->text.length() < 2)
 			return false;
 		if (frequencyField->text.empty())
 			return false;
-		if (frequencyField->text.length() > 2) {
+		if (frequencyField->text.length() <= 2) {
 			int ifrequency;
 			std::wstringstream(frequencyField->text) >> ifrequency;
-			if (ifrequency > 64)
+			if (ifrequency >= 64 || ifrequency < 0)
 				return false;
 		}
+		else return false;
 		if (octavesField->text.empty())
 			return false;
-		if (octavesField->text.length() > 2) {
+		if (octavesField->text.length() <= 2) {
 			int ioctaves;
 			std::wstringstream(octavesField->text) >> ioctaves;
-			if (ioctaves > 16)
+			if (ioctaves >= 16 || ioctaves < 0)
 				return false;
 		}
+		else return false;
 		if (seedField->text.length() > 9 || octavesField->text.empty())
 			return false;
+		else {
+			int iseeds;
+			std::wstringstream(seedField->text) >> iseeds;
+			if (iseeds < 0)
+				return false;
+		}
 		return true;
 	}
 
@@ -274,11 +282,11 @@ public:
 
 			button->AddComponent<Button>()->AddEvent(
 				[](void*) {
-					connector->clearFields();
 					if (connector->insertInform())
 						SceneManager::LoadScene("HostScene");
 					else
 						Debug::Log("범위 초과");
+					connector->clearFields();
 				});
 			{
 				auto textobject = button->AddChildUI();

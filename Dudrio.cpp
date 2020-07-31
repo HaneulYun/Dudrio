@@ -9,6 +9,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	sceneManager->scenes["MenuScene"] = new MenuScene();
 	sceneManager->scenes["HostScene"] = new HostScene();
 	sceneManager->scenes["HostMenuScene"] = new HostMenuScene();
+	sceneManager->scenes["GuestMenuScene"] = new GuestMenuScene();
 	sceneManager->scenes["MaterialScene"] = new MaterialScene();
 	sceneManager->scenes["AnimationScene"] = new AnimationScene();
 	sceneManager->scenes["ParticleScene"] = new ParticleScene();

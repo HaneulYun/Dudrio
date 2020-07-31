@@ -186,6 +186,12 @@
     <ClInclude Include="HostInformConnector.h">
       <Filter>Assets\Network</Filter>
     </ClInclude>
+    <ClInclude Include="GuestInformConnector.h">
+      <Filter>Assets\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="GuestMenuScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -249,6 +255,9 @@
       <Filter>Assets\Scripts</Filter>
     </ClCompile>
     <ClCompile Include="HostMenuScene.cpp">
+      <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GuestMenuScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
   </ItemGroup>

@@ -107,4 +107,5 @@ void HostMenuScene::BuildObjects()
 			informConnector->loadVillageButton = loadVillage;
 		}
 	}
+
 }

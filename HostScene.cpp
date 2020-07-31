@@ -84,10 +84,10 @@ void HostScene::BuildObjects()
 	}
 
 
-	float TerrainSize = 1024;
-	float frequency = 3;
-	int octaves = 3;
-	int seed = 1024;
+	float TerrainSize = HostInformConnector::connector->terrainSize;
+	float frequency = HostInformConnector::connector->frequency;
+	int octaves = HostInformConnector::connector->octaves;
+	int seed = HostInformConnector::connector->seed;
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
 	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
@@ -229,6 +229,7 @@ void HostScene::BuildObjects()
 		hostNetwork->frequency = frequency;
 		hostNetwork->octaves = octaves;
 		hostNetwork->seed = seed;
+		strcpy_s(hostNetwork->name, HostInformConnector::connector->name);
 	}
 
 	auto ServerButton = CreateImage();

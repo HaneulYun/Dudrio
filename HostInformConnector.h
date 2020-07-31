@@ -5,7 +5,7 @@ class HostInformConnector : public MonoBehavior<HostInformConnector>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
 	InputField* nameField{ nullptr };
-	
+
 	InputField* frequencyField{ nullptr };
 	InputField* octavesField{ nullptr };
 	InputField* seedField{ nullptr };
@@ -25,12 +25,12 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	// 마을 주인 이름
 	char name[MAX_ID_LEN + 1];
-	
+
 	// 게임 시간
 	float ingame_time;
 	// 지형 정보
 	float terrainSize = 1000;
-	float frequency;	// 0 ~ 64
+	int frequency;	// 0 ~ 64
 	int octaves;	// 0 ~ 16
 	int seed;	// ~4byte
 
@@ -46,12 +46,53 @@ private:
 public:
 	~HostInformConnector() {}
 
+	bool checkRangeInField()
+	{
+		if (nameField->text.length() > MAX_STR_LEN || nameField->text.length() < 2)
+			return false;
+		if (frequencyField->text.empty())
+			return false;
+		if (frequencyField->text.length() > 2) {
+			int ifrequency;
+			std::wstringstream(frequencyField->text) >> ifrequency;
+			if (ifrequency > 64)
+				return false;
+		}
+		if (octavesField->text.empty())
+			return false;
+		if (octavesField->text.length() > 2) {
+			int ioctaves;
+			std::wstringstream(octavesField->text) >> ioctaves;
+			if (ioctaves > 16)
+				return false;
+		}
+		if (seedField->text.length() > 9 || octavesField->text.empty())
+			return false;
+		return true;
+	}
+
 	void clearFields()
 	{
 		nameField->clear();
 		frequencyField->clear();
 		octavesField->clear();
 		seedField->clear();
+	}
+
+	bool insertInform()
+	{
+		if (!checkRangeInField())
+			return false;
+		std::string sname;
+		sname.assign(nameField->text.begin(), nameField->text.end());
+		strncpy(name, sname.c_str(), sname.length());
+		std::wstringstream(frequencyField->text) >> frequency;
+		std::wstringstream(octavesField->text) >> octaves;
+		std::wstringstream(seedField->text) >> seed;
+
+		clearFields();
+
+		return true;
 	}
 
 	void backToPrevPage()
@@ -233,7 +274,10 @@ public:
 
 			button->AddComponent<Button>()->AddEvent(
 				[](void*) {
-					SceneManager::LoadScene("HostScene");
+					if (connector->insertInform())
+						SceneManager::LoadScene("HostScene");
+					else
+						Debug::Log("싸발");
 				});
 			{
 				auto textobject = button->AddChildUI();
@@ -246,7 +290,7 @@ public:
 				text->fontSize = 30;
 				text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
 				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER; 
+				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			}
 		}
 		SetField(false);
@@ -254,7 +298,7 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		
+
 
 	}
 

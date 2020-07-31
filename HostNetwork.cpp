@@ -260,9 +260,7 @@ void HostNetwork::Login()
 	cs_packet_login_host l_packet;
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_HOST;
-	int t_id = GetCurrentProcessId();
-	sprintf_s(l_packet.name, "P%03d", t_id % 1000);
-	strcpy_s(name, l_packet.name);
+	strcpy_s(l_packet.name, name);
 	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X8;
 	l_packet.game_time = GameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;

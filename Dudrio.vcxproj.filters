@@ -180,6 +180,12 @@
     <ClInclude Include="RotatingBehavior.h">
       <Filter>Assets\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="HostMenuScene.h">
+      <Filter>Assets\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="HostInformConnector.h">
+      <Filter>Assets\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -241,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="GuestGameWorld.cpp">
       <Filter>Assets\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="HostMenuScene.cpp">
+      <Filter>Assets\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

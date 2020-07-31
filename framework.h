@@ -11,6 +11,7 @@
 #include <tchar.h>
 
 #include "MenuScene.h"
+#include "HostMenuScene.h"
 #include "HostScene.h"
 #include "GuestScene.h"
 #include "MaterialScene.h"

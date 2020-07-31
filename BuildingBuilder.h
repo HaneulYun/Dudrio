@@ -53,6 +53,8 @@ public:
 
 	void build(Vector3 position);
 
+	void makePrefab(int type, int index);
+
 	void exitBuildMode();
 
 	void enterBuildMode(int type, int index);

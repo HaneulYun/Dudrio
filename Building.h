@@ -46,16 +46,22 @@ public:
 
 	void OnTriggerEnter(GameObject* collision) 
 	{
-		if (collision->GetComponent<Building>())
-			for (auto& d : gameObject->children)
-				d->GetComponent<Constant>()->v4 = { 1.0f,0.0f,0.0f,1.0f };
+		//Debug::Log("트리거엔터\n");
+		if (collision->children.front()->GetComponent<Constant>())
+		{
+			for (auto& child : collision->children)
+				child->GetComponent<Constant>()->v4 = { 1.0f,0.0f,0.0f,1.0f };
+		}
 	}
 
 	void OnTriggerExit(GameObject* collision) 
 	{
-		if (collision->GetComponent<Building>() && gameObject->collisionType.size() < 2)
-			for (auto& d : gameObject->children)
-			d->GetComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+		//Debug::Log("트리거익시트\n");
+		if (collision->children.front()->GetComponent<Constant>() && collision->collisionType.size() < 2)
+		{
+			for (auto& child : collision->children)
+				child->GetComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+		}
 	}
 	
 	void SetBuildingIndex(int idx)

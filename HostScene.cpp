@@ -8,6 +8,11 @@ AIManager* AIManager::aiManager;
 
 void HostScene::BuildObjects()
 {
+	/***Object Tag***/
+	spatialPartitioningManager.tagData.AddTag("Building");
+	spatialPartitioningManager.tagData.AddTag("Preview");
+	spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, true);
+
 	///*** Asset ***///
 	LoadTextureAsset();
 	LoadMaterialAsset();

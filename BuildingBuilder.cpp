@@ -33,8 +33,15 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 		}
 		else if (Input::GetMouseButtonUp(0))
 		{
+			Matrix4x4 localToWorldMatrix = prefab->GetMatrix();
+			Scene::scene->PushDelete(prefab);
+			makePrefab(curPrefabType, curPrefabIndex);
+			prefab->transform->localToWorldMatrix = localToWorldMatrix;
+
 			auto p = prefab->transform->position;
-			
+			prefab->AddComponent<Building>()->SetBuildingIndex(curPrefabIndex);
+			prefab->tag = TAG_BUILDING;
+
 			if (HostNetwork::network->isConnect) {
 				Vector3 building_forward = prefab->transform->forward;
 				building_forward.y = 0;
@@ -440,12 +447,7 @@ void BuildingBuilder::build(Vector3 position)
 	prefab = nullptr;
 }
 
-void BuildingBuilder::exitBuildMode()
-{
-
-}
-
-void BuildingBuilder::enterBuildMode(int type, int index)
+void BuildingBuilder::makePrefab(int type, int index)
 {
 	if (index < building[type].size())
 	{
@@ -470,11 +472,29 @@ void BuildingBuilder::enterBuildMode(int type, int index)
 					renderer->materials.push_back(data.materials[i++]);
 			}
 		}
-
-		prefab->AddComponent<Building>()->SetBuildingIndex(index);
-		curPrefabType = type;
-		curPrefabIndex = index;
 	}
+}
+
+void BuildingBuilder::exitBuildMode()
+{
+
+}
+
+void BuildingBuilder::enterBuildMode(int type, int index)
+{
+	makePrefab(type, index);
+
+	if (prefab == nullptr) return;
+
+	prefab->tag = TAG_PREVIEW;
+	for (auto& child : prefab->children)
+	{
+		child->layer = (int)RenderLayer::BuildPreview;
+		child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+	}
+
+	curPrefabType = type;
+	curPrefabIndex = index;
 }
 
 float BuildingBuilder::getBoundingBox(int type, int index)

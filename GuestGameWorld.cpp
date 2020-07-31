@@ -30,7 +30,12 @@ void GuestGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 
 void GuestGameWorld::gameTimeUpdate()
 {
-	gameDeltaTime = MathHelper::Clamp(Time::deltaTime * timeSpeed, 0.0f, 0.025f * timeSpeed);
+	if (GuestNetwork::network->isConnect)
+		gameDeltaTime = Time::deltaTime * timeSpeed;
+	else
+		gameDeltaTime = 0;
+
+
 	gameTime += gameDeltaTime;
 
 	if (gameTime >= timeOfDay)

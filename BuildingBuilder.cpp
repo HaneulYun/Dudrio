@@ -31,7 +31,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				lastMousePos = Input::mousePosition;
 			}
 		}
-		else if (Input::GetMouseButtonUp(0))
+		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty())
 		{
 			Matrix4x4 localToWorldMatrix = prefab->GetMatrix();
 			Scene::scene->PushDelete(prefab);

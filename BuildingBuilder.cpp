@@ -58,6 +58,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			GameWorld::gameWorld->buildInGameWorld(GameWorld::gameWorld->buildingList.begin()->first, prefab, curPrefabType, curPrefabIndex);
 
 			prefab = nullptr;
+			Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
 		}
 		else
 			prefab->transform->position = getPosOnTerrain();
@@ -495,6 +496,8 @@ void BuildingBuilder::enterBuildMode(int type, int index)
 
 	curPrefabType = type;
 	curPrefabIndex = index;
+
+	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, true);
 }
 
 float BuildingBuilder::getBoundingBox(int type, int index)

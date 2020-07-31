@@ -123,7 +123,6 @@ int GameWorld::eraseSim(GameObject* landmark, GameObject* house)
 
 void GameWorld::calculateSunInfo()
 {
-	sun->transform->forward = { 1,0,0 };
 	Light* light = sun->GetComponent<Light>();
 	light->Strength = { 0,0,0 };
 
@@ -152,7 +151,7 @@ void GameWorld::calculateSunInfo()
 			light->Strength = { 0,0,0 };
 	}
 
-	sun->transform->Rotate({ 0,1,0 }, sunRotAngle);
+	sun->transform->forward = Vector3(1, 0, 0).TransformNormal(Matrix4x4::RotationZ(XMConvertToRadians(sunRotAngle)));
 }
 
 std::wstring GameWorld::convertTimeToText()

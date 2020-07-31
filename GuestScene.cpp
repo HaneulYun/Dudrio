@@ -67,6 +67,8 @@ void GuestScene::BuildObjects()
 		auto light = directionalLight->AddComponent<Light>();
 		light->Strength = { 0.9f, 0.8f, 0.7f };
 		light->shadowType = Light::Shadows;
+
+		environment.sunSources = light;
 	}
 
 	auto simPrefab = CreateEmptyPrefab();

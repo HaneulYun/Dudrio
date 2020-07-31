@@ -134,6 +134,8 @@ void HostScene::BuildObjects()
 		auto light = directionalLight->AddComponent<Light>();
 		light->Strength = { 0.9f, 0.9f, 0.9f };
 		light->shadowType = Light::Shadows;
+
+		environment.sunSources = light;
 	}
 
 	//GameObject* manager = CreateEmpty();

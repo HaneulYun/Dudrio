@@ -23,7 +23,7 @@ void LobbyServer::init_server()
 	SOCKADDR_IN serveraddr{};
 	memset(&serveraddr, 0, sizeof(SOCKADDR_IN));
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_port = htons(9000);
+	serveraddr.sin_port = htons(SERVER_TO_LOBBY_SERVER_PORT);
 	serveraddr.sin_addr.S_un.S_addr = inet_addr(LOBBY_SERVER_IP);
 
 	int retval = connect_nonblock(l_socket, (struct sockaddr*) & serveraddr, sizeof(serveraddr), 5);

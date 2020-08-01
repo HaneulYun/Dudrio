@@ -30,7 +30,7 @@ void IOCPServer::init_server()
 	SOCKADDR_IN s_address;
 	memset(&s_address, 0, sizeof(s_address));
 	s_address.sin_family = AF_INET;
-	s_address.sin_port = htons(9000);//server_port);
+	s_address.sin_port = htons(SERVER_TO_LOBBY_SERVER_PORT);
 	s_address.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 	::bind(l_socket, reinterpret_cast<sockaddr*>(&s_address), sizeof(s_address));
 
@@ -45,7 +45,7 @@ void IOCPServer::start_server()
 {
 	init_clients();
 
-	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, NUM_OF_CPU * 2 + 1);
+	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 1);// NUM_OF_CPU * 2 + 1);
 	
 	create_worker_threads();
 	create_accept_threads();
@@ -69,10 +69,10 @@ void IOCPServer::init_clients()
 // thread ---------------------------------
 void IOCPServer::create_worker_threads()
 {
-	worker_threads.reserve(NUM_OF_CPU * 2 + 2);
-	for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
+	//worker_threads.reserve(NUM_OF_CPU * 2 + 2);
+	//for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
 		worker_threads.emplace_back([this]() {worker_thread_loop(); });
-	}
+	//}
 
 	cout << "Create Worker_Threads Complete" << endl;
 }
@@ -86,17 +86,17 @@ void IOCPServer::create_accept_threads()
 
 void IOCPServer::destroy_threads()
 {
-	worker_run = false;
-	CloseHandle(g_iocp);
-	for (auto& w_t : worker_threads)
-		if (w_t.joinable())
-			w_t.join();
-
-	accept_run = false;
-	closesocket(l_socket);
-
-	if (accept_thread.joinable())
-		accept_thread.join();
+	//worker_run = false;
+	//CloseHandle(g_iocp);
+	//for (auto& w_t : worker_threads)
+	//	if (w_t.joinable())
+	//		w_t.join();
+	//
+	//accept_run = false;
+	//closesocket(l_socket);
+	//
+	//if (accept_thread.joinable())
+	//	accept_thread.join();
 }
 
 void IOCPServer::worker_thread_loop()

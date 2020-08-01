@@ -43,6 +43,6 @@ struct EXOVER {
 };
 
 extern class IOCPServer iocp;
-extern class unordered_map<int, class Room*> g_rooms;
-extern class unordered_map<int, class Client*> g_servers;
-extern class unordered_map<int, class Client*> g_users;
+extern unordered_map<int, class Room*> g_rooms;
+extern unordered_map<int, class Client*> g_servers;
+extern unordered_map<int, class Client*> g_users;

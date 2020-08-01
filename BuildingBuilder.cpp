@@ -39,11 +39,16 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && isOnLand() != nullptr)
 		{
 			GameObject* prePrefab = prefab;
-			Matrix4x4 localToWorldMatrix = prefab->GetMatrix();
 			makePrefab(curPrefabType, curPrefabIndex);
-			prefab->transform->localToWorldMatrix = localToWorldMatrix;
+			prefab->transform->localToWorldMatrix = prePrefab->GetMatrix();
 
 			auto p = prefab->transform->position;
+
+			if (curPrefabType == Landmark)
+			{
+				curLandmark = prefab;
+				prefab->AddComponent<Village>()->OnAutoDevelopment();
+			}
 			prefab->AddComponent<Building>()->setBuildingInform(curLandmark, curPrefabType, curPrefabIndex);
 			prefab->tag = TAG_BUILDING;
 
@@ -72,10 +77,13 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			else
 				prefab = prePrefab;
 		}
+
+		// 미리보기 건물 이동
 		else
 			prefab->transform->position = getPosOnTerrain();
 	}
 
+	// 건물 삭제
 	else if (Input::GetKey(KeyCode::X))
 		pickToDelete();
 }
@@ -386,14 +394,30 @@ BuildingBuilderData BuildingBuilder::makeBuilderDataAsMeshAndMaterials(wstring n
 
 GameObject* BuildingBuilder::isOnLand()
 {
-	for (auto& landmark : GameWorld::gameWorld->buildingList)
+	if (curPrefabType == Landmark)
 	{
-		float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
-
-		if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand)
+		for (auto& landmark : GameWorld::gameWorld->buildingList)
 		{
-			curLandmark = landmark.first;
-			return landmark.first;
+			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
+
+			if (distance >= landmark.first->GetComponent<Village>()->radiusOfLand + LAND_SMALL)
+			{
+				curLandmark = prefab;
+				return prefab;
+			}
+		}
+	}
+	else
+	{
+		for (auto& landmark : GameWorld::gameWorld->buildingList)
+		{
+			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
+
+			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand)
+			{
+				curLandmark = landmark.first;
+				return landmark.first;
+			}
 		}
 	}
 	return nullptr;

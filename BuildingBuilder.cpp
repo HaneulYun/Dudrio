@@ -33,8 +33,8 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 		}
 		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty())
 		{
+			GameObject* prePrefab = prefab;
 			Matrix4x4 localToWorldMatrix = prefab->GetMatrix();
-			Scene::scene->PushDelete(prefab);
 			makePrefab(curPrefabType, curPrefabIndex);
 			prefab->transform->localToWorldMatrix = localToWorldMatrix;
 
@@ -57,8 +57,14 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 
 			GameWorld::gameWorld->buildInGameWorld(GameWorld::gameWorld->buildingList.begin()->first, prefab, curPrefabType, curPrefabIndex);
 
-			prefab = nullptr;
-			Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
+			if (!Input::GetKey(KeyCode::Shift))
+			{
+				prefab = nullptr;
+				Scene::scene->PushDelete(prePrefab);
+				Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
+			}
+			else
+				prefab = prePrefab;
 		}
 		else
 			prefab->transform->position = getPosOnTerrain();

@@ -11,8 +11,11 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	if (prefab)
 	{
+		// 토글 설정
 		if (Input::GetKeyDown(KeyCode::T))
 			rotationToggle = rotationToggle ? false : true;
+
+		// 건물 회전
 		if (Input::GetMouseButtonDown(2))
 			lastMousePos = Input::mousePosition;
 		else if (Input::GetMouseButton(2))
@@ -31,7 +34,9 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				lastMousePos = Input::mousePosition;
 			}
 		}
-		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty())
+
+		// 건물 건설
+		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && isOnLand() != nullptr)
 		{
 			GameObject* prePrefab = prefab;
 			Matrix4x4 localToWorldMatrix = prefab->GetMatrix();
@@ -39,7 +44,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			prefab->transform->localToWorldMatrix = localToWorldMatrix;
 
 			auto p = prefab->transform->position;
-			prefab->AddComponent<Building>()->setBuildingInform(GameWorld::gameWorld->buildingList.begin()->first, curPrefabType, curPrefabIndex);
+			prefab->AddComponent<Building>()->setBuildingInform(curLandmark, curPrefabType, curPrefabIndex);
 			prefab->tag = TAG_BUILDING;
 
 			if (HostNetwork::network->isConnect) {
@@ -55,8 +60,9 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			}
 			updateTerrainNodeData(prefab, true);
 
-			GameWorld::gameWorld->buildInGameWorld(GameWorld::gameWorld->buildingList.begin()->first, prefab, curPrefabType, curPrefabIndex);
+			GameWorld::gameWorld->buildInGameWorld(curLandmark, prefab, curPrefabType, curPrefabIndex);
 
+			// 연속 건설
 			if (!Input::GetKey(KeyCode::Shift))
 			{
 				prefab = nullptr;
@@ -376,6 +382,21 @@ BuildingBuilderData BuildingBuilder::makeBuilderDataAsMeshAndMaterials(wstring n
 	data.mesh = mesh;
 	data.materials = materials;
 	return data;
+}
+
+GameObject* BuildingBuilder::isOnLand()
+{
+	for (auto& landmark : GameWorld::gameWorld->buildingList)
+	{
+		float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
+
+		if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand)
+		{
+			curLandmark = landmark.first;
+			return landmark.first;
+		}
+	}
+	return nullptr;
 }
 
 void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision)

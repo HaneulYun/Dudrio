@@ -14,6 +14,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static BuildingBuilder* buildingBuilder;
 
+	GameObject* curLandmark;
 	int curPrefabType;
 	int curPrefabIndex;
 
@@ -46,6 +47,8 @@ public:
 	BuildingBuilderData makeBuilderDataAsMeshAndMaterial(wstring name, Mesh* mesh, Material* material);
 	
 	BuildingBuilderData makeBuilderDataAsMeshAndMaterials(wstring name, Mesh* mesh, vector<Material*> materials);
+
+	GameObject* isOnLand();
 
 	void updateTerrainNodeData(GameObject* building, bool collision);
 

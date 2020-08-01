@@ -75,7 +75,7 @@ void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int
 	}
 	buildingList[landmark][(BuildingType)type].push_back(building);
 
-	if (type == BuildingType::House &&!HostNetwork::network->isConnect)
+	if (type == BuildingType::House && !HostNetwork::network->isConnect)
 		addSim(landmark, building);
 }
 
@@ -88,10 +88,8 @@ void GameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, in
 	}
 	buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
 
-	if (type == BuildingType::House)
-	{
+	if (type == BuildingType::House && !HostNetwork::network->isConnect)
 		eraseSim(landmark, building);
-	}
 }
 
 int GameWorld::addSim(GameObject* landmark, GameObject* house)
@@ -122,6 +120,7 @@ int GameWorld::eraseSim(GameObject* landmark, GameObject* house)
 	landmark->GetComponent<Village>()->simList.erase(house);
 	simList.erase(id);
 
+	Scene::scene->PushDelete(sim);
 	return id;
 }
 

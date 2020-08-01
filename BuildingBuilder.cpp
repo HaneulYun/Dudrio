@@ -39,7 +39,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			prefab->transform->localToWorldMatrix = localToWorldMatrix;
 
 			auto p = prefab->transform->position;
-			prefab->AddComponent<Building>()->SetBuildingIndex(curPrefabIndex);
+			prefab->AddComponent<Building>()->setBuildingInform(GameWorld::gameWorld->buildingList.begin()->first, curPrefabType, curPrefabIndex);
 			prefab->tag = TAG_BUILDING;
 
 			if (HostNetwork::network->isConnect) {
@@ -71,7 +71,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 	}
 
 	else if (Input::GetKey(KeyCode::X))
-		pickObject();
+		pickToDelete();
 }
 
 void BuildingBuilder::serializeBuildings()
@@ -401,11 +401,11 @@ void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision
 				terrainNodeData->extraData[x + (z * terrain->terrainData.heightmapHeight)].collision = collision;
 
 				// 노드 확인용
-				if (cube)
-				{
-					auto go = Scene::scene->Duplicate(cube);
-					go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
-				}
+				//if (cube)
+				//{
+				//	auto go = Scene::scene->Duplicate(cube);
+				//	go->transform->position = Vector3(x, terrain->terrainData.GetHeight(x, z), z);
+				//}
 			}
 		}
 	}
@@ -539,7 +539,7 @@ wstring BuildingBuilder::getBuildingName(int type, int index)
 	return L"X";
 }
 
-void BuildingBuilder::pickObject()
+void BuildingBuilder::pickToDelete()
 {
 	Vector3 mousePosInWorld = getPosOnTerrain();
 
@@ -549,22 +549,38 @@ void BuildingBuilder::pickObject()
 
 	for (auto& tagList : gameObject->scene->spatialPartitioningManager.sectorList[x][y].list)
 	{
-		for (auto& Object : tagList.second)
+		for (auto& object : tagList.second)
 		{
-			BoxCollider* collider = Object->GetComponent<BoxCollider>();
+			BoxCollider* collider = object->GetComponent<BoxCollider>();
 			if (collider)
 			{
 				BoundingOrientedBox boundingBox{};
-				boundingBox.Center = Object->transform->position.xmf3;
+				boundingBox.Center = object->transform->position.xmf3;
 				boundingBox.Extents = collider->boundingBox.Extents;
-				boundingBox.Orientation = Object->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
+				boundingBox.Orientation = object->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
 
 				if (boundingBox.Contains(XMLoadFloat3(&XMFLOAT3(mousePosInWorld.x, mousePosInWorld.y, mousePosInWorld.z))))
 				{
 					if (Input::GetMouseButtonUp(0))
 					{
-						gameObject->scene->PushDelete(Object);
-						updateTerrainNodeData(Object, false);
+						// 랜드마크인 경우 속해있는 모든 객체 다 삭제
+						if (object->GetComponent<Building>()->type == BuildingType::Landmark)
+						{
+							for (auto& list : GameWorld::gameWorld->buildingList[object])
+							{
+								for (auto& go : list.second)
+								{
+									go->scene->PushDelete(go);
+									updateTerrainNodeData(go, false);
+									Building* building = go->GetComponent<Building>();
+									GameWorld::gameWorld->deleteInGameWorld(building->landmark, go, building->type, building->index);
+								}
+							}
+						}
+						gameObject->scene->PushDelete(object);
+						updateTerrainNodeData(object, false);
+						Building* building = object->GetComponent<Building>();
+						GameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 					}
 				}
 			}

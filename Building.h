@@ -8,6 +8,9 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	float time{ 0.0f };
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	Vector3 positionToAnimate{ 0.0f,0.0f,0.0f };
+
+	GameObject* landmark;
+	int type;
 	int index;
 
 private:
@@ -64,9 +67,11 @@ public:
 		}
 	}
 	
-	void SetBuildingIndex(int idx)
+	void setBuildingInform(GameObject* landmark, int type, int index)
 	{
-		index = idx;
+		this->landmark = landmark;
+		this->type = type;
+		this->index = index;
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

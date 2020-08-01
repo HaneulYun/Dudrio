@@ -65,7 +65,7 @@ public:
 
 	wstring getBuildingName(int type, int index);
 
-	void pickObject();
+	void pickToDelete();
 
 	Vector3 getPosOnTerrain();
 

@@ -8,6 +8,11 @@ AIManager* AIManager::aiManager;
 
 void HostScene::BuildObjects()
 {
+	/***Object Tag***/
+	spatialPartitioningManager.tagData.AddTag("Building");
+	spatialPartitioningManager.tagData.AddTag("Preview");
+	//spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, true);
+
 	///*** Asset ***///
 	LoadTextureAsset();
 	LoadMaterialAsset();
@@ -192,6 +197,13 @@ void HostScene::BuildObjects()
 	Village* village = landmark->AddComponent<Village>();
 	village->OnAutoDevelopment();
 
+
+	GameObject* node = CreateEmpty();
+	node->transform->Scale(Vector3(0.5, 0.5, 0.5));
+	node->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
+	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
+
+
 	auto object = CreateUI();
 	{
 		auto rt = object->GetComponent<RectTransform>();
@@ -202,7 +214,7 @@ void HostScene::BuildObjects()
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
-		//buildingBuilder->cube = node;
+		buildingBuilder->cube = node;
 
 		GameWorld* gameWorld = object->AddComponent<GameWorld>();
 		gameWorld->simPrefab = sim;

@@ -19,7 +19,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	Terrain* terrain{ nullptr };
 	TerrainNodeData* terrainNodeData; 
-	//GameObject* cube;
+	GameObject* cube;
 	float distance;
 
 
@@ -47,11 +47,13 @@ public:
 	
 	BuildingBuilderData makeBuilderDataAsMeshAndMaterials(wstring name, Mesh* mesh, vector<Material*> materials);
 
-	void updateTerrainNodeData(GameObject* building);
+	void updateTerrainNodeData(GameObject* building, bool collision);
 
 	GameObject* build(Vector2 position, float angle, int type, int index);
 
 	void build(Vector3 position);
+
+	void makePrefab(int type, int index);
 
 	void exitBuildMode();
 
@@ -62,6 +64,8 @@ public:
 	int getBuildingCount(int type);
 
 	wstring getBuildingName(int type, int index);
+
+	void pickToDelete();
 
 	Vector3 getPosOnTerrain();
 

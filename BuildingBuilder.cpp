@@ -608,22 +608,6 @@ void BuildingBuilder::pickToDelete()
 				{
 					if (Input::GetMouseButtonUp(0))
 					{
-						// 랜드마크인 경우 속해있는 모든 객체 다 삭제
-						if (object->GetComponent<Building>()->type == BuildingType::Landmark)
-						{
-							for (auto& list : GameWorld::gameWorld->buildingList[object])
-							{
-								for (auto& go : list.second)
-								{
-									go->scene->PushDelete(go);
-									updateTerrainNodeData(go, false);
-									Building* building = go->GetComponent<Building>();
-									GameWorld::gameWorld->deleteInGameWorld(building->landmark, go, building->type, building->index);
-								}
-							}
-						}
-						gameObject->scene->PushDelete(object);
-						updateTerrainNodeData(object, false);
 						Building* building = object->GetComponent<Building>();
 						GameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 					}

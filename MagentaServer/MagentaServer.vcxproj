@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LobbyConnect.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="Clients.cpp" />
     <ClCompile Include="contents.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Buildings.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="headers.h" />
+    <ClInclude Include="LobbyConnect.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="Message.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

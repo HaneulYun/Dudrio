@@ -28,7 +28,7 @@ using namespace chrono;
 constexpr auto MAX_PACKET_SIZE = 255;
 constexpr auto MAX_BUF_SIZE = 1024;
 
-enum ENUMOP { OP_RECV, OP_SEND, OP_ACCEPT};
+enum ENUMOP { OP_RECV, OP_SEND, OP_ACCEPT };
 enum C_STATUS { ST_FREE, ST_ALLOC, ST_ACTIVE };
 
 struct EXOVER {

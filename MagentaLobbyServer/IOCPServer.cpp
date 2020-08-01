@@ -9,6 +9,12 @@ IOCPServer::IOCPServer()
 
 IOCPServer::~IOCPServer()
 {
+	for (auto s : g_servers)
+		disconnect_server(s.first);
+
+	//for (auto cl : g_users)
+	//	disconnect_clients(cl.first);
+
 	WSACleanup();
 	destroy_threads();
 }
@@ -18,21 +24,21 @@ void IOCPServer::init_server()
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
 
-	sl_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, NULL, WSA_FLAG_OVERLAPPED);
+	l_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, NULL, WSA_FLAG_OVERLAPPED);
 
 	// bind -------------------------------------------------------
 	SOCKADDR_IN s_address;
 	memset(&s_address, 0, sizeof(s_address));
 	s_address.sin_family = AF_INET;
-	s_address.sin_port = htons(SERVER_TO_LOBBY_SERVER_PORT);
+	s_address.sin_port = htons(9000);//server_port);
 	s_address.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
-	::bind(sl_socket, reinterpret_cast<sockaddr*>(&s_address), sizeof(s_address));
+	::bind(l_socket, reinterpret_cast<sockaddr*>(&s_address), sizeof(s_address));
 
 	// listen -----------------------------------------------------
-	listen(sl_socket, SOMAXCONN);
+	listen(l_socket, SOMAXCONN);
 
 	int option = TRUE;
-	setsockopt(sl_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
+	setsockopt(l_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 }
 
 void IOCPServer::start_server()
@@ -40,7 +46,7 @@ void IOCPServer::start_server()
 	init_clients();
 
 	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, NUM_OF_CPU * 2 + 1);
-
+	
 	create_worker_threads();
 	create_accept_threads();
 
@@ -53,17 +59,20 @@ void IOCPServer::init_clients()
 		delete cl.second;
 	g_servers.clear();
 
+	//for (auto& cl : g_users)
+	//	delete cl.second;
+	//g_users.clear();
+
 	g_servers.reserve(L_MAX_USER);
 }
 
 // thread ---------------------------------
 void IOCPServer::create_worker_threads()
 {
-	//worker_threads.reserve(NUM_OF_CPU * 2 + 2);
-	//
-	//for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
+	worker_threads.reserve(NUM_OF_CPU * 2 + 2);
+	for (int i = 0; i < NUM_OF_CPU * 2 + 1; ++i) {
 		worker_threads.emplace_back([this]() {worker_thread_loop(); });
-	//}
+	}
 
 	cout << "Create Worker_Threads Complete" << endl;
 }
@@ -84,7 +93,7 @@ void IOCPServer::destroy_threads()
 			w_t.join();
 
 	accept_run = false;
-	closesocket(sl_socket);
+	closesocket(l_socket);
 
 	if (accept_thread.joinable())
 		accept_thread.join();
@@ -100,15 +109,6 @@ void IOCPServer::worker_thread_loop()
 
 		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
 		int user_id = static_cast<int>(key);
-
-		//g_clients_lock.lock();
-		//if (g_clients.count(user_id) == 0 && (exover->op == OP_RECV || exover->op == OP_SEND))
-		//{
-		//	cout << "저한테 왜그러세요" << user_id << endl;
-		//	g_clients_lock.unlock();
-		//	continue;
-		//}
-		//g_clients_lock.unlock();
 
 		switch (exover->op) {
 		case OP_RECV:
@@ -144,9 +144,9 @@ void IOCPServer::accept_thread_loop()
 		int idx = 0;
 
 		//g_clients_lock.lock();
-		while (idx < L_MAX_SERVER) {
+		while (idx < L_MAX_USER) {
 			if (g_servers.count(idx) == 0) {
-				std::cout << "New idx " << idx << " is generated" << endl;
+				cout << "New idx " << idx << " is generated" << endl;
 				g_servers[idx] = new Client(idx);
 				g_servers[idx]->m_status = ST_ALLOC;
 				break;
@@ -160,16 +160,15 @@ void IOCPServer::accept_thread_loop()
 		if (idx >= L_MAX_USER)
 			continue;
 
-		//lock_guard<mutex>lock_guard_client(g_clients[idx]->m_cl);
+		lock_guard<mutex>lock_guard_client(g_servers[idx]->m_cl);
 		ZeroMemory(&g_servers[idx]->m_recv_over.over, sizeof(g_servers[idx]->m_recv_over.over));
-		g_servers[idx]->m_s = WSAAccept(sl_socket, reinterpret_cast<sockaddr*>(&client_addr), &client_len, NULL, NULL);
-		if (INVALID_SOCKET == g_servers[idx]->m_s)	
-			continue;
+		g_servers[idx]->m_s = WSAAccept(l_socket, reinterpret_cast<sockaddr*>(&client_addr), &client_len, NULL, NULL);
+		if (INVALID_SOCKET == g_servers[idx]->m_s)	continue;
 
 		bool retval = CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_servers[idx]->m_s), g_iocp, idx, 0);
 		if (false == retval) {
 			//lock_guard<mutex>lock_guard(g_clients_lock);
-			std::cout << "Bind IO Completion Port Error" << GetLastError() << endl;
+			cout << "Bind IO Completion Port Error" << GetLastError() << endl;
 			closesocket(g_servers[idx]->m_s);
 			delete g_servers[idx];
 			g_servers.erase(idx);
@@ -186,7 +185,7 @@ void IOCPServer::accept_thread_loop()
 
 		if (retval == SOCKET_ERROR && (WSAGetLastError() != ERROR_IO_PENDING)) {
 			//lock_guard<mutex>lock_guard(g_clients_lock);
-			std::cout << "Bind Recv Operation Error" << WSAGetLastError() << endl;
+			cout << "Bind Recv Operation Error" << WSAGetLastError() << endl;
 			closesocket(g_servers[idx]->m_s);
 			delete g_servers[idx];
 			g_servers.erase(idx);
@@ -235,6 +234,21 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 			p += rest_byte;
 		}
 	}
+}
+
+void IOCPServer::send_packet(int user_id, void* p)
+{
+	unsigned char* buf = reinterpret_cast<unsigned char*>(p);
+
+	EXOVER* exover = new EXOVER;
+	exover->op = OP_SEND;
+	ZeroMemory(&exover->over, sizeof(exover->over));
+	exover->wsabuf.buf = exover->io_buf;
+	exover->wsabuf.len = buf[0];
+	memcpy(exover->io_buf, buf, buf[0]);
+
+	// IpBuffers 항목에 u의 wsabuf은 이미 Recv에서 쓰고 있기 때문에 사용하면 안됨
+	WSASend(g_servers[user_id]->m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
 }
 
 void IOCPServer::process_packet(int user_id, char* buf)
@@ -319,21 +333,6 @@ void IOCPServer::disconnect_server(int user_id) {
 
 	delete g_servers[user_id];
 	g_servers.erase(user_id);
-}
-
-void IOCPServer::send_packet(int user_id, void* p)
-{
-	unsigned char* buf = reinterpret_cast<unsigned char*>(p);
-
-	EXOVER* exover = new EXOVER;
-	exover->op = OP_SEND;
-	ZeroMemory(&exover->over, sizeof(exover->over));
-	exover->wsabuf.buf = exover->io_buf;
-	exover->wsabuf.len = buf[0];
-	memcpy(exover->io_buf, buf, buf[0]);
-
-	// IpBuffers 항목에 u의 wsabuf은 이미 Recv에서 쓰고 있기 때문에 사용하면 안됨
-	WSASend(g_servers[user_id]->m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
 }
 
 void IOCPServer::send_login_ok_packet(int user_id)

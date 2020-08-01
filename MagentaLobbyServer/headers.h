@@ -1,4 +1,5 @@
 #pragma once
+#include "LobbyProtocol.h"
 #include "main.h"
 #include "IOCPServer.h"
 

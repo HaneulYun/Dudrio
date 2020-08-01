@@ -4,6 +4,7 @@
 #include "protocol.h"
 #include "math.h"
 
+#include "LobbyConnect.h"
 #include "IOCPServer.h"
 #include "contents.h"
 #include "Timer.h"

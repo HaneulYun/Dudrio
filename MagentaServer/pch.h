@@ -8,6 +8,7 @@
 #define PCH_H
 
 // 여기에 미리 컴파일하려는 헤더 추가
+#include "..\MagentaLobbyServer\LobbyProtocol.h"
 #include "protocol.h"
 #include "headers.h"
 

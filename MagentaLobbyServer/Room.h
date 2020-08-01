@@ -15,7 +15,7 @@ public:
 
 	// 호스트 이름
 	bool is_host_exist;
-	char host_name[MAX_ID_LEN + 1];
+	char host_name[L_MAX_ID_LEN + 1];
 
 public:
 	Room() {}

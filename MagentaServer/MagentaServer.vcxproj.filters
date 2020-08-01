@@ -63,6 +63,9 @@
     <ClCompile Include="Sim.cpp">
       <Filter>AI</Filter>
     </ClCompile>
+    <ClCompile Include="LobbyConnect.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="protocol.h">
@@ -123,6 +126,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\MagentaLobbyServer\LobbyProtocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyConnect.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

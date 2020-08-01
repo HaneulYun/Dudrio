@@ -24,7 +24,7 @@ void IOCPServer::init_server()
 	SOCKADDR_IN s_address;
 	memset(&s_address, 0, sizeof(s_address));
 	s_address.sin_family = AF_INET;
-	s_address.sin_port = htons(SERVER_PORT);
+	s_address.sin_port = htons(9000);//server_port);
 	s_address.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 	::bind(l_socket, reinterpret_cast<sockaddr*>(&s_address), sizeof(s_address));
 

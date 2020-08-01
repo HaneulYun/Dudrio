@@ -1,12 +1,11 @@
 #pragma once
 
-#define NUM_OF_CPU 4
+#define NUM_OF_CPU 1
 
 class IOCPServer {
 private:
 	HANDLE	g_iocp;
-	SOCKET	sl_socket;
-	SOCKET	cl_socket;
+	SOCKET	l_socket;
 
 	vector<thread>	worker_threads;
 	bool			worker_run;

@@ -359,3 +359,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/MagentaServer.exe
+/fmod64.dll
+/Dudrio.exe

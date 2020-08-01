@@ -172,7 +172,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AIManager.h" />
-    <ClInclude Include="AnimationScene.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="BuildingBuilder.h" />
     <ClInclude Include="BuildingBuilderData.h" />
@@ -197,7 +196,6 @@
     <ClInclude Include="Village.h" />
     <ClInclude Include="MagentaServer\protocol.h" />
     <ClInclude Include="MessageManager.h" />
-    <ClInclude Include="MaterialScene.h" />
     <ClInclude Include="GuestNetwork.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="ParticleManager.h" />
@@ -220,14 +218,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AIManager.cpp" />
-    <ClCompile Include="AnimationScene.cpp" />
     <ClCompile Include="BuildingBuilder.cpp" />
     <ClCompile Include="Dudrio.cpp" />
     <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="GuestGameWorld.cpp" />
     <ClCompile Include="HostNetwork.cpp" />
     <ClCompile Include="MessageManager.cpp" />
-    <ClCompile Include="MaterialScene.cpp" />
     <ClCompile Include="GuestNetwork.cpp" />
     <ClCompile Include="ParticleScene.cpp" />
     <ClCompile Include="PathFinder.cpp" />

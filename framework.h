@@ -13,7 +13,5 @@
 #include "MenuScene.h"
 #include "HostScene.h"
 #include "GuestScene.h"
-#include "MaterialScene.h"
-#include "AnimationScene.h"
 #include "ParticleScene.h"
 #include "TestScene.h"

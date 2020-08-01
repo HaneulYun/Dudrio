@@ -53,7 +53,7 @@ void IOCPServer::init_clients()
 		delete cl.second;
 	g_servers.clear();
 
-	g_servers.reserve(MAX_USER);
+	g_servers.reserve(L_MAX_USER);
 }
 
 // thread ---------------------------------
@@ -127,7 +127,7 @@ void IOCPServer::worker_thread_loop()
 			delete exover;
 			break;
 		default:
-			cout << "Invalid Operation " << exover->op << endl;
+			std::cout << "Invalid Operation " << exover->op << endl;
 			break;
 		}
 	}
@@ -144,9 +144,9 @@ void IOCPServer::accept_thread_loop()
 		int idx = 0;
 
 		//g_clients_lock.lock();
-		while (idx < MAX_SERVER) {
+		while (idx < L_MAX_SERVER) {
 			if (g_servers.count(idx) == 0) {
-				cout << "New idx " << idx << " is generated" << endl;
+				std::cout << "New idx " << idx << " is generated" << endl;
 				g_servers[idx] = new Client(idx);
 				g_servers[idx]->m_status = ST_ALLOC;
 				break;
@@ -157,7 +157,7 @@ void IOCPServer::accept_thread_loop()
 		}
 		//g_clients_lock.unlock();
 
-		if (idx >= MAX_USER)
+		if (idx >= L_MAX_USER)
 			continue;
 
 		//lock_guard<mutex>lock_guard_client(g_clients[idx]->m_cl);
@@ -169,7 +169,7 @@ void IOCPServer::accept_thread_loop()
 		bool retval = CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_servers[idx]->m_s), g_iocp, idx, 0);
 		if (false == retval) {
 			//lock_guard<mutex>lock_guard(g_clients_lock);
-			cout << "Bind IO Completion Port Error" << GetLastError() << endl;
+			std::cout << "Bind IO Completion Port Error" << GetLastError() << endl;
 			closesocket(g_servers[idx]->m_s);
 			delete g_servers[idx];
 			g_servers.erase(idx);
@@ -186,7 +186,7 @@ void IOCPServer::accept_thread_loop()
 
 		if (retval == SOCKET_ERROR && (WSAGetLastError() != ERROR_IO_PENDING)) {
 			//lock_guard<mutex>lock_guard(g_clients_lock);
-			cout << "Bind Recv Operation Error" << WSAGetLastError() << endl;
+			std::cout << "Bind Recv Operation Error" << WSAGetLastError() << endl;
 			closesocket(g_servers[idx]->m_s);
 			delete g_servers[idx];
 			g_servers.erase(idx);
@@ -239,66 +239,86 @@ void IOCPServer::recv_packet_construct(int user_id, int io_byte)
 
 void IOCPServer::process_packet(int user_id, char* buf)
 {
+	switch (buf[1]) {
+	case S2LS_LOGIN:
+	{
+		std::cout << "The Server " << user_id << " is connected" << endl;
+		s2ls_packet_login* packet = reinterpret_cast<s2ls_packet_login*>(buf);
+		int sockSize = sizeof(struct sockaddr_in);
+		SOCKADDR_IN sock;                                 
+		memset(&sock, 0x00, sizeof(SOCKADDR_IN));
+		int retval = getpeername(g_servers[user_id]->m_s, (struct sockaddr*) & sock, &sockSize);
+		if (retval == 0)
+			make_room(user_id, sock);
+		else 
+			send_login_fail_packet(user_id);
+	}
+	break;
+	case S2LS_LOGOUT:
+	{
+		std::cout << "The Server " << user_id << " is logout" << endl;
+		s2ls_packet_logout* packet = reinterpret_cast<s2ls_packet_logout*>(buf);
 
+		disconnect_server(user_id);
+	}
+	break;
+	case S2LS_HOST_LOGOUT:
+	{
+		s2ls_packet_host_logout* packet = reinterpret_cast<s2ls_packet_host_logout*>(buf);
+		std::cout << "The Room " << user_id << " is Empty" << endl;
+
+		g_rooms[user_id]->make_empty();
+	}
+	break;
+	default:
+		std::cout << "Unknown Packet Type Error!\n" << user_id << ", " << buf << endl;
+		//DebugBreak();
+		//exit(-1);
+		break;
+	}
+}
+
+void IOCPServer::make_room(int user_id, SOCKADDR_IN& sock) {
+
+	g_servers[user_id]->m_status = ST_ACTIVE;
+	char ip[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &(sock.sin_addr), ip, INET_ADDRSTRLEN);
+	g_rooms[user_id] = new Room(user_id, ip);
+	std::cout << "Room " << user_id << "is created, ip : " << ip << std::endl;
+
+	send_login_ok_packet(user_id);
+}
+
+void IOCPServer::delete_room(int user_id)
+{
+	if (g_rooms[user_id]->is_host_exist)
+		// 호스트가 있었던 방이라면 게스트한테 방 없어졌다는 메시지 보내기
+		;
+
+	delete g_rooms[user_id];
+	g_rooms.erase(user_id);
+
+	std::cout << "Room " << user_id << "is deleted" << std::endl;
 }
 
 void IOCPServer::disconnect_server(int user_id) {
-	cout << "Disconnect " << user_id << endl;
 
-	iocp.send_leave_packet(user_id, user_id);
+	std::cout << "Disconnect Server" << user_id << std::endl;
 
-	if (host_id != user_id)
-		g_clients[user_id]->erase_client_in_sector();
-	g_clients[user_id]->m_cl.lock();
-	g_clients[user_id]->m_status = ST_ALLOC;
+	send_disconnect_packet(user_id);
+
+	g_servers[user_id]->m_status = ST_ALLOC;
 
 	linger sopt_linger = { 0, 0 };
-	shutdown(g_clients[user_id]->m_s, SD_BOTH);
-	setsockopt(g_clients[user_id]->m_s, SOL_SOCKET, SO_LINGER, (char*)&sopt_linger, sizeof(sopt_linger));
-	closesocket(g_clients[user_id]->m_s);
-	g_clients[user_id]->m_s = INVALID_SOCKET;
+	shutdown(g_servers[user_id]->m_s, SD_BOTH);
+	setsockopt(g_servers[user_id]->m_s, SOL_SOCKET, SO_LINGER, (char*)&sopt_linger, sizeof(sopt_linger));
+	closesocket(g_servers[user_id]->m_s);
+	g_servers[user_id]->m_s = INVALID_SOCKET;
 
-	if (host_id != user_id) {
-		for (auto cl = g_clients[user_id]->view_list.begin(); cl != g_clients[user_id]->view_list.end(); ++cl) {
-			if (user_id == *cl) continue;
-			if (ST_ACTIVE == g_clients[*cl]->m_status)
-				iocp.send_leave_packet(*cl, user_id);
-		}
-		if (host_id != -1)
-			iocp.send_leave_packet(host_id, user_id);
-	}
-	else {
-		for (auto cl = g_clients.begin(); cl != g_clients.end();) {
-			if (cl->first == user_id) { ++cl; continue; }
-			if (ST_ACTIVE == cl->second->m_status) {
-				cout << "Disconnect " << cl->second->m_id << endl;
-				iocp.send_leave_packet(cl->first, cl->first);
+	delete_room(user_id);
 
-				cl->second->m_cl.lock();
-				cl->second->m_status = ST_ALLOC;
-
-				linger sopt_linger = { 0, 0 };
-				shutdown(g_clients[user_id]->m_s, SD_BOTH);
-				setsockopt(g_clients[user_id]->m_s, SOL_SOCKET, SO_LINGER, (char*)&sopt_linger, sizeof(sopt_linger));
-				closesocket(g_clients[user_id]->m_s);
-				g_clients[user_id]->m_s = INVALID_SOCKET;
-
-				cl->second->m_cl.unlock();
-				delete cl->second;
-				cl = g_clients.erase(cl);
-			}
-			else
-				++cl;
-		}
-
-		init_contents();
-
-		cout << "Disconnect the host" << endl;
-	}
-	g_clients[user_id]->m_cl.unlock();
-
-	delete g_clients[user_id];
-	g_clients.erase(user_id);
+	delete g_servers[user_id];
+	g_servers.erase(user_id);
 }
 
 void IOCPServer::send_packet(int user_id, void* p)
@@ -313,40 +333,33 @@ void IOCPServer::send_packet(int user_id, void* p)
 	memcpy(exover->io_buf, buf, buf[0]);
 
 	// IpBuffers 항목에 u의 wsabuf은 이미 Recv에서 쓰고 있기 때문에 사용하면 안됨
-	WSASend(g_clients[user_id]->m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
+	WSASend(g_servers[user_id]->m_s, &exover->wsabuf, 1, NULL, 0, &exover->over, NULL);
 }
 
 void IOCPServer::send_login_ok_packet(int user_id)
 {
-	sc_packet_login_ok p;
-	p.id = user_id;
+	ls2s_packet_login_ok p;
 	p.size = sizeof(p);
-	p.type = S2C_LOGIN_OK;
-	p.xPos = g_clients[user_id]->m_xPos;
-	p.zPos = g_clients[user_id]->m_zPos;
-	p.xVel = g_clients[user_id]->m_xVel;
-	p.zVel = g_clients[user_id]->m_zVel;
-	p.rotAngle = g_clients[user_id]->m_rotAngle;
-	p.game_time = contents.ingame_time;
-	p.host_id = contents.host_id;
-	strcpy(p.host_name, g_clients[contents.host_id]->m_name);
+	p.type = LS2S_LOGIN_OK;
+	p.server_port = g_rooms[user_id]->port_num;
 
-	if (terrain_data != nullptr) {
-		p.frequency = terrain_data->frequency;
-		p.terrainSize = terrain_data->terrain_size;
-		p.octaves = terrain_data->octaves;
-		p.seed = terrain_data->seed;
-	}
-
-	cout << "Ingame time: " << p.game_time << endl;
 	send_packet(user_id, &p);
 }
 
 void IOCPServer::send_login_fail_packet(int user_id)
 {
-	sc_packet_login_fail p;
+	ls2s_packet_login_fail p;
 	p.size = sizeof(p);
-	p.type = S2C_LOGIN_FAIL;
+	p.type = LS2S_LOGIN_FAIL;
+
+	send_packet(user_id, &p);
+}
+
+void IOCPServer::send_disconnect_packet(int user_id)
+{
+	ls2s_packet_disconnect p;
+	p.size = sizeof(p);
+	p.type = LS2S_DISCONNECT;
 
 	send_packet(user_id, &p);
 }

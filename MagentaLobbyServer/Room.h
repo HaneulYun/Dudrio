@@ -13,13 +13,25 @@ public:
 	int octaves;
 	int seed;
 
-	// 호스트 정보
-	Client* host;
-
-	// 접속한 게스트들 정보
-	vector<Client*> guests;
+	// 호스트 이름
+	bool is_host_exist;
+	char host_name[MAX_ID_LEN + 1];
 
 public:
 	Room() {}
+	Room(int id, std::string ip) : room_id(id), serverIP(ip) { 
+		port_num = 9000 + ((id + 3) * 4); 
+		is_host_exist = false;
+	}
 	~Room() {}
+
+	void make_empty()
+	{
+		terrain_size = 0;
+		frequency = 0;
+		octaves = 0;
+		seed = 0;
+		is_host_exist = false;
+		host_name[0] = '\0';
+	}
 };

@@ -1,23 +1,27 @@
 #pragma once
 
-constexpr int MAX_ID_LEN = 16;
-constexpr int MAX_SERVER = 100;
-constexpr int MAX_USER = 10000;
+constexpr int L_MAX_ID_LEN = 16;
+constexpr int L_MAX_SERVER = 100;
+constexpr int L_MAX_USER = 10000;
 
 #define SERVER_TO_LOBBY_SERVER_PORT 9004
 #define CLIENT_TO_LOBBY_SERVER_PORT 9008
 
 #define S2LS_LOGIN			20
 #define S2LS_LOGOUT			21
+#define S2LS_HOST_LOGOUT	22
 
 #define LS2S_LOGIN_OK		25
 #define LS2S_LOGIN_FAIL		26
+#define LS2S_DISCONNECT		27
 
 #define C2LS_LOGIN_HOST		30
 #define C2LS_LOGIN_GUEST	31
 
 #define LS2C_LOGIN_OK_HOST	35
 #define LS2C_LOGIN_OK_GUEST 36
+#define LS2C_NEW_ROOM		37
+#define LS2C_DELETE_ROOM	38
 
 #pragma pack(push ,1)
 
@@ -28,6 +32,11 @@ struct s2ls_packet_login {
 };
 
 struct s2ls_packet_logout {
+	unsigned char size;
+	char type;
+};
+
+struct s2ls_packet_host_logout {
 	unsigned char size;
 	char type;
 };
@@ -44,11 +53,16 @@ struct ls2s_packet_login_fail {
 	char type;
 };
 
+struct ls2s_packet_disconnect {
+	unsigned char size;
+	char type;
+};
+
 // Client to Lobby server ----------
 struct c2ls_packet_login_host {
 	unsigned char size;
 	char type;
-	char name[MAX_ID_LEN + 1];
+	char name[L_MAX_ID_LEN + 1];
 	int terrain_size;
 	int frequency;
 	int octaves;
@@ -58,7 +72,7 @@ struct c2ls_packet_login_host {
 struct c2ls_packet_login_guest {
 	unsigned char size;
 	char type;
-	char name[MAX_ID_LEN + 1];
+	char name[L_MAX_ID_LEN + 1];
 };
 
 // Lobby server to Client ----------
@@ -72,12 +86,25 @@ struct ls2c_packet_login_ok_host {
 struct ls2c_packet_login_ok_guest {
 	unsigned char size;
 	char type;
+};
+
+// 게스트에게만 보내는 패킷들
+struct ls2c_pakcet_new_room {
+	unsigned char size;
+	char type;
+	char host_name[L_MAX_ID_LEN + 1];
 	int server_port;
 	char* serverIP;
 	int terrain_size;
 	int frequency;
 	int octaves;
 	int seed;
+};
+
+struct ls2c_packet_delete_room {
+	unsigned char size;
+	char type;
+	char host_name[L_MAX_ID_LEN + 1];
 };
 
 #pragma pack (pop)

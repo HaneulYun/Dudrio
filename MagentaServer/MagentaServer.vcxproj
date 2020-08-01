@@ -145,6 +145,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\MagentaLobbyServer\LobbyProtocol.h" />
     <ClInclude Include="Buildings.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="headers.h" />

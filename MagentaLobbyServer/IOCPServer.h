@@ -34,11 +34,14 @@ public:
 	void send_packet(int user_id, void* p);
 	void send_login_ok_packet(int user_id);
 	void send_login_fail_packet(int user_id);
+	void send_disconnect_packet(int user_id);
 
 	// recv -----------------------------------
 	void recv_packet_construct(int user_id, int io_byte);
 	void process_packet(int user_id, char* buf);
 
+	void make_room(int user_id, SOCKADDR_IN& sock);
+	void delete_room(int user_id);
 	void disconnect_server(int user_id);
 	void disconnect_client(int user_id);
 };

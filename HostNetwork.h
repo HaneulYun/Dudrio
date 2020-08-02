@@ -67,8 +67,8 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_construct_packet(int type, int name, float x, float z, float angle);
-	void send_destruct_packet(int type, int name, float x, float z, float angle);
+	void send_construct_packet(int type, int name, float x, float z, float angle, int range);
+	void send_destruct_packet(int type, int name, float x, float z);
 	void send_destruct_all_packet();
 	void send_chat_packet(wchar_t msg[]);
 

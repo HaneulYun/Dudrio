@@ -134,7 +134,8 @@ struct sc_packet_construct
 {
 	unsigned char size;
 	char type;
-	int sim_id;
+
+	int landmark_range;
 	int building_type;
 	int building_name;
 	float xPos, zPos;
@@ -146,7 +147,9 @@ struct sc_packet_destruct
 	unsigned char size;
 	char type;
 
-	// ºôµù Á¤º¸µé
+	int building_type;
+	int building_name;
+	float xPos, zPos;
 };
 
 struct sc_packet_destruct_all
@@ -214,13 +217,16 @@ struct cs_packet_construct{
 	int building_name;
 	float xpos, zpos;
 	float angle;
+	int landmark_range;
 };
 
 struct cs_packet_destruct{
 	unsigned char size;
 	char type;
 
-	// ºôµù Á¤º¸µé
+	int building_type;
+	int building_name;
+	float xPos, zPos;
 };
 
 struct cs_packet_destruct_all{

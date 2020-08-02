@@ -13,8 +13,7 @@ struct BuildingInfo {
 	bool operator== (const BuildingInfo& b) const
 	{
 		return ((building_type == b.building_type) && (building_name == b.building_name)
-			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos)
-			&& (m_angle == b.m_angle));
+			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos));
 	}
 
 	bool is_near(float x, float z) const
@@ -43,6 +42,8 @@ class Building
 public:
 	BuildingInfo	m_info;
 	Collider		m_collider;
+
+	Sim* m_sim{ nullptr };
 
 public:
 	Building() {}
@@ -103,13 +104,15 @@ class Village : public Building
 public:
 	//				Home		Sim
 	//unordered_map<struct BuildingInfo, class Sim*, struct BuildingInfoHasher> simList;
-	unordered_set<class Sim*> simList;
+	vector<class Sim*> simList;
+	vector<class Building*> buildingList;
 
 	float delayTime = 0.f;	// °Ç¼³ ÄðÅ¸ÀÓ
 	bool autoDevelopment;
+	int m_land_range;
 
 public:
-	Village(int type, int name, float x, float z, float angle)
+	Village(int type, int name, float x, float z, float angle, int land_range)
 	{
 		autoDevelopment = false;
 		delayTime = 0.f;
@@ -118,6 +121,7 @@ public:
 		m_info.m_xPos = x;
 		m_info.m_zPos = z;
 		m_info.m_angle = angle;
+		m_land_range = land_range;
 	}
 
 	virtual ~Village() {}
@@ -131,5 +135,20 @@ public:
 	void OffAutoDevelopment()
 	{
 		autoDevelopment = false;
+	}
+
+	void eraseBuilding(class Building* b)
+	{
+		auto iter = find(buildingList.begin(), buildingList.end(), b);
+		if (iter != buildingList.end())
+			buildingList.erase(iter);
+	}
+
+	int eraseSim(class Sim* s)
+	{
+		auto iter = find(simList.begin(), simList.end(), s);
+		if (iter != simList.end())
+			simList.erase(iter);
+		return s->id;
 	}
 };

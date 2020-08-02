@@ -47,24 +47,41 @@ void GuestGameWorld::gameTimeUpdate()
 	calculateSunInfo();
 }
 
-void GuestGameWorld::buildInGameWorld(GameObject* building, int type, int index)
+void GuestGameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
 	if (type == BuildingType::Prop)
 	{
 		if (building->GetComponent<Light>())
 			type = BuildingType::Lighting;
 	}
-	buildingList[(BuildingType)type].push_back(building);
+	buildingList[landmark][(BuildingType)type].push_back(building);
 }
 
-void GuestGameWorld::deleteInGameWorld(GameObject* building, int type, int index)
+void GuestGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
 	if (type == BuildingType::Prop)
 	{
 		if (building->GetComponent<Light>())
 			type = BuildingType::Lighting;
 	}
-	buildingList[(BuildingType)type].erase(find(buildingList[(BuildingType)type].begin(), buildingList[(BuildingType)type].end(), building));
+	if (type == BuildingType::Landmark)
+	{
+		for (auto& list : GameWorld::gameWorld->buildingList[building])
+		{
+			for (auto& object : list.second)
+			{
+				Scene::scene->PushDelete(object);
+				BuildingBuilder::buildingBuilder->updateTerrainNodeData(object, false);
+			}
+		}
+		buildingList.erase(building);
+	}
+	else
+	{
+		Scene::scene->PushDelete(building);
+		BuildingBuilder::buildingBuilder->updateTerrainNodeData(building, false);
+		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
+	}
 }
 
 void GuestGameWorld::calculateSunInfo()

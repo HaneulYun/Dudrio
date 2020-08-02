@@ -44,6 +44,8 @@ void Contents::init_sector()
 
 void Contents::init_buildings()
 {
+	g_villages.clear();
+
 	lock_guard<mutex>lock_guard(g_buildings_lock);
 	for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
 		for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j) {
@@ -166,14 +168,14 @@ void Contents::process_packet(int user_id, char* buf)
 	{
 		cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf);
 		if (user_id == host_id)
-			do_construct(user_id, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle);
+			do_construct(user_id, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle, packet->landmark_range);
 	}
 	break;
 	case C2S_DESTRUCT:
 	{
 		cs_packet_destruct* packet = reinterpret_cast<cs_packet_destruct*>(buf);
 		if (user_id == host_id)
-			do_destruct(user_id);
+			do_destruct(user_id, packet->building_type, packet->building_name, packet->xPos, packet->zPos);
 	}
 	break;
 	case C2S_DESTRUCT_ALL:
@@ -228,12 +230,17 @@ void Contents::enter_game(int user_id, char name[])
 				iocp.send_enter_packet(cl, user_id);
 			}
 		}
-		
+
 		g_buildings_lock.lock();
-		for(int i=0;i< WORLD_HEIGHT / SECTOR_WIDTH;++i)
-			for(int j=0;j< WORLD_WIDTH / SECTOR_WIDTH;++j)
-				for (auto b : g_buildings[i][j])
-					iocp.send_construct_packet(user_id, b.second->m_info.building_type, b.second->m_info.building_name, b.second->m_info.m_xPos, b.second->m_info.m_zPos, b.second->m_info.m_angle);
+		for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
+			for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
+				for (auto b : g_buildings[i][j]) {
+					auto p = dynamic_cast<Village*>(b.second);
+					if (p == nullptr)
+						iocp.send_construct_packet(user_id, b.second->m_info.building_type, b.second->m_info.building_name, b.second->m_info.m_xPos, b.second->m_info.m_zPos, b.second->m_info.m_angle, 0);
+					else
+						iocp.send_construct_packet(user_id, b.second->m_info.building_type, b.second->m_info.building_name, b.second->m_info.m_xPos, b.second->m_info.m_zPos, b.second->m_info.m_angle, p->m_land_range);
+				}
 		g_buildings_lock.unlock();
 	}
 }
@@ -443,25 +450,39 @@ void Contents::login_fail(int user_id)
 	iocp.send_login_fail_packet(user_id);
 }
 
-void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle)
+class Village* Contents::get_my_landmark(class Building* b)
+{
+	for (auto village : g_villages) {
+		float dist = sqrt(pow(b->m_info.m_xPos - village->m_info.m_xPos, 2) + pow(b->m_info.m_zPos - village->m_info.m_zPos, 2));
+		if (village->m_land_range >= dist)
+			return village;
+	}
+	return nullptr;
+}
+
+void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle, int land_range)
 {
 	BuildingInfo b{ b_type, b_name, xpos, zpos, angle };
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
 	g_buildings_lock.lock();
 	if (b_type == Landmark) {
-		Village* landmark = new Village(b_type, b_name, xpos, zpos, angle);
-		landmark->autoDevelopment = true;
+		Village* landmark = new Village(b_type, b_name, xpos, zpos, angle, land_range);
+		landmark->OnAutoDevelopment();
 		g_buildings[b_sectnum.second][b_sectnum.first][b] = landmark;
 		g_villages.insert(landmark);
 	}
-	else
+	else {
 		g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
+		Village* v = get_my_landmark(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+		v->buildingList.emplace_back(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+	}
 	g_buildings[b_sectnum.second][b_sectnum.first][b]->m_collider = collider_info[b_type][b_name];
 	g_buildings[b_sectnum.second][b_sectnum.first][b]->update_terrain_node(true);
 
 	g_buildings_lock.unlock();
 
 	if (b_type == House) {
+
 		g_sims_lock.lock();
 		g_sims[sim_index] = new Sim(sim_index, xpos, zpos);
 		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
@@ -471,6 +492,11 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 			g_sims[sim_index]->stateMachine.PushState(SleepState::Instance());
 		g_sims[sim_index]->stateMachine.GetCurrentState()->Enter(g_sims[sim_index]);
 		g_sims[sim_index]->insert_client_in_sector();
+
+		g_buildings[b_sectnum.second][b_sectnum.first][b]->m_sim = g_sims[sim_index];
+		Village* v = get_my_landmark(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+		v->simList.emplace_back(g_sims[sim_index]);
+
 		cout << "Sim " << sim_index << " is created" << endl;
 		iocp.send_enter_sim_packet(contents.host_id, sim_index);
 
@@ -481,11 +507,6 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 				iocp.send_enter_sim_packet(cl, sim_index);
 		}
 
-		// 임시 처리 -----------------
-		for (auto& v : g_villages) {
-			v->simList.insert(g_sims[sim_index]);
-		}
-		// ---------------------------
 		++sim_index;
 		g_sims_lock.unlock();
 	}	
@@ -501,36 +522,111 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
 			continue;
-		if (ST_ACTIVE == cl.second->m_status)
-			iocp.send_construct_packet(cl.second->m_id, b_type, b_name, xpos, zpos, angle);
+		if (ST_ACTIVE == cl.second->m_status) {
+			iocp.send_construct_packet(cl.second->m_id, b_type, b_name, xpos, zpos, angle, land_range);
+		}
 	}
 
 	// 건물에 sim_index를 부여하여 어떤 심이 사는 집인지 알 수 있게 해야 함
 }
 
-void Contents::do_destruct(int user_id)
+void Contents::do_destruct(int user_id, int b_type, int b_name, float xpos, float zpos)
 {
-	//pair<int, int> b_sectnum = calculate_sector_num(x, z);
-	//Building b{ type, name, x, z, angle };
-	//if (g_buildings[b_sectnum.second][b_sectnum.first].count(b) != 0) {
-	//	cout << "destruct" << endl;
-	//	delete g_buildings[b_sectnum.second][b_sectnum.first][b];
-	//	g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
-	//}
+	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
+	BuildingInfo b{ b_type, b_name, xpos, zpos, 0 };
 
-	// 건물이 house일 경우 심 삭제도 해야 함
-	// 건물이 랜드마크일 경우 처리도 해주자 (g_village에서 삭제 및 랜드마크 안 모든 건물 및 심 삭제)
-	//for (auto& cl : g_clients){
-	//	if (user_id == cl.second->m_id)
-	//		continue;
-	//	if (ST_ACTIVE == cl.second->m_status)
-	//		iocp.send_destruct_packet(cl.second->m_id, b_inform);
-	//}
+	g_buildings_lock.lock();
+	if (g_buildings[b_sectnum.second][b_sectnum.first].count(b) != 0) {
+		Village* v = get_my_landmark(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+		if (b_type == Landmark) {
+			// 랜드마크인지?
+			// 랜드마크이면 포함되는 모든 건물과 모든 심을 제거해줘야 함
+			// g_village에서도 삭제해야 함
+			for (int i = 0; i < v->buildingList.size();++i) {
+				if (v->buildingList[i]->m_sim != nullptr) {
+					g_sims_lock.lock();
+					v->buildingList[i]->m_sim->erase_sim_in_sector();
+					int simID = v->eraseSim(v->buildingList[i]->m_sim);
+					vector<int> cls = g_sims[simID]->get_near_clients();
+					for (auto& c : cls) 
+						iocp.send_leave_sim_packet(c, simID);
+					iocp.send_leave_sim_packet(host_id, simID);
+					delete g_sims[simID];
+					g_sims.erase(simID);
+					cout << "Sim " << simID << "is deleted" << endl;
+					g_sims_lock.unlock();
+				}
+				BuildingInfo vb = v->buildingList[i]->m_info;
+				pair<int, int> sect_num = calculate_sector_num(vb.m_xPos, vb.m_zPos);
+				delete g_buildings[sect_num.second][sect_num.first][vb];
+				g_buildings[sect_num.second][sect_num.first].erase(vb);
+				cout << "Building " << vb.building_type << ", " << vb.building_name << "is deleted" << endl;
+			}
+			for (int i = 0; i < v->simList.size(); ++i) {
+				if (v->simList[i] != nullptr) {
+					g_sims_lock.lock();
+					v->buildingList[i]->m_sim->erase_sim_in_sector();
+					int simID = v->simList[i]->id;
+					vector<int> cls = g_sims[simID]->get_near_clients();
+					for (auto& c : cls)
+						iocp.send_leave_sim_packet(c, simID);
+					iocp.send_leave_sim_packet(host_id, simID);
+					delete g_sims[simID];
+					g_sims.erase(simID);
+					cout << "Sim " << simID << "is deleted" << endl;
+					g_sims_lock.unlock();
+				}
+			}
+			v->simList.clear();
+			v->buildingList.clear();
+
+			g_villages.erase(v);
+			delete g_buildings[b_sectnum.second][b_sectnum.first][b];
+			g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
+		}
+
+		else if (b_type == House) {
+			v->eraseBuilding(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+			Sim* sim = g_buildings[b_sectnum.second][b_sectnum.first][b]->m_sim;
+			g_sims_lock.lock();
+			sim->erase_sim_in_sector();
+			int simID = v->eraseSim(sim);
+			vector<int> cls = g_sims[simID]->get_near_clients();
+			for (auto& c : cls)
+				iocp.send_leave_sim_packet(c, simID);
+			iocp.send_leave_sim_packet(host_id, simID);
+			delete g_sims[simID];
+			g_sims.erase(simID);
+			cout << "Sim " << simID << "is deleted" << endl;
+			g_sims_lock.unlock();
+			delete g_buildings[b_sectnum.second][b_sectnum.first][b];
+			g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
+			cout << "Building " << b_type << ", " << b_name << "is deleted" << endl;
+		}
+		else {
+			// 그냥 건물이면?
+			// 얘만 삭제하고, 얘 포함한 랜드마크에서 얘 삭제하면 됨
+			v->eraseBuilding(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+			delete g_buildings[b_sectnum.second][b_sectnum.first][b];
+			g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
+			cout << "Building " << b_type << ", " << b_name << "is deleted" << endl;
+		}
+	}
+	g_buildings_lock.unlock();
+
+	for (auto& cl : g_clients){
+		if (user_id == cl.second->m_id)
+			continue;
+		if (ST_ACTIVE == cl.second->m_status)
+			iocp.send_destruct_packet(cl.second->m_id, b_type, b_name, xpos, zpos);
+	}
 }
 
 void Contents::destruct_all(int user_id)
 {
+	init_sector();
 	init_buildings();
+	init_sims();
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -611,7 +707,7 @@ void Contents::update_sim()
 		if (landmark->autoDevelopment && !landmark->simList.empty()) {
 			if (landmark->delayTime <= 0.f) {
 				BuildMessageInfo* info = new BuildMessageInfo;
-				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % 30) - 15, landmark->m_info.m_zPos + (rand() % 30) - 15);
+				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % landmark->m_land_range) - 15, landmark->m_info.m_zPos + (rand() % landmark->m_land_range) - 15);
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % collider_info[info->buildingType].size();
 				landmark->delayTime = rand() % 10 + 10.f;

@@ -124,20 +124,51 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
 		Vector2 building_pos{ my_packet->xPos, my_packet->zPos };
-		GameObject* building = BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name);
-		GuestGameWorld::gameWorld->buildInGameWorld(building, my_packet->building_type, my_packet->building_name);
+		BuildingBuilder::buildingBuilder->guestBuild(my_packet->building_type, my_packet->building_name, my_packet->xPos, my_packet->zPos, my_packet->angle, my_packet->landmark_range);
 	}
 	break;
 	case S2C_DESTRUCT:
 	{
 		sc_packet_destruct* my_packet = reinterpret_cast<sc_packet_destruct*>(ptr);
-		//Builder::builder->DestroyBuilding(my_packet->b_inform);
+		Vector3 p_pos{ my_packet->xPos,0, my_packet->zPos };
+		GameObject* my_landmark;
+		GameObject* dest_obj;
+		for (auto landmark : GuestGameWorld::gameWorld->buildingList) {
+			Vector3 landPos = landmark.first->transform->position;
+			float range = landmark.first->GetComponent<Village>()->radiusOfLand;
+			float dist = sqrt(pow(p_pos.x - landPos.x, 2) + pow(p_pos.z - landPos.z, 2));
+			if (range >= dist) {
+				my_landmark = landmark.first;
+				for (auto type : landmark.second) {
+					if (type.first != my_packet->building_type)
+						continue;
+					for (auto building : type.second) {
+						Vector3 b_pos { building->transform->position.x, 0, building->transform->position.z };
+						if (b_pos == p_pos) {
+							GuestGameWorld::gameWorld->deleteInGameWorld(my_landmark, building, my_packet->building_type, my_packet->building_name);
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 	break;
 	case S2C_DESTRUCT_ALL:
 	{
 		sc_packet_destruct_all* my_packet = reinterpret_cast<sc_packet_destruct_all*>(ptr);
-		//Builder::builder->DestroyAllBuilding();
+		for (auto landmark : GuestGameWorld::gameWorld->buildingList) {
+			for (auto type : landmark.second) {
+				for (auto building : type.second) {
+					if(landmark.first != building)
+						Scene::scene->PushDelete(building);
+				}
+				type.second.clear();
+			}
+			landmark.second.clear();
+			Scene::scene->PushDelete(landmark.first);
+		}
+		GuestGameWorld::gameWorld->buildingList.clear();
 	}
 	break;
 	case S2C_CHAT:
@@ -276,8 +307,19 @@ void GuestNetwork::Logout()
 
 	closesocket(serverSocket);
 
-	//Builder::builder->DestroyAllBuilding();
+	for (auto landmark : GuestGameWorld::gameWorld->buildingList) {
+		for (auto type : landmark.second) {
+			for (auto building : type.second) {
+				if (landmark.first != building)
+					Scene::scene->PushDelete(building);
+			}
+			type.second.clear();
+		}
+		landmark.second.clear();
+		Scene::scene->PushDelete(landmark.first);
+	}
 
+	GuestGameWorld::gameWorld->buildingList.clear();
 	hostId = -1;
 	for (auto& sim : sims)
 		Scene::scene->PushDelete(sim.second);

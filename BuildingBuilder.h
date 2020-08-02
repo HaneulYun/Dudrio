@@ -75,4 +75,6 @@ public:
 	bool IntersectPlane(Vector3 rayOrigin, Vector3 rayDirection, Vector3 v0, Vector3 v1, Vector3 v2);
 
 	void IntersectVertices(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirection, std::vector<XMFLOAT3>& vertices);
+
+	void guestBuild(int type, int index, float x, float z, float angle, int range);
 };

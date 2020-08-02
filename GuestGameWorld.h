@@ -14,7 +14,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	static GuestGameWorld* gameWorld;
 
 	// 랜드마크에 따른 빌딩 목록
-	std::map<BuildingType, std::vector<GameObject*>> buildingList;
+	std::map<GameObject*, std::map<BuildingType, std::vector<GameObject*>>> buildingList;
 	// 전체 심 목록
 	std::map<int, GameObject*> simList;
 
@@ -39,8 +39,8 @@ public:
 	void Start(/*초기화 코드를 작성하세요.*/);
 	void Update(/*업데이트 코드를 작성하세요.*/);
 	void gameTimeUpdate(); 
-	void buildInGameWorld(GameObject* building, int type, int index);
-	void deleteInGameWorld(GameObject* building, int type, int index);
+	void buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
+	void deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
 	void calculateSunInfo();
 
 	std::wstring convertTimeToText();

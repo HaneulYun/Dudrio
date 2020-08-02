@@ -24,13 +24,13 @@ public:
 
 
 		/*AdvancedVillagePack*/
-		ASSET AddTexture("house01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
-		ASSET AddTexture("house02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
-		ASSET AddTexture("material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
-		ASSET AddTexture("material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
-		ASSET AddTexture("material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
-		ASSET AddTexture("TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
-		ASSET AddTexture("TreeTrunks", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeTrunks_D.dds");
+		ASSET AddTexture("AV_house_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");
+		ASSET AddTexture("AV_house_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_09_D.dds");
+		ASSET AddTexture("AV_material_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_01_D.dds");
+		ASSET AddTexture("AV_material_02", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_02_D.dds");
+		ASSET AddTexture("AV_material_03", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_03_D.dds");
+		//ASSET AddTexture("AV_TreeLeafs", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeLeafs_D.dds");
+		//ASSET AddTexture("AV_TreeTrunks", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_TreeTrunks_D.dds");
 
 
 		/*HandPaintedEnviroment*/
@@ -151,13 +151,13 @@ public:
 
 
 		/*AdvancedVillagePack*/
-		ASSET AddMaterial("house01", ASSET TEXTURE("house01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		ASSET AddMaterial("house02", ASSET TEXTURE("house02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		ASSET AddMaterial("material_01", ASSET TEXTURE("material_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		ASSET AddMaterial("material_02", ASSET TEXTURE("material_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		ASSET AddMaterial("material_03", ASSET TEXTURE("material_03"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-		ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
-		ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
+		ASSET AddMaterial("AV_house_01", ASSET TEXTURE("AV_house_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("AV_house_02", ASSET TEXTURE("AV_house_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("AV_material_01", ASSET TEXTURE("AV_material_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("AV_material_02", ASSET TEXTURE("AV_material_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("AV_material_03", ASSET TEXTURE("AV_material_03"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		//ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
+		//ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
 
 
 		/*HandPaintedEnviroment*/
@@ -268,50 +268,50 @@ public:
 		//ASSET AddMesh("Sphere", Mesh::CreateSphere());
 
 		/*AdvancedVillagePack*/
-		ASSET AddFbxForMesh("SM_Well", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well.FBX");
-		ASSET AddFbxForMesh("SM_Well_Extra02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra02.FBX");
-		ASSET AddFbxForMesh("SM_Well_Extra03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra03.FBX");
-		ASSET AddFbxForMesh("SM_House_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
-		ASSET AddFbxForMesh("SM_House_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
-		ASSET AddFbxForMesh("SM_House_Var02_Extra", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02_Extra.FBX");
-		ASSET AddFbxForMesh("SM_Tree_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var01.FBX");
-		ASSET AddFbxForMesh("SM_Tree_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var02.FBX");
-		ASSET AddFbxForMesh("SM_Tree_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var03.FBX");
-		ASSET AddFbxForMesh("SM_Tree_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var04.FBX");
-		ASSET AddFbxForMesh("SM_Tree_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var05.FBX");
-		ASSET AddFbxForMesh("SM_Mushroom_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var01.FBX");
-		ASSET AddFbxForMesh("SM_Mushroom_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var02.FBX");
-		ASSET AddFbxForMesh("SM_Mushroom_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var03.FBX");
-		ASSET AddFbxForMesh("SM_Mushroom_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var04.FBX");
-		ASSET AddFbxForMesh("SM_Mushroom_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var05.FBX");
-		ASSET AddFbxForMesh("SM_Mushroom_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var06.FBX");
-		ASSET AddFbxForMesh("SM_Cart_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var01.FBX");
-		ASSET AddFbxForMesh("SM_Cart_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var02.FBX");
-		ASSET AddFbxForMesh("SM_Barrel", "Assets\\AdvancedVillagePack\\Meshes\\SM_Barrel.FBX");
-		ASSET AddFbxForMesh("SM_Bucket", "Assets\\AdvancedVillagePack\\Meshes\\SM_Bucket.FBX");
-		ASSET AddFbxForMesh("SM_Fence_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
-		ASSET AddFbxForMesh("SM_Fence_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
-		ASSET AddFbxForMesh("SM_Fence_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
-		ASSET AddFbxForMesh("SM_Fence_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
-		ASSET AddFbxForMesh("SM_Cauldron", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cauldron.FBX");
-		ASSET AddFbxForMesh("SM_Spike", "Assets\\AdvancedVillagePack\\Meshes\\SM_Spike.FBX");
-		ASSET AddFbxForMesh("SM_Fish", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fish.FBX");
-		ASSET AddFbxForMesh("SM_Pot_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var01.FBX");
-		ASSET AddFbxForMesh("SM_Pot_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var02.FBX");
-		ASSET AddFbxForMesh("SM_Pot_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var03.FBX");
-		ASSET AddFbxForMesh("SM_Pot_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var04.FBX");
-		ASSET AddFbxForMesh("SM_Pot_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var05.FBX");
-		ASSET AddFbxForMesh("SM_Pot_Var06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var06.FBX");
-		ASSET AddFbxForMesh("SM_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Apple.FBX");
-		ASSET AddFbxForMesh("SM_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Potato.FBX");
-		ASSET AddFbxForMesh("SM_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tomato.FBX");
-		ASSET AddFbxForMesh("SM_Watermellon", "Assets\\AdvancedVillagePack\\Meshes\\SM_Watermellon.FBX");
-		ASSET AddFbxForMesh("SM_Sack_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Apple.FBX");
-		ASSET AddFbxForMesh("SM_Sack_Flour", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Flour.FBX");
-		ASSET AddFbxForMesh("SM_Sack_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Potato.FBX");
-		ASSET AddFbxForMesh("SM_Sack_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Tomato.FBX");
-		ASSET AddFbxForMesh("SM_Sack_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
-		ASSET AddFbxForMesh("SM_Sack_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
+		ASSET AddFbxForMesh("AV_Well", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well.FBX");
+		ASSET AddFbxForMesh("AV_Well_Extra02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra02.FBX");
+		ASSET AddFbxForMesh("AV_Well_Extra03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra03.FBX");
+		ASSET AddFbxForMesh("AV_House_01", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var01.FBX");
+		ASSET AddFbxForMesh("AV_House_02", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02.FBX");
+		ASSET AddFbxForMesh("AV_House_02_Extra", "Assets\\AdvancedVillagePack\\Meshes\\SM_House_Var02_Extra.FBX");
+		//ASSET AddFbxForMesh("AV_Tree_Var01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var01.FBX");
+		//ASSET AddFbxForMesh("AV_Tree_Var02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var02.FBX");
+		//ASSET AddFbxForMesh("AV_Tree_Var03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var03.FBX");
+		//ASSET AddFbxForMesh("AV_Tree_Var04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var04.FBX");
+		//ASSET AddFbxForMesh("AV_Tree_Var05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tree_Var05.FBX");
+		ASSET AddFbxForMesh("AV_Mushroom_01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var01.FBX");
+		ASSET AddFbxForMesh("AV_Mushroom_02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var02.FBX");
+		ASSET AddFbxForMesh("AV_Mushroom_03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var03.FBX");
+		ASSET AddFbxForMesh("AV_Mushroom_04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var04.FBX");
+		ASSET AddFbxForMesh("AV_Mushroom_05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var05.FBX");
+		ASSET AddFbxForMesh("AV_Mushroom_06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Mushroom_Var06.FBX");
+		ASSET AddFbxForMesh("AV_Cart_01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var01.FBX");
+		ASSET AddFbxForMesh("AV_Cart_02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cart_Var02.FBX");
+		ASSET AddFbxForMesh("AV_Barrel", "Assets\\AdvancedVillagePack\\Meshes\\SM_Barrel.FBX");
+		ASSET AddFbxForMesh("AV_Bucket", "Assets\\AdvancedVillagePack\\Meshes\\SM_Bucket.FBX");
+		ASSET AddFbxForMesh("AV_Fence_01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var01.FBX");
+		ASSET AddFbxForMesh("AV_Fence_02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var02.FBX");
+		ASSET AddFbxForMesh("AV_Fence_03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var03.FBX");
+		ASSET AddFbxForMesh("AV_Fence_04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fence_Var04.FBX");
+		ASSET AddFbxForMesh("AV_Cauldron", "Assets\\AdvancedVillagePack\\Meshes\\SM_Cauldron.FBX");
+		ASSET AddFbxForMesh("AV_Spike", "Assets\\AdvancedVillagePack\\Meshes\\SM_Spike.FBX");
+		ASSET AddFbxForMesh("AV_Fish", "Assets\\AdvancedVillagePack\\Meshes\\SM_Fish.FBX");
+		ASSET AddFbxForMesh("AV_Pot_01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var01.FBX");
+		ASSET AddFbxForMesh("AV_Pot_02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var02.FBX");
+		ASSET AddFbxForMesh("AV_Pot_03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var03.FBX");
+		ASSET AddFbxForMesh("AV_Pot_04", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var04.FBX");
+		ASSET AddFbxForMesh("AV_Pot_05", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var05.FBX");
+		ASSET AddFbxForMesh("AV_Pot_06", "Assets\\AdvancedVillagePack\\Meshes\\SM_Pot_Var06.FBX");
+		ASSET AddFbxForMesh("AV_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Apple.FBX");
+		ASSET AddFbxForMesh("AV_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Potato.FBX");
+		ASSET AddFbxForMesh("AV_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Tomato.FBX");
+		ASSET AddFbxForMesh("AV_Watermellon", "Assets\\AdvancedVillagePack\\Meshes\\SM_Watermellon.FBX");
+		ASSET AddFbxForMesh("AV_Sack_Apple", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Apple.FBX");
+		ASSET AddFbxForMesh("AV_Sack_Flour", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Flour.FBX");
+		ASSET AddFbxForMesh("AV_Sack_Potato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Potato.FBX");
+		ASSET AddFbxForMesh("AV_Sack_Tomato", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Tomato.FBX");
+		ASSET AddFbxForMesh("AV_Sack_01", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var01.FBX");
+		ASSET AddFbxForMesh("AV_Sack_02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Sack_Var02.FBX");
 
 		/*HandPaintedEnviroment*/
 		//ASSET AddFbxForMesh("Altar", "Assets\\HandPaintedEnvironment\\Models\\Altar.FBX");
@@ -551,27 +551,27 @@ public:
 			Vector3 boundMin{ FLT_MAX }, boundMax{ -FLT_MAX }, center, extents;
 			BoundingBox bb0, bb1, bb2;
 			{
-				auto child = MakePrefab(ASSET MESH("SM_Well"), ASSET MATERIAL("material_03"), prefab);
+				auto child = MakePrefab(ASSET MESH("AV_Well"), ASSET MATERIAL("AV_material_03"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				bb0 = ASSET MESH("SM_Well")->Bounds;
+				bb0 = ASSET MESH("AV_Well")->Bounds;
 				center.xmf3 = bb0.Center; extents.xmf3 = bb0.Extents;
 				boundMin = Vector3::Min(boundMin, center - extents);
 				boundMax = Vector3::Max(boundMax, center + extents);
 			}
 			{
-				auto child = MakePrefab(ASSET MESH("SM_Well_Extra02"), ASSET MATERIAL("material_03"), prefab);
+				auto child = MakePrefab(ASSET MESH("AV_Well_Extra02"), ASSET MATERIAL("AV_material_03"), prefab);
 				child->transform->position = { 0.0f,1.5f,0.0f };
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				bb1 = ASSET MESH("SM_Well_Extra02")->Bounds;
+				bb1 = ASSET MESH("AV_Well_Extra02")->Bounds;
 				center.xmf3 = bb1.Center; extents.xmf3 = bb1.Extents;
 				boundMin = Vector3::Min(boundMin, center - extents);
 				boundMax = Vector3::Max(boundMax, center + extents);
 			}
 			{
-				auto child = MakePrefab(ASSET MESH("SM_Well_Extra03"), ASSET MATERIAL("material_03"), prefab);
+				auto child = MakePrefab(ASSET MESH("AV_Well_Extra03"), ASSET MATERIAL("AV_material_03"), prefab);
 				child->transform->position = { 0.0f,1.0f,0.0f };
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				bb2 = ASSET MESH("SM_Well_Extra03")->Bounds;
+				bb2 = ASSET MESH("AV_Well_Extra03")->Bounds;
 				center.xmf3 = bb2.Center; extents.xmf3 = bb2.Extents;
 				boundMin = Vector3::Min(boundMin, center - extents);
 				boundMax = Vector3::Max(boundMax, center + extents);
@@ -579,7 +579,7 @@ public:
 			collider->center = (boundMax + boundMin) / 2;
 			collider->extents = (boundMax - boundMin) / 2;
 
-			ASSET AddPrefab("Well", std::make_unique<GameObject>(prefab));
+			ASSET AddPrefab("AV_Well", std::make_unique<GameObject>(prefab));
 		}
 
 		{
@@ -589,16 +589,16 @@ public:
 			collider->center.y += collider->extents.y * 0.5f;
 			collider->obb = true;
 			{
-				auto child = MakePrefab(ASSET MESH("SM_House_Var02"), ASSET MATERIAL("house02"), prefab);
+				auto child = MakePrefab(ASSET MESH("AV_House_02"), ASSET MATERIAL("AV_house_02"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
 			{
-				auto child = MakePrefab(ASSET MESH("SM_House_Var02_Extra"), ASSET MATERIAL("house02"), prefab);
+				auto child = MakePrefab(ASSET MESH("AV_House_02_Extra"), ASSET MATERIAL("AV_house_02"), prefab);
 				child->AddComponent<RotatingBehavior>()->speedRotating = -10.0f;
 				child->transform->position = { 0.25f,6.0f,2.5f };
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
-			ASSET AddPrefab("House01", std::make_unique<GameObject>(prefab));
+			ASSET AddPrefab("AV_House_01", std::make_unique<GameObject>(prefab));
 		}
 
 		{

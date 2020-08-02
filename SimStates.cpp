@@ -42,7 +42,7 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		do
 		{
 			targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
-		} while (PathFinder::Instance()->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+		} while (PathFinder::Instance()->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1000].collision);
 
 		sim->targetPos.emplace_back(targetPos, 0);
 		sim->stateMachine.ChangeState(MoveState::Instance());
@@ -236,7 +236,7 @@ bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
 			do
 			{
 				targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
-			} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+			} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1000].collision);
 			sim->targetPos.emplace_back(targetPos, 0);
 			sim->stateMachine.ChangeState(IdleState::Instance());
 		}

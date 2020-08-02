@@ -9,6 +9,53 @@ void HostNetwork::ProcessPacket(char* ptr)
 	static bool first_time = true;
 	switch (ptr[1])
 	{
+	case LS2C_LOGIN_OK_HOST:
+	{
+		ls2c_packet_login_ok_host* my_packet = reinterpret_cast<ls2c_packet_login_ok_host*>(ptr);
+		strcpy(mainserver_ip, my_packet->serverIP);
+		mainserver_port = my_packet->server_port;
+		closesocket(lobbySocket);
+
+		SOCKADDR_IN serveraddr{};
+		serveraddr.sin_family = AF_INET;
+		serveraddr.sin_addr.s_addr = inet_addr(mainserver_ip);
+		serveraddr.sin_port = htons(mainserver_port);
+
+		serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
+		retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 10);
+		if (retval == SOCKET_ERROR)
+		{
+			connectButtonText->text = L"Open";
+			pressButton = false;
+			tryConnect = false;
+			isConnect = false;
+
+			closesocket(serverSocket);
+		}
+		else if (retval == 0)
+		{
+			connectButtonText->text = L"Logout";
+			tryConnect = false;
+			isConnect = true;
+			mainConnect = true;
+			unsigned long on = true;
+			int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
+			Login();
+		}
+	}
+	break;
+	case LS2C_LOGIN_FAIL:
+	{
+		ls2c_pakcet_login_fail* my_packet = reinterpret_cast<ls2c_pakcet_login_fail*>(ptr);
+
+		connectButtonText->text = L"Open";
+		pressButton = false;
+		isConnect = false;
+		tryConnect = false;
+
+		closesocket(lobbySocket);
+	}
+	break;
 	case S2C_LOGIN_OK:
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
@@ -46,6 +93,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		pressButton = false;
 		isConnect = false;
 		tryConnect = false;
+		mainConnect = false;
 
 		closesocket(serverSocket);
 	}
@@ -197,15 +245,24 @@ void HostNetwork::process_data(char* net_buf, size_t io_byte)
 void HostNetwork::Receiver()
 {
 	char net_buf[BUFSIZE];
-	auto retval = recv(serverSocket, net_buf, BUFSIZE, 0);
 
-	if (retval > 0)	process_data(net_buf, retval);
+	int ret = 0;
+	if (mainConnect)
+		ret = recv(serverSocket, net_buf, BUFSIZE, 0);
+	else 
+		ret = recv(lobbySocket, net_buf, BUFSIZE, 0);
+
+	if (ret > 0)	process_data(net_buf, ret);
 }
 
 void HostNetwork::send_packet(void* packet)
 {
 	char* p = reinterpret_cast<char*>(packet);
-	send(serverSocket, p, (unsigned char)p[0], 0);
+
+	if(mainConnect)
+		send(serverSocket, p, (unsigned char)p[0], 0);
+	else
+		send(lobbySocket, p, (unsigned char)p[0], 0);
 }
 
 void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle)
@@ -282,6 +339,7 @@ void HostNetwork::Logout()
 	pressButton = false;
 	isConnect = false;
 	tryConnect = false;
+	mainConnect = false;
 
 	connectButtonText->text = L"Open";
 	closesocket(serverSocket);
@@ -302,4 +360,19 @@ void HostNetwork::Logout()
 			}
 		}
 	}
+}
+
+
+void HostNetwork::LobbyLogin()
+{
+	c2ls_packet_login_host l_packet;
+	l_packet.size = sizeof(l_packet);
+	l_packet.type = C2LS_LOGIN_HOST;
+	strcpy_s(l_packet.name, name);
+	l_packet.terrain_size = terrainSize;
+	l_packet.frequency = frequency;
+	l_packet.octaves = octaves;
+	l_packet.seed = seed;
+
+	send_packet(&l_packet);
 }

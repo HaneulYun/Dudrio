@@ -25,6 +25,7 @@ void IOCPServer::init_server()
 	memset(&s_address, 0, sizeof(s_address));
 	s_address.sin_family = AF_INET;
 	s_address.sin_port = htons(server_port);
+	cout << "Server port num: " << server_port << endl;
 	s_address.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 	::bind(l_socket, reinterpret_cast<sockaddr*>(&s_address), sizeof(s_address));
 

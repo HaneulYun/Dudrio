@@ -48,7 +48,6 @@ public:
 	void send_login_ok_host_packet(int user_id, int room_id);
 	void send_login_ok_guest_packet(int user_id);
 	void send_login_fail_host_packet(int user_id);
-	void send_disconnect_client_packet(int user_id);
 	void send_new_room_packet(int user_id, int room_id);
 	void send_delete_room_packet(int user_id, int room_id);
 

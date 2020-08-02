@@ -23,9 +23,8 @@ constexpr int L_MAX_USER = 10000;
 #define LS2C_LOGIN_OK_HOST	35
 #define LS2C_LOGIN_OK_GUEST 36
 #define LS2C_LOGIN_FAIL		37
-#define LS2C_DISCONNECT		38
-#define LS2C_NEW_ROOM		39
-#define LS2C_DELETE_ROOM	40
+#define LS2C_NEW_ROOM		38
+#define LS2C_DELETE_ROOM	39
 
 
 #pragma pack(push ,1)
@@ -89,11 +88,6 @@ struct ls2c_packet_login_ok_host {
 };
 
 struct ls2c_packet_login_ok_guest {
-	unsigned char size;
-	char type;
-};
-
-struct ls2c_packet_disconnect {
 	unsigned char size;
 	char type;
 };

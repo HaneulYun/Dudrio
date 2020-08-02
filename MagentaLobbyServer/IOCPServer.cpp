@@ -5,6 +5,8 @@ IOCPServer::IOCPServer()
 {
 	server_worker_run = true;
 	server_accept_run = true;
+	client_worker_run = true;
+	client_accept_run = true;
 }
 
 IOCPServer::~IOCPServer()
@@ -62,9 +64,9 @@ void IOCPServer::start_server()
 {
 	init_clients();
 
-	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 1);// NUM_OF_CPU * 2 + 1);
 	g_ciocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 1);
-
+	g_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 1);// NUM_OF_CPU * 2 + 1);
+	
 	create_worker_threads();
 	create_accept_threads();
 
@@ -99,8 +101,8 @@ void IOCPServer::create_worker_threads()
 
 void IOCPServer::create_accept_threads()
 {
-	server_accept_thread = thread([this]() { server_accept_thread_loop(); });
 	client_accept_thread = thread([this]() { client_accept_thread_loop(); });
+	server_accept_thread = thread([this]() { server_accept_thread_loop(); });
 
 	cout << "Create Accept_Thread Complete" << endl;
 }
@@ -145,6 +147,9 @@ void IOCPServer::server_worker_thread_loop()
 		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
 		int user_id = static_cast<int>(key);
 
+		if (g_servers.count(user_id) == 0)
+			continue;
+
 		switch (exover->op) {
 		case OP_RECV:
 			if (0 == io_byte)
@@ -178,6 +183,9 @@ void IOCPServer::client_worker_thread_loop()
 
 		EXOVER* exover = reinterpret_cast<EXOVER*>(over);
 		int user_id = static_cast<int>(key);
+
+		if (g_users.count(user_id) == 0)
+			continue;
 
 		switch (exover->op) {
 		case OP_RECV:
@@ -490,7 +498,6 @@ void IOCPServer::process_packet(int user_id, char* buf)
 					send_new_room_packet(user.second->m_id, index);
 			}
 		}
-		disconnect_client(user_id);
 	}
 	break; 
 	case C2LS_LOGIN_GUEST:
@@ -565,8 +572,6 @@ void IOCPServer::disconnect_client(int user_id)
 {
 	std::cout << "Disconnect Client" << user_id << std::endl;
 
-	send_disconnect_client_packet(user_id);
-
 	g_users[user_id]->m_status = ST_ALLOC;
 
 	linger sopt_linger = { 0, 0 };
@@ -632,15 +637,6 @@ void IOCPServer::send_login_fail_host_packet(int user_id)
 	ls2c_packet_delete_room p;
 	p.size = sizeof(p);
 	p.type = LS2C_LOGIN_FAIL;
-
-	send_packet_client(user_id, &p);
-}
-
-void IOCPServer::send_disconnect_client_packet(int user_id)
-{
-	ls2c_packet_disconnect p;
-	p.size = sizeof(p);
-	p.type = LS2C_DISCONNECT;
 
 	send_packet_client(user_id, &p);
 }

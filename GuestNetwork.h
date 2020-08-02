@@ -30,7 +30,7 @@ public:
 	bool isConnect{ false };
 	bool tryConnect{ false };
 	bool pressButton{ false };
-	bool failConnect{ false };
+	bool flag{ false };
 
 	static GuestNetwork* network;
 
@@ -168,7 +168,7 @@ public:
 
 	void Update()
 	{
-		if (!isConnect && !failConnect)
+		if (!isConnect && !flag)
 		{
 			SOCKADDR_IN serveraddr{};
 			serveraddr.sin_family = AF_INET;
@@ -189,13 +189,14 @@ public:
 			{
 				tryConnect = false;
 				isConnect = false;
-				failConnect = true;
+				flag = true;
 			}
 			else if (retval == 0)
 			{
 				connectButtonText->text = L"Logout";
 				tryConnect = false;
 				isConnect = true;
+				flag = true;
 				gameTime->SetActive(true);
 				unsigned long on = true;
 				int nRet = ioctlsocket(serverSocket, FIONBIO, &on);

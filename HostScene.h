@@ -361,10 +361,8 @@ public:
 			ASSET AddFbxForMesh("HP_Log_1", "Assets\\HandPaintedEnvironment\\Models\\Log_1.FBX");
 			ASSET AddFbxForMesh("HP_Log_2", "Assets\\HandPaintedEnvironment\\Models\\Log_2.FBX");
 			ASSET AddFbxForMesh("HP_Log_3", "Assets\\HandPaintedEnvironment\\Models\\Log_3.FBX");
-
 			ASSET AddFbxForMesh("HP_Mill", "Assets\\HandPaintedEnvironment\\Models\\Mill.FBX");
 			ASSET AddFbxForMesh("HP_Mill_wings", "Assets\\HandPaintedEnvironment\\Models\\Mill_wings.FBX");
-
 			ASSET AddFbxForMesh("HP_Mine", "Assets\\HandPaintedEnvironment\\Models\\Mine.FBX");
 			ASSET AddFbxForMesh("HP_Mushroom_1", "Assets\\HandPaintedEnvironment\\Models\\Mushroom_1.FBX");
 			ASSET AddFbxForMesh("HP_Mushroom_2", "Assets\\HandPaintedEnvironment\\Models\\Mushroom_2.FBX");
@@ -381,9 +379,7 @@ public:
 			ASSET AddFbxForMesh("HP_Rock_4", "Assets\\HandPaintedEnvironment\\Models\\Rock_4.FBX");
 			ASSET AddFbxForMesh("HP_Small_house", "Assets\\HandPaintedEnvironment\\Models\\Small_house.FBX");
 			ASSET AddFbxForMesh("HP_Stone_fence", "Assets\\HandPaintedEnvironment\\Models\\Stone_fence.FBX");
-
 			ASSET AddFbxForMesh("HP_street_light", "Assets\\HandPaintedEnvironment\\Models\\Street_light.FBX");
-
 			ASSET AddFbxForMesh("HP_Stump", "Assets\\HandPaintedEnvironment\\Models\\Stump.FBX");
 			ASSET AddFbxForMesh("HP_Tavern", "Assets\\HandPaintedEnvironment\\Models\\Tavern.FBX");
 			ASSET AddFbxForMesh("HP_Tile_1", "Assets\\HandPaintedEnvironment\\Models\\Tile_1.FBX");
@@ -403,7 +399,6 @@ public:
 			ASSET AddFbxForMesh("HP_Wall_2", "Assets\\HandPaintedEnvironment\\Models\\Wall_2.FBX");
 			ASSET AddFbxForMesh("HP_Well", "Assets\\HandPaintedEnvironment\\Models\\Well.FBX");
 			ASSET AddFbxForMesh("HP_Witch_house", "Assets\\HandPaintedEnvironment\\Models\\Witch_house.FBX");
-
 			ASSET AddFbxForMesh("HP_Woodmill", "Assets\\HandPaintedEnvironment\\Models\\Woodmill.FBX");
 			ASSET AddFbxForMesh("HP_Woodmill_Saw", "Assets\\HandPaintedEnvironment\\Models\\Woodmill_Saw.FBX");
 		}
@@ -631,6 +626,72 @@ public:
 
 			ASSET AddPrefab("MRC", std::make_unique<GameObject>(prefab));
 		}
+
+
+		{
+			auto prefab = CreateEmptyPrefab();
+			auto collider = prefab->AddComponent<BoxCollider>();
+			BoundingBox bb = ASSET MESH("HP_Mill")->Bounds;
+			collider->extents.xmf3 = bb.Extents;
+			collider->center.xmf3 = bb.Center;
+			collider->obb = true;
+			{
+				auto child = MakePrefab(ASSET MESH("HP_Mill"), ASSET MATERIAL("HP_Mill"), prefab);
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			{
+				auto child = MakePrefab(ASSET MESH("HP_Mill_wings"), ASSET MATERIAL("HP_Mill"), prefab);
+				child->AddComponent<RotatingBehavior>()->speedRotating = -10.0f;
+				child->transform->position = { 0.0f,6.5f,6.5f };
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			ASSET AddPrefab("HP_Mill", std::make_unique<GameObject>(prefab));
+		}
+
+
+		{
+			auto prefab = CreateEmptyPrefab();
+			auto collider = prefab->AddComponent<BoxCollider>();
+			BoundingBox bb = ASSET MESH("HP_street_light")->Bounds;
+			collider->extents.xmf3 = bb.Extents;
+			collider->center.xmf3 = bb.Center;
+			collider->obb = true;
+			{
+				auto child = MakePrefab(ASSET MESH("HP_street_light"), ASSET MATERIAL("HP_Street_light"), prefab);
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			//{
+			//	auto spotLight = prefab->AddChild();
+			//	spotLight->transform->position = { 0.0f, 2.5f, 1.25f };
+			//	spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
+			//	spotLight->GetComponent<Light>()->type = Light::Type::Point;
+			//	spotLight->GetComponent<Light>()->FalloffEnd = 5;
+			//}
+			ASSET AddPrefab("HP_Street_light", std::make_unique<GameObject>(prefab));
+		}
+
+		{
+			auto prefab = CreateEmptyPrefab();
+			auto collider = prefab->AddComponent<BoxCollider>();
+			BoundingBox bb = ASSET MESH("HP_Lamppost")->Bounds;
+			collider->extents.xmf3 = bb.Extents;
+			collider->center.xmf3 = bb.Center;
+			collider->obb = true;
+			{
+				auto child = MakePrefab(ASSET MESH("HP_Lamppost"), ASSET MATERIAL("HP_Lampposts"), prefab);
+				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+			}
+			//{
+			//	auto spotLight = prefab->AddChild();
+			//	spotLight->transform->position = { 0.0f, 3.5f, 0.0f };
+			//	spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
+			//	spotLight->GetComponent<Light>()->type = Light::Type::Point;
+			//	spotLight->GetComponent<Light>()->FalloffEnd = 5;
+			//}
+			ASSET AddPrefab("HP_Lamppost", std::make_unique<GameObject>(prefab));
+		}
+
+
 	}
 
 	GameObject* MakePrefab(Mesh* mesh = nullptr, Material* material = nullptr, GameObject* parent = nullptr)

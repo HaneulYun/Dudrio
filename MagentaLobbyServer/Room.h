@@ -5,7 +5,7 @@ class Room {
 public:
 	int room_id;
 	int port_num;
-	std::string serverIP;
+	char serverIP[INET_ADDRSTRLEN];
 
 	// 마을 지형 정보
 	int terrain_size;
@@ -19,7 +19,8 @@ public:
 
 public:
 	Room() {}
-	Room(int id, std::string ip) : room_id(id), serverIP(ip) { 
+	Room(int id, char* ip) : room_id(id) { 
+		strcpy_s(serverIP, ip);
 		port_num = 9000 + ((id + 3) * 4); 
 		is_host_exist = false;
 	}

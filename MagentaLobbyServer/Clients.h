@@ -1,5 +1,9 @@
 #pragma once
 
+constexpr char O_SERVER = 0;
+constexpr char O_HOST = 1;
+constexpr char O_GUEST = 2;
+
 class Client 
 {
 public:
@@ -11,6 +15,8 @@ public:
 	char	m_packet_buf[MAX_PACKET_SIZE];
 	atomic	<C_STATUS> m_status;
 	char	m_name[L_MAX_ID_LEN + 1];
+
+	char	o_type;
 
 	Client(SOCKET& sock, int id): m_s(sock), m_id(id)
 	{

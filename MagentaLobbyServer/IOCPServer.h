@@ -7,12 +7,19 @@ private:
 	HANDLE	g_iocp;
 	SOCKET	l_socket;
 
-	vector<thread>	worker_threads;
-	bool			worker_run;
-	thread			accept_thread;
-	bool			accept_run;
+	HANDLE	g_ciocp;
+	SOCKET	cl_socket;
 
-public:
+	vector<thread>	server_worker_threads;
+	bool			server_worker_run;
+	thread			server_accept_thread;
+	bool			server_accept_run;
+	vector<thread>	client_worker_threads;
+	bool			client_worker_run;
+	thread			client_accept_thread;
+	bool			client_accept_run;
+
+public: 
 	IOCPServer();
 	~IOCPServer();
 	void init_server();
@@ -23,20 +30,31 @@ public:
 	HANDLE& get_iocp_handle() { return g_iocp; }
 
 	// thread ---------------------------------
+	void destroy_threads();
 	void create_worker_threads();
 	void create_accept_threads();
-	void destroy_threads();
-	void worker_thread_loop();
-	void accept_thread_loop();
+	void server_worker_thread_loop();
+	void server_accept_thread_loop();
+	void client_worker_thread_loop();
+	void client_accept_thread_loop();
 
 	// send -----------------------------------
-	void send_packet(int user_id, void* p);
+	void send_packet_server(int user_id, void* p);
+	void send_packet_client(int user_id, void* p);
 	void send_login_ok_packet(int user_id);
 	void send_login_fail_packet(int user_id);
 	void send_disconnect_packet(int user_id);
 
+	void send_login_ok_host_packet(int user_id, int room_id);
+	void send_login_ok_guest_packet(int user_id);
+	void send_login_fail_host_packet(int user_id);
+	void send_disconnect_client_packet(int user_id);
+	void send_new_room_packet(int user_id, int room_id);
+	void send_delete_room_packet(int user_id, int room_id);
+
 	// recv -----------------------------------
-	void recv_packet_construct(int user_id, int io_byte);
+	void server_recv_packet_construct(int user_id, int io_byte);
+	void client_recv_packet_construct(int user_id, int io_byte);
 	void process_packet(int user_id, char* buf);
 
 	void make_room(int user_id, SOCKADDR_IN& sock);

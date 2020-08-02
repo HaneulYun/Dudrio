@@ -4,7 +4,7 @@
 class IOCPServer iocp;
 unordered_map<int, class Room*> g_rooms;
 unordered_map<int, class Client*> g_servers;
-//class unordered_map<int, class Client*> g_users;
+unordered_map<int, class Client*> g_users;
 
 int main()
 {

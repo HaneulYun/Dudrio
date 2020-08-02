@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <random>
 #include <string>
+#include <string.h>
 
 using namespace std;
 using namespace chrono;

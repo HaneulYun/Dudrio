@@ -22,7 +22,9 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	/*Time*/
 	GameObject*		sun;
 	TimeSpeed		timeSpeed = X1;
-	float			gameTime = 37.5f * 6;
+
+	int				day = 1;
+	float			gameTime = 37.5f * 20;
 	float			gameDeltaTime;
 
 	/*money*/

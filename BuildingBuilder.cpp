@@ -606,7 +606,9 @@ void BuildingBuilder::pickToDelete()
 
 	int x = mousePosInWorld.x / gameObject->scene->spatialPartitioningManager.sectorWidth;
 	int y = mousePosInWorld.z / gameObject->scene->spatialPartitioningManager.sectorHeight;
-
+	
+	if (0 > x || x >= gameObject->scene->spatialPartitioningManager.xSize || 0 > y || y >= gameObject->scene->spatialPartitioningManager.ySize) 
+		return;
 
 	for (auto& tagList : gameObject->scene->spatialPartitioningManager.sectorList[x][y].list)
 	{

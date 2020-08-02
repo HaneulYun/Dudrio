@@ -50,18 +50,19 @@ void GameWorld::aiUpdate()
 
 void GameWorld::gameTimeUpdate()
 {
+	if (gameTime >= timeOfDay)
+	{
+		sun->transform->forward = { 1, 0, 0 };
+		gameTime -= timeOfDay;
+		++day;
+	}
+
 	if(!HostNetwork::network->isConnect)
 		gameDeltaTime = MathHelper::Clamp(Time::deltaTime * timeSpeed, 0.0f, 0.025f * timeSpeed);
 	else
 		gameDeltaTime = Time::deltaTime * timeSpeed;
 
 	gameTime += gameDeltaTime;
-	
-	if (gameTime >= timeOfDay)
-	{
-		sun->transform->forward = { 1, 0, 0 };
-		gameTime -= timeOfDay;
-	}
 
 	calculateSunInfo();
 }

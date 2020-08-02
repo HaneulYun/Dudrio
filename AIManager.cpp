@@ -21,13 +21,13 @@ void AIManager::aiUpdate()
 	//	sim.second->GetComponent<Sim>()->stateMachine.Update();
 	//}
 
-	//if (time > 30.f)
-	//{
-	//	for (auto sim : GameWorld::gameWorld->simList)
-	//	{
-	//		Messenger->CreateMessage(0, sim.first, sim.first, Msg_Sleep);
-	//	}
-	//}
+	if (time > 24.0f * 37.5f)
+	{
+		for (auto sim : GameWorld::gameWorld->simList)
+		{
+			Messenger->CreateMessage(0, sim.first, sim.first, Msg_Sleep);
+		}
+	}
 
 	for (auto landmark : GameWorld::gameWorld->buildingList)
 	{
@@ -42,10 +42,10 @@ void AIManager::aiUpdate()
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % BuildingBuilder::buildingBuilder->getBuildingCount(info->buildingType);
 
-				village->delayTime = rand() % 60 + 30;
+				village->delayTime = rand() % 120 + 60;
 				int index = rand() % village->simList.size();
 				int id = village->simList[landmark.second[GameWorld::gameWorld->House][index]]->GetComponent<Sim>()->id;
-				Messenger->CreateMessage(0, id, id, Msg_Build, info);
+				Messenger->CreateMessage(5, id, id, Msg_Build, info);
 			}
 			village->delayTime -= GameWorld::gameWorld->gameDeltaTime;
 		}

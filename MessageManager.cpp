@@ -12,7 +12,8 @@ void MessageManager::CreateMessage(double delay, int senderIndex, int receiverIn
 {
 	Telegram telegram(0, senderIndex, receiverIndex, msg, ExtraInfo);
            
-	float currentTime = Time::currentTime;
+	//float currentTime = Time::currentTime;
+	float currentTime = GameWorld::gameWorld->day * 37.5f * 24 + GameWorld::gameWorld->gameTime;
 	telegram.dispatchTime = currentTime + delay;
 
 	msgQueue.insert(telegram);
@@ -20,7 +21,8 @@ void MessageManager::CreateMessage(double delay, int senderIndex, int receiverIn
 
 void MessageManager::Timer()
 {
-	float currentTime = Time::currentTime;
+	//float currentTime = Time::currentTime;
+	float currentTime = GameWorld::gameWorld->day * 37.5f * 24 + GameWorld::gameWorld->gameTime;
 
 	while (!msgQueue.empty() && (msgQueue.begin()->dispatchTime < currentTime))
 	{

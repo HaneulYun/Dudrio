@@ -16,8 +16,7 @@ void IdleState::Enter(Sim* sim)
 
 	if (sim->stateMachine.HaveNextState())
 		return;
-
-	double delay = rand() % 10;
+	double delay = rand() % 10 + 1;
 	Messenger->CreateMessage(delay, sim->id, sim->id, Msg_Move);
 };
 
@@ -198,7 +197,7 @@ SleepState* SleepState::Instance()
 
 void SleepState::Enter(Sim* sim)
 {
-	Messenger->CreateMessage(5, sim->id, sim->id, Msg_WakeUp);
+	Messenger->CreateMessage(6 * 37.5f, sim->id, sim->id, Msg_WakeUp);
 };
 
 void SleepState::Execute(Sim* sim)

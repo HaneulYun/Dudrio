@@ -13,10 +13,6 @@ void MenuScene::BuildObjects()
 	ASSET AddMaterial("gray", ASSET TEXTURE("none"), nullptr, { 0.5, 0.5, 0.5, 0.5 });
 	ASSET AddMaterial("menuBackgroundMat", ASSET TEXTURE("menuBackgroundTex"), nullptr, { 0.8, 0.8, 0.8, 1 });
 
-	//*** Mesh ***//
-	ASSET AddMesh("Image", Mesh::CreateQuad());
-	ASSET AddMesh("Sphere", Mesh::CreateSphere());
-
 	///*** Game Object ***///
 
 	auto mainCamera = CreateEmpty();

@@ -98,7 +98,8 @@ public:
 
 		gameObject->transform->position = { x, y, z };
 		gameObject->transform->forward = (lookAtPos - Vector3(x, y, z)).Normalize();
-
+		gameObject->transform->right = Vector3::CrossProduct({ 0, 1, 0 }, gameObject->transform->forward).Normalize();
+		gameObject->transform->up = Vector3::CrossProduct(gameObject->transform->forward, gameObject->transform->right).Normalize();
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

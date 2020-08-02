@@ -187,7 +187,7 @@ void HostScene::BuildObjects()
 	GameObject* node = CreateEmpty();
 	node->transform->Scale(Vector3(0.5, 0.5, 0.5));
 	node->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
-	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
+	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 
 
 	auto object = CreateUI();

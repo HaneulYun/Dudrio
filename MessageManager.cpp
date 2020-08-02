@@ -26,13 +26,14 @@ void MessageManager::Timer()
 	{
 		const Telegram& telegram = *msgQueue.begin();
 
-		if (GameWorld::gameWorld->simList.count(telegram.receiver) == 0) return;
+		if (GameWorld::gameWorld->simList.count(telegram.receiver) != 0)
+		{
+			Sim* receiver = GameWorld::gameWorld->simList[telegram.receiver]->GetComponent<Sim>();
+			if (receiver == nullptr)
+				return;
 
-		Sim* receiver = GameWorld::gameWorld->simList[telegram.receiver]->GetComponent<Sim>();
-		if (receiver == nullptr)
-			return;
-
-		Send(receiver, telegram);
+			Send(receiver, telegram);
+		}
 
 		if (telegram.extraInfo != nullptr)
 			delete telegram.extraInfo;

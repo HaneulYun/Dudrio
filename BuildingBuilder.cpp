@@ -457,7 +457,7 @@ void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision
 
 }
 
-GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int index)
+GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int index, GameObject* landmark)
 {
 	if (index < building[type].size())
 	{
@@ -487,9 +487,12 @@ GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int 
 
 		Vector3 pos{ position.x, terrain->terrainData.GetHeight(position.x,position.y), position.y };
 		obj->transform->position = pos;
-		obj->transform->Rotate(Vector3(0, 1, 0), angle);
+		obj->transform->Rotate(Vector3(0, 1, 0), angle); 
+		obj->AddComponent<Building>()->setBuildingInform(landmark, type, index);
+		obj->tag = TAG_BUILDING;
 
 		updateTerrainNodeData(obj, true);
+		GameWorld::gameWorld->buildInGameWorld(landmark, obj, type, index);
 
 		return obj;
 	}

@@ -52,7 +52,7 @@ public:
 
 	void updateTerrainNodeData(GameObject* building, bool collision);
 
-	GameObject* build(Vector2 position, float angle, int type, int index);
+	GameObject* build(Vector2 position, float angle, int type, int index, GameObject* landmark = nullptr);
 
 	void build(Vector3 position);
 

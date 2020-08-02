@@ -31,12 +31,6 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		if (autoDevelopment)
-		{
-			if(delayTime < 0.f)
-				delayTime = rand() % 60 + 30;
-			delayTime -= GameWorld::gameWorld->gameDeltaTime;
-		}
 	}
 
 	void OnAutoDevelopment()

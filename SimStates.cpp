@@ -265,7 +265,7 @@ void BuildState::Enter(Sim* sim)
 void BuildState::Execute(Sim* sim)
 {
 	// 건물 건설
-	BuildingBuilder::buildingBuilder->build(sim->buildInfo.pos, 0, sim->buildInfo.buildingType, sim->buildInfo.buildingIndex);
+	BuildingBuilder::buildingBuilder->build(sim->buildInfo.pos, 0, sim->buildInfo.buildingType, sim->buildInfo.buildingIndex, sim->home->GetComponent<Building>()->landmark);
 
 	// 다음 상태로 전이
 	if (sim->stateMachine.HaveNextState())

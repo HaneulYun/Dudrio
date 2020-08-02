@@ -48,8 +48,6 @@ public:
 
 	void LoadMeshAsset()
 	{
-		//ASSET AddMesh("Image", Mesh::CreateQuad());
-		//ASSET AddMesh("Sphere", Mesh::CreateSphere());
 		ASSET AddFbxForMesh("SM_Well", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well.FBX");
 		ASSET AddFbxForMesh("SM_Well_Extra02", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra02.FBX");
 		ASSET AddFbxForMesh("SM_Well_Extra03", "Assets\\AdvancedVillagePack\\Meshes\\SM_Well_Extra03.FBX");

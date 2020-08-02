@@ -20,9 +20,6 @@ void HostScene::BuildObjects()
 
 	LoadPrefab();
 
-	ASSET AddMesh("Cube", Mesh::CreateCube());
-
-
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
 	{

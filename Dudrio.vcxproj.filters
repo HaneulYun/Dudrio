@@ -60,17 +60,11 @@
     <ClInclude Include="scripts.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialScene.h">
-      <Filter>Assets\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="MenuScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="MagentaServer\protocol.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationScene.h">
-      <Filter>Assets\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="MaterialScene.h">
       <Filter>Assets\Scenes</Filter>
@@ -206,13 +200,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialScene.cpp">
-      <Filter>Assets\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="MenuScene.cpp">
-      <Filter>Assets\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="MaterialScene.cpp">

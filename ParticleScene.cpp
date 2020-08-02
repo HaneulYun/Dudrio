@@ -12,10 +12,6 @@ void ParticleScene::BuildObjects()
 	ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 	ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
 
-	//*** Mesh ***//
-	ASSET AddMesh("Plane", Mesh::CreatePlane());
-	ASSET AddMesh("Quad", Mesh::CreateQuad());
-
 	///*** Game Object ***///
 
 	auto mainCamera = CreateEmpty();

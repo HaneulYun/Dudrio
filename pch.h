@@ -10,6 +10,7 @@
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "CyanEngine\CyanEngine\pch.h"
 #include "MagentaServer\protocol.h"
+#include "MagentaLobbyServer\LobbyProtocol.h"
 #include "scripts.h"
 #include "framework.h"
 

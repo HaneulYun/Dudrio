@@ -415,6 +415,7 @@ void Contents::disconnect(int user_id)
 				++cl;
 		}
 
+		lobby_server.send_host_logout_packet();
 		init_contents();
 
 		cout << "Disconnect the host" << endl;

@@ -190,8 +190,13 @@
     <ClInclude Include="GuestCameraController.h" />
     <ClInclude Include="GuestController.h" />
     <ClInclude Include="GuestGameWorld.h" />
+    <ClInclude Include="GuestInformConnector.h" />
+    <ClInclude Include="GuestMenuScene.h" />
     <ClInclude Include="HostCameraController.h" />
+    <ClInclude Include="HostInformConnector.h" />
+    <ClInclude Include="HostMenuScene.h" />
     <ClInclude Include="HostNetwork.h" />
+    <ClInclude Include="MagentaLobbyServer\LobbyProtocol.h" />
     <ClInclude Include="RotatingBehavior.h" />
     <ClInclude Include="TerrainNodeData.h" />
     <ClInclude Include="Village.h" />
@@ -225,6 +230,8 @@
     <ClCompile Include="Dudrio.cpp" />
     <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="GuestGameWorld.cpp" />
+    <ClCompile Include="GuestMenuScene.cpp" />
+    <ClCompile Include="HostMenuScene.cpp" />
     <ClCompile Include="HostNetwork.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MaterialScene.cpp" />

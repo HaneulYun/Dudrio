@@ -56,7 +56,7 @@ void MenuScene::BuildObjects()
 		GuestSceneButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
 				Debug::Log("이게 되네;;\n");
-				SceneManager::LoadScene("GuestScene");
+				SceneManager::LoadScene("GuestMenuScene");
 			});
 		{
 			auto textobject = GuestSceneButton->AddChildUI();
@@ -116,7 +116,7 @@ void MenuScene::BuildObjects()
 
 			HostSceneButton->AddComponent<Button>()->AddEvent(
 				[](void*) {
-					SceneManager::LoadScene("HostScene");
+					SceneManager::LoadScene("HostMenuScene");
 				});
 			{
 				auto textobject = HostSceneButton->AddChildUI();

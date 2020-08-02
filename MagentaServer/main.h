@@ -49,6 +49,7 @@ struct EXOVER {
 #define SECTOR_WIDTH 20
 #define VIEW_RADIUS	 20
 
+extern class LobbyServer lobby_server;
 extern class IOCPServer iocp;
 extern class Timer	timer;
 extern class Contents contents;

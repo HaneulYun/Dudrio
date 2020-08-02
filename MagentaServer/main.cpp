@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "main.h"
 
+class LobbyServer lobby_server;
 class IOCPServer iocp;
 class Timer	timer;
 class Contents contents;
@@ -23,10 +24,11 @@ class Terrain* terrain_data;
 
 int main()
 {
-	iocp.init_server();
-	iocp.start_server();
-	contents.init_contents();
-	timer.start_timer(iocp.get_iocp_handle());
+	lobby_server.init_server();
+	//iocp.init_server();
+	//iocp.start_server();
+	//contents.init_contents();
+	//timer.start_timer(iocp.get_iocp_handle());
 
 	getchar();
 	return 0;

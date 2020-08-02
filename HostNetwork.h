@@ -23,13 +23,19 @@ public:
 	Text* connectButtonText{ nullptr };
 
 	WSADATA WSAData;
+	SOCKET lobbySocket;
 	SOCKET serverSocket;
-	int myId;
+
+	int mainserver_port;
+	char mainserver_ip[INET_ADDRSTRLEN];
+
 	int retval;
+	int myId;
 	char name[MAX_ID_LEN];
 	bool isConnect{ false };
 	bool tryConnect{ false };
 	bool pressButton{ false };
+	bool mainConnect{ false };
 
 	float terrainSize;
 	float frequency;
@@ -66,6 +72,8 @@ public:
 	void send_destruct_all_packet();
 	void send_chat_packet(wchar_t msg[]);
 
+	void LobbyLogin();
+
 	void Login();
 	void Logout();
 
@@ -79,7 +87,7 @@ public:
 			auto rt = inputIpGuide->GetComponent<RectTransform>();
 			rt->setAnchorAndPivot(0, 1);
 			rt->setPosAndSize(350, -30, 300, 40);
-		
+
 			Text* text = inputIpGuide->AddComponent<Text>();
 			text->text = L"Input Server IP : ";
 			text->fontSize = 30;
@@ -159,18 +167,18 @@ public:
 		{
 			if (inputField->isFocused)
 			{
-				if(Input::GetKeyDown(KeyCode::Return))
+				if (Input::GetKeyDown(KeyCode::Return))
 				{
 					std::string serverIp;
 					serverIp.assign(inputField->text.begin(), inputField->text.end());
 
 					SOCKADDR_IN serveraddr{};
 					serveraddr.sin_family = AF_INET;
-					serveraddr.sin_addr.s_addr = inet_addr(serverIp.c_str());
-					serveraddr.sin_port = htons(SERVER_PORT);
+					serveraddr.sin_addr.s_addr = inet_addr(LOBBY_SERVER_IP);
+					serveraddr.sin_port = htons(CLIENT_TO_LOBBY_SERVER_PORT);
 
-					serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
-					retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
+					lobbySocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
+					retval = connect_nonblock(lobbySocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
 
 					PressButton();
 
@@ -192,24 +200,26 @@ public:
 				tryConnect = false;
 				isConnect = true;
 				unsigned long on = true;
-				int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
-				Login();
+				int nRet = ioctlsocket(lobbySocket, FIONBIO, &on);
+				LobbyLogin();
 			}
 		}
 		if (isConnect) {
 
 			Receiver();
 
-			if (chatField->isFocused) {
-				if (Input::GetKeyDown(KeyCode::Return)) {
-					if (chatField->text.size() > MAX_STR_LEN - 1) {
-						int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
-						for (int i = 0; i < oversize; ++i)
-							chatField->text.pop_back();
+			if (mainConnect) {
+				if (chatField->isFocused) {
+					if (Input::GetKeyDown(KeyCode::Return)) {
+						if (chatField->text.size() > MAX_STR_LEN - 1) {
+							int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
+							for (int i = 0; i < oversize; ++i)
+								chatField->text.pop_back();
+						}
+						send_chat_packet(_wcsdup(chatField->text.c_str()));
+						chatField->clear();
+						chatField->setFocus(false);
 					}
-					send_chat_packet(_wcsdup(chatField->text.c_str()));
-					chatField->clear();
-					chatField->setFocus(false);
 				}
 			}
 		}
@@ -269,7 +279,8 @@ public:
 		if (isConnect)
 		{
 			connectButtonText->text = L"Open";
-			return Logout();
+			if(mainConnect)
+				return Logout();
 		}
 
 		if (tryConnect)

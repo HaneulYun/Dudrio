@@ -2,6 +2,8 @@
 
 #include "GameWorld.h"
 #include "GuestGameWorld.h"
+#include "HostInformConnector.h"
+#include "GuestInformConnector.h"
 #include "TerrainGenerator.h"
 
 #include "Village.h"

@@ -14,6 +14,9 @@ private:
 	bool			accept_run;
 
 public:
+	int				server_port;
+
+public:
 	IOCPServer();
 	~IOCPServer();
 	void init_server();

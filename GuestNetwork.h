@@ -12,8 +12,6 @@ using namespace std;
 class GuestNetwork : public MonoBehavior<GuestNetwork>
 {
 private:
-	InputField* inputField{ nullptr };
-	GameObject* inputIpGuide{ nullptr };
 	GameObject* gameTime{ nullptr };
 
 	// Chat
@@ -73,34 +71,6 @@ public:
 		hostId = -1;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 
-		inputIpGuide = Scene::scene->CreateUI();
-		{
-			auto rt = inputIpGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(350, -30, 300, 40);
-
-			Text* text = inputIpGuide->AddComponent<Text>();
-			text->text = L"Input Server IP : ";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		}
-
-		auto inputFieldObject = Scene::scene->CreateImage();
-		{
-			auto rt = inputFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(650, -30, 300, 40);
-
-			inputField = inputFieldObject->AddComponent<InputField>();
-			auto text = inputField->Text();
-			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
-
 		gameTime = Scene::scene->CreateUI();
 		{
 			auto rt = gameTime->GetComponent<RectTransform>();
@@ -146,9 +116,6 @@ public:
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			}
 		}
-
-		inputField->gameObject->SetActive(false);
-		inputIpGuide->SetActive(false);
 	}
 
 	void add_chat(wchar_t chatter[], wchar_t chat[])
@@ -200,28 +167,19 @@ public:
 
 	void Update()
 	{
-		if (inputField->gameObject->active)
+		if (!isConnect)
 		{
-			if (inputField->isFocused)
-			{
-				if (Input::GetKeyDown(KeyCode::Return))
-				{
-					std::string serverIp;
-					serverIp.assign(inputField->text.begin(), inputField->text.end());
+			SOCKADDR_IN serveraddr{};
+			serveraddr.sin_family = AF_INET;
+			serveraddr.sin_addr.s_addr = inet_addr(GuestInformConnector::connector->selected_room.serverIP);
+			serveraddr.sin_port = htons(GuestInformConnector::connector->selected_room.port_num);
 
-					SOCKADDR_IN serveraddr{};
-					serveraddr.sin_family = AF_INET;
-					serveraddr.sin_addr.s_addr = inet_addr(serverIp.c_str());
-					serveraddr.sin_port = htons(SERVER_PORT);
+			serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
+			retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
 
-					serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
-					retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
+			PressButton();
 
-					PressButton();
-
-					tryConnect = true;
-				}
-			}
+			tryConnect = true;
 		}
 
 		if (tryConnect)
@@ -264,8 +222,6 @@ public:
 
 	void PressButton()
 	{
-		inputField->clear();
-
 		if (isConnect)
 		{
 			connectButtonText->text = L"Connect";
@@ -276,10 +232,5 @@ public:
 			return;
 
 		pressButton = !pressButton;
-		inputField->gameObject->SetActive(pressButton);
-		inputIpGuide->SetActive(pressButton);
-
-		if (pressButton)
-			inputField->setFocus(true);
 	}
 };

@@ -43,7 +43,9 @@ void AIManager::aiUpdate()
 				info->buildingIndex = rand() % BuildingBuilder::buildingBuilder->getBuildingCount(info->buildingType);
 
 				village->delayTime = rand() % 60 + 30;
-				Messenger->CreateMessage(0, rand() % village->simList.size(), rand() % village->simList.size(), Msg_Build, info);
+				int index = rand() % village->simList.size();
+				int id = village->simList[landmark.second[GameWorld::gameWorld->House][index]]->GetComponent<Sim>()->id;
+				Messenger->CreateMessage(0, id, id, Msg_Build, info);
 			}
 			village->delayTime -= GameWorld::gameWorld->gameDeltaTime;
 		}

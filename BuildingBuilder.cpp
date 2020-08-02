@@ -396,6 +396,11 @@ GameObject* BuildingBuilder::isOnLand()
 {
 	if (curPrefabType == Landmark)
 	{
+		if (GameWorld::gameWorld->buildingList.empty())
+		{
+			curLandmark = prefab;
+			return prefab;
+		}
 		for (auto& landmark : GameWorld::gameWorld->buildingList)
 		{
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));

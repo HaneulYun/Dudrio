@@ -187,17 +187,6 @@ void HostScene::BuildObjects()
 		anim->TimePos = 0;
 	}
 
-
-	GameObject* landmark = CreateEmpty();
-	landmark->AddComponent<MeshFilter>()->mesh = ASSET MESH("SM_House_Var02");
-	landmark->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("house02"));
-	landmark->transform->position = Vector3(500, terrainData->terrainData.GetHeight(500, 500), 500);
-	landmark->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-
-	Village* village = landmark->AddComponent<Village>();
-	village->OnAutoDevelopment();
-
-
 	GameObject* node = CreateEmpty();
 	node->transform->Scale(Vector3(0.5, 0.5, 0.5));
 	node->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
@@ -209,7 +198,6 @@ void HostScene::BuildObjects()
 		auto rt = object->GetComponent<RectTransform>();
 		rt->width = CyanFW::Instance()->GetWidth();
 		rt->height = CyanFW::Instance()->GetHeight();
-		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
@@ -218,12 +206,11 @@ void HostScene::BuildObjects()
 
 		GameWorld* gameWorld = object->AddComponent<GameWorld>();
 		gameWorld->simPrefab = sim;
-		gameWorld->buildingList[landmark];
 		gameWorld->sun = directionalLight;
 		object->AddComponent<AIManager>();
-	
+
+		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
-	
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, L"랜드\n마크", -80, 0);
 		buildingTypeSelector->addBuildingType(BuildingBuilder::House, L"주거\n건물", -40, 0);
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, L"테마\n건물", 0, 0);

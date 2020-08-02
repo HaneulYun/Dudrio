@@ -506,6 +506,7 @@ void IOCPServer::process_packet(int user_id, char* buf)
 		g_users[user_id]->o_type = O_GUEST;
 		g_users[user_id]->m_status = ST_ACTIVE;
 		strcpy_s(g_users[user_id]->m_name, packet->name);
+		send_login_ok_guest_packet(user_id);
 
 		for (auto room : g_rooms) {
 			if (room.second->is_host_exist)

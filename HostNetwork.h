@@ -29,7 +29,6 @@ public:
 	int mainserver_port;
 	char mainserver_ip[INET_ADDRSTRLEN];
 
-
 	int retval;
 	int myId;
 	char name[MAX_ID_LEN];

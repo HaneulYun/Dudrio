@@ -21,41 +21,8 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		hostId = my_packet->host_id;
 		strcpy_s(host_name, my_packet->host_name);
 
-		// 지형 생성
-		TerrainGenerator* terrainGenerator = new TerrainGenerator(my_packet->terrainSize, my_packet->terrainSize);
-		string fileName = terrainGenerator->createHeightMap(my_packet->frequency, my_packet->octaves, my_packet->seed, (char*)"square");
-		delete terrainGenerator;
-
-		GameObject* terrain = Scene::scene->CreateEmpty();
-		auto terrainData = terrain->AddComponent<Terrain>();
-		{
-			{
-				wstring name;
-				name.assign(fileName.begin(), fileName.end());
-				terrainData->terrainData.AlphamapTextureName = name.c_str();
-				terrainData->terrainData.heightmapHeight = my_packet->terrainSize;
-				terrainData->terrainData.heightmapWidth = my_packet->terrainSize;
-
-				terrainData->terrainData.size = { my_packet->terrainSize, 255, my_packet->terrainSize};
-
-				Graphics::Instance()->commandList->Reset(Graphics::Instance()->commandAllocator.Get(), nullptr);
-
-				terrainData->Set();
-
-				Graphics::Instance()->commandList->Close();
-				ID3D12CommandList* cmdsLists[] = { Graphics::Instance()->commandList.Get() };
-				Graphics::Instance()->commandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-			}
-			terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
-			TerrainNodeData* terrainNodeData = new TerrainNodeData(&terrainData->terrainData);
-			BuildingBuilder::buildingBuilder->terrain = terrainData;
-			BuildingBuilder::buildingBuilder->terrainNodeData = terrainNodeData;
-		}
-
 		// 내 캐릭터 정보 지정
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
-		myc->heightmap = &terrainData->terrainData;
-		simsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
 		myc->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 	}
 	break;

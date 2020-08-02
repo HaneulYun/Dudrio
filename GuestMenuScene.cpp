@@ -42,10 +42,6 @@ void GuestMenuScene::BuildObjects()
 		rt->setAnchorAndPivot(0, 1);
 		rt->setPosAndSize(50, -50, 250, 40);
 
-		hostButtonPrefab->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				SceneManager::LoadScene("GuestScene");
-			});
 		{
 			auto textobject = hostButtonPrefab->AddChildUI();
 			auto rectTransform = textobject->GetComponent<RectTransform>();

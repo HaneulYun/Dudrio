@@ -23,11 +23,6 @@ void GuestScene::BuildObjects()
 		fps->AddComponent<FPS>();
 	}
 
-	float TerrainSize = 1024;
-	float frequency = 5;
-	int octaves = 3;
-	int seed = 1024;
-
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
 	{
@@ -88,12 +83,38 @@ void GuestScene::BuildObjects()
 		behavior->anim = anim;
 	}
 
+	auto connect_inform = GuestInformConnector::connector->selected_room;
+	float TerrainSize = connect_inform.terrain_size;
+	float frequency = connect_inform.frequency;
+	int octaves = connect_inform.octaves;
+	int seed = connect_inform.seed;
+	// 지형 생성
+	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
+	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
+	delete terrainGenerator;
+
+	GameObject* terrain = CreateEmpty();
+	auto terrainData = terrain->AddComponent<Terrain>();
+	simPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
+	{
+		wstring name;
+		name.assign(fileName.begin(), fileName.end());
+		terrainData->terrainData.AlphamapTextureName = name.c_str();
+		terrainData->terrainData.heightmapHeight = TerrainSize;
+		terrainData->terrainData.heightmapWidth = TerrainSize;
+		terrainData->terrainData.size = { TerrainSize, 255, TerrainSize };
+		terrainData->Set();
+
+		terrain->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("ground"));
+	}
+	TerrainNodeData* terrainNodeData = new TerrainNodeData(&terrainData->terrainData);
+
 	auto object = CreateUI();
 	{
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
 		buildingBuilder->serializeBuildings();
-		//buildingBuilder->terrain = terrainData;
-		//buildingBuilder->terrainNodeData = terrainNodeData;
+		buildingBuilder->terrain = terrainData;
+		buildingBuilder->terrainNodeData = terrainNodeData;
 
 		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
 		gameWorld->sun = directionalLight;
@@ -116,14 +137,6 @@ void GuestScene::BuildObjects()
 			cameraOffset->transform->position = { 0, 2, -3 };
 		}
 	}
-
-	//{
-	//	GameObject* manager = CreateEmpty();
-	//	Builder* bd = manager->AddComponent<Builder>();
-	//	Builder::builder = bd;
-	//	BuildManager* bm = manager->AddComponent<BuildManager>();
-	//	BuildManager::buildManager = bm;
-	//}
 
 	auto ServerButton = CreateImage();
 	{

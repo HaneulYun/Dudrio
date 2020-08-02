@@ -2,6 +2,7 @@
 #include "CyanEngine\CyanEngine\framework.h"
 
 // 랜드마크가 가지는 스크립트
+enum LANDRADIUS { LAND_SMALL = 50, LAND_MEDIUM = 80, LAND_LARGE = 150 };
 
 class Village : public MonoBehavior<Village>
 {
@@ -13,7 +14,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	float delayTime = 0.f;
 	bool autoDevelopment = false;
-
+	
+	int radiusOfLand{ LAND_SMALL };
 private:
 	friend class GameObject;
 	friend class MonoBehavior<Village>;
@@ -29,7 +31,6 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
-		
 	}
 
 	void OnAutoDevelopment()

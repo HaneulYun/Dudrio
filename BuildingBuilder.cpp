@@ -11,8 +11,11 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	if (prefab)
 	{
+		// 토글 설정
 		if (Input::GetKeyDown(KeyCode::T))
 			rotationToggle = rotationToggle ? false : true;
+
+		// 건물 회전
 		if (Input::GetMouseButtonDown(2))
 			lastMousePos = Input::mousePosition;
 		else if (Input::GetMouseButton(2))
@@ -31,15 +34,22 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				lastMousePos = Input::mousePosition;
 			}
 		}
-		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty())
+
+		// 건물 건설
+		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && isOnLand() != nullptr)
 		{
 			GameObject* prePrefab = prefab;
-			Matrix4x4 localToWorldMatrix = prefab->GetMatrix();
 			makePrefab(curPrefabType, curPrefabIndex);
-			prefab->transform->localToWorldMatrix = localToWorldMatrix;
+			prefab->transform->localToWorldMatrix = prePrefab->GetMatrix();
 
 			auto p = prefab->transform->position;
-			prefab->AddComponent<Building>()->setBuildingInform(GameWorld::gameWorld->buildingList.begin()->first, curPrefabType, curPrefabIndex);
+
+			if (curPrefabType == Landmark)
+			{
+				curLandmark = prefab;
+				prefab->AddComponent<Village>()->OnAutoDevelopment();
+			}
+			prefab->AddComponent<Building>()->setBuildingInform(curLandmark, curPrefabType, curPrefabIndex);
 			prefab->tag = TAG_BUILDING;
 
 			if (HostNetwork::network->isConnect) {
@@ -55,8 +65,9 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			}
 			updateTerrainNodeData(prefab, true);
 
-			GameWorld::gameWorld->buildInGameWorld(GameWorld::gameWorld->buildingList.begin()->first, prefab, curPrefabType, curPrefabIndex);
+			GameWorld::gameWorld->buildInGameWorld(curLandmark, prefab, curPrefabType, curPrefabIndex);
 
+			// 연속 건설
 			if (!Input::GetKey(KeyCode::Shift))
 			{
 				prefab = nullptr;
@@ -66,10 +77,13 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			else
 				prefab = prePrefab;
 		}
+
+		// 미리보기 건물 이동
 		else
 			prefab->transform->position = getPosOnTerrain();
 	}
 
+	// 건물 삭제
 	else if (Input::GetKey(KeyCode::X))
 		pickToDelete();
 }
@@ -378,6 +392,42 @@ BuildingBuilderData BuildingBuilder::makeBuilderDataAsMeshAndMaterials(wstring n
 	return data;
 }
 
+GameObject* BuildingBuilder::isOnLand()
+{
+	if (curPrefabType == Landmark)
+	{
+		if (GameWorld::gameWorld->buildingList.empty())
+		{
+			curLandmark = prefab;
+			return prefab;
+		}
+		for (auto& landmark : GameWorld::gameWorld->buildingList)
+		{
+			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
+
+			if (distance >= landmark.first->GetComponent<Village>()->radiusOfLand + LAND_SMALL)
+			{
+				curLandmark = prefab;
+				return prefab;
+			}
+		}
+	}
+	else
+	{
+		for (auto& landmark : GameWorld::gameWorld->buildingList)
+		{
+			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
+
+			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand)
+			{
+				curLandmark = landmark.first;
+				return landmark.first;
+			}
+		}
+	}
+	return nullptr;
+}
+
 void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision)
 {
 	BoundingBox boundingBox = building->GetComponent<BoxCollider>()->boundingBox;
@@ -412,7 +462,7 @@ void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision
 
 }
 
-GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int index)
+GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int index, GameObject* landmark)
 {
 	if (index < building[type].size())
 	{
@@ -442,9 +492,12 @@ GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int 
 
 		Vector3 pos{ position.x, terrain->terrainData.GetHeight(position.x,position.y), position.y };
 		obj->transform->position = pos;
-		obj->transform->Rotate(Vector3(0, 1, 0), angle);
+		obj->transform->Rotate(Vector3(0, 1, 0), angle); 
+		obj->AddComponent<Building>()->setBuildingInform(landmark, type, index);
+		obj->tag = TAG_BUILDING;
 
 		updateTerrainNodeData(obj, true);
+		GameWorld::gameWorld->buildInGameWorld(landmark, obj, type, index);
 
 		return obj;
 	}
@@ -487,11 +540,19 @@ void BuildingBuilder::makePrefab(int type, int index)
 
 void BuildingBuilder::exitBuildMode()
 {
-
+	Scene::scene->PushDelete(prefab);
+	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
+	prefab = nullptr;
 }
 
 void BuildingBuilder::enterBuildMode(int type, int index)
 {
+	if (prefab != nullptr)
+	{
+		exitBuildMode();
+		return;
+	}
+
 	makePrefab(type, index);
 
 	if (prefab == nullptr) return;
@@ -563,22 +624,6 @@ void BuildingBuilder::pickToDelete()
 				{
 					if (Input::GetMouseButtonUp(0))
 					{
-						// 랜드마크인 경우 속해있는 모든 객체 다 삭제
-						if (object->GetComponent<Building>()->type == BuildingType::Landmark)
-						{
-							for (auto& list : GameWorld::gameWorld->buildingList[object])
-							{
-								for (auto& go : list.second)
-								{
-									go->scene->PushDelete(go);
-									updateTerrainNodeData(go, false);
-									Building* building = go->GetComponent<Building>();
-									GameWorld::gameWorld->deleteInGameWorld(building->landmark, go, building->type, building->index);
-								}
-							}
-						}
-						gameObject->scene->PushDelete(object);
-						updateTerrainNodeData(object, false);
 						Building* building = object->GetComponent<Building>();
 						GameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 					}

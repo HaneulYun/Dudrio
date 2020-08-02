@@ -38,14 +38,13 @@ void AIManager::aiUpdate()
 			if (village->delayTime <= 0.f)
 			{
 				BuildMessageInfo* info = new BuildMessageInfo;
-				info->pos = Vector2(landmark.first->transform->position.x + (rand() % 30) - 15, landmark.first->transform->position.z + (rand() % 30) - 15);
+				info->pos = Vector2(landmark.first->transform->position.x + (rand() % village->radiusOfLand) - village->radiusOfLand / 2, landmark.first->transform->position.z + (rand() % village->radiusOfLand) - village->radiusOfLand / 2);
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % BuildingBuilder::buildingBuilder->getBuildingCount(info->buildingType);
 
-				village->delayTime = rand() % 10 + 30;
-				//Messenger->CreateMessage(0, rand() % village->simList.size(), rand() % village->simList.size(), Msg_Build, info);
+				village->delayTime = rand() % 60 + 30;
+				Messenger->CreateMessage(0, rand() % village->simList.size(), rand() % village->simList.size(), Msg_Build, info);
 			}
-
 			village->delayTime -= GameWorld::gameWorld->gameDeltaTime;
 		}
 	}

@@ -37,6 +37,9 @@
     <Filter Include="Assets\Scripts\Controller">
       <UniqueIdentifier>{81397fc0-9085-46f1-aeda-59241113524a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Scripts\Terrain">
+      <UniqueIdentifier>{6af955a2-2fe2-43d0-8021-44edeab3fbb8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -99,9 +102,6 @@
     <ClInclude Include="TestScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainGenerator.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="CharacterController.h">
       <Filter>Assets\Scripts\Controller</Filter>
     </ClInclude>
@@ -141,9 +141,6 @@
     <ClInclude Include="Telegram.h">
       <Filter>Assets\Scripts\AI\FSM</Filter>
     </ClInclude>
-    <ClInclude Include="Village.h">
-      <Filter>Assets\Scripts\AI</Filter>
-    </ClInclude>
     <ClInclude Include="MessageManager.h">
       <Filter>Assets\Scripts\AI\FSM</Filter>
     </ClInclude>
@@ -164,9 +161,6 @@
     </ClInclude>
     <ClInclude Include="BuildingBuilderData.h">
       <Filter>Assets\Scripts\Build</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainNodeData.h">
-      <Filter>Assets\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="GameWorld.h">
       <Filter>Assets\Scripts</Filter>
@@ -194,6 +188,15 @@
     </ClInclude>
     <ClInclude Include="MagentaLobbyServer\LobbyProtocol.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainGenerator.h">
+      <Filter>Assets\Scripts\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainNodeData.h">
+      <Filter>Assets\Scripts\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Village.h">
+      <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +236,6 @@
     <ClCompile Include="TestScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainGenerator.cpp">
-      <Filter>Assets\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="SimStates.cpp">
       <Filter>Assets\Scripts\AI\FSM</Filter>
     </ClCompile>
@@ -262,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="GuestMenuScene.cpp">
       <Filter>Assets\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainGenerator.cpp">
+      <Filter>Assets\Scripts\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

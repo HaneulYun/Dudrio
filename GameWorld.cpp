@@ -86,8 +86,27 @@ void GameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, in
 		if (building->GetComponent<Light>())
 			type = BuildingType::Lighting;
 	}
-	buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
+	if (type == BuildingType::Landmark)
+	{
+		for (auto& list : GameWorld::gameWorld->buildingList[building])
+		{
+			for (auto& object : list.second)
+			{
+				Scene::scene->PushDelete(object);
+				BuildingBuilder::buildingBuilder->updateTerrainNodeData(object, false);
 
+				if (list.first == BuildingType::House && !HostNetwork::network->isConnect)
+					eraseSim(landmark, object);
+			}
+		}
+		buildingList.erase(building);
+	}
+	else
+	{
+		Scene::scene->PushDelete(building);
+		BuildingBuilder::buildingBuilder->updateTerrainNodeData(building, false);
+		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
+	}
 	if (type == BuildingType::House && !HostNetwork::network->isConnect)
 		eraseSim(landmark, building);
 }

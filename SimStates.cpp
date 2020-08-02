@@ -42,7 +42,7 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		do
 		{
 			targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
-		} while (PathFinder::Instance()->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+		} while (PathFinder::Instance()->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1000].collision);
 
 		sim->targetPos.emplace_back(targetPos, 0);
 		sim->stateMachine.ChangeState(MoveState::Instance());
@@ -236,7 +236,7 @@ bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
 			do
 			{
 				targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
-			} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1024].collision);
+			} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1000].collision);
 			sim->targetPos.emplace_back(targetPos, 0);
 			sim->stateMachine.ChangeState(IdleState::Instance());
 		}
@@ -265,7 +265,7 @@ void BuildState::Enter(Sim* sim)
 void BuildState::Execute(Sim* sim)
 {
 	// 건물 건설
-	BuildingBuilder::buildingBuilder->build(sim->buildInfo.pos, 0, sim->buildInfo.buildingType, sim->buildInfo.buildingIndex);
+	BuildingBuilder::buildingBuilder->build(sim->buildInfo.pos, 0, sim->buildInfo.buildingType, sim->buildInfo.buildingIndex, sim->home->GetComponent<Building>()->landmark);
 
 	// 다음 상태로 전이
 	if (sim->stateMachine.HaveNextState())

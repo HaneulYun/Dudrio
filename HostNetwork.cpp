@@ -292,7 +292,7 @@ void HostNetwork::send_construct_packet(int type, int name, float x, float z, fl
 	send_packet(&m_packet);
 }
 
-void HostNetwork::send_destruct_packet(int type, int name, float x, float z)
+void HostNetwork::send_destruct_packet(int type, int name, float x, float z, float angle)
 {
 	cs_packet_destruct m_packet;
 	m_packet.type = C2S_DESTRUCT;
@@ -301,6 +301,7 @@ void HostNetwork::send_destruct_packet(int type, int name, float x, float z)
 	m_packet.building_name = name;
 	m_packet.xPos = x;
 	m_packet.zPos = z;
+	m_packet.angle = angle;
 
 	send_packet(&m_packet);
 }
@@ -330,7 +331,7 @@ void HostNetwork::Login()
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_HOST;
 	strcpy_s(l_packet.name, name);
-	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X8;
+	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X1;
 	l_packet.game_time = GameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;
 	l_packet.octaves = octaves;

@@ -85,7 +85,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 	}
 
 	// 건물 삭제
-	else if (Input::GetKey(KeyCode::X))
+	else if (Input::GetKey(KeyCode::X) && HostNetwork::network != nullptr)
 		pickToDelete();
 }
 
@@ -627,9 +627,17 @@ void BuildingBuilder::pickToDelete()
 					{
 						Building* building = object->GetComponent<Building>();
 
-						if (HostNetwork::network->isConnect)
-							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z);
-
+						if (HostNetwork::network->isConnect) {
+							Vector3 building_forward = object->transform->forward;
+							building_forward.y = 0;
+							building_forward.Normalize();
+							Vector3 forward = { 0,0,1 };
+							float angle = Vector3::DotProduct(forward, building_forward);
+							Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+							angle = XMConvertToDegrees(acos(angle));
+							angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z, angle);
+						}
 						GameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 					}
 				}

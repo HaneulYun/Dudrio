@@ -66,12 +66,11 @@ void GuestGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* buildin
 	}
 	if (type == BuildingType::Landmark)
 	{
-		for (auto& list : GameWorld::gameWorld->buildingList[building])
+		for (auto& list : GuestGameWorld::gameWorld->buildingList[building])
 		{
 			for (auto& object : list.second)
 			{
 				Scene::scene->PushDelete(object);
-				BuildingBuilder::buildingBuilder->updateTerrainNodeData(object, false);
 			}
 		}
 		buildingList.erase(building);
@@ -79,7 +78,6 @@ void GuestGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* buildin
 	else
 	{
 		Scene::scene->PushDelete(building);
-		BuildingBuilder::buildingBuilder->updateTerrainNodeData(building, false);
 		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
 	}
 }

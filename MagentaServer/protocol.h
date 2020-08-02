@@ -227,6 +227,7 @@ struct cs_packet_destruct{
 	int building_type;
 	int building_name;
 	float xPos, zPos;
+	float angle;
 };
 
 struct cs_packet_destruct_all{

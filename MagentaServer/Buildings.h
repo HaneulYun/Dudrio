@@ -13,7 +13,8 @@ struct BuildingInfo {
 	bool operator== (const BuildingInfo& b) const
 	{
 		return ((building_type == b.building_type) && (building_name == b.building_name)
-			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos));
+			&& (m_xPos == b.m_xPos) && (m_zPos == b.m_zPos)
+			&& (m_angle == b.m_angle));
 	}
 
 	bool is_near(float x, float z) const

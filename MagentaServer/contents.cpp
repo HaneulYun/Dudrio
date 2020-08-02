@@ -175,7 +175,7 @@ void Contents::process_packet(int user_id, char* buf)
 	{
 		cs_packet_destruct* packet = reinterpret_cast<cs_packet_destruct*>(buf);
 		if (user_id == host_id)
-			do_destruct(user_id, packet->building_type, packet->building_name, packet->xPos, packet->zPos);
+			do_destruct(user_id, packet->building_type, packet->building_name, packet->xPos, packet->zPos, packet->angle);
 	}
 	break;
 	case C2S_DESTRUCT_ALL:
@@ -530,10 +530,10 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	// 건물에 sim_index를 부여하여 어떤 심이 사는 집인지 알 수 있게 해야 함
 }
 
-void Contents::do_destruct(int user_id, int b_type, int b_name, float xpos, float zpos)
+void Contents::do_destruct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle)
 {
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
-	BuildingInfo b{ b_type, b_name, xpos, zpos, 0 };
+	BuildingInfo b{ b_type, b_name, xpos, zpos, angle };
 
 	g_buildings_lock.lock();
 	if (g_buildings[b_sectnum.second][b_sectnum.first].count(b) != 0) {
@@ -547,10 +547,10 @@ void Contents::do_destruct(int user_id, int b_type, int b_name, float xpos, floa
 					g_sims_lock.lock();
 					v->buildingList[i]->m_sim->erase_sim_in_sector();
 					int simID = v->eraseSim(v->buildingList[i]->m_sim);
-					vector<int> cls = g_sims[simID]->get_near_clients();
-					for (auto& c : cls) 
-						iocp.send_leave_sim_packet(c, simID);
-					iocp.send_leave_sim_packet(host_id, simID);
+					for (auto& cl : g_clients) {
+						if (ST_ACTIVE == cl.second->m_status)
+							iocp.send_leave_sim_packet(cl.second->m_id, simID);
+					}
 					delete g_sims[simID];
 					g_sims.erase(simID);
 					cout << "Sim " << simID << "is deleted" << endl;
@@ -567,10 +567,10 @@ void Contents::do_destruct(int user_id, int b_type, int b_name, float xpos, floa
 					g_sims_lock.lock();
 					v->buildingList[i]->m_sim->erase_sim_in_sector();
 					int simID = v->simList[i]->id;
-					vector<int> cls = g_sims[simID]->get_near_clients();
-					for (auto& c : cls)
-						iocp.send_leave_sim_packet(c, simID);
-					iocp.send_leave_sim_packet(host_id, simID);
+					for (auto& cl : g_clients) {
+						if (ST_ACTIVE == cl.second->m_status)
+							iocp.send_leave_sim_packet(cl.second->m_id, simID);
+					}
 					delete g_sims[simID];
 					g_sims.erase(simID);
 					cout << "Sim " << simID << "is deleted" << endl;
@@ -591,10 +591,10 @@ void Contents::do_destruct(int user_id, int b_type, int b_name, float xpos, floa
 			g_sims_lock.lock();
 			sim->erase_sim_in_sector();
 			int simID = v->eraseSim(sim);
-			vector<int> cls = g_sims[simID]->get_near_clients();
-			for (auto& c : cls)
-				iocp.send_leave_sim_packet(c, simID);
-			iocp.send_leave_sim_packet(host_id, simID);
+			for (auto& cl : g_clients) {
+				if (ST_ACTIVE == cl.second->m_status)
+					iocp.send_leave_sim_packet(cl.second->m_id, simID);
+			}
 			delete g_sims[simID];
 			g_sims.erase(simID);
 			cout << "Sim " << simID << "is deleted" << endl;
@@ -640,7 +640,7 @@ void Contents::update()
 {
 	tick_count = (GetTickCount64() - server_time) / second;
 	server_time = GetTickCount64();
-	ingame_time += tick_count * 8;
+	ingame_time += tick_count;
 
 	if (ingame_time >= max_oneday){
 		ingame_time -= max_oneday;
@@ -707,10 +707,10 @@ void Contents::update_sim()
 		if (landmark->autoDevelopment && !landmark->simList.empty()) {
 			if (landmark->delayTime <= 0.f) {
 				BuildMessageInfo* info = new BuildMessageInfo;
-				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % landmark->m_land_range) - 15, landmark->m_info.m_zPos + (rand() % landmark->m_land_range) - 15);
+				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % landmark->m_land_range) - (landmark->m_land_range / 2), landmark->m_info.m_zPos + (rand() % landmark->m_land_range) - (landmark->m_land_range / 2));
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % collider_info[info->buildingType].size();
-				landmark->delayTime = rand() % 10 + 10.f;
+				landmark->delayTime = rand() % 60 + 30.f;
 
 				timer_event ev = { -1, SIM_Build,  high_resolution_clock::now(), rand() % landmark->simList.size(), info };
 				timer.add_event(ev);

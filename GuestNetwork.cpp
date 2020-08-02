@@ -15,7 +15,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
 		GuestGameWorld::gameWorld->gameTime = my_packet->game_time;
-		GuestGameWorld::gameWorld->timeSpeed = GuestGameWorld::gameWorld->TimeSpeed::X8;
+		GuestGameWorld::gameWorld->timeSpeed = GuestGameWorld::gameWorld->TimeSpeed::X1;
 
 		// 호스트 이름 저장
 		hostId = my_packet->host_id;
@@ -146,7 +146,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 						Vector3 b_pos { building->transform->position.x, 0, building->transform->position.z };
 						if (b_pos == p_pos) {
 							GuestGameWorld::gameWorld->deleteInGameWorld(my_landmark, building, my_packet->building_type, my_packet->building_name);
-							break;
+							return;
 						}
 					}
 				}

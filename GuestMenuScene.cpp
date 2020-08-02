@@ -40,7 +40,7 @@ void GuestMenuScene::BuildObjects()
 	{
 		auto rt = hostButtonPrefab->GetComponent<RectTransform>();
 		rt->setAnchorAndPivot(0, 1);
-		rt->setPosAndSize(50, -50, 250, 40);
+		rt->setPosAndSize(50, -50, 100, 40);
 
 		{
 			auto textobject = hostButtonPrefab->AddChildUI();

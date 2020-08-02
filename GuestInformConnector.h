@@ -60,8 +60,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	char name[MAX_ID_LEN + 1];
 
 	// 선택한 방 정보
-	std::unordered_map<int, std::pair<GameObject*, RoomInfo>> hosts;
-	RoomInfo selected_room;
+	std::unordered_map<int, std::pair<GameObject*, RoomInfo*>> hosts;
+	RoomInfo* selected_room;
 
 	static GuestInformConnector* connector;
 private:
@@ -308,7 +308,7 @@ public:
 					i = 0;
 					j++;
 				}
-				host.second.first->GetComponent<RectTransform>()->setPosAndSize(50 + (i * 260), -50 - (j * 50), 250, 40);
+				host.second.first->GetComponent<RectTransform>()->setPosAndSize(50 + (i * 260), -50 - (j * 50), 100, 40);
 				i++;
 			}
 		}
@@ -327,7 +327,7 @@ public:
 		case LS2C_NEW_ROOM:
 		{
 			ls2c_pakcet_new_room* my_packet = reinterpret_cast<ls2c_pakcet_new_room*>(ptr);
-			RoomInfo room({ my_packet->room_id, my_packet->host_name, my_packet->serverIP, my_packet->server_port,
+			RoomInfo* room = new RoomInfo({ my_packet->room_id, my_packet->host_name, my_packet->serverIP, my_packet->server_port,
 					my_packet->terrain_size, my_packet->frequency, my_packet->octaves, my_packet->seed });
 			hosts[my_packet->room_id] = std::make_pair(gameObject->scene->Duplicate(buttonPrefab), room);
 			std::wstring wname;
@@ -336,18 +336,22 @@ public:
 			hosts[my_packet->room_id].first->children.front()->GetComponent<Text>()->text = wname;
 			hosts[my_packet->room_id].first->AddComponent<Button>()->AddEvent(
 				[](void* ptr) {
-					connector->selected_room = connector->hosts[reinterpret_cast<ls2c_pakcet_new_room*>(ptr)->room_id].second;
+					connector->selected_room = reinterpret_cast<RoomInfo*>(ptr);
+					connector->is_connect = false;
 					closesocket(connector->lobbySocket);
 					WSACleanup();
 					SceneManager::LoadScene("GuestScene");
-				}, my_packet);
+				}, room);
 		}
 		break;
 		case LS2C_DELETE_ROOM:
 		{
 			ls2c_packet_delete_room* my_packet = reinterpret_cast<ls2c_packet_delete_room*>(ptr);
-			Scene::scene->PushDelete(hosts[my_packet->room_id].first);
-			hosts.erase(my_packet->room_id);
+			if (hosts.count(my_packet->room_id) != 0) {
+				Scene::scene->PushDelete(hosts[my_packet->room_id].first);
+				delete hosts[my_packet->room_id].second;
+				hosts.erase(my_packet->room_id);
+			}
 		}
 		break;
 		default:

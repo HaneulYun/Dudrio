@@ -116,7 +116,6 @@ struct ls2c_packet_delete_room {
 	unsigned char size;
 	char type;
 	int room_id;
-	char host_name[L_MAX_ID_LEN + 1];
 };
 
 #pragma pack (pop)

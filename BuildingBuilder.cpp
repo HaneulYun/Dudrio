@@ -535,11 +535,19 @@ void BuildingBuilder::makePrefab(int type, int index)
 
 void BuildingBuilder::exitBuildMode()
 {
-
+	Scene::scene->PushDelete(prefab);
+	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
+	prefab = nullptr;
 }
 
 void BuildingBuilder::enterBuildMode(int type, int index)
 {
+	if (prefab != nullptr)
+	{
+		exitBuildMode();
+		return;
+	}
+
 	makePrefab(type, index);
 
 	if (prefab == nullptr) return;

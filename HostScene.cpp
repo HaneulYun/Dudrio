@@ -209,7 +209,7 @@ void HostScene::BuildObjects()
 		auto rt = object->GetComponent<RectTransform>();
 		rt->width = CyanFW::Instance()->GetWidth();
 		rt->height = CyanFW::Instance()->GetHeight();
-
+		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
@@ -222,7 +222,6 @@ void HostScene::BuildObjects()
 		gameWorld->sun = directionalLight;
 		object->AddComponent<AIManager>();
 	
-		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
 	
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, L"랜드\n마크", -80, 0);

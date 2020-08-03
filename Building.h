@@ -53,7 +53,7 @@ public:
 		if (collision->children.front()->GetComponent<Constant>())
 		{
 			for (auto& child : collision->children)
-				child->GetComponent<Constant>()->v4 = { 0.02, 0.62, 0.75, 1 };
+				child->GetComponent<Constant>()->v4 = { 1.0f, 0, 0, 1 };
 		}
 	}
 
@@ -63,7 +63,7 @@ public:
 		if (collision->children.front()->GetComponent<Constant>() && collision->collisionType.size() < 2)
 		{
 			for (auto& child : collision->children)
-				child->GetComponent<Constant>()->v4 = { 0.70, 0.75, 0.31, 1 };
+				child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
 		}
 	}
 	

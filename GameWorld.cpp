@@ -123,6 +123,7 @@ int GameWorld::addSim(GameObject* landmark, GameObject* house)
 	simComponent->id = simIndex;
 	simList[simIndex++] = sim;
 
+	simComponent->stateMachine.setOwner(simComponent);
 	simComponent->stateMachine.PushState(IdleState::Instance());
 	simComponent->stateMachine.GetCurrentState()->Enter(simComponent);
 

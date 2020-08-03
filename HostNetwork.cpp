@@ -81,7 +81,10 @@ void HostNetwork::ProcessPacket(char* ptr)
 					angle = XMConvertToDegrees(acos(angle));
 					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
-					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle);
+					int range = 0;
+					if (r->GetComponent<Village>() != nullptr)
+						range = r->GetComponent<Village>()->radiusOfLand;
+					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle, range);
 				}
 	}
 	break;
@@ -178,8 +181,17 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
 		Vector2 building_pos{ my_packet->xPos, my_packet->zPos };
-		GameObject* building = BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name);
-		//GameWorld::gameWorld->buildInGameWorld(landmark, building, my_packet->building_type, my_packet->building_name);
+		GameObject* my_landmark;
+		for (auto landmark : GameWorld::gameWorld->buildingList) {
+			Vector3 landPos = landmark.first->transform->position;
+			float range = landmark.first->GetComponent<Village>()->radiusOfLand;
+			float dist = sqrt(pow(building_pos.x - landPos.x, 2) + pow(building_pos.y - landPos.z, 2));
+			if (range >= dist) {
+				my_landmark = landmark.first;
+				break;
+			}
+		}
+		BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name, my_landmark);
 	}
 		break;
 	case S2C_DESTRUCT:
@@ -265,7 +277,7 @@ void HostNetwork::send_packet(void* packet)
 		send(lobbySocket, p, (unsigned char)p[0], 0);
 }
 
-void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle)
+void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle, int land_range)
 {
 	cs_packet_construct m_packet;
 	m_packet.type = C2S_CONSTRUCT;
@@ -275,6 +287,7 @@ void HostNetwork::send_construct_packet(int type, int name, float x, float z, fl
 	m_packet.xpos = x;
 	m_packet.zpos = z;
 	m_packet.angle = angle;
+	m_packet.landmark_range = land_range;
 
 	send_packet(&m_packet);
 }
@@ -284,11 +297,11 @@ void HostNetwork::send_destruct_packet(int type, int name, float x, float z, flo
 	cs_packet_destruct m_packet;
 	m_packet.type = C2S_DESTRUCT;
 	m_packet.size = sizeof(m_packet);
-	//m_packet.building_type = type;
-	//m_packet.building_name = name;
-	//m_packet.xpos = x;
-	//m_packet.zpos = z;
-	//m_packet.angle = angle;
+	m_packet.building_type = type;
+	m_packet.building_name = name;
+	m_packet.xPos = x;
+	m_packet.zPos = z;
+	m_packet.angle = angle;
 
 	send_packet(&m_packet);
 }
@@ -318,7 +331,7 @@ void HostNetwork::Login()
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_HOST;
 	strcpy_s(l_packet.name, name);
-	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X8;
+	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X1;
 	l_packet.game_time = GameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;
 	l_packet.octaves = octaves;
@@ -340,6 +353,7 @@ void HostNetwork::Logout()
 	isConnect = false;
 	tryConnect = false;
 	mainConnect = false;
+	logouted = true;
 
 	connectButtonText->text = L"Open";
 	closesocket(serverSocket);
@@ -351,15 +365,6 @@ void HostNetwork::Logout()
 	for (auto& p : sims)
 		Scene::scene->PushDelete(p.second);
 	sims.clear();
-
-	for (auto& landmark : GameWorld::gameWorld->buildingList){
-		auto iter = landmark.second.find(GameWorld::gameWorld->BuildingType::Landmark);
-		if (iter != landmark.second.end()) {
-			for (auto& house : iter->second) {
-				GameWorld::gameWorld->addSim(landmark.first, house);
-			}
-		}
-	}
 }
 
 

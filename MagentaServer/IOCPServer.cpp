@@ -464,11 +464,12 @@ void IOCPServer::send_move_sim_packet(int user_id, int mover, float dAngle)
 	send_packet(user_id, &p);
 }
 
-void IOCPServer::send_construct_packet(int user_id, int type, int name, float x, float z, float angle)
+void IOCPServer::send_construct_packet(int user_id, int type, int name, float x, float z, float angle, int range)
 {
 	sc_packet_construct p;
 	p.size = sizeof(p);
 	p.type = S2C_CONSTRUCT;
+	p.landmark_range = range;
 	p.building_name = name;
 	p.building_type = type;
 	p.xPos = x;
@@ -478,16 +479,15 @@ void IOCPServer::send_construct_packet(int user_id, int type, int name, float x,
 	send_packet(user_id, &p);
 }
 
-void IOCPServer::send_destruct_packet(int user_id, int type, int name, float x, float z, float angle)
+void IOCPServer::send_destruct_packet(int user_id, int type, int name, float x, float z)
 {
 	sc_packet_destruct p;
 	p.size = sizeof(p);
 	p.type = S2C_DESTRUCT;
-	//p.building_name = name;
-	//p.building_type = type;
-	//p.xPos = x;
-	//p.zPos = z;
-	//p.angle = angle;
+	p.building_name = name;
+	p.building_type = type;
+	p.xPos = x;
+	p.zPos = z;
 
 	send_packet(user_id, &p);
 }

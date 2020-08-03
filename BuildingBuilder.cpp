@@ -43,11 +43,12 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			prefab->transform->localToWorldMatrix = prePrefab->GetMatrix();
 
 			auto p = prefab->transform->position;
-
+			int range = 0;
 			if (curPrefabType == Landmark)
 			{
 				curLandmark = prefab;
 				prefab->AddComponent<Village>()->OnAutoDevelopment();
+				range = prefab->GetComponent<Village>()->radiusOfLand;
 			}
 			prefab->AddComponent<Building>()->setBuildingInform(curLandmark, curPrefabType, curPrefabIndex);
 			prefab->tag = TAG_BUILDING;
@@ -61,7 +62,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				Vector3 dir = Vector3::CrossProduct(forward, building_forward);
 				angle = XMConvertToDegrees(acos(angle));
 				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
-				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle);
+				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle, range);
 			}
 			updateTerrainNodeData(prefab, true);
 
@@ -84,7 +85,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 	}
 
 	// 건물 삭제
-	else if (Input::GetKey(KeyCode::X))
+	else if (Input::GetKey(KeyCode::X) && HostNetwork::network != nullptr)
 		pickToDelete();
 }
 
@@ -631,6 +632,18 @@ void BuildingBuilder::pickToDelete()
 					if (Input::GetMouseButtonUp(0))
 					{
 						Building* building = object->GetComponent<Building>();
+
+						if (HostNetwork::network->isConnect) {
+							Vector3 building_forward = object->transform->forward;
+							building_forward.y = 0;
+							building_forward.Normalize();
+							Vector3 forward = { 0,0,1 };
+							float angle = Vector3::DotProduct(forward, building_forward);
+							Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+							angle = XMConvertToDegrees(acos(angle));
+							angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z, angle);
+						}
 						GameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 					}
 				}
@@ -748,4 +761,78 @@ void BuildingBuilder::IntersectVertices(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirectio
 			}
 		}
 	}
+}
+
+void BuildingBuilder::guestBuild(int type, int index, float x, float z, float angle, int range)
+{
+	if (type != Landmark) {
+		for (auto landmark : GuestGameWorld::gameWorld->buildingList) {
+			Vector3 landmarkPos = landmark.first->transform->position;
+			float dist = sqrt(pow(landmarkPos.x - x, 2) + pow(landmarkPos.z - z, 2));
+			if (landmark.first->GetComponent<Village>()->radiusOfLand >= dist) {
+				if (index < building[type].size())
+				{
+					GameObject* obj;
+
+					auto data = building[type][index];
+					if (data.prefab)
+						obj = Scene::scene->Duplicate(data.prefab);
+					else
+					{
+						obj = Scene::scene->CreateEmpty();
+
+						auto child = obj->AddChild();
+						child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+						child->AddComponent<MeshFilter>()->mesh = data.mesh;
+						if (data.material)
+							child->AddComponent<Renderer>()->materials.push_back(data.material);
+						else
+						{
+							auto renderer = child->AddComponent<Renderer>();
+							int i = 0;
+							for (auto& sm : data.mesh->DrawArgs)
+								renderer->materials.push_back(data.materials[i++]);
+						}
+					}
+
+					Vector3 pos{ x, terrain->terrainData.GetHeight(x,z), z };
+					obj->transform->position = pos;
+					obj->transform->Rotate(Vector3(0, 1, 0), angle);
+					obj->AddComponent<Building>()->setBuildingInform(landmark.first, type, index);
+
+					GuestGameWorld::gameWorld->buildInGameWorld(landmark.first, obj, type, index);
+					return;
+				}
+			}
+		}
+		return;
+	}
+
+	GameObject* obj;
+	auto data = building[type][index];
+	if (data.prefab)
+		obj = Scene::scene->Duplicate(data.prefab);
+	else
+	{
+		obj = Scene::scene->CreateEmpty();
+
+		auto child = obj->AddChild();
+		child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
+		child->AddComponent<MeshFilter>()->mesh = data.mesh;
+		if (data.material)
+			child->AddComponent<Renderer>()->materials.push_back(data.material);
+		else
+		{
+			auto renderer = child->AddComponent<Renderer>();
+			int i = 0;
+			for (auto& sm : data.mesh->DrawArgs)
+				renderer->materials.push_back(data.materials[i++]);
+		}
+	}
+	obj->transform->Rotate({ 0.0,1.0, 0.0 }, angle);
+	obj->transform->position = { x, terrain->terrainData.GetHeight(x, z),z };
+	obj->AddComponent<Village>()->OffAutoDevelopment();
+	obj->GetComponent<Village>()->radiusOfLand = range;
+
+	GuestGameWorld::gameWorld->buildInGameWorld(obj, obj, type, index);
 }

@@ -30,6 +30,7 @@ public:
 	bool isConnect{ false };
 	bool tryConnect{ false };
 	bool pressButton{ false };
+	bool flag{ false };
 
 	static GuestNetwork* network;
 
@@ -167,12 +168,12 @@ public:
 
 	void Update()
 	{
-		if (!isConnect)
+		if (!isConnect && !flag)
 		{
 			SOCKADDR_IN serveraddr{};
 			serveraddr.sin_family = AF_INET;
-			serveraddr.sin_addr.s_addr = inet_addr(GuestInformConnector::connector->selected_room.serverIP);
-			serveraddr.sin_port = htons(GuestInformConnector::connector->selected_room.port_num);
+			serveraddr.sin_addr.s_addr = inet_addr(GuestInformConnector::connector->selected_room->serverIP);
+			serveraddr.sin_port = htons(GuestInformConnector::connector->selected_room->port_num);
 
 			serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
 			retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
@@ -188,12 +189,14 @@ public:
 			{
 				tryConnect = false;
 				isConnect = false;
+				flag = true;
 			}
 			else if (retval == 0)
 			{
 				connectButtonText->text = L"Logout";
 				tryConnect = false;
 				isConnect = true;
+				flag = true;
 				gameTime->SetActive(true);
 				unsigned long on = true;
 				int nRet = ioctlsocket(serverSocket, FIONBIO, &on);

@@ -356,22 +356,22 @@ void BuildingBuilder::serializeBuildings()
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Trampoline_01_SM", ASSET MESH("SE_Trampoline_01_SM"), ASSET MATERIAL("SE_Trampoline")));
 	}
 
-	//ofstream out("colliders.txt");
-	//for (int i = 0; i < BuildingType::Count; ++i) {
-	//	int j = 0;
-	//	for (auto b : building[i]) {
-	//		if (b.prefab) {
-	//			auto box = b.prefab->GetComponent<BoxCollider>();
-	//			out << i << " " << j << " " << box->center.x - box->extents.x << " " << box->center.y - box->extents.y << " " << box->center.x + box->extents.x << " " << box->center.y + box->extents.y << endl;
-	//		}
-	//		else {
-	//			auto box = b.mesh->Bounds;
-	//			out << i << " " << j << " " << box.Center.x - box.Extents.x << " " << box.Center.x - box.Extents.y << " " << box.Center.x + box.Extents.x << " " << box.Center.x + box.Extents.y << endl;
-	//		}
-	//		++j;
-	//	}
-	//}
-	//out.close();
+	ofstream out("colliders.txt");
+	for (int i = 0; i < BuildingType::Count; ++i) {
+		int j = 0;
+		for (auto b : building[i]) {
+			if (b.prefab) {
+				auto box = b.prefab->GetComponent<BoxCollider>();
+				out << i << " " << j << " " << box->center.x - box->extents.x << " " << box->center.y - box->extents.y << " " << box->center.x + box->extents.x << " " << box->center.y + box->extents.y << endl;
+			}
+			else {
+				auto box = b.mesh->Bounds;
+				out << i << " " << j << " " << box.Center.x - box.Extents.x << " " << box.Center.x - box.Extents.y << " " << box.Center.x + box.Extents.x << " " << box.Center.x + box.Extents.y << endl;
+			}
+			++j;
+		}
+	}
+	out.close();
 }
 
 BuildingBuilderData BuildingBuilder::makeBuilderDataAsPrefab(wstring name, GameObject* prefab)

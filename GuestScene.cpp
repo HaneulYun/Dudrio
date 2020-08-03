@@ -84,10 +84,10 @@ void GuestScene::BuildObjects()
 	}
 
 	auto connect_inform = GuestInformConnector::connector->selected_room;
-	float TerrainSize = connect_inform.terrain_size;
-	float frequency = connect_inform.frequency;
-	int octaves = connect_inform.octaves;
-	int seed = connect_inform.seed;
+	float TerrainSize = connect_inform->terrain_size;
+	float frequency = connect_inform->frequency;
+	int octaves = connect_inform->octaves;
+	int seed = connect_inform->seed;
 	// 지형 생성
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
 	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");

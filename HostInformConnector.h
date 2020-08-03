@@ -29,7 +29,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	// 게임 시간
 	float ingame_time;
 	// 지형 정보
-	static float terrainSize; // = 1000;
+	static float terrainSize;// = 1000;
 	static int frequency;	// 0 ~ 64
 	static int octaves;	// 0 ~ 16
 	static int seed;	// ~4byte

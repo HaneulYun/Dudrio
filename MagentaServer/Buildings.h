@@ -44,6 +44,8 @@ public:
 	BuildingInfo	m_info;
 	Collider		m_collider;
 
+	Sim* m_sim{ nullptr };
+
 public:
 	Building() {}
 	Building(int type, int name, float x, float z, float angle)
@@ -80,8 +82,8 @@ public:
 
 	virtual void update_terrain_node(bool create)
 	{
-		Vector2D b_right = (Vector2D(1, 0).Rotate(m_info.m_angle)).Normalize();
-		Vector2D b_forward = (Vector2D(0, 1).Rotate(m_info.m_angle)).Normalize();
+		Vector2D b_right = (Vector2D(1, 0).Rotate(-m_info.m_angle)).Normalize();
+		Vector2D b_forward = (Vector2D(0, 1).Rotate(-m_info.m_angle)).Normalize();
 
 		for (int x = m_info.m_xPos + (b_right.x * m_collider.m_x1); x <= m_info.m_xPos + (b_right.x * m_collider.m_x2); ++x) {
 			for (int z = m_info.m_zPos + (b_forward.z * m_collider.m_z1); z <= m_info.m_zPos + (b_forward.z * m_collider.m_z2); ++z)
@@ -103,13 +105,15 @@ class Village : public Building
 public:
 	//				Home		Sim
 	//unordered_map<struct BuildingInfo, class Sim*, struct BuildingInfoHasher> simList;
-	unordered_set<class Sim*> simList;
+	vector<class Sim*> simList;
+	vector<class Building*> buildingList;
 
 	float delayTime = 0.f;	// °Ç¼³ ÄðÅ¸ÀÓ
 	bool autoDevelopment;
+	int m_land_range;
 
 public:
-	Village(int type, int name, float x, float z, float angle)
+	Village(int type, int name, float x, float z, float angle, int land_range)
 	{
 		autoDevelopment = false;
 		delayTime = 0.f;
@@ -118,6 +122,7 @@ public:
 		m_info.m_xPos = x;
 		m_info.m_zPos = z;
 		m_info.m_angle = angle;
+		m_land_range = land_range;
 	}
 
 	virtual ~Village() {}
@@ -131,5 +136,20 @@ public:
 	void OffAutoDevelopment()
 	{
 		autoDevelopment = false;
+	}
+
+	void eraseBuilding(class Building* b)
+	{
+		auto iter = find(buildingList.begin(), buildingList.end(), b);
+		if (iter != buildingList.end())
+			buildingList.erase(iter);
+	}
+
+	int eraseSim(class Sim* s)
+	{
+		auto iter = find(simList.begin(), simList.end(), s);
+		if (iter != simList.end())
+			simList.erase(iter);
+		return s->id;
 	}
 };

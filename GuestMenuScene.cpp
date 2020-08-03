@@ -2,6 +2,9 @@
 #include "GuestMenuScene.h"
 
 GuestInformConnector* GuestInformConnector::connector{ nullptr };
+char GuestInformConnector::name[MAX_ID_LEN + 1];
+RoomInfo* GuestInformConnector::selected_room;
+
 
 void GuestMenuScene::BuildObjects()
 {
@@ -40,7 +43,7 @@ void GuestMenuScene::BuildObjects()
 	{
 		auto rt = hostButtonPrefab->GetComponent<RectTransform>();
 		rt->setAnchorAndPivot(0, 1);
-		rt->setPosAndSize(50, -50, 250, 40);
+		rt->setPosAndSize(50, -50, 100, 40);
 
 		{
 			auto textobject = hostButtonPrefab->AddChildUI();

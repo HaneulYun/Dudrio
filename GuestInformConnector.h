@@ -57,11 +57,11 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* buttonPrefab{ nullptr };
 
 	// 게스트 이름
-	char name[MAX_ID_LEN + 1];
+	static char name[MAX_ID_LEN + 1];
 
 	// 선택한 방 정보
 	std::unordered_map<int, std::pair<GameObject*, RoomInfo*>> hosts;
-	RoomInfo* selected_room;
+	static RoomInfo* selected_room;
 
 	static GuestInformConnector* connector;
 private:

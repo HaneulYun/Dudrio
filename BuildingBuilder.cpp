@@ -524,7 +524,8 @@ void BuildingBuilder::makePrefab(int type, int index)
 		else
 		{
 			prefab = Scene::scene->CreateEmpty();
-			prefab->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+			prefab->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->Bounds.Center.x, data.mesh->Bounds.Center.z, data.mesh->Bounds.Center.y };
+			prefab->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->Bounds.Extents.x, data.mesh->Bounds.Extents.z, data.mesh->Bounds.Extents.y };
 
 			auto child = prefab->AddChild();
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -539,6 +540,7 @@ void BuildingBuilder::makePrefab(int type, int index)
 					renderer->materials.push_back(data.materials[i++]);
 			}
 		}
+		prefab->GetComponent<BoxCollider>()->obb = true;
 	}
 }
 

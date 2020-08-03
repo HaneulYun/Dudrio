@@ -151,6 +151,14 @@ void HostScene::BuildObjects()
 		environment.sunSources = light;
 	}
 
+	auto sea = CreateEmpty();
+	{
+		sea->transform->position = { 500, 1, 500 };
+		sea->transform->Scale({ 10000, 1, 10000 });
+		sea->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
+		sea->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("sea"));
+	}
+
 	//GameObject* manager = CreateEmpty();
 	//{
 	//	BuildManager* buildManager = manager->AddComponent<BuildManager>();

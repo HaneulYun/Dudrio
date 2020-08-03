@@ -468,6 +468,11 @@ void IOCPServer::process_packet(int user_id, char* buf)
 		std::cout << "The Room " << user_id << " is Empty" << endl;
 
 		g_rooms[user_id]->make_empty();
+
+		for (auto user : g_users) {
+			if (user.second->m_status == ST_ACTIVE && user.second->o_type == O_GUEST)
+				send_delete_room_packet(user.second->m_id, user_id);
+		}
 	}
 	break;
 	case C2LS_LOGIN_HOST:
@@ -656,6 +661,7 @@ void IOCPServer::send_new_room_packet(int user_id, int room_id)
 	p.octaves = g_rooms[room_id]->octaves;
 	p.seed = g_rooms[room_id]->seed;
 
+	std::cout << p.host_name << ": " << p.serverIP << ", " << p.server_port << endl;
 	send_packet_client(user_id, &p);
 }
 
@@ -665,7 +671,6 @@ void IOCPServer::send_delete_room_packet(int user_id, int room_id)
 	p.size = sizeof(p);
 	p.type = LS2C_DELETE_ROOM;
 	p.room_id = room_id;
-	strcpy_s(p.host_name, g_rooms[room_id]->host_name);
 
 	send_packet_client(user_id, &p);
 }

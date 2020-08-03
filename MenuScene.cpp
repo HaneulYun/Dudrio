@@ -13,11 +13,21 @@ void MenuScene::BuildObjects()
 	ASSET AddMaterial("gray", ASSET TEXTURE("none"), nullptr, { 0.5, 0.5, 0.5, 0.5 });
 	ASSET AddMaterial("menuBackgroundMat", ASSET TEXTURE("menuBackgroundTex"), nullptr, { 0.8, 0.8, 0.8, 1 });
 
+	////*** AudioClip ***//
+	ASSET AddAudioClip("bgm_menu", "Sounds\\bgm_menu.mp3");
+
 	///*** Game Object ***///
 
 	auto mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
+	}
+
+	auto soundBox = CreateEmpty();
+	{
+		auto audioSource = soundBox->AddComponent<AudioSource>();
+		audioSource->clip = ASSET AUDIO_CLIP("bgm_menu");
+		audioSource->loop = true;
 	}
 
 	auto background = CreateImage();

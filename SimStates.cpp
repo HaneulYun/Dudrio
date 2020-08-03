@@ -17,7 +17,7 @@ void IdleState::Enter(Sim* sim)
 	if (sim->stateMachine.HaveNextState())
 		return;
 
-	double delay = rand() % 10;
+	double delay = rand() % 10 + 1;
 	Messenger->CreateMessage(delay, sim->id, sim->id, Msg_Move);
 };
 

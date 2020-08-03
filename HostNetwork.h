@@ -36,7 +36,7 @@ public:
 	bool tryConnect{ false };
 	bool pressButton{ false };
 	bool mainConnect{ false };
-
+	bool logouted{ false };
 	float terrainSize;
 	float frequency;
 	int octaves;
@@ -163,6 +163,19 @@ public:
 	void Update()
 	{
 		gameTime->GetComponent<Text>()->text = GameWorld::gameWorld->convertTimeToText();
+
+		if (logouted){
+			for (auto& landmark : GameWorld::gameWorld->buildingList) {
+				auto iter = landmark.second.find(GameWorld::gameWorld->BuildingType::House);
+				if (iter != landmark.second.end()) {
+					for (auto& house : iter->second) {
+						GameWorld::gameWorld->addSim(landmark.first, house);
+					}
+				}
+			}
+			logouted = false;
+		}
+
 		if (inputField->gameObject->active)
 		{
 			if (inputField->isFocused)

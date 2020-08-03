@@ -353,6 +353,7 @@ void HostNetwork::Logout()
 	isConnect = false;
 	tryConnect = false;
 	mainConnect = false;
+	logouted = true;
 
 	connectButtonText->text = L"Open";
 	closesocket(serverSocket);
@@ -364,15 +365,6 @@ void HostNetwork::Logout()
 	for (auto& p : sims)
 		Scene::scene->PushDelete(p.second);
 	sims.clear();
-
-	for (auto& landmark : GameWorld::gameWorld->buildingList){
-		auto iter = landmark.second.find(GameWorld::gameWorld->BuildingType::House);
-		if (iter != landmark.second.end()) {
-			for (auto& house : iter->second) {
-				GameWorld::gameWorld->addSim(landmark.first, house);
-			}
-		}
-	}
 }
 
 

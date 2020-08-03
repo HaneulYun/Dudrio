@@ -82,8 +82,8 @@ public:
 
 	virtual void update_terrain_node(bool create)
 	{
-		Vector2D b_right = (Vector2D(1, 0).Rotate(m_info.m_angle)).Normalize();
-		Vector2D b_forward = (Vector2D(0, 1).Rotate(m_info.m_angle)).Normalize();
+		Vector2D b_right = (Vector2D(1, 0).Rotate(-m_info.m_angle)).Normalize();
+		Vector2D b_forward = (Vector2D(0, 1).Rotate(-m_info.m_angle)).Normalize();
 
 		for (int x = m_info.m_xPos + (b_right.x * m_collider.m_x1); x <= m_info.m_xPos + (b_right.x * m_collider.m_x2); ++x) {
 			for (int z = m_info.m_zPos + (b_forward.z * m_collider.m_z1); z <= m_info.m_zPos + (b_forward.z * m_collider.m_z2); ++z)

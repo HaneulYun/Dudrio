@@ -24,15 +24,15 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* loadVillageButton{ nullptr };
 
 	// 마을 주인 이름
-	char name[MAX_ID_LEN + 1];
+	static char name[MAX_ID_LEN + 1];
 
 	// 게임 시간
 	float ingame_time;
 	// 지형 정보
-	float terrainSize = 1000;
-	int frequency;	// 0 ~ 64
-	int octaves;	// 0 ~ 16
-	int seed;	// ~4byte
+	static float terrainSize; // = 1000;
+	static int frequency;	// 0 ~ 64
+	static int octaves;	// 0 ~ 16
+	static int seed;	// ~4byte
 
 	// 건물 정보
 

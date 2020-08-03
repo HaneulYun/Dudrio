@@ -2,6 +2,12 @@
 #include "HostMenuScene.h"
 
 HostInformConnector* HostInformConnector::connector{ nullptr };
+char HostInformConnector::name[MAX_ID_LEN + 1];
+float HostInformConnector::terrainSize = 1000.0f;
+int HostInformConnector::frequency;
+int HostInformConnector::octaves;
+int HostInformConnector::seed;
+
 
 void HostMenuScene::BuildObjects()
 {

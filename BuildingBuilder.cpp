@@ -565,7 +565,7 @@ void BuildingBuilder::enterBuildMode(int type, int index)
 	for (auto& child : prefab->children)
 	{
 		child->layer = (int)RenderLayer::BuildPreview;
-		child->AddComponent<Constant>()->v4 = { 0.0f,1.0f,0.0f,1.0f };
+		child->AddComponent<Constant>()->v4 = { 0.95, 0.81, 0.82, 1 };
 	}
 
 	curPrefabType = type;

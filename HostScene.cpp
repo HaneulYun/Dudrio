@@ -20,6 +20,9 @@ void HostScene::BuildObjects()
 
 	LoadPrefab();
 
+	////*** AudioClip ***//
+	ASSET AddAudioClip("bgm_ingame", "Sounds\\bgm_ingame.mp3");
+
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
 	{
@@ -118,8 +121,16 @@ void HostScene::BuildObjects()
 	GameObject* mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
-		HostCameraController* controller = mainCamera->AddComponent<HostCameraController>();
+		mainCamera->AddComponent<AudioListener>();
+		auto controller = mainCamera->AddComponent<HostCameraController>();
 		controller->terrainData = &terrainData->terrainData;
+	}
+
+	auto soundBox = CreateEmpty();
+	{
+		auto audioSource = soundBox->AddComponent<AudioSource>();
+		audioSource->clip = ASSET AUDIO_CLIP("bgm_ingame");
+		audioSource->loop = true;
 	}
 
 	{

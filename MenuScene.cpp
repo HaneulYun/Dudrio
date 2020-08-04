@@ -10,8 +10,8 @@ void MenuScene::BuildObjects()
 
 	//*** Material ***//
 	ASSET AddMaterial("none", ASSET TEXTURE("none"));
-	ASSET AddMaterial("gray", ASSET TEXTURE("none"), nullptr, { 0.5, 0.5, 0.5, 0.5 });
-	ASSET AddMaterial("menuBackgroundMat", ASSET TEXTURE("menuBackgroundTex"), nullptr, { 0.8, 0.8, 0.8, 1 });
+	ASSET AddMaterial("gray", ASSET TEXTURE("none"), 0, 0, 0, { 0.5, 0.5, 0.5, 0.5 });
+	ASSET AddMaterial("menuBackgroundMat", ASSET TEXTURE("menuBackgroundTex"), 0, 0, 0, { 0.8, 0.8, 0.8, 1 });
 
 	////*** AudioClip ***//
 	ASSET AddAudioClip("bgm_menu", "Sounds\\bgm_menu.mp3");

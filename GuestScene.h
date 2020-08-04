@@ -143,11 +143,11 @@ public:
 	void LoadMaterialAsset()
 	{
 		ASSET AddMaterial("none", ASSET TEXTURE("none"));
-		ASSET AddMaterial("gray", ASSET TEXTURE("none"), nullptr, { 0.5, 0.5, 0.5, 1.0 });
-		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), nullptr, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
-		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+		ASSET AddMaterial("gray", ASSET TEXTURE("none"), 0, 0, 0, { 0.5, 0.5, 0.5, 1.0 });
+		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), 0, 0, 0, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
+		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 
-		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 		//ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		//ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
@@ -155,11 +155,11 @@ public:
 
 		/*AdvancedVillagePack*/
 		{
-			ASSET AddMaterial("AV_house_01", ASSET TEXTURE("AV_house_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_house_02", ASSET TEXTURE("AV_house_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_material_01", ASSET TEXTURE("AV_material_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_material_02", ASSET TEXTURE("AV_material_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_material_03", ASSET TEXTURE("AV_material_03"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_house_01", ASSET TEXTURE("AV_house_01"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_house_02", ASSET TEXTURE("AV_house_02"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_material_01", ASSET TEXTURE("AV_material_01"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_material_02", ASSET TEXTURE("AV_material_02"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_material_03", ASSET TEXTURE("AV_material_03"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 			//ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
 			//ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
 		}

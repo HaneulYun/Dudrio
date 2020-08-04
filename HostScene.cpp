@@ -271,8 +271,6 @@ void HostScene::BuildObjects()
 		gameUI = object->AddComponent<GameUI>();
 		gameUI->gameUIs.push_back(ui_bar);
 		gameWorld->gameUI = gameUI;
-
-		ui_sim->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_sim");
 	}
 
 	auto network = CreateEmpty();
@@ -284,6 +282,7 @@ void HostScene::BuildObjects()
 		hostNetwork->frequency = frequency;
 		hostNetwork->octaves = octaves;
 		hostNetwork->seed = seed;
+		hostNetwork->gameUI = gameUI;
 		strcpy_s(hostNetwork->name, host_name.c_str());
 		HostNetwork::network = hostNetwork;
 	}

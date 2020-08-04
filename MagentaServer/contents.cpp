@@ -688,7 +688,7 @@ void Contents::update()
 void Contents::update_sim()
 {
 	lock_guard<mutex> lock_guard(g_sims_lock);
-	if (ingame_time > night_start_time && !sleep_flag) {
+	if (ingame_time > 0.f && !sleep_flag) {
 		for (auto& sims : g_sims) {
 			timer_event ev = { sims.first, SIM_Sleep, high_resolution_clock::now(), sims.first, NULL };
 			timer.add_event(ev);

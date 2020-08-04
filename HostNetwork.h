@@ -1,9 +1,9 @@
 #pragma once
 #include "CyanEngine\CyanEngine\framework.h"
-//#include "MagentaServer\protocol.h"
 #include <WS2tcpip.h>
 #pragma comment(lib, "Ws2_32.lib")
 #include <unordered_map>
+#include "GameUI.h"
 
 #define BUFSIZE 200
 
@@ -14,12 +14,12 @@ class HostNetwork : public MonoBehavior<HostNetwork>
 private:
 	InputField* inputField{ nullptr };
 	GameObject* inputIpGuide{ nullptr };
+	GameObject* chatting[10]{ nullptr };
 	//GameObject* gameTime{ nullptr };
 
-	// Chat
-	InputField* chatField{ nullptr };
-	GameObject* chatting[10];
 public:
+	// Chat
+	GameUI* gameUI{ nullptr };
 	Text* connectButtonText{ nullptr };
 
 	WSADATA WSAData;
@@ -161,8 +161,6 @@ public:
 
 	void Update()
 	{
-		
-
 		if (logouted){
 			for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
 				auto iter = landmark.second.find(HostGameWorld::gameWorld->BuildingType::House);
@@ -219,8 +217,8 @@ public:
 		if (isConnect) {
 
 			Receiver();
-
 			if (mainConnect) {
+				auto chatField = gameUI->gameUIs[gameUI->ChatUI]->GetComponent<InputField>();
 				if (chatField->isFocused) {
 					if (Input::GetKeyDown(KeyCode::Return)) {
 						if (chatField->text.size() > MAX_STR_LEN - 1) {

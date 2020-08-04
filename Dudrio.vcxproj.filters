@@ -192,6 +192,9 @@
     <ClInclude Include="HostGameWorld.h">
       <Filter>Assets\Scripts\GameWorld</Filter>
     </ClInclude>
+    <ClInclude Include="GameWorld.h">
+      <Filter>Assets\Scripts\GameWorld</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -249,6 +252,9 @@
       <Filter>Assets\Scripts\GameWorld</Filter>
     </ClCompile>
     <ClCompile Include="HostGameWorld.cpp">
+      <Filter>Assets\Scripts\GameWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWorld.cpp">
       <Filter>Assets\Scripts\GameWorld</Filter>
     </ClCompile>
   </ItemGroup>

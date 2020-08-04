@@ -185,6 +185,7 @@
     <ClInclude Include="FPS.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameLoader.h" />
+    <ClInclude Include="GameWorld.h" />
     <ClInclude Include="HostGameWorld.h" />
     <ClInclude Include="GuestCameraController.h" />
     <ClInclude Include="GuestController.h" />
@@ -225,6 +226,7 @@
     <ClCompile Include="AIManager.cpp" />
     <ClCompile Include="BuildingBuilder.cpp" />
     <ClCompile Include="Dudrio.cpp" />
+    <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="HostGameWorld.cpp" />
     <ClCompile Include="GuestGameWorld.cpp" />
     <ClCompile Include="GuestMenuScene.cpp" />

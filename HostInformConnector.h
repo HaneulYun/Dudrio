@@ -34,6 +34,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	static int octaves;	// 0 ~ 16
 	static int seed;	// ~4byte
 
+	static bool load;
 	// 건물 정보
 
 	static HostInformConnector* connector;

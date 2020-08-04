@@ -2,24 +2,28 @@
 #include "..\CyanEngine\framework.h"
 #include <fstream>
 #include <io.h>
+#include "BuildingBuilder.h"
 
 struct BuildingFormat {
 	int b_type;
 	int b_index;
-	float x, z;
-	float angle;
+	double x, z;
+	double angle;
 	int radius;
 
 	std::string makeInfoToString()
 	{
 		std::string info;
-		info = to_string(b_type) + ' ' + to_string(b_index) + ' ' + to_string(x) + ' ' + to_string(z) 
-			+ ' ' + to_string(angle) + ' ' + to_string(radius);
+		info = std::to_string(b_type) + ' ' + std::to_string(b_index) + ' ' + std::to_string(x) + ' ' + std::to_string(z)
+			+ ' ' + std::to_string(angle) + ' ' + std::to_string(radius);
 		
-		std::wstring winfo;
-		winfo.assign(info.begin(), info.end());
-		winfo += L"\n";
-		Debug::Log(winfo.c_str());
+		return info;
+	}
+
+	std::string makeInfoToString2()
+	{
+		std::string info;
+		info = std::to_string(b_type) + ' ' + std::to_string(b_index) + ' ' + std::to_string(x) + ' ' + std::to_string(z);
 
 		return info;
 	}
@@ -28,7 +32,7 @@ struct BuildingFormat {
 class GameLoader : public MonoBehavior<GameLoader>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
-	std::string filename{ "buildings.txt" };
+
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static GameLoader* gameLoader;
 
@@ -51,31 +55,38 @@ public:
 		
 	}
 
-	void insertInFile(int b_type, int b_idx, float x, float z, float angle, int range)
+	void insertInFile(int b_type, int b_idx, double x, double z, double angle, int range)
 	{
 		BuildingFormat b_info{ b_type, b_idx, x, z, angle, range };
-		string infoToString = b_info.makeInfoToString();
+		std::string infoToString = b_info.makeInfoToString();
 		
-		fstream file(filename, ios::in | ios::out | ios::app);
+		std::fstream file("buildings.txt", std::ios::in | std::ios::out | std::ios::app);
 		if(file.is_open() == false)
-			file.open(filename, ios::in | ios::out | ios::trunc);
+			file.open("buildings.txt", std::ios::in | std::ios::out | std::ios::trunc);
 
 		if (file.is_open()) {
-			file << infoToString << endl;
+			file << infoToString << std::endl;
 		}
 	}
 
-	void modifyLandmarkRange(int b_type, int b_idx, float x, float z, float angle, int prev_range, int new_range)
+	void modifyLandmarkRange(int b_type, int b_idx, double x, double z, double angle, int prev_range, int new_range)
 	{
 
 	}
 
-	void deleteInFile(int b_type, int b_idx, float x, float z, float angle, int range)
+	void initFile(std::string name, int frequency, int octaves, int seed)
+	{
+		std::fstream file("buildings.txt", std::ios::out);
+		file << name << ' ' << frequency << ' ' << octaves << ' ' << seed << std::endl;
+		file.close();
+	}
+
+	void deleteInFile(int b_type, int b_idx, double x, double z, double angle, int range)
 	{
 		BuildingFormat b_info{ b_type, b_idx, x, z, angle, range };
-		string infoToString = b_info.makeInfoToString();
+		std::string infoToString = b_info.makeInfoToString2();
 
-		FILE* fp = fopen(filename.c_str(), "rt+");
+		FILE* fp = fopen("buildings.txt", "rt+");
 		char buf[256];
 
 		rewind(fp);
@@ -114,36 +125,26 @@ public:
 		//out.close();
 	}
 
-	void Load()
+	int Load(std::string& name, int& frequency, int& octaves, int& seed)
 	{
-		//for (auto& b : BuildManager::buildManager->buildings)
-		//{
-		//	Scene::scene->PushDelete(b.second);
-		//}
-		//BuildManager::buildManager->buildings.clear();
+		std::fstream file("buildings.txt", std::ios::in);
+		file >> name >> frequency >> octaves >> seed;
 
-		//if (HostNetwork::network != nullptr)
-		//{
-		//	if (HostNetwork::network->isConnect)
-		//	{
-		//		HostNetwork::network->send_destruct_all_packet();
-		//	}
-		//}
-		//
-		//std::ifstream in("Buildings.txt");
-		//istream_iterator<BuildingInform> beg{ in };
-		//istream_iterator<BuildingInform> end{};
-		//
-		//while (beg != end)
-		//{
-		//	//auto iter = BuildManager::buildManager->buildings.find(*beg);
-		//	//
-		//	//if (iter == BuildManager::buildManager->buildings.end())
-		//	//{
-		//	//	Builder::builder->BuildNewBuilding(*beg);
-		//	//}
-		//	*beg++;
-		//}
+		return file.tellp();
+	}
+
+	void LoadBuildings(int pfile)
+	{
+		std::fstream file("buildings.txt", std::ios::in);
+		file.seekp(pfile, std::ios::beg);
+
+		int type, index;
+		float x, z, angle;
+		int range;
+
+		while (file >> type >> index >> x >> z >> angle >> range) {
+			BuildingBuilder::buildingBuilder->hostLoad(type, index, x, z, angle, range);
+		}
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 };

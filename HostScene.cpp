@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "HostScene.h"
 
-GameLoader* GameLoader::gameLoader{ nullptr };
 BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
+GameLoader* GameLoader::gameLoader{ nullptr };
 HostGameWorld* HostGameWorld::gameWorld;
 AIManager* AIManager::aiManager;
 
@@ -88,11 +88,22 @@ void HostScene::BuildObjects()
 		behavior->anim = anim;
 	}
 
+	float TerrainSize = 1000;
+	int frequency, octaves, seed;
+	int file_pointer;
+	string host_name;
+	if (!HostInformConnector::connector->load) {
+		TerrainSize = HostInformConnector::connector->terrainSize;
+		frequency = HostInformConnector::connector->frequency;
+		octaves = HostInformConnector::connector->octaves;
+		seed = HostInformConnector::connector->seed;
+		host_name = HostInformConnector::connector->name;
 
-	float TerrainSize = HostInformConnector::connector->terrainSize;
-	float frequency = HostInformConnector::connector->frequency;
-	int octaves = HostInformConnector::connector->octaves;
-	int seed = HostInformConnector::connector->seed;
+		GameLoader::gameLoader->initFile(host_name, frequency, octaves, seed);
+	}
+	else {
+		file_pointer = GameLoader::gameLoader->Load(host_name, frequency, octaves, seed);
+	}
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
 	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
@@ -237,11 +248,14 @@ void HostScene::BuildObjects()
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		buildingBuilder->cube = node;
+		BuildingBuilder::buildingBuilder = buildingBuilder;
 
 		HostGameWorld* gameWorld = object->AddComponent<HostGameWorld>();
 		gameWorld->simPrefab = sim;
 		gameWorld->sun = directionalLight;
 		object->AddComponent<AIManager>();
+		auto gameLoader = object->AddComponent<GameLoader>();
+		HostGameWorld::gameWorld = gameWorld;
 
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
@@ -258,7 +272,7 @@ void HostScene::BuildObjects()
 		gameUI->gameUIs.push_back(ui_bar);
 		gameWorld->gameUI = gameUI;
 
-		GameLoader* gameload = object->AddComponent<GameLoader>();
+		ui_sim->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_sim");
 	}
 
 	auto network = CreateEmpty();
@@ -270,7 +284,8 @@ void HostScene::BuildObjects()
 		hostNetwork->frequency = frequency;
 		hostNetwork->octaves = octaves;
 		hostNetwork->seed = seed;
-		strcpy_s(hostNetwork->name, HostInformConnector::connector->name);
+		strcpy_s(hostNetwork->name, host_name.c_str());
+		HostNetwork::network = hostNetwork;
 	}
 
 	gameUI->gameUIs.push_back(Scene::scene->CreateImage());
@@ -381,97 +396,6 @@ void HostScene::BuildObjects()
 			});
 	}
 
-	//auto ServerButton = CreateImage();
-	//{
-	//	auto rt = ServerButton->GetComponent<RectTransform>();
-	//	rt->setAnchorAndPivot(0, 1);
-	//	rt->setPosAndSize(1110, -10, 80, 30);
-	//
-	//	ServerButton->AddComponent<Button>()->AddEvent(
-	//		[](void*) {
-	//			HostNetwork::network->PressButton();
-	//		});
-	//	{
-	//		auto textobject = ServerButton->AddChildUI();
-	//		auto rectTransform = textobject->GetComponent<RectTransform>();
-	//		rectTransform->anchorMin = { 0, 0 };
-	//		rectTransform->anchorMax = { 1, 1 };
-	//
-	//		Text* text = textobject->AddComponent<Text>();
-	//		text->text = L"Open";
-	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-	//
-	//		hostNetwork->connectButtonText = text;
-	//	}
-	//}
-	//
-	//auto LoadButton = CreateImage();
-	//{
-	//	auto rt = LoadButton->GetComponent<RectTransform>();
-	//	rt->setAnchorAndPivot(0, 1);
-	//	rt->setPosAndSize(1110, -50, 80, 30);
-	//
-	//	LoadButton->AddComponent<Button>()->AddEvent(
-	//		[](void*) {
-	//			GameLoader::gameLoader->Load();
-	//		});
-	//	{
-	//		auto textobject = LoadButton->AddChildUI();
-	//		auto rectTransform = textobject->GetComponent<RectTransform>();
-	//		rectTransform->anchorMin = { 0, 0 };
-	//		rectTransform->anchorMax = { 1, 1 };
-	//
-	//		Text* text = textobject->AddComponent<Text>();
-	//		text->text = L"Load";
-	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-	//	}
-	//}
-	//
-	//auto SaveButton = CreateImage();
-	//{
-	//	auto rt = SaveButton->GetComponent<RectTransform>();
-	//	rt->setAnchorAndPivot(0, 1);
-	//	rt->setPosAndSize(1110, -90, 80, 30);
-	//
-	//	SaveButton->AddComponent<Button>()->AddEvent(
-	//		[](void*) {
-	//			GameLoader::gameLoader->Save();
-	//		});
-	//	{
-	//		auto textobject = SaveButton->AddChildUI();
-	//		auto rectTransform = textobject->GetComponent<RectTransform>();
-	//		rectTransform->anchorMin = { 0, 0 };
-	//		rectTransform->anchorMax = { 1, 1 };
-	//
-	//		Text* text = textobject->AddComponent<Text>();
-	//		text->text = L"Save";
-	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-	//	}
-	//}
-	//
-	//auto menuSceneButton = CreateImage();
-	//{
-	//	auto rt = menuSceneButton->GetComponent<RectTransform>();
-	//	rt->setAnchorAndPivot(0, 1);
-	//	rt->setPosAndSize(10, -10, 150, 30);
-	//
-	//	menuSceneButton->AddComponent<Button>()->AddEvent(
-	//		[](void*) {
-	//			SceneManager::LoadScene("MenuScene");
-	//		});
-	//	{
-	//		auto textobject = menuSceneButton->AddChildUI();
-	//		auto rectTransform = textobject->GetComponent<RectTransform>();
-	//		rectTransform->anchorMin = { 0, 0 };
-	//		rectTransform->anchorMax = { 1, 1 };
-	//
-	//		Text* text = textobject->AddComponent<Text>();
-	//		text->text = L"Menu Scene";
-	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-	//	}
-	//}
+	if (HostInformConnector::connector->load)
+		GameLoader::gameLoader->LoadBuildings(file_pointer);
 }

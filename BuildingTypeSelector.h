@@ -43,9 +43,21 @@ public:
 					auto object = reinterpret_cast<GameObject*>(ptr);
 					object->parent->GetComponent<BuildingTypeSelector>()->InactivateChildren(object);
 					object->SetActive(!object->active);
-					if(object->active)
+
+					auto frame = HostGameWorld::gameWorld->gameUI->gameUIs[GameUI::GameUICategory::SelectFrame];
+					auto rt = frame->GetComponent<RectTransform>();
+					int index = std::distance(object->parent->children.begin(), std::find(object->parent->children.begin(), object->parent->children.end(), object));
+					auto obj_rt = object->parent->children[index - 1]->GetComponent<RectTransform>();
+					rt->setPosAndSize(obj_rt->posX, obj_rt->posY, 40, 40);
+					frame->SetActive(false);
+
+					if (object->active)
+					{
 						object->GetComponent<BuildingSelector>()->setBuildingButtonName();
+						frame->SetActive(true);
+					}
 				}, buildingSelectorObject);
+
 		}
 
 		{
@@ -80,8 +92,20 @@ public:
 
 			DeleteButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
-					BuildingBuilder::buildingBuilder->enterDeleteMode();
-				});
+					auto frame = HostGameWorld::gameWorld->gameUI->gameUIs[GameUI::GameUICategory::SelectFrame];
+					auto rt = frame->GetComponent<RectTransform>();
+					auto obj_rt = reinterpret_cast<RectTransform*>(ptr);
+
+					if (BuildingBuilder::buildingBuilder->enterDeleteMode())
+					{
+						rt->setPosAndSize(obj_rt->posX, obj_rt->posY, 40, 40);
+						frame->SetActive(true);
+					}
+					else
+					{
+						frame->SetActive(false);
+					}
+				}, rt);
 		}
 	}
 };

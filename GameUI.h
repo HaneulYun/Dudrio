@@ -4,7 +4,7 @@
 class GameUI : public MonoBehavior<GameUI>
 {
 public :
-	enum GameUICategory{UIBar, MenuUI, ChatUI, SimCountUI, CoinCountUI, DayAndTimeUI,LandMarkUI, Count};
+	enum GameUICategory{UIBar, MenuUI, ChatUI, SimCountUI, CoinCountUI, DayAndTimeUI, LandMarkUI, SelectFrame, Count};
 private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	std::vector<GameObject*> gameUIs;
@@ -86,6 +86,16 @@ public:
 
 			gameUIs[DayAndTimeUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_time");
 		}
+
+		gameUIs[SelectFrame] = Scene::scene->CreateImage();
+		{
+			auto rt = gameUIs[SelectFrame]->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 0);
+			rt->setPosAndSize(-140, 0, 40, 40);
+
+			gameUIs[SelectFrame]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_selectFrame");
+		}
+		gameUIs[SelectFrame]->SetActive(false);
 
 		//gameUIs[MenuUI] = Scene::scene->CreateImage();
 		//{

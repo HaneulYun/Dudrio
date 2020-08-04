@@ -66,7 +66,7 @@ public:
 
 	void exitDeleteMode();
 
-	void enterDeleteMode();
+	int enterDeleteMode();
 
 	float getBoundingBox(int type, int index);
 

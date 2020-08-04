@@ -38,6 +38,8 @@ public:
 			ASSET AddTexture("icon_lighting", L"Textures\\icon\\lighting.dds");
 			ASSET AddTexture("icon_prop", L"Textures\\icon\\prop.dds");
 			ASSET AddTexture("icon_delete", L"Textures\\icon\\delete.dds");
+
+			ASSET AddTexture("ui_selectFrame", L"Textures\\icon\\selectFrame.dds");
 		}
 
 
@@ -193,6 +195,8 @@ public:
 			ASSET AddMaterial("icon_lighting", ASSET TEXTURE("icon_lighting"));
 			ASSET AddMaterial("icon_prop", ASSET TEXTURE("icon_prop"));
 			ASSET AddMaterial("icon_delete", ASSET TEXTURE("icon_delete"));
+
+			ASSET AddMaterial("ui_selectFrame", ASSET TEXTURE("ui_selectFrame"));
 		}
 
 

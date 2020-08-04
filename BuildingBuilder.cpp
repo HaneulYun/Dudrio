@@ -588,14 +588,16 @@ void BuildingBuilder::exitDeleteMode()
 	builderMode = DefaultMode;
 }
 
-void BuildingBuilder::enterDeleteMode()
+int BuildingBuilder::enterDeleteMode()
 {
 	if (builderMode == DeleteMode)
 	{
 		exitDeleteMode();
-		return;
+		return false;
 	}
 	builderMode = DeleteMode;
+
+	return true;
 }
 
 

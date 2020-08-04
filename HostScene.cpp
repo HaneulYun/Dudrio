@@ -158,6 +158,14 @@ void HostScene::BuildObjects()
 		sea->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
 		sea->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("sea"));
 	}
+	auto bottom = CreateEmpty();
+	{
+		bottom->transform->Scale({ 10000, 1, 10000 });
+		bottom->transform->Rotate({ 0, 0, 1 }, 180);
+		bottom->transform->position = { 500, 1, 500 };
+		bottom->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
+		bottom->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
+	}
 
 	//GameObject* manager = CreateEmpty();
 	//{

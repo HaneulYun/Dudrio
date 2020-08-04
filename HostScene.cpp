@@ -209,6 +209,15 @@ void HostScene::BuildObjects()
 	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 
 
+	auto uiBar = CreateImage();
+	{
+		auto rt = uiBar->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 0);
+		rt->setPosAndSize(0, 0, CyanFW::Instance()->GetWidth(), 25);
+
+		uiBar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
+	}
+
 	auto object = CreateUI();
 	{
 		auto rt = object->GetComponent<RectTransform>();
@@ -237,6 +246,31 @@ void HostScene::BuildObjects()
 		buildingTypeSelector->addDeleteButton(140, 0, ASSET MATERIAL("icon_delete"));
 	}
 
+	auto ui_sim = CreateImage();
+	{
+		auto rt = ui_sim->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(-320, 0, 120, 25);
+
+		ui_sim->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_sim");
+	}
+	auto ui_coin = CreateImage();
+	{
+		auto rt = ui_coin->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(-200, 0, 120, 25);
+
+		ui_coin->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_coin");
+	}
+	auto ui_time = CreateImage();
+	{
+		auto rt = ui_time->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(0, 0, 240, 25);
+
+		ui_time->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_time");
+	}
+
 	auto network = CreateEmpty();
 	HostNetwork* hostNetwork = network->AddComponent<HostNetwork>();
 	{
@@ -248,6 +282,7 @@ void HostScene::BuildObjects()
 		hostNetwork->seed = seed;
 		strcpy_s(hostNetwork->name, HostInformConnector::connector->name);
 	}
+
 
 	auto ServerButton = CreateImage();
 	{

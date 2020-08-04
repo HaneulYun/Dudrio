@@ -25,6 +25,10 @@ public:
 
 		/*icon*/
 		{
+			ASSET AddTexture("ui_sim", L"Textures\\icon\\sim.dds");
+			ASSET AddTexture("ui_coin", L"Textures\\icon\\coin.dds");
+			ASSET AddTexture("ui_time", L"Textures\\icon\\time.dds");
+
 			ASSET AddTexture("icon_landmark", L"Textures\\icon\\landmark.dds");
 			ASSET AddTexture("icon_house", L"Textures\\icon\\house.dds");
 			ASSET AddTexture("icon_theme", L"Textures\\icon\\theme.dds");
@@ -172,6 +176,11 @@ public:
 
 		/*icon*/
 		{
+			ASSET AddMaterial("ui_bar", ASSET TEXTURE("none"), nullptr, { 0.23828125, 0.1484375, 0.08984375, 1 });
+			ASSET AddMaterial("ui_sim", ASSET TEXTURE("ui_sim"));
+			ASSET AddMaterial("ui_coin", ASSET TEXTURE("ui_coin"));
+			ASSET AddMaterial("ui_time", ASSET TEXTURE("ui_time"));
+
 			ASSET AddMaterial("icon_landmark", ASSET TEXTURE("icon_landmark"));
 			ASSET AddMaterial("icon_house", ASSET TEXTURE("icon_house"));
 			ASSET AddMaterial("icon_theme", ASSET TEXTURE("icon_theme"));

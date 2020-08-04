@@ -23,6 +23,12 @@ public:
 		//ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
 
 
+		/*icon*/
+		{
+
+		}
+
+
 		/*AdvancedVillagePack*/
 		{
 			ASSET AddTexture("AV_house_01", L"Assets\\AdvancedVillagePack\\Textures\\T_Pack_04_D.dds");

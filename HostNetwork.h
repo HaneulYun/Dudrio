@@ -14,7 +14,7 @@ class HostNetwork : public MonoBehavior<HostNetwork>
 private:
 	InputField* inputField{ nullptr };
 	GameObject* inputIpGuide{ nullptr };
-	GameObject* gameTime{ nullptr };
+	//GameObject* gameTime{ nullptr };
 
 	// Chat
 	InputField* chatField{ nullptr };
@@ -110,34 +110,34 @@ public:
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
 		}
 
-		gameTime = Scene::scene->CreateUI();
-		{
-			auto rt = gameTime->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(1, 0);
-			rt->setPosAndSize(0, 0, 100, 25);
+		//gameTime = Scene::scene->CreateUI();
+		//{
+		//	auto rt = gameTime->GetComponent<RectTransform>();
+		//	rt->setAnchorAndPivot(1, 0);
+		//	rt->setPosAndSize(0, 0, 100, 25);
+		//
+		//	Text* text = gameTime->AddComponent<Text>();
+		//	text->fontSize = 12;
+		//	text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		//	text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+		//	text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		//}
+		//gameTime->SetActive(true);
 
-			Text* text = gameTime->AddComponent<Text>();
-			text->fontSize = 12;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		}
-		gameTime->SetActive(true);
-
-		auto chatFieldObject = Scene::scene->CreateUI();
-		{
-			auto rt = chatFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(0, -785, 500, 15);
-
-			chatField = chatFieldObject->AddComponent<InputField>();
-			auto text = chatField->Text();
-			text->fontSize = 10;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
-		chatField->gameObject->SetActive(true);
+		//auto chatFieldObject = Scene::scene->CreateUI();
+		//{
+		//	auto rt = chatFieldObject->GetComponent<RectTransform>();
+		//	rt->setAnchorAndPivot(0, 1);
+		//	rt->setPosAndSize(0, -785, 500, 15);
+		//
+		//	chatField = chatFieldObject->AddComponent<InputField>();
+		//	auto text = chatField->Text();
+		//	text->fontSize = 10;
+		//	text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
+		//	text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+		//	text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+		//}
+		//chatField->gameObject->SetActive(true);
 
 		for (int i = 0; i < 10; ++i) {
 			chatting[i] = Scene::scene->CreateUI();
@@ -161,7 +161,7 @@ public:
 
 	void Update()
 	{
-		gameTime->GetComponent<Text>()->text = HostGameWorld::gameWorld->convertTimeToText() + L" ,   DAY " + to_wstring(HostGameWorld::gameWorld->day);;
+		
 
 		if (logouted){
 			for (auto& landmark : HostGameWorld::gameWorld->buildingList) {

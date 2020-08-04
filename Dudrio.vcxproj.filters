@@ -192,6 +192,9 @@
     <ClInclude Include="GameWorld.h">
       <Filter>Assets\Scripts\GameWorld</Filter>
     </ClInclude>
+    <ClInclude Include="GameUI.h">
+      <Filter>Assets\Scripts\GameWorld</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">

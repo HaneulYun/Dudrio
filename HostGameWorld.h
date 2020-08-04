@@ -1,10 +1,13 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
+#include "GameUI.h"
 
 class HostGameWorld : public MonoBehavior<HostGameWorld, GameWorld>
 {
+public:
+	enum GameState { CameraMode, ChatMode, MenuMode };
 private /*이 영역에 private 변수를 선언하세요.*/:
-
+	
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static HostGameWorld* gameWorld;
 
@@ -14,6 +17,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	/*Time*/
 	int				day = 1;
 
+	GameState		gameState = CameraMode;
+	GameUI* gameUI;
 private:
 	friend class GameObject;
 	friend class MonoBehavior<HostGameWorld, GameWorld>;
@@ -29,6 +34,8 @@ public:
 
 	void aiUpdate();
 
+	void uiUpdate();
+
 	void gameTimeUpdate();
 
 	void buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
@@ -38,4 +45,6 @@ public:
 	int addSim(GameObject* landmark, GameObject* house);
 
 	int eraseSim(GameObject* landmark, GameObject* house);
+
+	void changeMode(GameState state);
 };

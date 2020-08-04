@@ -177,7 +177,9 @@ public:
 
 		/*icon*/
 		{
-			ASSET AddMaterial("ui_bar", ASSET TEXTURE("none"), nullptr, { 0.23828125, 0.1484375, 0.08984375, 1 });
+			ASSET AddMaterial("ui_bar", ASSET TEXTURE("none"), nullptr, { 0.23828125f, 0.1484375f, 0.08984375f, 1 });
+			ASSET AddMaterial("ui_bar_dark", ASSET TEXTURE("none"), nullptr, { 0.16015625f, 0.09375f, 0.05078125f, 1 });
+			//"yellow" { 0.9140625f, 0.796875f, 0.37890625f, 1.0f });
 			ASSET AddMaterial("ui_chatInput", ASSET TEXTURE("ui_chatInput"));
 			ASSET AddMaterial("ui_sim", ASSET TEXTURE("ui_sim"));
 			ASSET AddMaterial("ui_coin", ASSET TEXTURE("ui_coin"));

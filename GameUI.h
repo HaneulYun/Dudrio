@@ -4,7 +4,7 @@
 class GameUI : public MonoBehavior<GameUI>
 {
 public :
-	enum GameUICategory{UIBar, ChatUI, MenuUI, SimCountUI, CoinCountUI, DayAndTimeUI, LandMarkUI, Count};
+	enum GameUICategory{UIBar, MenuUI, ChatUI, SimCountUI, CoinCountUI, DayAndTimeUI,LandMarkUI, Count};
 private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	std::vector<GameObject*> gameUIs;
@@ -40,7 +40,6 @@ public:
 		}
 		gameUIs[ChatUI]->SetActive(false);
 
-
 		gameUIs[SimCountUI] = Scene::scene->CreateImage();
 		{
 			auto rt = gameUIs[SimCountUI]->GetComponent<RectTransform>();
@@ -56,6 +55,7 @@ public:
 
 			gameUIs[SimCountUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_sim");
 		}
+
 		gameUIs[CoinCountUI] = Scene::scene->CreateImage();
 		{
 			auto rt = gameUIs[CoinCountUI]->GetComponent<RectTransform>();
@@ -71,6 +71,7 @@ public:
 
 			gameUIs[CoinCountUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_coin");
 		}
+
 		gameUIs[DayAndTimeUI] = Scene::scene->CreateImage();
 		{
 			auto rt = gameUIs[DayAndTimeUI]->GetComponent<RectTransform>();
@@ -85,6 +86,75 @@ public:
 
 			gameUIs[DayAndTimeUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_time");
 		}
+
+		//gameUIs[MenuUI] = Scene::scene->CreateImage();
+		//{
+		//	auto rt = gameUIs[MenuUI]->GetComponent<RectTransform>();
+		//	rt->setAnchorAndPivot(0.5, 0.5);
+		//	rt->setPosAndSize(0, 0, 220, 190);
+		//
+		//	auto serverOpenButton = gameUIs[MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
+		//	serverOpenButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
+		//	{
+		//		auto rt = serverOpenButton->GetComponent<RectTransform>();
+		//		rt->setAnchorAndPivot(0.5, 0.5);
+		//		rt->setPosAndSize(0, -60, 200, 50);
+		//
+		//		Text* text = serverOpenButton->AddComponent<Text>();
+		//		text->fontSize = 35;
+		//		text->text = L"오픈하기";
+		//		text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
+		//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+		//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		//
+		//		serverOpenButton->AddComponent<Button>()->AddEvent([](void* ptr)
+		//			{
+		//				HostNetwork::network->PressButton();
+		//			});
+		//		HostNetwork::network->connectButtonText = text;
+		//	}
+		//
+		//
+		//	auto gameLoadButton = gameUIs[MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
+		//	gameLoadButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
+		//	{
+		//		auto rt = gameLoadButton->GetComponent<RectTransform>();
+		//		rt->setAnchorAndPivot(0.5, 0.5);
+		//		rt->setPosAndSize(0, 0, 200, 50);
+		//
+		//		Text* text = gameLoadButton->AddComponent<Text>();
+		//		text->fontSize = 35;
+		//		text->text = L"저장 하기";
+		//		text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
+		//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+		//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		//
+		//		gameLoadButton->AddComponent<Button>()->AddEvent([](void* ptr)
+		//			{
+		//			});
+		//	}
+		//	auto gameExitButton = gameUIs[MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
+		//	gameExitButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
+		//	{
+		//		auto rt = gameExitButton->GetComponent<RectTransform>();
+		//		rt->setAnchorAndPivot(0.5, 0.5);
+		//		rt->setPosAndSize(0, 60, 200, 50);
+		//
+		//		Text* text = gameExitButton->AddComponent<Text>();
+		//		text->fontSize = 35;
+		//		text->text = L"게임 종료";
+		//		text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
+		//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+		//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		//
+		//		gameExitButton->AddComponent<Button>()->AddEvent([](void* ptr)
+		//			{
+		//			});
+		//	}
+		//
+		//	gameUIs[MenuUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
+		//}
+		//gameUIs[MenuUI]->SetActive(false);
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)

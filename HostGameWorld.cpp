@@ -9,19 +9,14 @@ void HostGameWorld::Start(/*초기화 코드를 작성하세요.*/)
 
 void HostGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
-	// 모드에 따라서 동작이 다르도록..
-
-	// Menu 모드이고, 네트워크 연결이 안되면 시간이 안흐르도록
-
-	// enter를 누르면 챗 모드로 전환
-
-	// esc를 누르면 메뉴 ui 등장
-
 	if (Input::GetKeyDown(KeyCode::Return))
 		changeMode(ChatMode);
 
+	if (Input::GetKeyDown(KeyCode::Z))
+		changeMode(MenuMode);
 
-	gameTimeUpdate();
+	if (gameState != MenuMode && !HostNetwork::network->isConnect)
+		gameTimeUpdate();
 
 	if (!HostNetwork::network->isConnect){
 		aiUpdate();
@@ -62,7 +57,9 @@ void HostGameWorld::aiUpdate()
 
 void HostGameWorld::uiUpdate()
 {
-	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = HostGameWorld::gameWorld->convertTimeToText() + L" ,   DAY " + to_wstring(HostGameWorld::gameWorld->day) + L"\t";
+	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = convertTimeToText() + L" ,   DAY " + to_wstring(day) + L"\t";
+	gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(simList.size());
+	gameUI->gameUIs[GameUI::GameUICategory::CoinCountUI]->GetComponent<Text>()->text = to_wstring(gameMoney);
 }
 
 void HostGameWorld::gameTimeUpdate()
@@ -190,7 +187,16 @@ void HostGameWorld::changeMode(GameState state)
 	break;
 	case MenuMode:
 	{
-
+		if (gameState == state)
+		{
+			gameState = CameraMode;
+			gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->SetActive(false);
+		}
+		else
+		{
+			gameState = MenuMode;
+			gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->SetActive(true);
+		}
 	}
 	break;
 

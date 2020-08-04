@@ -29,7 +29,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	float			gameDeltaTime;
 
 	/*money*/
-	int				gameMoney;
+	int				gameMoney = 0;
 
 private:
 	friend class GameObject;

@@ -226,6 +226,7 @@ void HostScene::BuildObjects()
 		ui_bar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
 	}
 
+	GameUI* gameUI;
 	auto object = CreateUI();
 	{
 		auto rt = object->GetComponent<RectTransform>();
@@ -253,7 +254,7 @@ void HostScene::BuildObjects()
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, 100, 0, ASSET MATERIAL("icon_prop"));
 		buildingTypeSelector->addDeleteButton(140, 0, ASSET MATERIAL("icon_delete"));
 
-		GameUI* gameUI = object->AddComponent<GameUI>();
+		gameUI = object->AddComponent<GameUI>();
 		gameUI->gameUIs.push_back(ui_bar);
 		gameWorld->gameUI = gameUI;
 
@@ -272,97 +273,171 @@ void HostScene::BuildObjects()
 	}
 
 
-	auto ServerButton = CreateImage();
+	gameUI->gameUIs.push_back(Scene::scene->CreateImage());
 	{
-		auto rt = ServerButton->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(0, 1);
-		rt->setPosAndSize(1110, -10, 80, 30);
-	
-		ServerButton->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				HostNetwork::network->PressButton();
-			});
+		auto rt = gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0.5, 0.5);
+		rt->setPosAndSize(0, 0, 220, 190);
+
+		auto serverOpenButton = gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
+		serverOpenButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
 		{
-			auto textobject = ServerButton->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
-	
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Open";
+			auto rt = serverOpenButton->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(0, -60, 200, 50);
+
+			Text* text = serverOpenButton->AddComponent<Text>();
+			text->fontSize = 35;
+			text->text = L"오픈하기";
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 
-			hostNetwork->connectButtonText = text;
+			serverOpenButton->AddComponent<Button>()->AddEvent([](void* ptr)
+				{
+					HostNetwork::network->PressButton();
+				});
+			HostNetwork::network->connectButtonText = text;
 		}
-	}
 
-	auto LoadButton = CreateImage();
-	{
-		auto rt = LoadButton->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(0, 1);
-		rt->setPosAndSize(1110, -50, 80, 30);
 
-		LoadButton->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				GameLoader::gameLoader->Load();
-			});
+		auto gameLoadButton = gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
+		gameLoadButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
 		{
-			auto textobject = LoadButton->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
+			auto rt = gameLoadButton->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(0, 0, 200, 50);
 
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Load";
+			Text* text = gameLoadButton->AddComponent<Text>();
+			text->fontSize = 35;
+			text->text = L"저장하기";
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+
+			gameLoadButton->AddComponent<Button>()->AddEvent([](void* ptr)
+				{
+					GameLoader::gameLoader->Save();
+				});
 		}
-	}
-
-	auto SaveButton = CreateImage();
-	{
-		auto rt = SaveButton->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(0, 1);
-		rt->setPosAndSize(1110, -90, 80, 30);
-
-		SaveButton->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				GameLoader::gameLoader->Save();
-			});
+		auto gameExitButton = gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
+		gameExitButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
 		{
-			auto textobject = SaveButton->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
+			auto rt = gameExitButton->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(0, 60, 200, 50);
 
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Save";
+			Text* text = gameExitButton->AddComponent<Text>();
+			text->fontSize = 35;
+			text->text = L"게임종료";
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+
+			gameExitButton->AddComponent<Button>()->AddEvent([](void* ptr)
+				{
+					GameLoader::gameLoader->Save();
+					PostQuitMessage(0);
+				});
 		}
+
+		gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
 	}
+	gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->SetActive(false);
 
-	auto menuSceneButton = CreateImage();
-	{
-		auto rt = menuSceneButton->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(0, 1);
-		rt->setPosAndSize(10, -10, 150, 30);
 
-		menuSceneButton->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				SceneManager::LoadScene("MenuScene");
-			});
-		{
-			auto textobject = menuSceneButton->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
 
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Menu Scene";
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		}
-	}
+	//auto ServerButton = CreateImage();
+	//{
+	//	auto rt = ServerButton->GetComponent<RectTransform>();
+	//	rt->setAnchorAndPivot(0, 1);
+	//	rt->setPosAndSize(1110, -10, 80, 30);
+	//
+	//	ServerButton->AddComponent<Button>()->AddEvent(
+	//		[](void*) {
+	//			HostNetwork::network->PressButton();
+	//		});
+	//	{
+	//		auto textobject = ServerButton->AddChildUI();
+	//		auto rectTransform = textobject->GetComponent<RectTransform>();
+	//		rectTransform->anchorMin = { 0, 0 };
+	//		rectTransform->anchorMax = { 1, 1 };
+	//
+	//		Text* text = textobject->AddComponent<Text>();
+	//		text->text = L"Open";
+	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	//
+	//		hostNetwork->connectButtonText = text;
+	//	}
+	//}
+	//
+	//auto LoadButton = CreateImage();
+	//{
+	//	auto rt = LoadButton->GetComponent<RectTransform>();
+	//	rt->setAnchorAndPivot(0, 1);
+	//	rt->setPosAndSize(1110, -50, 80, 30);
+	//
+	//	LoadButton->AddComponent<Button>()->AddEvent(
+	//		[](void*) {
+	//			GameLoader::gameLoader->Load();
+	//		});
+	//	{
+	//		auto textobject = LoadButton->AddChildUI();
+	//		auto rectTransform = textobject->GetComponent<RectTransform>();
+	//		rectTransform->anchorMin = { 0, 0 };
+	//		rectTransform->anchorMax = { 1, 1 };
+	//
+	//		Text* text = textobject->AddComponent<Text>();
+	//		text->text = L"Load";
+	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	//	}
+	//}
+	//
+	//auto SaveButton = CreateImage();
+	//{
+	//	auto rt = SaveButton->GetComponent<RectTransform>();
+	//	rt->setAnchorAndPivot(0, 1);
+	//	rt->setPosAndSize(1110, -90, 80, 30);
+	//
+	//	SaveButton->AddComponent<Button>()->AddEvent(
+	//		[](void*) {
+	//			GameLoader::gameLoader->Save();
+	//		});
+	//	{
+	//		auto textobject = SaveButton->AddChildUI();
+	//		auto rectTransform = textobject->GetComponent<RectTransform>();
+	//		rectTransform->anchorMin = { 0, 0 };
+	//		rectTransform->anchorMax = { 1, 1 };
+	//
+	//		Text* text = textobject->AddComponent<Text>();
+	//		text->text = L"Save";
+	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	//	}
+	//}
+	//
+	//auto menuSceneButton = CreateImage();
+	//{
+	//	auto rt = menuSceneButton->GetComponent<RectTransform>();
+	//	rt->setAnchorAndPivot(0, 1);
+	//	rt->setPosAndSize(10, -10, 150, 30);
+	//
+	//	menuSceneButton->AddComponent<Button>()->AddEvent(
+	//		[](void*) {
+	//			SceneManager::LoadScene("MenuScene");
+	//		});
+	//	{
+	//		auto textobject = menuSceneButton->AddChildUI();
+	//		auto rectTransform = textobject->GetComponent<RectTransform>();
+	//		rectTransform->anchorMin = { 0, 0 };
+	//		rectTransform->anchorMax = { 1, 1 };
+	//
+	//		Text* text = textobject->AddComponent<Text>();
+	//		text->text = L"Menu Scene";
+	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	//	}
+	//}
 }

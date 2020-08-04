@@ -7,7 +7,7 @@ class GuestGameWorld;
 class GameWorld : public MonoBehavior<GameWorld>
 {
 public:
-	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Lighting };
+	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Count, None = -1 };
 	enum TimeSpeed { X1 = 1, X2 = 2, X4 = 4, X8 = 8 };
 
 private /*이 영역에 private 변수를 선언하세요.*/:

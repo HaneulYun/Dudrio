@@ -113,19 +113,18 @@ public:
 		gameTime = Scene::scene->CreateUI();
 		{
 			auto rt = gameTime->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(150, -10, 150, 30);
+			rt->setAnchorAndPivot(1, 0);
+			rt->setPosAndSize(0, 0, 100, 25);
 
 			Text* text = gameTime->AddComponent<Text>();
-			text->text = HostGameWorld::gameWorld->convertTimeToText();
-			text->fontSize = 30;
+			text->fontSize = 12;
 			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 		gameTime->SetActive(true);
 
-		auto chatFieldObject = Scene::scene->CreateImage();
+		auto chatFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = chatFieldObject->GetComponent<RectTransform>();
 			rt->setAnchorAndPivot(0, 1);
@@ -162,7 +161,7 @@ public:
 
 	void Update()
 	{
-		gameTime->GetComponent<Text>()->text = HostGameWorld::gameWorld->convertTimeToText();
+		gameTime->GetComponent<Text>()->text = HostGameWorld::gameWorld->convertTimeToText() + L" ,   DAY " + to_wstring(HostGameWorld::gameWorld->day);;
 
 		if (logouted){
 			for (auto& landmark : HostGameWorld::gameWorld->buildingList) {

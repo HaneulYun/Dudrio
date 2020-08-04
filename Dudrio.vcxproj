@@ -220,7 +220,6 @@
     <ClInclude Include="HostScene.h" />
     <ClInclude Include="Telegram.h" />
     <ClInclude Include="TerrainGenerator.h" />
-    <ClInclude Include="TestScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AIManager.cpp" />
@@ -247,7 +246,6 @@
     <ClCompile Include="HostScene.cpp" />
     <ClCompile Include="SimStates.cpp" />
     <ClCompile Include="TerrainGenerator.cpp" />
-    <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dudrio.rc" />

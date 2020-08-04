@@ -217,6 +217,15 @@ void HostScene::BuildObjects()
 	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 
 
+	auto uiBar = CreateImage();
+	{
+		auto rt = uiBar->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 0);
+		rt->setPosAndSize(0, 0, CyanFW::Instance()->GetWidth(), 25);
+
+		uiBar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
+	}
+
 	auto object = CreateUI();
 	{
 		auto rt = object->GetComponent<RectTransform>();
@@ -235,11 +244,39 @@ void HostScene::BuildObjects()
 
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, L"랜드\n마크", -80, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::House, L"주거\n건물", -40, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, L"테마\n건물", 0, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Landscape, L"조경", 40, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, L"소품", 80, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, -140, 0, ASSET MATERIAL("icon_landmark"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::House, -100, 0, ASSET MATERIAL("icon_house"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, -60, 0, ASSET MATERIAL("icon_theme"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landscape, -20, 0, ASSET MATERIAL("icon_landscape"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Lighting, 20, 0, ASSET MATERIAL("icon_lighting"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Fence, 60, 0, ASSET MATERIAL("icon_fence"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, 100, 0, ASSET MATERIAL("icon_prop"));
+		buildingTypeSelector->addDeleteButton(140, 0, ASSET MATERIAL("icon_delete"));
+	}
+
+	auto ui_sim = CreateImage();
+	{
+		auto rt = ui_sim->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(-320, 0, 120, 25);
+
+		ui_sim->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_sim");
+	}
+	auto ui_coin = CreateImage();
+	{
+		auto rt = ui_coin->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(-200, 0, 120, 25);
+
+		ui_coin->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_coin");
+	}
+	auto ui_time = CreateImage();
+	{
+		auto rt = ui_time->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(0, 0, 240, 25);
+
+		ui_time->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_time");
 	}
 
 	auto network = CreateEmpty();
@@ -253,6 +290,7 @@ void HostScene::BuildObjects()
 		hostNetwork->seed = seed;
 		strcpy_s(hostNetwork->name, HostInformConnector::connector->name);
 	}
+
 
 	auto ServerButton = CreateImage();
 	{

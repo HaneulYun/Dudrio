@@ -9,6 +9,18 @@ void HostGameWorld::Start(/*초기화 코드를 작성하세요.*/)
 
 void HostGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
+	// 모드에 따라서 동작이 다르도록..
+
+	// Menu 모드이고, 네트워크 연결이 안되면 시간이 안흐르도록
+
+	// enter를 누르면 챗 모드로 전환
+
+	// esc를 누르면 메뉴 ui 등장
+
+	if (Input::GetKeyDown(KeyCode::Return))
+		changeMode(ChatMode);
+
+
 	gameTimeUpdate();
 
 	if (!HostNetwork::network->isConnect){
@@ -23,6 +35,8 @@ void HostGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 		else if (Input::GetKeyDown(KeyCode::Alpha8))
 			timeSpeed = X8;
 	}
+
+	uiUpdate();
 
 	//for (auto landmark : buildingList)
 	//{
@@ -44,6 +58,11 @@ void HostGameWorld::aiUpdate()
 {
 	if (!simList.empty())
 		AIManager::aiManager->aiUpdate();
+}
+
+void HostGameWorld::uiUpdate()
+{
+	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = HostGameWorld::gameWorld->convertTimeToText() + L" ,   DAY " + to_wstring(HostGameWorld::gameWorld->day) + L"\t";
 }
 
 void HostGameWorld::gameTimeUpdate()
@@ -141,4 +160,40 @@ int HostGameWorld::eraseSim(GameObject* landmark, GameObject* house)
 
 	Scene::scene->PushDelete(sim);
 	return id;
+}
+
+void HostGameWorld::changeMode(GameState state)
+{
+	switch (state)
+	{
+
+	case CameraMode:
+	{
+
+	}
+	break;
+	case ChatMode:
+	{
+		if (gameState == state)
+		{
+			gameState = CameraMode;
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(false);
+		}
+		else
+		{
+			gameState = ChatMode;
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(true);
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->isFocused = true;
+			memset(Input::buffer, 0, 8);
+		}
+	}
+	break;
+	case MenuMode:
+	{
+
+	}
+	break;
+
+	}
+
 }

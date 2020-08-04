@@ -45,4 +45,5 @@
 #include "GameLoader.h"
 #include "ParticleManager.h"
 
+#include "GameUI.h"
 #include "FPS.h"

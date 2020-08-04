@@ -217,13 +217,13 @@ void HostScene::BuildObjects()
 	node->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 
 
-	auto uiBar = CreateImage();
+	auto ui_bar = Scene::scene->CreateImage();
 	{
-		auto rt = uiBar->GetComponent<RectTransform>();
+		auto rt = ui_bar->GetComponent<RectTransform>();
 		rt->setAnchorAndPivot(0, 0);
 		rt->setPosAndSize(0, 0, CyanFW::Instance()->GetWidth(), 25);
 
-		uiBar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
+		ui_bar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
 	}
 
 	auto object = CreateUI();
@@ -252,31 +252,11 @@ void HostScene::BuildObjects()
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Fence, 60, 0, ASSET MATERIAL("icon_fence"));
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, 100, 0, ASSET MATERIAL("icon_prop"));
 		buildingTypeSelector->addDeleteButton(140, 0, ASSET MATERIAL("icon_delete"));
-	}
 
-	auto ui_sim = CreateImage();
-	{
-		auto rt = ui_sim->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(1, 0);
-		rt->setPosAndSize(-320, 0, 120, 25);
+		GameUI* gameUI = object->AddComponent<GameUI>();
+		gameUI->gameUIs.push_back(ui_bar);
+		gameWorld->gameUI = gameUI;
 
-		ui_sim->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_sim");
-	}
-	auto ui_coin = CreateImage();
-	{
-		auto rt = ui_coin->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(1, 0);
-		rt->setPosAndSize(-200, 0, 120, 25);
-
-		ui_coin->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_coin");
-	}
-	auto ui_time = CreateImage();
-	{
-		auto rt = ui_time->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(1, 0);
-		rt->setPosAndSize(0, 0, 240, 25);
-
-		ui_time->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_time");
 	}
 
 	auto network = CreateEmpty();

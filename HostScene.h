@@ -25,6 +25,7 @@ public:
 
 		/*icon*/
 		{
+			ASSET AddTexture("ui_chatInput", L"Textures\\icon\\chatInput.dds");
 			ASSET AddTexture("ui_sim", L"Textures\\icon\\sim.dds");
 			ASSET AddTexture("ui_coin", L"Textures\\icon\\coin.dds");
 			ASSET AddTexture("ui_time", L"Textures\\icon\\time.dds");
@@ -177,6 +178,7 @@ public:
 		/*icon*/
 		{
 			ASSET AddMaterial("ui_bar", ASSET TEXTURE("none"), nullptr, { 0.23828125, 0.1484375, 0.08984375, 1 });
+			ASSET AddMaterial("ui_chatInput", ASSET TEXTURE("ui_chatInput"));
 			ASSET AddMaterial("ui_sim", ASSET TEXTURE("ui_sim"));
 			ASSET AddMaterial("ui_coin", ASSET TEXTURE("ui_coin"));
 			ASSET AddMaterial("ui_time", ASSET TEXTURE("ui_time"));

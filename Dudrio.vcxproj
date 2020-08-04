@@ -185,6 +185,7 @@
     <ClInclude Include="FPS.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameLoader.h" />
+    <ClInclude Include="GameUI.h" />
     <ClInclude Include="GameWorld.h" />
     <ClInclude Include="HostGameWorld.h" />
     <ClInclude Include="GuestCameraController.h" />

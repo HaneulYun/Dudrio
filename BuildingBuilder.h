@@ -6,6 +6,7 @@
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
 public:
+	enum BuilderMode { DefaultMode, BuildMode, DeleteMode };
 	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Count, None = -1 };
 private /*이 영역에 private 변수를 선언하세요.*/:
 	std::vector<BuildingBuilderData> building[BuildingType::Count];
@@ -26,6 +27,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	Vector3 lastMousePos;
 	bool rotationToggle = false;
+	BuilderMode builderMode = DefaultMode;
 
 protected:
 	friend class GameObject;
@@ -62,13 +64,15 @@ public:
 
 	void enterBuildMode(int type, int index);
 
+	void exitDeleteMode();
+
+	void enterDeleteMode();
+
 	float getBoundingBox(int type, int index);
 
 	int getBuildingCount(int type);
 
 	wstring getBuildingName(int type, int index);
-
-	void enterDeleteMode();
 
 	void pickToDelete();
 

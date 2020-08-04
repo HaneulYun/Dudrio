@@ -9,7 +9,7 @@ void BuildingBuilder::Start(/*초기화 코드를 작성하세요.*/)
 
 void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
-	if (prefab)
+	if (builderMode == BuildMode)
 	{
 		// 토글 설정
 		if (Input::GetKeyDown(KeyCode::T))
@@ -71,6 +71,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			// 연속 건설
 			if (!Input::GetKey(KeyCode::Shift))
 			{
+				builderMode = DefaultMode;
 				prefab = nullptr;
 				Scene::scene->PushDelete(prePrefab);
 				Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
@@ -84,9 +85,11 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			prefab->transform->position = getPosOnTerrain();
 	}
 
-	// 건물 삭제
-	else if (Input::GetKey(KeyCode::X) && HostNetwork::network != nullptr)
+	else if (builderMode == DeleteMode && HostNetwork::network != nullptr)
+	{
 		pickToDelete();
+	}
+
 }
 
 void BuildingBuilder::serializeBuildings()
@@ -550,15 +553,17 @@ void BuildingBuilder::exitBuildMode()
 	Scene::scene->PushDelete(prefab);
 	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
 	prefab = nullptr;
+	builderMode = DefaultMode;
 }
 
 void BuildingBuilder::enterBuildMode(int type, int index)
 {
-	if (prefab != nullptr)
+	if (builderMode == BuildMode)
 	{
 		exitBuildMode();
 		return;
 	}
+	builderMode = BuildMode;
 
 	makePrefab(type, index);
 
@@ -576,6 +581,23 @@ void BuildingBuilder::enterBuildMode(int type, int index)
 
 	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, true);
 }
+
+
+void BuildingBuilder::exitDeleteMode()
+{
+	builderMode = DefaultMode;
+}
+
+void BuildingBuilder::enterDeleteMode()
+{
+	if (builderMode == DeleteMode)
+	{
+		exitDeleteMode();
+		return;
+	}
+	builderMode = DeleteMode;
+}
+
 
 float BuildingBuilder::getBoundingBox(int type, int index)
 {
@@ -605,11 +627,6 @@ wstring BuildingBuilder::getBuildingName(int type, int index)
 	if (index < building[type].size())
 		return building[type][index].buildingName;
 	return L"X";
-}
-
-void BuildingBuilder::enterDeleteMode()
-{
-
 }
 
 void BuildingBuilder::pickToDelete()

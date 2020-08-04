@@ -96,7 +96,7 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 				building_forward.y = 0;
 				building_forward.Normalize();
 				Vector3 forward = { 0,0,1 };
-				float angle = Vector3::DotProduct(forward, building_forward);
+				double angle = Vector3::DotProduct(forward, building_forward);
 				Vector3 dir = Vector3::CrossProduct(forward, building_forward);
 				angle = XMConvertToDegrees(acos(angle));
 				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;

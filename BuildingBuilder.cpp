@@ -66,7 +66,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			building_forward.y = 0;
 			building_forward.Normalize();
 			Vector3 forward = { 0,0,1 };
-			float angle = Vector3::DotProduct(forward, building_forward);
+			double angle = Vector3::DotProduct(forward, building_forward);
 			Vector3 dir = Vector3::CrossProduct(forward, building_forward);
 			angle = XMConvertToDegrees(acos(angle));
 			angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
@@ -480,7 +480,7 @@ void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision
 
 }
 
-void BuildingBuilder::build(Vector2 position, float angle, int type, int index, GameObject* landmark)
+void BuildingBuilder::build(Vector2 position, double angle, int type, int index, GameObject* landmark)
 {
 	if (index < building[type].size())
 	{
@@ -514,6 +514,7 @@ void BuildingBuilder::build(Vector2 position, float angle, int type, int index, 
 		obj->AddComponent<Building>()->setBuildingInform(landmark, type, index);
 		obj->tag = TAG_BUILDING;
 
+		GameLoader::gameLoader->insertInFile(type, index, pos.x, pos.z, angle, 0);
 		updateTerrainNodeData(obj, true);
 		HostGameWorld::gameWorld->buildInGameWorld(landmark, obj, type, index);
 

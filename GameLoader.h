@@ -7,8 +7,8 @@
 struct BuildingFormat {
 	int b_type;
 	int b_index;
-	float x, z;
-	float angle;
+	double x, z;
+	double angle;
 	int radius;
 
 	std::string makeInfoToString()
@@ -17,10 +17,13 @@ struct BuildingFormat {
 		info = std::to_string(b_type) + ' ' + std::to_string(b_index) + ' ' + std::to_string(x) + ' ' + std::to_string(z)
 			+ ' ' + std::to_string(angle) + ' ' + std::to_string(radius);
 		
-		std::wstring winfo;
-		winfo.assign(info.begin(), info.end());
-		winfo += L"\n";
-		Debug::Log(winfo.c_str());
+		return info;
+	}
+
+	std::string makeInfoToString2()
+	{
+		std::string info;
+		info = std::to_string(b_type) + ' ' + std::to_string(b_index) + ' ' + std::to_string(x) + ' ' + std::to_string(z);
 
 		return info;
 	}
@@ -52,7 +55,7 @@ public:
 		
 	}
 
-	void insertInFile(int b_type, int b_idx, float x, float z, float angle, int range)
+	void insertInFile(int b_type, int b_idx, double x, double z, double angle, int range)
 	{
 		BuildingFormat b_info{ b_type, b_idx, x, z, angle, range };
 		std::string infoToString = b_info.makeInfoToString();
@@ -66,7 +69,7 @@ public:
 		}
 	}
 
-	void modifyLandmarkRange(int b_type, int b_idx, float x, float z, float angle, int prev_range, int new_range)
+	void modifyLandmarkRange(int b_type, int b_idx, double x, double z, double angle, int prev_range, int new_range)
 	{
 
 	}
@@ -78,10 +81,10 @@ public:
 		file.close();
 	}
 
-	void deleteInFile(int b_type, int b_idx, float x, float z, float angle, int range)
+	void deleteInFile(int b_type, int b_idx, double x, double z, double angle, int range)
 	{
 		BuildingFormat b_info{ b_type, b_idx, x, z, angle, range };
-		std::string infoToString = b_info.makeInfoToString();
+		std::string infoToString = b_info.makeInfoToString2();
 
 		FILE* fp = fopen("buildings.txt", "rt+");
 		char buf[256];

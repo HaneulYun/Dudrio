@@ -656,13 +656,13 @@ public:
 				auto child = MakePrefab(ASSET MESH("HP_street_light"), ASSET MATERIAL("HP_Street_light"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
-			//{
-			//	auto spotLight = prefab->AddChild();
-			//	spotLight->transform->position = { 0.0f, 2.5f, 1.25f };
-			//	spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
-			//	spotLight->GetComponent<Light>()->type = Light::Type::Point;
-			//	spotLight->GetComponent<Light>()->FalloffEnd = 5;
-			//}
+			{
+				auto spotLight = prefab->AddChild();
+				spotLight->transform->position = { 0.0f, 2.5f, -1.6f };
+				spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
+				spotLight->GetComponent<Light>()->type = Light::Type::Point;
+				spotLight->GetComponent<Light>()->FalloffEnd = 5;
+			}
 			ASSET AddPrefab("HP_Street_light", std::make_unique<GameObject>(prefab));
 		}
 
@@ -677,13 +677,13 @@ public:
 				auto child = MakePrefab(ASSET MESH("HP_Lamppost"), ASSET MATERIAL("HP_Lampposts"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
-			//{
-			//	auto spotLight = prefab->AddChild();
-			//	spotLight->transform->position = { 0.0f, 3.5f, 0.0f };
-			//	spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
-			//	spotLight->GetComponent<Light>()->type = Light::Type::Point;
-			//	spotLight->GetComponent<Light>()->FalloffEnd = 5;
-			//}
+			{
+				auto spotLight = prefab->AddChild();
+				spotLight->transform->position = { 0.0f, 4.0f, 0.0f };
+				spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
+				spotLight->GetComponent<Light>()->type = Light::Type::Point;
+				spotLight->GetComponent<Light>()->FalloffEnd = 5;
+			}
 			ASSET AddPrefab("HP_Lamppost", std::make_unique<GameObject>(prefab));
 		}
 

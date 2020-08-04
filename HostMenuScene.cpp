@@ -7,7 +7,7 @@ float HostInformConnector::terrainSize = 1000.0f;
 int HostInformConnector::frequency;
 int HostInformConnector::octaves;
 int HostInformConnector::seed;
-
+GameLoader* GameLoader::gameLoader{ nullptr };
 
 void HostMenuScene::BuildObjects()
 {
@@ -30,7 +30,9 @@ void HostMenuScene::BuildObjects()
 	HostInformConnector* informConnector = object->AddComponent<HostInformConnector>();
 	{
 		HostInformConnector::connector = informConnector;
+		auto gameLoader = object->AddComponent<GameLoader>();
 	}
+
 
 	auto background = CreateImage();
 	{

@@ -70,6 +70,12 @@ public:
 
 	}
 
+	void initFile()
+	{
+		fstream file(filename, ios::trunc);
+		file.close();
+	}
+
 	void deleteInFile(int b_type, int b_idx, float x, float z, float angle, int range)
 	{
 		BuildingFormat b_info{ b_type, b_idx, x, z, angle, range };

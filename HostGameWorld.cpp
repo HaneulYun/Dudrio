@@ -91,6 +91,19 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 		{
 			for (auto& object : list.second)
 			{
+				Vector3 building_forward = object->transform->forward;
+				building_forward.y = 0;
+				building_forward.Normalize();
+				Vector3 forward = { 0,0,1 };
+				float angle = Vector3::DotProduct(forward, building_forward);
+				Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+				angle = XMConvertToDegrees(acos(angle));
+				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+
+				int range = 0;
+				if (object->GetComponent<Village>() != nullptr)
+					range = object->GetComponent<Village>()->radiusOfLand;
+				GameLoader::gameLoader->deleteInFile(type, index, object->transform->position.x, object->transform->position.z, angle, range);
 				Scene::scene->PushDelete(object);
 				BuildingBuilder::buildingBuilder->updateTerrainNodeData(object, false);
 
@@ -102,6 +115,16 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 	}
 	else
 	{
+		Vector3 building_forward = building->transform->forward;
+		building_forward.y = 0;
+		building_forward.Normalize();
+		Vector3 forward = { 0,0,1 };
+		float angle = Vector3::DotProduct(forward, building_forward);
+		Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+		angle = XMConvertToDegrees(acos(angle));
+		angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+
+		GameLoader::gameLoader->deleteInFile(type, index, building->transform->position.x, building->transform->position.z, angle, 0);
 		Scene::scene->PushDelete(building);
 		BuildingBuilder::buildingBuilder->updateTerrainNodeData(building, false);
 		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));

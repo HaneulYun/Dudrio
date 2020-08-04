@@ -56,6 +56,7 @@ public:
 			ASSET AddTexture("HP_Pillars_arch", L"Assets\\HandPaintedEnvironment\\Textures\\Pillars_arch_texture.dds");
 			ASSET AddTexture("HP_Pine_tree", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_texture.dds");
 			ASSET AddTexture("HP_Pine_tree_2", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_2_texture.dds");
+			ASSET AddTexture("HP_Pine_tree_M", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_alpha.dds");
 			ASSET AddTexture("HP_Plant", L"Assets\\HandPaintedEnvironment\\Textures\\Plant_texture.dds");
 			ASSET AddTexture("HP_Plants", L"Assets\\HandPaintedEnvironment\\Textures\\Plants_texture.dds");
 			ASSET AddTexture("HP_Rocks_1_2", L"Assets\\HandPaintedEnvironment\\Textures\\Rocks_1_2_texture.dds");
@@ -70,8 +71,10 @@ public:
 			ASSET AddTexture("HP_Town_Hall", L"Assets\\HandPaintedEnvironment\\Textures\\Town_Hall_texture.dds");
 			ASSET AddTexture("HP_Tree_1_1", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_1_1_texture.dds");
 			ASSET AddTexture("HP_Tree_1_2", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_1_2_texture.dds");
+			ASSET AddTexture("HP_Tree_1_alpha", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_1_alpha.dds");
 			ASSET AddTexture("HP_Tree_2_1", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_2_1_texture.dds");
 			ASSET AddTexture("HP_Tree_2_2", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_2_2_texture.dds");
+			ASSET AddTexture("HP_Tree_2_alpha", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_2_alpha.dds");
 			ASSET AddTexture("HP_Trolley", L"Assets\\HandPaintedEnvironment\\Textures\\Trolley_texture.dds");
 			ASSET AddTexture("HP_Well", L"Assets\\HandPaintedEnvironment\\Textures\\Well_texture.dds");
 			ASSET AddTexture("HP_Witch_house", L"Assets\\HandPaintedEnvironment\\Textures\\Witch_house_texture.dds");
@@ -189,8 +192,8 @@ public:
 			ASSET AddMaterial("HP_Mill", ASSET TEXTURE("HP_Mill"));
 			ASSET AddMaterial("HP_Mine", ASSET TEXTURE("HP_Mine"));
 			ASSET AddMaterial("HP_Pillars_arch", ASSET TEXTURE("HP_Pillars_arch"));
-			ASSET AddMaterial("HP_Pine_tree_01", ASSET TEXTURE("HP_Pine_tree"));
-			ASSET AddMaterial("HP_Pine_tree_02", ASSET TEXTURE("HP_Pine_tree_2"));
+			ASSET AddMaterial("HP_Pine_tree_01", ASSET TEXTURE("HP_Pine_tree"), 0, 0, ASSET TEXTURE("HP_Pine_tree_M"));
+			ASSET AddMaterial("HP_Pine_tree_02", ASSET TEXTURE("HP_Pine_tree_2"), 0, 0, ASSET TEXTURE("HP_Pine_tree_M"));
 			ASSET AddMaterial("HP_Plant", ASSET TEXTURE("HP_Plant"));
 			ASSET AddMaterial("HP_Plants", ASSET TEXTURE("HP_Plants"));
 			ASSET AddMaterial("HP_Rocks_1_2", ASSET TEXTURE("HP_Rocks_1_2"));
@@ -203,10 +206,10 @@ public:
 			ASSET AddMaterial("HP_Street_light", ASSET TEXTURE("HP_Street_light"));
 			ASSET AddMaterial("HP_Tavern", ASSET TEXTURE("HP_Tavern"));
 			ASSET AddMaterial("HP_Town_Hall", ASSET TEXTURE("HP_Town_Hall"));
-			ASSET AddMaterial("HP_Tree_01", ASSET TEXTURE("HP_Tree_1_1"));
-			ASSET AddMaterial("HP_Tree_02", ASSET TEXTURE("HP_Tree_1_2"));
-			ASSET AddMaterial("HP_Tree_03", ASSET TEXTURE("HP_Tree_2_1"));
-			ASSET AddMaterial("HP_Tree_04", ASSET TEXTURE("HP_Tree_2_2"));
+			ASSET AddMaterial("HP_Tree_01", ASSET TEXTURE("HP_Tree_1_1"), 0, 0, ASSET TEXTURE("HP_Tree_1_alpha"));
+			ASSET AddMaterial("HP_Tree_02", ASSET TEXTURE("HP_Tree_1_2"), 0, 0, ASSET TEXTURE("HP_Tree_1_alpha"));
+			ASSET AddMaterial("HP_Tree_03", ASSET TEXTURE("HP_Tree_2_1"), 0, 0, ASSET TEXTURE("HP_Tree_2_alpha"));
+			ASSET AddMaterial("HP_Tree_04", ASSET TEXTURE("HP_Tree_2_2"), 0, 0, ASSET TEXTURE("HP_Tree_2_alpha"));
 			ASSET AddMaterial("HP_Trolley", ASSET TEXTURE("HP_Trolley"));
 			ASSET AddMaterial("HP_Well", ASSET TEXTURE("HP_Well"));
 			ASSET AddMaterial("HP_Witch_house", ASSET TEXTURE("HP_Witch_house"));

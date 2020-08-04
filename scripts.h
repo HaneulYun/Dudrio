@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameWorld.h"
+#include "HostGameWorld.h"
 #include "GuestGameWorld.h"
 #include "HostInformConnector.h"
 #include "GuestInformConnector.h"

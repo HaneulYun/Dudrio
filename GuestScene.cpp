@@ -109,6 +109,22 @@ void GuestScene::BuildObjects()
 	}
 	TerrainNodeData* terrainNodeData = new TerrainNodeData(&terrainData->terrainData);
 
+	auto sea = CreateEmpty();
+	{
+		sea->transform->position = { 500, 1, 500 };
+		sea->transform->Scale({ 10000, 1, 10000 });
+		sea->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
+		sea->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("sea"));
+	}
+	auto bottom = CreateEmpty();
+	{
+		bottom->transform->position = { 500, 1, 500 };
+		bottom->transform->Scale({ 10000, 1, 10000 });
+		bottom->transform->Rotate({ 1, 0, 0 }, 180);
+		bottom->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
+		bottom->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
+	}
+
 	auto object = CreateUI();
 	{
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();

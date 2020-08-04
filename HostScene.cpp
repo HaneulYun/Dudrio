@@ -3,7 +3,7 @@
 
 GameLoader* GameLoader::gameLoader{ nullptr };
 BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
-GameWorld* GameWorld::gameWorld;
+HostGameWorld* HostGameWorld::gameWorld;
 AIManager* AIManager::aiManager;
 
 void HostScene::BuildObjects()
@@ -158,6 +158,14 @@ void HostScene::BuildObjects()
 		sea->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
 		sea->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("sea"));
 	}
+	auto bottom = CreateEmpty();
+	{
+		bottom->transform->Scale({ 10000, 1, 10000 });
+		bottom->transform->Rotate({ 0, 0, 1 }, 180);
+		bottom->transform->position = { 500, 1, 500 };
+		bottom->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
+		bottom->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
+	}
 
 	//GameObject* manager = CreateEmpty();
 	//{
@@ -220,7 +228,7 @@ void HostScene::BuildObjects()
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		buildingBuilder->cube = node;
 
-		GameWorld* gameWorld = object->AddComponent<GameWorld>();
+		HostGameWorld* gameWorld = object->AddComponent<HostGameWorld>();
 		gameWorld->simPrefab = sim;
 		gameWorld->sun = directionalLight;
 		object->AddComponent<AIManager>();

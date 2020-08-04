@@ -1,7 +1,7 @@
 #pragma once
 #include "..\CyanEngine\framework.h"
 
-class GameWorld : public MonoBehavior<GameWorld>
+class HostGameWorld : public MonoBehavior<HostGameWorld>
 {
 public:
 	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Lighting };
@@ -10,7 +10,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	const int timeOfDay = 60 * 15;
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
-	static GameWorld* gameWorld;
+	static HostGameWorld* gameWorld;
 
 	// 랜드마크에 따른 빌딩 목록
 	std::map<GameObject*, std::map<BuildingType, std::vector<GameObject*>>> buildingList;
@@ -31,12 +31,12 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	int				gameMoney;
 private:
 	friend class GameObject;
-	friend class MonoBehavior<GameWorld>;
-	GameWorld() = default;
-	GameWorld(GameWorld&) = default;
+	friend class MonoBehavior<HostGameWorld>;
+	HostGameWorld() = default;
+	HostGameWorld(HostGameWorld&) = default;
 
 public:
-	~GameWorld() {}
+	~HostGameWorld() {}
 
 	void Start(/*초기화 코드를 작성하세요.*/);
 

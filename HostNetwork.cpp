@@ -60,16 +60,16 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_ok* my_packet = reinterpret_cast<sc_packet_login_ok*>(ptr);
 		myId = my_packet->id;
-		GameWorld::gameWorld->gameTime = my_packet->game_time;
+		HostGameWorld::gameWorld->gameTime = my_packet->game_time;
 
 		// 심 초기화
-		for (auto& sims : GameWorld::gameWorld->simList){
+		for (auto& sims : HostGameWorld::gameWorld->simList){
 			Scene::scene->PushDelete(sims.second);
 		}
-		GameWorld::gameWorld->simList.clear();
+		HostGameWorld::gameWorld->simList.clear();
 
 		// 빌딩 정보 전송
-		for (auto& p : GameWorld::gameWorld->buildingList)
+		for (auto& p : HostGameWorld::gameWorld->buildingList)
 			for(auto& q: p.second)
 				for (auto& r : q.second) {
 					Vector3 building_forward = r->transform->forward;
@@ -182,7 +182,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_construct* my_packet = reinterpret_cast<sc_packet_construct*>(ptr);
 		Vector2 building_pos{ my_packet->xPos, my_packet->zPos };
 		GameObject* my_landmark;
-		for (auto landmark : GameWorld::gameWorld->buildingList) {
+		for (auto landmark : HostGameWorld::gameWorld->buildingList) {
 			Vector3 landPos = landmark.first->transform->position;
 			float range = landmark.first->GetComponent<Village>()->radiusOfLand;
 			float dist = sqrt(pow(building_pos.x - landPos.x, 2) + pow(building_pos.y - landPos.z, 2));
@@ -201,7 +201,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 	case S2C_GAME_TIME:
 	{
 		sc_packet_game_time* my_packet = reinterpret_cast<sc_packet_game_time*>(ptr);
-		GameWorld::gameWorld->gameTime = my_packet->game_time;
+		HostGameWorld::gameWorld->gameTime = my_packet->game_time;
 	}
 		break;
 	case S2C_CHAT:
@@ -331,8 +331,8 @@ void HostNetwork::Login()
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_HOST;
 	strcpy_s(l_packet.name, name);
-	GameWorld::gameWorld->timeSpeed = GameWorld::gameWorld->TimeSpeed::X1;
-	l_packet.game_time = GameWorld::gameWorld->gameTime;
+	HostGameWorld::gameWorld->timeSpeed = HostGameWorld::gameWorld->TimeSpeed::X1;
+	l_packet.game_time = HostGameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;
 	l_packet.octaves = octaves;
 	l_packet.seed = seed;

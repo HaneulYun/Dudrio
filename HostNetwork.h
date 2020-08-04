@@ -117,7 +117,7 @@ public:
 			rt->setPosAndSize(150, -10, 150, 30);
 
 			Text* text = gameTime->AddComponent<Text>();
-			text->text = GameWorld::gameWorld->convertTimeToText();
+			text->text = HostGameWorld::gameWorld->convertTimeToText();
 			text->fontSize = 30;
 			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
@@ -162,14 +162,14 @@ public:
 
 	void Update()
 	{
-		gameTime->GetComponent<Text>()->text = GameWorld::gameWorld->convertTimeToText();
+		gameTime->GetComponent<Text>()->text = HostGameWorld::gameWorld->convertTimeToText();
 
 		if (logouted){
-			for (auto& landmark : GameWorld::gameWorld->buildingList) {
-				auto iter = landmark.second.find(GameWorld::gameWorld->BuildingType::House);
+			for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
+				auto iter = landmark.second.find(HostGameWorld::gameWorld->BuildingType::House);
 				if (iter != landmark.second.end()) {
 					for (auto& house : iter->second) {
-						GameWorld::gameWorld->addSim(landmark.first, house);
+						HostGameWorld::gameWorld->addSim(landmark.first, house);
 					}
 				}
 			}

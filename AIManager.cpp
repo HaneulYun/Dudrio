@@ -13,23 +13,23 @@ void AIManager::Update(/*업데이트 코드를 작성하세요.*/)
 
 void AIManager::aiUpdate()
 {
-	float time = GameWorld::gameWorld->gameTime;
+	float time = HostGameWorld::gameWorld->gameTime;
 
 
-	//for (auto sim : GameWorld::gameWorld->simList)
+	//for (auto sim : HostGameWorld::gameWorld->simList)
 	//{
 	//	sim.second->GetComponent<Sim>()->stateMachine.Update();
 	//}
 
 	if (time > 24.0f * 37.5f)
 	{
-		for (auto sim : GameWorld::gameWorld->simList)
+		for (auto sim : HostGameWorld::gameWorld->simList)
 		{
 			Messenger->CreateMessage(0, sim.first, sim.first, Msg_Sleep);
 		}
 	}
 
-	for (auto landmark : GameWorld::gameWorld->buildingList)
+	for (auto landmark : HostGameWorld::gameWorld->buildingList)
 	{
 		Village* village = landmark.first->GetComponent<Village>();
 
@@ -44,10 +44,10 @@ void AIManager::aiUpdate()
 
 				village->delayTime = rand() % 120 + 60;
 				int index = rand() % village->simList.size();
-				int id = village->simList[landmark.second[GameWorld::gameWorld->House][index]]->GetComponent<Sim>()->id;
+				int id = village->simList[landmark.second[HostGameWorld::gameWorld->House][index]]->GetComponent<Sim>()->id;
 				Messenger->CreateMessage(5, id, id, Msg_Build, info);
 			}
-			village->delayTime -= GameWorld::gameWorld->gameDeltaTime;
+			village->delayTime -= HostGameWorld::gameWorld->gameDeltaTime;
 		}
 	}
 

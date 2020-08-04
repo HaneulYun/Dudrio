@@ -186,8 +186,8 @@ void TestScene::BuildObjects()
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		//buildingBuilder->cube = node;
 		AIManager::aiManager = object->AddComponent<AIManager>();
-		//GameWorld::gameWorld = object->AddComponent<GameWorld>();
-		//GameWorld::gameWorld->simPrefab = sim;
+		//HostGameWorld::gameWorld = object->AddComponent<HostGameWorld>();
+		//HostGameWorld::gameWorld->simPrefab = sim;
 
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
@@ -213,6 +213,6 @@ void TestScene::BuildObjects()
 		house->transform->position = Vector3(x, terrainData->terrainData.GetHeight(x, z), z);
 		house->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 
-		GameWorld::gameWorld->addSim(landmark, house);
+		HostGameWorld::gameWorld->addSim(landmark, house);
 	}
 }

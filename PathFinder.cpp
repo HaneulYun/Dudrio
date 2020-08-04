@@ -211,7 +211,7 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 	if (angle < 3.f * speed)
 	{
 		currentDir = dir;
-		Vector3 newPos = object->position + currentDir.Normalize() * speed * GameWorld::gameWorld->gameDeltaTime;
+		Vector3 newPos = object->position + currentDir.Normalize() * speed * HostGameWorld::gameWorld->gameDeltaTime;
 		object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
 
 		return;
@@ -221,11 +221,11 @@ void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float 
 	Vector3 up = { 0,1,0 };
 	bool isRight = Vector3::DotProduct(cross, up) > 0 ? true : false;
 
-	float rotSpeed = 180.f * GameWorld::gameWorld->gameDeltaTime * speed;
+	float rotSpeed = 180.f * HostGameWorld::gameWorld->gameDeltaTime * speed;
 	if (!isRight) rotSpeed *= -1;
 
 	object->Rotate(Vector3{ 0,1,0 }, rotSpeed);
 
-	Vector3 newPos = object->position + Vector3::Normalize(object->forward) * speed * GameWorld::gameWorld->gameDeltaTime;
+	Vector3 newPos = object->position + Vector3::Normalize(object->forward) * speed * HostGameWorld::gameWorld->gameDeltaTime;
 	object->position = { newPos.x, terrainData->GetHeight(newPos.x, newPos.z), newPos.z };
 }

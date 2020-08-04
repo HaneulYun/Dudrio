@@ -66,7 +66,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			}
 			updateTerrainNodeData(prefab, true);
 
-			GameWorld::gameWorld->buildInGameWorld(curLandmark, prefab, curPrefabType, curPrefabIndex);
+			HostGameWorld::gameWorld->buildInGameWorld(curLandmark, prefab, curPrefabType, curPrefabIndex);
 
 			// 연속 건설
 			if (!Input::GetKey(KeyCode::Shift))
@@ -401,12 +401,12 @@ GameObject* BuildingBuilder::isOnLand()
 {
 	if (curPrefabType == Landmark)
 	{
-		if (GameWorld::gameWorld->buildingList.empty())
+		if (HostGameWorld::gameWorld->buildingList.empty())
 		{
 			curLandmark = prefab;
 			return prefab;
 		}
-		for (auto& landmark : GameWorld::gameWorld->buildingList)
+		for (auto& landmark : HostGameWorld::gameWorld->buildingList)
 		{
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
 
@@ -419,7 +419,7 @@ GameObject* BuildingBuilder::isOnLand()
 	}
 	else
 	{
-		for (auto& landmark : GameWorld::gameWorld->buildingList)
+		for (auto& landmark : HostGameWorld::gameWorld->buildingList)
 		{
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
 
@@ -502,7 +502,7 @@ GameObject* BuildingBuilder::build(Vector2 position, float angle, int type, int 
 		obj->tag = TAG_BUILDING;
 
 		updateTerrainNodeData(obj, true);
-		GameWorld::gameWorld->buildInGameWorld(landmark, obj, type, index);
+		HostGameWorld::gameWorld->buildInGameWorld(landmark, obj, type, index);
 
 		return obj;
 	}
@@ -646,7 +646,7 @@ void BuildingBuilder::pickToDelete()
 							angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z, angle);
 						}
-						GameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
+						HostGameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 					}
 				}
 			}

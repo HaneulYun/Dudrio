@@ -13,7 +13,7 @@ void MessageManager::CreateMessage(double delay, int senderIndex, int receiverIn
 	Telegram telegram(0, senderIndex, receiverIndex, msg, ExtraInfo);
            
 	//float currentTime = Time::currentTime;
-	float currentTime = GameWorld::gameWorld->day * 37.5f * 24 + GameWorld::gameWorld->gameTime;
+	float currentTime = HostGameWorld::gameWorld->day * 37.5f * 24 + HostGameWorld::gameWorld->gameTime;
 	telegram.dispatchTime = currentTime + delay;
 
 	msgQueue.insert(telegram);
@@ -22,15 +22,15 @@ void MessageManager::CreateMessage(double delay, int senderIndex, int receiverIn
 void MessageManager::Timer()
 {
 	//float currentTime = Time::currentTime;
-	float currentTime = GameWorld::gameWorld->day * 37.5f * 24 + GameWorld::gameWorld->gameTime;
+	float currentTime = HostGameWorld::gameWorld->day * 37.5f * 24 + HostGameWorld::gameWorld->gameTime;
 
 	while (!msgQueue.empty() && (msgQueue.begin()->dispatchTime < currentTime))
 	{
 		const Telegram& telegram = *msgQueue.begin();
 
-		if (GameWorld::gameWorld->simList.count(telegram.receiver) != 0)
+		if (HostGameWorld::gameWorld->simList.count(telegram.receiver) != 0)
 		{
-			Sim* receiver = GameWorld::gameWorld->simList[telegram.receiver]->GetComponent<Sim>();
+			Sim* receiver = HostGameWorld::gameWorld->simList[telegram.receiver]->GetComponent<Sim>();
 			if (receiver == nullptr)
 				return;
 

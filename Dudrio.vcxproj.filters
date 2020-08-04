@@ -40,6 +40,9 @@
     <Filter Include="Assets\Scripts\Terrain">
       <UniqueIdentifier>{6af955a2-2fe2-43d0-8021-44edeab3fbb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Scripts\GameWorld">
+      <UniqueIdentifier>{763a9104-0812-45f5-b54d-e39a44ed3091}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -65,9 +68,6 @@
     </ClInclude>
     <ClInclude Include="MagentaServer\protocol.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialScene.h">
-      <Filter>Assets\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="ParticleScene.h">
       <Filter>Assets\Scenes</Filter>
@@ -156,14 +156,8 @@
     <ClInclude Include="BuildingBuilderData.h">
       <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
-    <ClInclude Include="GameWorld.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="AIManager.h">
       <Filter>Assets\Scripts\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="GuestGameWorld.h">
-      <Filter>Assets\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="RotatingBehavior.h">
       <Filter>Assets\Scripts</Filter>
@@ -192,6 +186,12 @@
     <ClInclude Include="Village.h">
       <Filter>Assets\Scripts\Build</Filter>
     </ClInclude>
+    <ClInclude Include="GuestGameWorld.h">
+      <Filter>Assets\Scripts\GameWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="HostGameWorld.h">
+      <Filter>Assets\Scripts\GameWorld</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dudrio.cpp">
@@ -201,9 +201,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MenuScene.cpp">
-      <Filter>Assets\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="ParticleScene.cpp">
@@ -239,12 +236,6 @@
     <ClCompile Include="AIManager.cpp">
       <Filter>Assets\Scripts\AI</Filter>
     </ClCompile>
-    <ClCompile Include="GameWorld.cpp">
-      <Filter>Assets\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="GuestGameWorld.cpp">
-      <Filter>Assets\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="HostMenuScene.cpp">
       <Filter>Assets\Scenes</Filter>
     </ClCompile>
@@ -253,6 +244,12 @@
     </ClCompile>
     <ClCompile Include="TerrainGenerator.cpp">
       <Filter>Assets\Scripts\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="GuestGameWorld.cpp">
+      <Filter>Assets\Scripts\GameWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="HostGameWorld.cpp">
+      <Filter>Assets\Scripts\GameWorld</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 
 GameLoader* GameLoader::gameLoader{ nullptr };
 BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
-GameWorld* GameWorld::gameWorld;
+HostGameWorld* HostGameWorld::gameWorld;
 AIManager* AIManager::aiManager;
 
 void HostScene::BuildObjects()
@@ -220,7 +220,7 @@ void HostScene::BuildObjects()
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		buildingBuilder->cube = node;
 
-		GameWorld* gameWorld = object->AddComponent<GameWorld>();
+		HostGameWorld* gameWorld = object->AddComponent<HostGameWorld>();
 		gameWorld->simPrefab = sim;
 		gameWorld->sun = directionalLight;
 		object->AddComponent<AIManager>();

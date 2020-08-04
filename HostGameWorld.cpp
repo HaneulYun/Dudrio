@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "GameWorld.h"
+#include "HostGameWorld.h"
 
-void GameWorld::Start(/*초기화 코드를 작성하세요.*/)
+void HostGameWorld::Start(/*초기화 코드를 작성하세요.*/)
 {
 	gameWorld = this;
 	sun->transform->Rotate({ 1, 0, 0 }, 90);
 	sun->transform->Rotate({ 0, 1, 0 }, -90);
 }
 
-void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
+void HostGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	gameTimeUpdate();
 
@@ -42,13 +42,13 @@ void GameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 	//}
 }
 
-void GameWorld::aiUpdate()
+void HostGameWorld::aiUpdate()
 {
 	if (!simList.empty())
 		AIManager::aiManager->aiUpdate();
 }
 
-void GameWorld::gameTimeUpdate()
+void HostGameWorld::gameTimeUpdate()
 {
 	if (gameTime >= timeOfDay)
 	{
@@ -67,7 +67,7 @@ void GameWorld::gameTimeUpdate()
 	calculateSunInfo();
 }
 
-void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
+void HostGameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
 	if (type == BuildingType::Prop)
 	{
@@ -80,7 +80,7 @@ void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int
 		addSim(landmark, building);
 }
 
-void GameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
+void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
 	if (type == BuildingType::Prop)
 	{
@@ -89,7 +89,7 @@ void GameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, in
 	}
 	if (type == BuildingType::Landmark)
 	{
-		for (auto& list : GameWorld::gameWorld->buildingList[building])
+		for (auto& list : HostGameWorld::gameWorld->buildingList[building])
 		{
 			for (auto& object : list.second)
 			{
@@ -112,7 +112,7 @@ void GameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, in
 		eraseSim(landmark, building);
 }
 
-int GameWorld::addSim(GameObject* landmark, GameObject* house)
+int HostGameWorld::addSim(GameObject* landmark, GameObject* house)
 {
 	GameObject* sim = Scene::scene->Duplicate(simPrefab);
 	sim->transform->position = house->transform->position;
@@ -132,7 +132,7 @@ int GameWorld::addSim(GameObject* landmark, GameObject* house)
 	return simIndex;
 }
 
-int GameWorld::eraseSim(GameObject* landmark, GameObject* house)
+int HostGameWorld::eraseSim(GameObject* landmark, GameObject* house)
 {
 	GameObject* sim = landmark->GetComponent<Village>()->simList[house];
 
@@ -145,7 +145,7 @@ int GameWorld::eraseSim(GameObject* landmark, GameObject* house)
 	return id;
 }
 
-void GameWorld::calculateSunInfo()
+void HostGameWorld::calculateSunInfo()
 {
 	Light* light = sun->GetComponent<Light>();
 	light->Strength = { 0.9, 0.9, 0.9 };
@@ -178,7 +178,7 @@ void GameWorld::calculateSunInfo()
 	sun->transform->forward = Vector3(1, 0, 0).TransformNormal(Matrix4x4::RotationZ(XMConvertToRadians(sunRotAngle)));
 }
 
-std::wstring GameWorld::convertTimeToText()
+std::wstring HostGameWorld::convertTimeToText()
 {
 	int hour;
 	int minute;

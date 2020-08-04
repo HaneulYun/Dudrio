@@ -52,7 +52,7 @@ public:
 
 	void updateTerrainNodeData(GameObject* building, bool collision);
 
-	GameObject* build(Vector2 position, float angle, int type, int index, GameObject* landmark = nullptr);
+	void build(Vector2 position, float angle, int type, int index, GameObject* landmark = nullptr);
 
 	void build(Vector3 position);
 
@@ -78,5 +78,6 @@ public:
 
 	void IntersectVertices(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirection, std::vector<XMFLOAT3>& vertices);
 
+	void hostLoad(int type, int index, float x, float z, float angle, int range);
 	void guestBuild(int type, int index, float x, float z, float angle, int range);
 };

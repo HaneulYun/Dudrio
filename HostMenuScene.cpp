@@ -7,7 +7,7 @@ float HostInformConnector::terrainSize = 1000.0f;
 int HostInformConnector::frequency;
 int HostInformConnector::octaves;
 int HostInformConnector::seed;
-GameLoader* GameLoader::gameLoader{ nullptr };
+bool HostInformConnector::load;
 
 void HostMenuScene::BuildObjects()
 {
@@ -63,6 +63,7 @@ void HostMenuScene::BuildObjects()
 
 			newVillage->AddComponent<Button>()->AddEvent(
 				[](void*) {		
+					HostInformConnector::connector->load = false;
 					HostInformConnector::connector->goToNextPage();
 				});
 			{
@@ -95,8 +96,8 @@ void HostMenuScene::BuildObjects()
 
 			loadVillage->AddComponent<Button>()->AddEvent(
 				[](void*) {
-					Debug::Log("이게 되네;;\n");
-				//	SceneManager::LoadScene("HostScene");
+					HostInformConnector::connector->load = true;
+					SceneManager::LoadScene("HostScene");
 				});
 			{
 				auto textobject = loadVillage->AddChildUI();

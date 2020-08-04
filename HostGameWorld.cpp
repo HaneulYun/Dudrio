@@ -89,6 +89,7 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 	{
 		for (auto& list : HostGameWorld::gameWorld->buildingList[building])
 		{
+			int obj_type = list.first;
 			for (auto& object : list.second)
 			{
 				Vector3 building_forward = object->transform->forward;
@@ -103,7 +104,7 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 				int range = 0;
 				if (object->GetComponent<Village>() != nullptr)
 					range = object->GetComponent<Village>()->radiusOfLand;
-				GameLoader::gameLoader->deleteInFile(type, index, object->transform->position.x, object->transform->position.z, angle, range);
+				GameLoader::gameLoader->deleteInFile(obj_type, object->GetComponent<Building>()->index, object->transform->position.x, object->transform->position.z, angle, range);
 				Scene::scene->PushDelete(object);
 				BuildingBuilder::buildingBuilder->updateTerrainNodeData(object, false);
 

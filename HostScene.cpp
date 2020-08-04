@@ -2,6 +2,7 @@
 #include "HostScene.h"
 
 BuildingBuilder* BuildingBuilder::buildingBuilder{ nullptr };
+GameLoader* GameLoader::gameLoader{ nullptr };
 HostGameWorld* HostGameWorld::gameWorld;
 AIManager* AIManager::aiManager;
 
@@ -87,11 +88,22 @@ void HostScene::BuildObjects()
 		behavior->anim = anim;
 	}
 
+	float TerrainSize = 1000;
+	int frequency, octaves, seed;
+	int file_pointer;
+	string host_name;
+	if (!HostInformConnector::connector->load) {
+		TerrainSize = HostInformConnector::connector->terrainSize;
+		frequency = HostInformConnector::connector->frequency;
+		octaves = HostInformConnector::connector->octaves;
+		seed = HostInformConnector::connector->seed;
+		host_name = HostInformConnector::connector->name;
 
-	float TerrainSize = HostInformConnector::connector->terrainSize;
-	float frequency = HostInformConnector::connector->frequency;
-	int octaves = HostInformConnector::connector->octaves;
-	int seed = HostInformConnector::connector->seed;
+		GameLoader::gameLoader->initFile(host_name, frequency, octaves, seed);
+	}
+	else {
+		file_pointer = GameLoader::gameLoader->Load(host_name, frequency, octaves, seed);
+	}
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
 	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
@@ -235,11 +247,14 @@ void HostScene::BuildObjects()
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		buildingBuilder->cube = node;
+		BuildingBuilder::buildingBuilder = buildingBuilder;
 
 		HostGameWorld* gameWorld = object->AddComponent<HostGameWorld>();
 		gameWorld->simPrefab = sim;
 		gameWorld->sun = directionalLight;
 		object->AddComponent<AIManager>();
+		auto gameLoader = object->AddComponent<GameLoader>();
+		HostGameWorld::gameWorld = gameWorld;
 
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
@@ -287,7 +302,8 @@ void HostScene::BuildObjects()
 		hostNetwork->frequency = frequency;
 		hostNetwork->octaves = octaves;
 		hostNetwork->seed = seed;
-		strcpy_s(hostNetwork->name, HostInformConnector::connector->name);
+		strcpy_s(hostNetwork->name, host_name.c_str());
+		HostNetwork::network = hostNetwork;
 	}
 
 
@@ -324,7 +340,7 @@ void HostScene::BuildObjects()
 
 		LoadButton->AddComponent<Button>()->AddEvent(
 			[](void*) {
-				GameLoader::gameLoader->Load();
+				//GameLoader::gameLoader->Load();
 			});
 		{
 			auto textobject = LoadButton->AddChildUI();
@@ -384,4 +400,7 @@ void HostScene::BuildObjects()
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 	}
+
+	if (HostInformConnector::connector->load)
+		GameLoader::gameLoader->LoadBuildings(file_pointer);
 }

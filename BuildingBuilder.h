@@ -6,7 +6,7 @@
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
 public:
-	enum BuildingType { Landmark, House, Theme, Landscape, Prop, Count, None = -1 };
+	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Count, None = -1 };
 private /*이 영역에 private 변수를 선언하세요.*/:
 	std::vector<BuildingBuilderData> building[BuildingType::Count];
 	GameObject* prefab{ nullptr };
@@ -67,6 +67,8 @@ public:
 	int getBuildingCount(int type);
 
 	wstring getBuildingName(int type, int index);
+
+	void enterDeleteMode();
 
 	void pickToDelete();
 

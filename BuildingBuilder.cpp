@@ -171,8 +171,8 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Rock_3", ASSET MESH("HP_Rock_3"), ASSET MATERIAL("HP_Rocks_3_4")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Rock_4", ASSET MESH("HP_Rock_4"), ASSET MATERIAL("HP_Rocks_3_4")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Stump", ASSET MESH("HP_Stump"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
-		building[Prop].push_back(makeBuilderDataAsPrefab(L"HP_Street_light", ASSET PREFAB("HP_Street_light")));
-		building[Prop].push_back(makeBuilderDataAsPrefab(L"HP_Lamppost", ASSET PREFAB("HP_Lamppost")));
+		building[Lighting].push_back(makeBuilderDataAsPrefab(L"HP_Street_light", ASSET PREFAB("HP_Street_light")));
+		building[Lighting].push_back(makeBuilderDataAsPrefab(L"HP_Lamppost", ASSET PREFAB("HP_Lamppost")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Altar", ASSET MESH("HP_Altar"), ASSET MATERIAL("HP_Lampposts")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Anvil", ASSET MESH("HP_Anvil"), ASSET MATERIAL("HP_Hammer_anvil")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Barrel", ASSET MESH("HP_Barrel"), ASSET MATERIAL("HP_Barrel")));
@@ -186,9 +186,9 @@ void BuildingBuilder::serializeBuildings()
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Crystal_3", ASSET MESH("HP_Crystal_3"), ASSET MATERIAL("HP_Crystals")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Crystal_4", ASSET MESH("HP_Crystal_4"), ASSET MATERIAL("HP_Crystals")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Crystal_5", ASSET MESH("HP_Crystal_5"), ASSET MATERIAL("HP_Crystals")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence", ASSET MESH("HP_Fence"), ASSET MATERIAL("HP_Fence")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence_1", ASSET MESH("HP_Fence_1"), ASSET MATERIAL("HP_Fence")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence_2", ASSET MESH("HP_Fence_2"), ASSET MATERIAL("HP_Fence")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence", ASSET MESH("HP_Fence"), ASSET MATERIAL("HP_Fence")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence_1", ASSET MESH("HP_Fence_1"), ASSET MATERIAL("HP_Fence")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence_2", ASSET MESH("HP_Fence_2"), ASSET MATERIAL("HP_Fence")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fern", ASSET MESH("HP_Fern"), ASSET MATERIAL("HP_Fern")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Forge", ASSET MESH("HP_Forge"), ASSET MATERIAL("HP_Forge")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Hammer", ASSET MESH("HP_Hammer"), ASSET MATERIAL("HP_Hammer_anvil")));	
@@ -207,8 +207,8 @@ void BuildingBuilder::serializeBuildings()
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tile_6", ASSET MESH("HP_Tile_6"), ASSET MATERIAL("HP_Stone_tiles")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tile_7", ASSET MESH("HP_Tile_7"), ASSET MATERIAL("HP_Stone_tiles")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tower", ASSET MESH("HP_Tower"), ASSET MATERIAL("HP_Ruined_tower")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Wall_1", ASSET MESH("HP_Wall_1"), ASSET MATERIAL("HP_Ruined_walls")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Wall_2", ASSET MESH("HP_Wall_2"), ASSET MATERIAL("HP_Ruined_walls")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Wall_1", ASSET MESH("HP_Wall_1"), ASSET MATERIAL("HP_Ruined_walls")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Wall_2", ASSET MESH("HP_Wall_2"), ASSET MATERIAL("HP_Ruined_walls")));
 	}
 	
 
@@ -308,8 +308,8 @@ void BuildingBuilder::serializeBuildings()
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Booth_02_SM", ASSET MESH("SE_Booth_02_SM"), ASSET MATERIAL("SE_Booth")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushese")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushese")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_06_SM", ASSET MESH("SE_Bush_06_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_07_SM", ASSET MESH("SE_Bush_07_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_06_SM", ASSET MESH("SE_Bush_06_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_07_SM", ASSET MESH("SE_Bush_07_SM"), ASSET MATERIAL("SE_Bonsai")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Candy_01_SM", ASSET MESH("SE_Candy_01_SM"), ASSET MATERIAL("SE_Candies")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Candy_02_SM", ASSET MESH("SE_Candy_02_SM"), ASSET MATERIAL("SE_Candies")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Candy_03_SM", ASSET MESH("SE_Candy_03_SM"), ASSET MATERIAL("SE_Candies")));
@@ -319,23 +319,23 @@ void BuildingBuilder::serializeBuildings()
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Chair_01a_SM", ASSET MESH("SE_Chair_01a_SM"), ASSET MATERIAL("SE_Bench_01a")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Climber_01_SM", ASSET MESH("SE_Climber_01_SM"), ASSET MATERIAL("SE_Climbers")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Climber_02_SM", ASSET MESH("SE_Climber_02_SM"), ASSET MATERIAL("SE_Climbers")));	
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07a_SM", ASSET MESH("SE_Fence_07a_SM"), ASSET MATERIAL("SE_Fence_01a")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07b_SM", ASSET MESH("SE_Fence_07b_SM"), ASSET MATERIAL("SE_Fence_01b")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08a_SM", ASSET MESH("SE_Fence_08a_SM"), ASSET MATERIAL("SE_Fence_01a")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08b_SM", ASSET MESH("SE_Fence_08b_SM"), ASSET MATERIAL("SE_Fence_01b")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07a_SM", ASSET MESH("SE_Fence_07a_SM"), ASSET MATERIAL("SE_Fence_01a")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07b_SM", ASSET MESH("SE_Fence_07b_SM"), ASSET MATERIAL("SE_Fence_01b")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08a_SM", ASSET MESH("SE_Fence_08a_SM"), ASSET MATERIAL("SE_Fence_01a")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08b_SM", ASSET MESH("SE_Fence_08b_SM"), ASSET MATERIAL("SE_Fence_01b")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Gate_01b_SM", ASSET MESH("SE_Gate_01b_SM"), ASSET MATERIAL("SE_Gate")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Grill_02_SM", ASSET MESH("SE_Grill_02_SM"), ASSET MATERIAL("SE_Grill")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_01_SM", ASSET MESH("SE_Hedge_01_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_02_SM", ASSET MESH("SE_Hedge_02_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_03_SM", ASSET MESH("SE_Hedge_03_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_04_SM", ASSET MESH("SE_Hedge_04_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_05_SM", ASSET MESH("SE_Hedge_05_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_06_SM", ASSET MESH("SE_Hedge_06_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_07_SM", ASSET MESH("SE_Hedge_07_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_08_SM", ASSET MESH("SE_Hedge_08_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_01_SM", ASSET MESH("SE_Hedge_01_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_02_SM", ASSET MESH("SE_Hedge_02_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_03_SM", ASSET MESH("SE_Hedge_03_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_04_SM", ASSET MESH("SE_Hedge_04_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_05_SM", ASSET MESH("SE_Hedge_05_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_06_SM", ASSET MESH("SE_Hedge_06_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_07_SM", ASSET MESH("SE_Hedge_07_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_08_SM", ASSET MESH("SE_Hedge_08_SM"), ASSET MATERIAL("SE_Hedges")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_HotAirBaloon_SM", ASSET MESH("SE_HotAirBaloon_SM"), ASSET MATERIAL("SE_HotAirBaloon")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_01_SM", ASSET MESH("SE_Lamp_01_SM"), ASSET MATERIAL("SE_Lamps")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_02_SM", ASSET MESH("SE_Lamp_02_SM"), ASSET MATERIAL("SE_Lamps")));
+		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_01_SM", ASSET MESH("SE_Lamp_01_SM"), ASSET MATERIAL("SE_Lamps")));
+		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_02_SM", ASSET MESH("SE_Lamp_02_SM"), ASSET MATERIAL("SE_Lamps")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Maypole_01_SM", ASSET MESH("SE_Maypole_01_SM"), ASSET MATERIAL("SE_Maypole_01")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Present_01_SM", ASSET MESH("SE_Present_01_SM"), ASSET MATERIAL("SE_Presents")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Present_02_SM", ASSET MESH("SE_Present_02_SM"), ASSET MATERIAL("SE_Presents")));
@@ -605,6 +605,11 @@ wstring BuildingBuilder::getBuildingName(int type, int index)
 	if (index < building[type].size())
 		return building[type][index].buildingName;
 	return L"X";
+}
+
+void BuildingBuilder::enterDeleteMode()
+{
+
 }
 
 void BuildingBuilder::pickToDelete()

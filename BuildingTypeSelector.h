@@ -78,4 +78,30 @@ public:
 			if (auto children = type->gameObject; children != exception)
 				children->SetActive(false);
 	}
+
+	void addDeleteButton(std::wstring name, float x, float y)
+	{
+		auto DeleteButton = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
+		{
+			auto rt = DeleteButton->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 0);
+			rt->setPosAndSize(x, y, 40, 40);
+			{
+				auto textObject = DeleteButton->AddChildUI();
+				auto rt = textObject->GetComponent<RectTransform>();
+				rt->anchorMin = { 0, 0 };
+				rt->anchorMax = { 1, 1 };
+
+				Text* text = textObject->AddComponent<Text>();
+				text->text = name;
+				text->fontSize = 10;
+				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			}
+			DeleteButton->AddComponent<Button>()->AddEvent([](void* ptr)
+				{
+					BuildingBuilder::buildingBuilder->enterDeleteMode();
+				});
+		}
+	}
 };

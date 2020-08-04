@@ -69,11 +69,6 @@ void GameWorld::gameTimeUpdate()
 
 void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
-	if (type == BuildingType::Prop)
-	{
-		if (building->GetComponent<Light>())
-			type = BuildingType::Lighting;
-	}
 	buildingList[landmark][(BuildingType)type].push_back(building);
 
 	if (type == BuildingType::House && !HostNetwork::network->isConnect)
@@ -82,11 +77,6 @@ void GameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int
 
 void GameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
-	if (type == BuildingType::Prop)
-	{
-		if (building->GetComponent<Light>())
-			type = BuildingType::Lighting;
-	}
 	if (type == BuildingType::Landmark)
 	{
 		for (auto& list : GameWorld::gameWorld->buildingList[building])

@@ -232,6 +232,9 @@ void HostScene::BuildObjects()
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, L"테마\n건물", 0, 0);
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Landscape, L"조경", 40, 0);
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, L"소품", 80, 0);
+
+		auto gameLoader = object->AddComponent<GameLoader>();
+
 	}
 
 	auto network = CreateEmpty();

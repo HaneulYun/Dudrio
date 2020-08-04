@@ -25,7 +25,14 @@ public:
 
 		/*icon*/
 		{
-
+			ASSET AddTexture("icon_landmark", L"Textures\\icon\\landmark.dds");
+			ASSET AddTexture("icon_house", L"Textures\\icon\\house.dds");
+			ASSET AddTexture("icon_theme", L"Textures\\icon\\theme.dds");
+			ASSET AddTexture("icon_landscape", L"Textures\\icon\\landscape.dds");
+			ASSET AddTexture("icon_fence", L"Textures\\icon\\fence.dds");
+			ASSET AddTexture("icon_lighting", L"Textures\\icon\\lighting.dds");
+			ASSET AddTexture("icon_prop", L"Textures\\icon\\prop.dds");
+			ASSET AddTexture("icon_delete", L"Textures\\icon\\delete.dds");
 		}
 
 
@@ -162,6 +169,19 @@ public:
 
 		//ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		//ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
+
+		/*icon*/
+		{
+			ASSET AddMaterial("icon_landmark", ASSET TEXTURE("icon_landmark"));
+			ASSET AddMaterial("icon_house", ASSET TEXTURE("icon_house"));
+			ASSET AddMaterial("icon_theme", ASSET TEXTURE("icon_theme"));
+			ASSET AddMaterial("icon_landscape", ASSET TEXTURE("icon_landscape"));
+			ASSET AddMaterial("icon_fence", ASSET TEXTURE("icon_fence"));
+			ASSET AddMaterial("icon_lighting", ASSET TEXTURE("icon_lighting"));
+			ASSET AddMaterial("icon_prop", ASSET TEXTURE("icon_prop"));
+			ASSET AddMaterial("icon_delete", ASSET TEXTURE("icon_delete"));
+		}
+
 
 
 		/*AdvancedVillagePack*/

@@ -13,7 +13,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	sceneManager->scenes["GuestMenuScene"] = new GuestMenuScene();
 	sceneManager->scenes["ParticleScene"] = new ParticleScene();
 	sceneManager->scenes["GuestScene"] = new GuestScene();
-	sceneManager->scenes["TestScene"] = new TestScene();
 
 	Scene::scene = sceneManager->scene = sceneManager->scenes["MenuScene"];
 	return CyanApp::Run(cyanFW, hInstance, nCmdShow);

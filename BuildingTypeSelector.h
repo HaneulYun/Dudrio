@@ -28,26 +28,16 @@ public:
 	}
 
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
-	BuildingSelector* addBuildingType(BuildingBuilder::BuildingType type, std::wstring name, float x, float y)
+	BuildingSelector* addBuildingType(BuildingBuilder::BuildingType type, float x, float y, Material* material)
 	{
 		auto buildingTypeButton = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
+		buildingTypeButton->GetComponent<Renderer>()->materials[0] = material;
 		auto buildingSelectorObject = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
 		{
 			auto rt = buildingTypeButton->GetComponent<RectTransform>();
 			rt->setAnchorAndPivot(0.5, 0);
 			rt->setPosAndSize(x, y, 40, 40);
-			{
-				auto textObject = buildingTypeButton->AddChildUI();
-				auto rt = textObject->GetComponent<RectTransform>();
-				rt->anchorMin = { 0, 0 };
-				rt->anchorMax = { 1, 1 };
 
-				Text* text = textObject->AddComponent<Text>();
-				text->text = name;
-				text->fontSize = 10;
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
 			buildingTypeButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
 					auto object = reinterpret_cast<GameObject*>(ptr);
@@ -79,25 +69,15 @@ public:
 				children->SetActive(false);
 	}
 
-	void addDeleteButton(std::wstring name, float x, float y)
+	void addDeleteButton(float x, float y, Material* material)
 	{
 		auto DeleteButton = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
+		DeleteButton->GetComponent<Renderer>()->materials[0] = material;
 		{
 			auto rt = DeleteButton->GetComponent<RectTransform>();
 			rt->setAnchorAndPivot(0.5, 0);
 			rt->setPosAndSize(x, y, 40, 40);
-			{
-				auto textObject = DeleteButton->AddChildUI();
-				auto rt = textObject->GetComponent<RectTransform>();
-				rt->anchorMin = { 0, 0 };
-				rt->anchorMax = { 1, 1 };
 
-				Text* text = textObject->AddComponent<Text>();
-				text->text = name;
-				text->fontSize = 10;
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
 			DeleteButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
 					BuildingBuilder::buildingBuilder->enterDeleteMode();

@@ -227,14 +227,14 @@ void HostScene::BuildObjects()
 
 		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, L"랜드\n마크", -140, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::House, L"주거\n건물", -100, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, L"테마\n건물", -60, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Landscape, L"조경", -20, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Lighting, L"조명", 20, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Fence, L"펜스", 60, 0);
-		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, L"소품", 100, 0);
-		buildingTypeSelector->addDeleteButton(L"삭제", 140, 0);
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, -140, 0, ASSET MATERIAL("icon_landmark"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::House, -100, 0, ASSET MATERIAL("icon_house"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Theme, -60, 0, ASSET MATERIAL("icon_theme"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Landscape, -20, 0, ASSET MATERIAL("icon_landscape"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Lighting, 20, 0, ASSET MATERIAL("icon_lighting"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Fence, 60, 0, ASSET MATERIAL("icon_fence"));
+		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, 100, 0, ASSET MATERIAL("icon_prop"));
+		buildingTypeSelector->addDeleteButton(140, 0, ASSET MATERIAL("icon_delete"));
 	}
 
 	auto network = CreateEmpty();

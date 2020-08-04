@@ -563,6 +563,7 @@ void BuildingBuilder::enterBuildMode(int type, int index)
 		exitBuildMode();
 		return;
 	}
+
 	builderMode = BuildMode;
 
 	makePrefab(type, index);

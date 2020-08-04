@@ -272,7 +272,6 @@ void HostScene::BuildObjects()
 		strcpy_s(hostNetwork->name, HostInformConnector::connector->name);
 	}
 
-
 	gameUI->gameUIs.push_back(Scene::scene->CreateImage());
 	{
 		auto rt = gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->GetComponent<RectTransform>();
@@ -300,7 +299,6 @@ void HostScene::BuildObjects()
 			HostNetwork::network->connectButtonText = text;
 		}
 
-
 		auto gameLoadButton = gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
 		gameLoadButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
 		{
@@ -320,6 +318,7 @@ void HostScene::BuildObjects()
 					GameLoader::gameLoader->Save();
 				});
 		}
+
 		auto gameExitButton = gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->AddChildUI(Scene::scene->CreateImagePrefab());
 		gameExitButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar_dark");
 		{
@@ -345,7 +344,41 @@ void HostScene::BuildObjects()
 	}
 	gameUI->gameUIs[GameUI::GameUICategory::MenuUI]->SetActive(false);
 
+	gameUI->gameUIs.push_back(Scene::scene->CreateUI());
+	{
+		auto rt = gameUI->gameUIs[GameUI::GameUICategory::TimeX1]->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(-170, 0, 15, 25);
 
+		gameUI->gameUIs[GameUI::GameUICategory::TimeX1]->AddComponent<Button>()->AddEvent([](void* ptr)
+			{
+				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X1;
+			});
+	}
+
+	gameUI->gameUIs.push_back(Scene::scene->CreateUI());
+	{
+		auto rt = gameUI->gameUIs[GameUI::GameUICategory::TimeX2]->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(-150, 0, 15, 25);
+
+		gameUI->gameUIs[GameUI::GameUICategory::TimeX2]->AddComponent<Button>()->AddEvent([](void* ptr)
+			{
+				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X2;
+			});
+	}
+
+	gameUI->gameUIs.push_back(Scene::scene->CreateUI());
+	{
+		auto rt = gameUI->gameUIs[GameUI::GameUICategory::TimeX4]->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 0);
+		rt->setPosAndSize(-125, 0, 20, 25);
+
+		gameUI->gameUIs[GameUI::GameUICategory::TimeX4]->AddComponent<Button>()->AddEvent([](void* ptr)
+			{
+				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X4;
+			});
+	}
 
 	//auto ServerButton = CreateImage();
 	//{

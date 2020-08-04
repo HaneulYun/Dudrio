@@ -53,15 +53,18 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			prefab->AddComponent<Building>()->setBuildingInform(curLandmark, curPrefabType, curPrefabIndex);
 			prefab->tag = TAG_BUILDING;
 
+			Vector3 building_forward = prefab->transform->forward;
+			building_forward.y = 0;
+			building_forward.Normalize();
+			Vector3 forward = { 0,0,1 };
+			float angle = Vector3::DotProduct(forward, building_forward);
+			Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+			angle = XMConvertToDegrees(acos(angle));
+			angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+
+			GameLoader::gameLoader->insertInFile(curPrefabType, curPrefabIndex, p.x, p.z, angle, range);
 			if (HostNetwork::network->isConnect) {
-				Vector3 building_forward = prefab->transform->forward;
-				building_forward.y = 0;
-				building_forward.Normalize();
-				Vector3 forward = { 0,0,1 };
-				float angle = Vector3::DotProduct(forward, building_forward);
-				Vector3 dir = Vector3::CrossProduct(forward, building_forward);
-				angle = XMConvertToDegrees(acos(angle));
-				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+				
 				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle, range);
 			}
 			updateTerrainNodeData(prefab, true);
@@ -85,8 +88,9 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 	}
 
 	// 건물 삭제
-	else if (Input::GetKey(KeyCode::X) && HostNetwork::network != nullptr)
+	else if (Input::GetKey(KeyCode::X) && HostNetwork::network != nullptr) 
 		pickToDelete();
+	
 }
 
 void BuildingBuilder::serializeBuildings()

@@ -277,6 +277,9 @@ void HostScene::BuildObjects()
 		rt->setPosAndSize(0, 0, 240, 25);
 
 		ui_time->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_time");
+
+		auto gameLoader = object->AddComponent<GameLoader>();
+
 	}
 
 	auto network = CreateEmpty();

@@ -232,14 +232,15 @@ void Contents::enter_game(int user_id, char name[])
 		}
 
 		g_buildings_lock.lock();
+		for (auto& landmark : g_villages) 
+			iocp.send_construct_packet(user_id, landmark->m_info.building_type, landmark->m_info.building_name, landmark->m_info.m_xPos, landmark->m_info.m_zPos, landmark->m_info.m_angle, landmark->m_land_range);
+
 		for (int i = 0; i < WORLD_HEIGHT / SECTOR_WIDTH; ++i)
 			for (int j = 0; j < WORLD_WIDTH / SECTOR_WIDTH; ++j)
 				for (auto b : g_buildings[i][j]) {
 					auto p = dynamic_cast<Village*>(b.second);
 					if (p == nullptr)
 						iocp.send_construct_packet(user_id, b.second->m_info.building_type, b.second->m_info.building_name, b.second->m_info.m_xPos, b.second->m_info.m_zPos, b.second->m_info.m_angle, 0);
-					else
-						iocp.send_construct_packet(user_id, b.second->m_info.building_type, b.second->m_info.building_name, b.second->m_info.m_xPos, b.second->m_info.m_zPos, b.second->m_info.m_angle, p->m_land_range);
 				}
 		g_buildings_lock.unlock();
 	}

@@ -107,10 +107,27 @@ void HostNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 
 		if (id != myId) {
-			players[id] = gameObject->scene->Duplicate(simsPrefab);
-			auto p = players[id]->GetComponent<CharacterMovingBehavior>();
-			strcpy_s(p->name, my_packet->name);
-			p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+			auto player = gameObject->scene->Duplicate(simsPrefab);
+			auto behavior = player->GetComponent<CharacterMovingBehavior>();
+			behavior->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+			strcpy_s(behavior->name, my_packet->name);
+			auto uiPos = player->AddChild();
+			{
+				uiPos->transform->position = { 0, 1.8, 0 };
+				auto uiBox = uiPos->AddChildUI();
+				{
+					auto rt = uiBox->GetComponent<RectTransform>();
+					rt->renderMode = RectTransform::WorldSpace;
+
+					std::wstring str(behavior->name, &behavior->name[strlen(behavior->name)]);
+					auto text = uiBox->AddComponent<Text>();
+					text->text = str;
+					text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+					text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+				}
+			}
+
+			players[id] = player;
 		}
 	}
 	break;

@@ -46,10 +46,28 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		int o_type = my_packet->o_type;
 
 		if (id != myId && o_type == O_GUEST){
-			otherCharacters[id] = gameObject->scene->Duplicate(simsPrefab);
-			auto oc = otherCharacters[id]->GetComponent<CharacterMovingBehavior>();
-			strcpy_s(oc->name, my_packet->name);
-			oc->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+			auto player = gameObject->scene->Duplicate(simsPrefab);
+			auto behavior = player->GetComponent<CharacterMovingBehavior>();
+			strcpy_s(behavior->name, my_packet->name);
+			behavior->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+
+			otherCharacters[id] = player;
+
+			auto uiPos = player->AddChild();
+			{
+				uiPos->transform->position = { 0, 1.8, 0 };
+				auto uiBox = uiPos->AddChildUI();
+				{
+					auto rt = uiBox->GetComponent<RectTransform>();
+					rt->renderMode = RectTransform::WorldSpace;
+
+					std::wstring str(behavior->name, &behavior->name[strlen(behavior->name)]);
+					auto text = uiBox->AddComponent<Text>();
+					text->text = str;
+					text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+					text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+				}
+			}
 		}
 	}
 	break;

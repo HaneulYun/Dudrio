@@ -4,13 +4,13 @@
 void MenuScene::BuildObjects()
 {
 	///*** Asset ***///
-	//*** Texture ***//
-	ASSET AddTexture("none", L"Textures\\none.dds");
-	ASSET AddTexture("menuBackgroundTex", L"Textures\\menu\\background.dds");
+	LoadTextureAsset();
+	LoadMaterialAsset();
+	LoadMeshAsset();
 
-	//*** Material ***//
-	ASSET AddMaterial("none", ASSET TEXTURE("none"));
-	ASSET AddMaterial("gray", ASSET TEXTURE("none"), 0, 0, 0, { 0.5, 0.5, 0.5, 0.5 });
+	LoadPrefab();
+
+	ASSET AddTexture("menuBackgroundTex", L"Textures\\menu\\background.dds");
 	ASSET AddMaterial("menuBackgroundMat", ASSET TEXTURE("menuBackgroundTex"), 0, 0, 0, { 0.8, 0.8, 0.8, 1 });
 
 	////*** AudioClip ***//

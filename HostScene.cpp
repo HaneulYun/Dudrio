@@ -13,13 +13,6 @@ void HostScene::BuildObjects()
 	spatialPartitioningManager.tagData.AddTag("Preview");
 	//spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, true);
 
-	///*** Asset ***///
-	LoadTextureAsset();
-	LoadMaterialAsset();
-	LoadMeshAsset();
-
-	LoadPrefab();
-
 	////*** AudioClip ***//
 	ASSET AddAudioClip("bgm_ingame", "Sounds\\bgm_ingame.mp3");
 

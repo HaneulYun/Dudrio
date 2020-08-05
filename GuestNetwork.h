@@ -25,7 +25,7 @@ public:
 	int myId;
 	int hostId;
 	int retval;
-	char host_name[MAX_ID_LEN + 1];
+	wchar_t host_name[MAX_ID_LEN + 1];
 
 	bool isConnect{ false };
 	bool tryConnect{ false };

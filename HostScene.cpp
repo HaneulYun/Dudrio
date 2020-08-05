@@ -91,7 +91,7 @@ void HostScene::BuildObjects()
 	float TerrainSize = 1000;
 	int frequency, octaves, seed;
 	int file_pointer;
-	string host_name;
+	wstring host_name;
 	if (!HostInformConnector::connector->load) {
 		TerrainSize = HostInformConnector::connector->terrainSize;
 		frequency = HostInformConnector::connector->frequency;
@@ -283,7 +283,7 @@ void HostScene::BuildObjects()
 		hostNetwork->octaves = octaves;
 		hostNetwork->seed = seed;
 		hostNetwork->gameUI = gameUI;
-		strcpy_s(hostNetwork->name, host_name.c_str());
+		wcscpy_s(hostNetwork->name, host_name.c_str());
 		HostNetwork::network = hostNetwork;
 	}
 

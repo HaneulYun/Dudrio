@@ -66,7 +66,7 @@ struct ls2s_packet_disconnect {
 struct c2ls_packet_login_host {
 	unsigned char size;
 	char type;
-	char name[L_MAX_ID_LEN + 1];
+	wchar_t name[L_MAX_ID_LEN + 1];
 	int terrain_size;
 	int frequency;
 	int octaves;
@@ -76,7 +76,7 @@ struct c2ls_packet_login_host {
 struct c2ls_packet_login_guest {
 	unsigned char size;
 	char type;
-	char name[L_MAX_ID_LEN + 1];
+	wchar_t name[L_MAX_ID_LEN + 1];
 };
 
 // Lobby server to Client ----------
@@ -103,7 +103,7 @@ struct ls2c_pakcet_new_room {
 	unsigned char size;
 	char type;
 	int room_id;
-	char host_name[L_MAX_ID_LEN + 1];
+	wchar_t host_name[L_MAX_ID_LEN + 1];
 	int server_port;
 	char serverIP[INET_ADDRSTRLEN];
 	int terrain_size;

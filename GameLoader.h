@@ -74,10 +74,13 @@ public:
 
 	}
 
-	void initFile(std::string name, int frequency, int octaves, int seed)
+	void initFile(std::wstring name, int frequency, int octaves, int seed)
 	{
 		std::fstream file("buildings.txt", std::ios::out);
-		file << name << ' ' << frequency << ' ' << octaves << ' ' << seed << std::endl;
+		std::string str;
+		str.assign(name.begin(), name.end());
+
+		file << str << ' ' << frequency << ' ' << octaves << ' ' << seed << std::endl;
 		file.close();
 	}
 
@@ -125,10 +128,12 @@ public:
 		//out.close();
 	}
 
-	int Load(std::string& name, int& frequency, int& octaves, int& seed)
+	int Load(std::wstring& name, int& frequency, int& octaves, int& seed)
 	{
 		std::fstream file("buildings.txt", std::ios::in);
-		file >> name >> frequency >> octaves >> seed;
+		std::string str;
+		file >> str >> frequency >> octaves >> seed;
+		name.assign(str.begin(), str.end());
 
 		return file.tellp();
 	}

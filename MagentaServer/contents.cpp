@@ -200,11 +200,11 @@ void Contents::process_packet(int user_id, char* buf)
 }
 
 
-void Contents::enter_game(int user_id, char name[])
+void Contents::enter_game(int user_id, wchar_t name[])
 {
 	g_clients[user_id]->m_cl.lock();
 	g_clients[user_id]->m_name[0] = '\0';
-	strcpy_s(g_clients[user_id]->m_name, name);
+	wcscpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
 	iocp.send_login_ok_packet(user_id);
 	g_clients[user_id]->m_status = ST_ACTIVE;

@@ -2,7 +2,7 @@
 #include "GuestMenuScene.h"
 
 GuestInformConnector* GuestInformConnector::connector{ nullptr };
-char GuestInformConnector::name[MAX_ID_LEN + 1];
+wchar_t GuestInformConnector::name[MAX_ID_LEN + 1];
 RoomInfo* GuestInformConnector::selected_room;
 
 

@@ -144,7 +144,7 @@ void GuestScene::BuildObjects()
 		auto player = guestNetwork->myCharacter = Duplicate(simPrefab);
 		player->GetComponent<Transform>()->position = { 540.0, 0.0, 540.0 };
 		player->AddComponent<CharacterController>();
-		strcpy_s(player->GetComponent<CharacterMovingBehavior>()->name, GuestInformConnector::connector->name);
+		wcscpy_s(player->GetComponent<CharacterMovingBehavior>()->name, GuestInformConnector::connector->name);
 		GuestNetwork::network = guestNetwork;
 
 		auto cameraOffset = player->AddChild();

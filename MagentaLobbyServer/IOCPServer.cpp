@@ -487,7 +487,7 @@ void IOCPServer::process_packet(int user_id, char* buf)
 				room.second->octaves = packet->octaves;
 				room.second->seed = packet->seed;
 				room.second->is_host_exist = true;
-				strcpy_s(room.second->host_name, packet->name);
+				wcscpy_s(room.second->host_name, packet->name);
 				index = room.second->room_id;
 				break;
 			}
@@ -510,7 +510,7 @@ void IOCPServer::process_packet(int user_id, char* buf)
 		c2ls_packet_login_guest* packet = reinterpret_cast<c2ls_packet_login_guest*>(buf);
 		g_users[user_id]->o_type = O_GUEST;
 		g_users[user_id]->m_status = ST_ACTIVE;
-		strcpy_s(g_users[user_id]->m_name, packet->name);
+		wcscpy_s(g_users[user_id]->m_name, packet->name);
 		send_login_ok_guest_packet(user_id);
 
 		for (auto room : g_rooms) {
@@ -653,7 +653,7 @@ void IOCPServer::send_new_room_packet(int user_id, int room_id)
 	p.size = sizeof(p);
 	p.type = LS2C_NEW_ROOM;
 	p.room_id = room_id;
-	strcpy_s(p.host_name, g_rooms[room_id]->host_name);
+	wcscpy_s(p.host_name, g_rooms[room_id]->host_name);
 	p.server_port = g_rooms[room_id]->port_num;
 	strcpy_s(p.serverIP, g_rooms[room_id]->serverIP);
 	p.terrain_size = g_rooms[room_id]->terrain_size;

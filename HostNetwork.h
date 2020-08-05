@@ -31,7 +31,7 @@ public:
 
 	int retval;
 	int myId;
-	char name[MAX_ID_LEN];
+	wchar_t name[MAX_ID_LEN + 1];
 	bool isConnect{ false };
 	bool tryConnect{ false };
 	bool pressButton{ false };

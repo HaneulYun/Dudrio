@@ -92,6 +92,14 @@ MRT_VSOutput PS(PSInput input)
 	float roughness = matData.Roughness;
 	uint diffuseTexIndex = matData.DiffuseMapIndex;
 	uint normalTexIndex = matData.NormalMapIndex;
+	uint emissiveTexIndex = matData.EmissiveMapIndex;
+	uint maskTexIndex = matData.MaskMapIndex;
+
+	if (maskTexIndex != -1)
+	{
+		float3 texmask = gDiffuseMap[maskTexIndex].Sample(gsamAnisotropicWrap, input.TexC);
+		clip(texmask.r - 0.1);
+	}
 
 
 	diffuseAlbedo *= gDiffuseMap[diffuseTexIndex].Sample(gsamAnisotropicWrap, input.TexC);

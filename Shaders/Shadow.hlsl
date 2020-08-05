@@ -22,6 +22,9 @@ struct PSInput
 {
 	float4 PosH		: SV_POSITION;
 	float3 PosW		: POSITION1;
+	float2 TexC		: TEXCOORD;
+
+	nointerpolation uint MatIndex : MATINDEX;
 };
 
 PSInput VS(VSInput vin, uint instanceID : SV_InstanceID)
@@ -30,6 +33,11 @@ PSInput VS(VSInput vin, uint instanceID : SV_InstanceID)
 
 	InstanceData instData = gInstanceData[instanceID];
 	float4x4 world = instData.World;
+	float4x4 texTransform = instData.TexTransform;
+	uint matIndex = gMaterialIndexData[instanceID * instData.MaterialIndexStride].MaterialIndex;
+	vout.MatIndex = matIndex;
+
+	MaterialData matData = gMaterialData[matIndex];
 
 #ifdef SKINNED
 	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -52,12 +60,25 @@ PSInput VS(VSInput vin, uint instanceID : SV_InstanceID)
 	vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj[gShadowMapIndex]);
 	if (vout.PosH.z < 0)
 		vout.PosH.z = 0;
+	vout.TexC = mul(mul(float4(vin.TexC, 0.0f, 1.0f), texTransform), matData.MatTransform).xy;
 
 	return vout;
 }
 
 void PS(PSInput input)
 {
+	MaterialData matData = gMaterialData[input.MatIndex];
+	float4 diffuseAlbedo = matData.DiffuseAlbedo;
+	float3 fresnelR0 = matData.FresnelR0;
+	float roughness = matData.Roughness;
+	uint maskTexIndex = matData.MaskMapIndex;
+
+	if (maskTexIndex != -1)
+	{
+		float3 texmask = gDiffuseMap[maskTexIndex].Sample(gsamAnisotropicWrap, input.TexC);
+		clip(texmask.r - 0.1);
+	}
+
 #ifdef ALPHA_TEST
 	clip(diffuseAlbedo.a - 0.1f);
 #endif

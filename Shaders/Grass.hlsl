@@ -60,6 +60,9 @@ void GS(point GSInput gin[1],
 	float halfWidth = 0.5f * gin[0].SizeW.x;
 	float halfHeight = 0.5f * gin[0].SizeW.y;
 
+	if (length(gin[0].CenterW - gEyePosW) > 250)
+		return;
+
 	float4 v[8];
 	v[0] = float4(gin[0].CenterW + halfWidth * right - halfHeight * up, 1.0f);
 	v[1] = float4(gin[0].CenterW + halfWidth * right + halfHeight * up, 1.0f);

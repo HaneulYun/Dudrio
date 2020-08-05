@@ -144,7 +144,7 @@ public:
 	{
 		ASSET AddMaterial("none", ASSET TEXTURE("none"));
 		ASSET AddMaterial("gray", ASSET TEXTURE("none"), 0, 0, 0, { 0.5, 0.5, 0.5, 1.0 });
-		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), 0, 0, 0, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
+		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), 0, 0, 0, { 1, 1, 1, 1 }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
 		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 
 		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);

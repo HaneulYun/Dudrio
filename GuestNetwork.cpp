@@ -61,9 +61,8 @@ void GuestNetwork::ProcessPacket(char* ptr)
 					auto rt = uiBox->GetComponent<RectTransform>();
 					rt->renderMode = RectTransform::WorldSpace;
 
-					std::wstring str(behavior->name, &behavior->name[strlen(behavior->name)]);
 					auto text = uiBox->AddComponent<Text>();
-					text->text = str;
+					text->text = behavior->name;
 					text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 					text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 				}

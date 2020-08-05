@@ -131,7 +131,7 @@ PSInput DS(HS_CONSTANT_DATA_OUTPUT input, float2 UV : SV_DomainLocation, const O
 	float3 normDir = normalize(float3(posClipSpace.xy, maxLen - 1.0) * quad[0].HemilDir);
 	float4 posLS = float4(normDir.xyz, 1.0);
 
-	float range = FalloffEnd;
+	float range = FalloffEnd * 2;
 	float4x4 M = transpose(gCameraView);
 	M[0] = M[0] * float4((float3)range, 0);
 	M[1] = M[1] * float4((float3)range, 0);

@@ -76,6 +76,7 @@ public:
 			ASSET AddTexture("HP_Pillars_arch", L"Assets\\HandPaintedEnvironment\\Textures\\Pillars_arch_texture.dds");
 			ASSET AddTexture("HP_Pine_tree", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_texture.dds");
 			ASSET AddTexture("HP_Pine_tree_2", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_2_texture.dds");
+			ASSET AddTexture("HP_Pine_tree_M", L"Assets\\HandPaintedEnvironment\\Textures\\Pine_tree_alpha.dds");
 			ASSET AddTexture("HP_Plant", L"Assets\\HandPaintedEnvironment\\Textures\\Plant_texture.dds");
 			ASSET AddTexture("HP_Plants", L"Assets\\HandPaintedEnvironment\\Textures\\Plants_texture.dds");
 			ASSET AddTexture("HP_Rocks_1_2", L"Assets\\HandPaintedEnvironment\\Textures\\Rocks_1_2_texture.dds");
@@ -90,8 +91,10 @@ public:
 			ASSET AddTexture("HP_Town_Hall", L"Assets\\HandPaintedEnvironment\\Textures\\Town_Hall_texture.dds");
 			ASSET AddTexture("HP_Tree_1_1", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_1_1_texture.dds");
 			ASSET AddTexture("HP_Tree_1_2", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_1_2_texture.dds");
+			ASSET AddTexture("HP_Tree_1_alpha", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_1_alpha.dds");
 			ASSET AddTexture("HP_Tree_2_1", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_2_1_texture.dds");
 			ASSET AddTexture("HP_Tree_2_2", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_2_2_texture.dds");
+			ASSET AddTexture("HP_Tree_2_alpha", L"Assets\\HandPaintedEnvironment\\Textures\\Tree_2_alpha.dds");
 			ASSET AddTexture("HP_Trolley", L"Assets\\HandPaintedEnvironment\\Textures\\Trolley_texture.dds");
 			ASSET AddTexture("HP_Well", L"Assets\\HandPaintedEnvironment\\Textures\\Well_texture.dds");
 			ASSET AddTexture("HP_Witch_house", L"Assets\\HandPaintedEnvironment\\Textures\\Witch_house_texture.dds");
@@ -167,12 +170,12 @@ public:
 	void LoadMaterialAsset()
 	{
 		ASSET AddMaterial("none", ASSET TEXTURE("none"));
-		ASSET AddMaterial("sea", ASSET TEXTURE("none"), nullptr, {0, 0.5, 1, 1});
-		ASSET AddMaterial("gray", ASSET TEXTURE("none"), nullptr, { 0.5, 0.5, 0.5, 1.0 });
-		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), nullptr, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
-		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
+		ASSET AddMaterial("sea", ASSET TEXTURE("none"), 0, 0, 0, {0, 0.5, 1, 1});
+		ASSET AddMaterial("gray", ASSET TEXTURE("none"), 0, 0, 0, { 0.5, 0.5, 0.5, 1.0 });
+		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), 0, 0, 0, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
+		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
 
-		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 		//ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		//ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
@@ -203,11 +206,11 @@ public:
 
 		/*AdvancedVillagePack*/
 		{
-			ASSET AddMaterial("AV_house_01", ASSET TEXTURE("AV_house_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_house_02", ASSET TEXTURE("AV_house_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_material_01", ASSET TEXTURE("AV_material_01"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_material_02", ASSET TEXTURE("AV_material_02"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
-			ASSET AddMaterial("AV_material_03", ASSET TEXTURE("AV_material_03"), nullptr, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_house_01", ASSET TEXTURE("AV_house_01"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_house_02", ASSET TEXTURE("AV_house_02"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_material_01", ASSET TEXTURE("AV_material_01"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_material_02", ASSET TEXTURE("AV_material_02"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
+			ASSET AddMaterial("AV_material_03", ASSET TEXTURE("AV_material_03"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 			//ASSET AddMaterial("TreeLeafs", ASSET TEXTURE("TreeLeafs"));
 			//ASSET AddMaterial("TreeTrunks", ASSET TEXTURE("TreeTrunks"));
 		}
@@ -232,8 +235,8 @@ public:
 			ASSET AddMaterial("HP_Mill", ASSET TEXTURE("HP_Mill"));
 			ASSET AddMaterial("HP_Mine", ASSET TEXTURE("HP_Mine"));
 			ASSET AddMaterial("HP_Pillars_arch", ASSET TEXTURE("HP_Pillars_arch"));
-			ASSET AddMaterial("HP_Pine_tree_01", ASSET TEXTURE("HP_Pine_tree"));
-			ASSET AddMaterial("HP_Pine_tree_02", ASSET TEXTURE("HP_Pine_tree_2"));
+			ASSET AddMaterial("HP_Pine_tree_01", ASSET TEXTURE("HP_Pine_tree"), 0, 0, ASSET TEXTURE("HP_Pine_tree_M"));
+			ASSET AddMaterial("HP_Pine_tree_02", ASSET TEXTURE("HP_Pine_tree_2"), 0, 0, ASSET TEXTURE("HP_Pine_tree_M"));
 			ASSET AddMaterial("HP_Plant", ASSET TEXTURE("HP_Plant"));
 			ASSET AddMaterial("HP_Plants", ASSET TEXTURE("HP_Plants"));
 			ASSET AddMaterial("HP_Rocks_1_2", ASSET TEXTURE("HP_Rocks_1_2"));
@@ -246,10 +249,10 @@ public:
 			ASSET AddMaterial("HP_Street_light", ASSET TEXTURE("HP_Street_light"));
 			ASSET AddMaterial("HP_Tavern", ASSET TEXTURE("HP_Tavern"));
 			ASSET AddMaterial("HP_Town_Hall", ASSET TEXTURE("HP_Town_Hall"));
-			ASSET AddMaterial("HP_Tree_01", ASSET TEXTURE("HP_Tree_1_1"));
-			ASSET AddMaterial("HP_Tree_02", ASSET TEXTURE("HP_Tree_1_2"));
-			ASSET AddMaterial("HP_Tree_03", ASSET TEXTURE("HP_Tree_2_1"));
-			ASSET AddMaterial("HP_Tree_04", ASSET TEXTURE("HP_Tree_2_2"));
+			ASSET AddMaterial("HP_Tree_01", ASSET TEXTURE("HP_Tree_1_1"), 0, 0, ASSET TEXTURE("HP_Tree_1_alpha"));
+			ASSET AddMaterial("HP_Tree_02", ASSET TEXTURE("HP_Tree_1_2"), 0, 0, ASSET TEXTURE("HP_Tree_1_alpha"));
+			ASSET AddMaterial("HP_Tree_03", ASSET TEXTURE("HP_Tree_2_1"), 0, 0, ASSET TEXTURE("HP_Tree_2_alpha"));
+			ASSET AddMaterial("HP_Tree_04", ASSET TEXTURE("HP_Tree_2_2"), 0, 0, ASSET TEXTURE("HP_Tree_2_alpha"));
 			ASSET AddMaterial("HP_Trolley", ASSET TEXTURE("HP_Trolley"));
 			ASSET AddMaterial("HP_Well", ASSET TEXTURE("HP_Well"));
 			ASSET AddMaterial("HP_Witch_house", ASSET TEXTURE("HP_Witch_house"));
@@ -704,13 +707,13 @@ public:
 				auto child = MakePrefab(ASSET MESH("HP_street_light"), ASSET MATERIAL("HP_Street_light"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
-			//{
-			//	auto spotLight = prefab->AddChild();
-			//	spotLight->transform->position = { 0.0f, 2.5f, 1.25f };
-			//	spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
-			//	spotLight->GetComponent<Light>()->type = Light::Type::Point;
-			//	spotLight->GetComponent<Light>()->FalloffEnd = 5;
-			//}
+			{
+				auto spotLight = prefab->AddChild();
+				spotLight->transform->position = { 0.0f, 2.5f, -1.6f };
+				spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
+				spotLight->GetComponent<Light>()->type = Light::Type::Point;
+				spotLight->GetComponent<Light>()->FalloffEnd = 5;
+			}
 			ASSET AddPrefab("HP_Street_light", std::make_unique<GameObject>(prefab));
 		}
 
@@ -725,13 +728,13 @@ public:
 				auto child = MakePrefab(ASSET MESH("HP_Lamppost"), ASSET MATERIAL("HP_Lampposts"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
 			}
-			//{
-			//	auto spotLight = prefab->AddChild();
-			//	spotLight->transform->position = { 0.0f, 3.5f, 0.0f };
-			//	spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
-			//	spotLight->GetComponent<Light>()->type = Light::Type::Point;
-			//	spotLight->GetComponent<Light>()->FalloffEnd = 5;
-			//}
+			{
+				auto spotLight = prefab->AddChild();
+				spotLight->transform->position = { 0.0f, 4.0f, 0.0f };
+				spotLight->AddComponent<Light>()->Strength = { 1, 1, 1 };
+				spotLight->GetComponent<Light>()->type = Light::Type::Point;
+				spotLight->GetComponent<Light>()->FalloffEnd = 5;
+			}
 			ASSET AddPrefab("HP_Lamppost", std::make_unique<GameObject>(prefab));
 		}
 

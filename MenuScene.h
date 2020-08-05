@@ -26,6 +26,7 @@ public:
 			ASSET AddTexture("ui_sim", L"Textures\\icon\\sim.dds");
 			ASSET AddTexture("ui_coin", L"Textures\\icon\\coin.dds");
 			ASSET AddTexture("ui_time", L"Textures\\icon\\time.dds");
+			ASSET AddTexture("ui_world", L"Textures\\icon\\world.dds");
 
 			ASSET AddTexture("icon_landmark", L"Textures\\icon\\landmark.dds");
 			ASSET AddTexture("icon_house", L"Textures\\icon\\house.dds");
@@ -182,6 +183,7 @@ public:
 			ASSET AddMaterial("ui_sim", ASSET TEXTURE("ui_sim"));
 			ASSET AddMaterial("ui_coin", ASSET TEXTURE("ui_coin"));
 			ASSET AddMaterial("ui_time", ASSET TEXTURE("ui_time"));
+			ASSET AddMaterial("ui_world", ASSET TEXTURE("ui_world"));
 
 			ASSET AddMaterial("icon_landmark", ASSET TEXTURE("icon_landmark"));
 			ASSET AddMaterial("icon_house", ASSET TEXTURE("icon_house"));
@@ -192,7 +194,7 @@ public:
 			ASSET AddMaterial("icon_prop", ASSET TEXTURE("icon_prop"));
 			ASSET AddMaterial("icon_delete", ASSET TEXTURE("icon_delete"));
 
-			ASSET AddMaterial("ui_selectFrame", ASSET TEXTURE("ui_selectFrame"));
+			ASSET AddMaterial("ui_selectFrame", ASSET TEXTURE("ui_selectFrame")); 
 		}
 
 		/*AdvancedVillagePack*/

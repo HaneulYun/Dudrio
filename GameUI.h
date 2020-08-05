@@ -21,7 +21,7 @@ public:
 
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
-		gameUIs.reserve(GameUICategory::Count);
+		gameUIs.resize(GameUICategory::Count);
 
 		gameUIs[ChatUI] = Scene::scene->CreateImage();
 		{

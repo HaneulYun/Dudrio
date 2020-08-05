@@ -329,12 +329,16 @@ public:
 			ls2c_pakcet_new_room* my_packet = reinterpret_cast<ls2c_pakcet_new_room*>(ptr);
 			RoomInfo* room = new RoomInfo({ my_packet->room_id, my_packet->host_name, my_packet->serverIP, my_packet->server_port,
 					my_packet->terrain_size, my_packet->frequency, my_packet->octaves, my_packet->seed });
-			hosts[my_packet->room_id] = std::make_pair(gameObject->scene->Duplicate(buttonPrefab), room);
+
 			std::wstring wname;
 			std::string sname = my_packet->host_name;
 			wname.assign(sname.begin(), sname.end());
-			hosts[my_packet->room_id].first->children.front()->GetComponent<Text>()->text = wname;
-			hosts[my_packet->room_id].first->AddComponent<Button>()->AddEvent(
+
+			auto button = Scene::scene->Duplicate(buttonPrefab);
+			button->layer = (int)RenderLayer::UI;
+
+			button->children.front()->GetComponent<Text>()->text = wname;
+			button->AddComponent<Button>()->AddEvent(
 				[](void* ptr) {
 					connector->selected_room = reinterpret_cast<RoomInfo*>(ptr);
 					connector->is_connect = false;
@@ -342,6 +346,8 @@ public:
 					WSACleanup();
 					SceneManager::LoadScene("GuestScene");
 				}, room);
+
+			hosts[my_packet->room_id] = std::make_pair(button, room);
 		}
 		break;
 		case LS2C_DELETE_ROOM:

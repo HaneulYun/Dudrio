@@ -5,12 +5,6 @@ GuestGameWorld* GuestGameWorld::gameWorld;
 
 void GuestScene::BuildObjects()
 {
-	LoadTextureAsset();
-	LoadMaterialAsset();
-	LoadMeshAsset();
-
-	LoadPrefab();
-
 	{
 		GameObject* fps = CreateUI();
 		auto rectTransform = fps->GetComponent<RectTransform>();

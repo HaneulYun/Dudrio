@@ -110,7 +110,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 			auto player = gameObject->scene->Duplicate(simsPrefab);
 			auto behavior = player->GetComponent<CharacterMovingBehavior>();
 			behavior->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
-			strcpy_s(behavior->name, my_packet->name);
+			wcscpy_s(behavior->name, my_packet->name);
 			auto uiPos = player->AddChild();
 			{
 				uiPos->transform->position = { 0, 1.8, 0 };
@@ -227,17 +227,11 @@ void HostNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 		if (id == myId)
 		{
-			wstring wname;
-			string cname = name;
-			wname.assign(cname.begin(), cname.end());
-			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+			add_chat(name, my_packet->mess);
 		}
 		else
 		{
-			wstring wname;
-			string cname = players[id]->GetComponent<CharacterMovingBehavior>()->name;
-			wname.assign(cname.begin(), cname.end());
-			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+			add_chat(players[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->mess);
 		}
 	}
 		break;
@@ -347,7 +341,7 @@ void HostNetwork::Login()
 	cs_packet_login_host l_packet;
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_HOST;
-	strcpy_s(l_packet.name, name);
+	wcscpy_s(l_packet.name, name);
 	HostGameWorld::gameWorld->timeSpeed = HostGameWorld::gameWorld->TimeSpeed::X1;
 	l_packet.game_time = HostGameWorld::gameWorld->gameTime;
 	l_packet.frequency = frequency;
@@ -390,7 +384,7 @@ void HostNetwork::LobbyLogin()
 	c2ls_packet_login_host l_packet;
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2LS_LOGIN_HOST;
-	strcpy_s(l_packet.name, name);
+	wcscpy_s(l_packet.name, name);
 	l_packet.terrain_size = terrainSize;
 	l_packet.frequency = frequency;
 	l_packet.octaves = octaves;

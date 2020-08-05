@@ -24,7 +24,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* loadVillageButton{ nullptr };
 
 	// 마을 주인 이름
-	static char name[MAX_ID_LEN + 1];
+	static wchar_t name[MAX_ID_LEN + 1];
 
 	// 게임 시간
 	float ingame_time;
@@ -92,9 +92,7 @@ public:
 	{
 		if (!checkRangeInField())
 			return false;
-		std::string sname;
-		sname.assign(nameField->text.begin(), nameField->text.end());
-		strncpy(name, sname.c_str(), sname.length());
+		wcsncpy(name, nameField->text.c_str(), nameField->text.length());
 		std::wstringstream(frequencyField->text) >> frequency;
 		std::wstringstream(octavesField->text) >> octaves;
 		std::wstringstream(seedField->text) >> seed;

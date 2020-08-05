@@ -333,7 +333,7 @@ void IOCPServer::send_login_ok_packet(int user_id)
 	p.rotAngle = g_clients[user_id]->m_rotAngle;
 	p.game_time = contents.ingame_time;
 	p.host_id = contents.host_id;
-	strcpy(p.host_name, g_clients[contents.host_id]->m_name);
+	wcscpy(p.host_name, g_clients[contents.host_id]->m_name);
 
 	if (terrain_data != nullptr) {
 		p.frequency = terrain_data->frequency;
@@ -367,7 +367,7 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 	p.zVel = g_clients[o_id]->m_zVel;
 	p.rotAngle = g_clients[o_id]->m_rotAngle;
 
-	strcpy_s(p.name, g_clients[o_id]->m_name);
+	wcscpy_s(p.name, g_clients[o_id]->m_name);
 	if (o_id == contents.host_id)
 		p.o_type = O_HOST;
 	else

@@ -20,7 +20,7 @@ public:
 	float	m_xPos, m_yPos, m_zPos;
 	float	m_rotAngle;
 	float	m_xVel, m_zVel;
-	char	m_name[MAX_ID_LEN + 1];
+	wchar_t	m_name[MAX_ID_LEN + 1];
 
 	bool	m_collide_invincible;
 

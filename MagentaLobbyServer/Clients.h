@@ -14,7 +14,7 @@ public:
 	int		m_prev_size;
 	char	m_packet_buf[MAX_PACKET_SIZE];
 	atomic	<C_STATUS> m_status;
-	char	m_name[L_MAX_ID_LEN + 1];
+	wchar_t	m_name[L_MAX_ID_LEN + 1];
 
 	char	o_type;
 

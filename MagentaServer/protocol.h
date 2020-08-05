@@ -44,7 +44,7 @@ struct sc_packet_login_ok {
 	char type;
 	int id;
 	int host_id;
-	char host_name[MAX_ID_LEN + 1];
+	wchar_t host_name[MAX_ID_LEN + 1];
 	float game_time;
 	float xPos, zPos;
 	float xVel, zVel;
@@ -81,7 +81,7 @@ struct sc_packet_enter {
 	unsigned char size;
 	char type;
 	int id;
-	char name[MAX_ID_LEN + 1];
+	wchar_t name[MAX_ID_LEN + 1];
 	char o_type;
 	float xPos, zPos;
 	float xVel, zVel;
@@ -165,13 +165,13 @@ struct sc_packet_destruct_all
 struct cs_packet_login_guest {
 	unsigned char	size;
 	char	type;
-	char	name[MAX_ID_LEN + 1];
+	wchar_t	name[MAX_ID_LEN + 1];
 };
 
 struct cs_packet_login_host {
 	unsigned char	size;
 	char	type;
-	char	name[MAX_ID_LEN + 1];
+	wchar_t	name[MAX_ID_LEN + 1];
 	float	terrainSize;
 	float	frequency;
 	int		octaves;

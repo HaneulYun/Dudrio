@@ -8,7 +8,7 @@
 
 struct RoomInfo {
 	int room_id;
-	char name[MAX_ID_LEN + 1];
+	wchar_t name[MAX_ID_LEN + 1];
 	char serverIP[INET_ADDRSTRLEN];
 	int port_num;
 	int terrain_size;
@@ -17,10 +17,10 @@ struct RoomInfo {
 	int seed;
 
 	RoomInfo() {}
-	RoomInfo(int id, char* h_name, char* ip, int port, int t_size, int freq, int oct, int sd)
+	RoomInfo(int id, wchar_t* h_name, char* ip, int port, int t_size, int freq, int oct, int sd)
 	{
 		room_id = id;
-		strcpy_s(name, h_name);
+		wcscpy_s(name, h_name);
 		strcpy_s(serverIP, ip);
 		port_num = port;
 		terrain_size = t_size;
@@ -57,7 +57,7 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	GameObject* buttonPrefab{ nullptr };
 
 	// 게스트 이름
-	static char name[MAX_ID_LEN + 1];
+	static wchar_t name[MAX_ID_LEN + 1];
 
 	// 선택한 방 정보
 	std::unordered_map<int, std::pair<GameObject*, RoomInfo*>> hosts;
@@ -90,9 +90,7 @@ public:
 	{
 		if (!checkRangeInField())
 			return false;
-		std::string sname;
-		sname.assign(nameField->text.begin(), nameField->text.end());
-		strncpy(name, sname.c_str(), sname.length());
+		wcsncpy(name, nameField->text.c_str(), nameField->text.length());
 
 		clearFields();
 		return true;
@@ -330,14 +328,11 @@ public:
 			RoomInfo* room = new RoomInfo({ my_packet->room_id, my_packet->host_name, my_packet->serverIP, my_packet->server_port,
 					my_packet->terrain_size, my_packet->frequency, my_packet->octaves, my_packet->seed });
 
-			std::wstring wname;
-			std::string sname = my_packet->host_name;
-			wname.assign(sname.begin(), sname.end());
 
 			auto button = Scene::scene->Duplicate(buttonPrefab);
 			button->layer = (int)RenderLayer::UI;
 
-			button->children.front()->GetComponent<Text>()->text = wname;
+			button->children.front()->GetComponent<Text>()->text = my_packet->host_name;
 			button->AddComponent<Button>()->AddEvent(
 				[](void* ptr) {
 					connector->selected_room = reinterpret_cast<RoomInfo*>(ptr);
@@ -421,7 +416,7 @@ public:
 			c2ls_packet_login_guest l_packet;
 			l_packet.size = sizeof(l_packet);
 			l_packet.type = C2LS_LOGIN_GUEST;
-			strcpy_s(l_packet.name, name);
+			wcscpy_s(l_packet.name, name);
 
 			send_packet(&l_packet);
 			is_connect = true;

@@ -19,7 +19,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 
 		// 호스트 이름 저장
 		hostId = my_packet->host_id;
-		strcpy_s(host_name, my_packet->host_name);
+		wcscpy_s(host_name, my_packet->host_name);
 
 		// 내 캐릭터 정보 지정
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
@@ -48,7 +48,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		if (id != myId && o_type == O_GUEST){
 			auto player = gameObject->scene->Duplicate(simsPrefab);
 			auto behavior = player->GetComponent<CharacterMovingBehavior>();
-			strcpy_s(behavior->name, my_packet->name);
+			wcscpy_s(behavior->name, my_packet->name);
 			behavior->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 
 			otherCharacters[id] = player;
@@ -194,22 +194,13 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_chat* my_packet = reinterpret_cast<sc_packet_chat*>(ptr);
 		int id = my_packet->id;
 		if (id == myId){
-			wstring wname;
-			string cname = myCharacter->GetComponent<CharacterMovingBehavior>()->name;
-			wname.assign(cname.begin(), cname.end());
-			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+			add_chat(myCharacter->GetComponent<CharacterMovingBehavior>()->name, my_packet->mess);
 		}
 		else if (id == hostId){
-			wstring wname;
-			string cname = host_name;
-			wname.assign(cname.begin(), cname.end());
-			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+			add_chat(host_name, my_packet->mess);
 		}
 		else{
-			wstring wname;
-			string cname = otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name;
-			wname.assign(cname.begin(), cname.end());
-			add_chat(_wcsdup(wname.c_str()), my_packet->mess);
+			add_chat(otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->mess);
 		}
 	}
 	break;
@@ -304,7 +295,7 @@ void GuestNetwork::Login()
 	cs_packet_login_guest l_packet;
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_GUEST;
-	strcpy_s(l_packet.name, myCharacter->GetComponent<CharacterMovingBehavior>()->name);
+	wcscpy_s(l_packet.name, myCharacter->GetComponent<CharacterMovingBehavior>()->name);
 	
 	send_packet(&l_packet);
 }

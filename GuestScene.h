@@ -19,6 +19,9 @@ public:
 		//ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
 		//ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
 
+		ASSET AddTexture("ui_chatInput", L"Textures\\icon\\chatInput.dds");
+		ASSET AddTexture("ui_time", L"Textures\\icon\\time.dds");
+		ASSET AddTexture("ui_world", L"Textures\\icon\\world.dds");
 
 		/*AdvancedVillagePack*/
 		{
@@ -143,6 +146,7 @@ public:
 	void LoadMaterialAsset()
 	{
 		ASSET AddMaterial("none", ASSET TEXTURE("none"));
+		ASSET AddMaterial("sea", ASSET TEXTURE("none"), 0, 0, 0, { 0, 0.5, 1, 1 });
 		ASSET AddMaterial("gray", ASSET TEXTURE("none"), 0, 0, 0, { 0.5, 0.5, 0.5, 1.0 });
 		ASSET AddMaterial("ground", ASSET TEXTURE("ground"), 0, 0, 0, { 0.48f, 0.64f, 0.2f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f, Matrix4x4::MatrixScaling(200, 200, 200));
 		ASSET AddMaterial("grass", ASSET TEXTURE("grass"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.1f);
@@ -151,6 +155,12 @@ public:
 
 		//ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		//ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
+
+
+		ASSET AddMaterial("ui_bar", ASSET TEXTURE("none"), 0, 0, 0, { 0.23828125f, 0.1484375f, 0.08984375f, 1 });
+		ASSET AddMaterial("ui_chatInput", ASSET TEXTURE("ui_chatInput"));
+		ASSET AddMaterial("ui_time", ASSET TEXTURE("ui_time"));
+		ASSET AddMaterial("ui_world", ASSET TEXTURE("ui_world"));
 
 
 		/*AdvancedVillagePack*/

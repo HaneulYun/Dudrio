@@ -30,11 +30,11 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
 
-		connectButtonText->text = L"Connect";
+		//connectButtonText->text = L"Connect";
 		pressButton = false;
 		isConnect = false;
 		tryConnect = false;
-		gameTime->SetActive(false);
+		//gameTime->SetActive(false);
 
 		closesocket(serverSocket);
 	}
@@ -299,11 +299,11 @@ void GuestNetwork::Logout()
 
 	send_packet(&l_packet);
 
-	connectButtonText->text = L"Connect";
+	//connectButtonText->text = L"Connect";
 	pressButton = false;
 	isConnect = false;
 	tryConnect = false;
-	gameTime->SetActive(false);
+	//gameTime->SetActive(false);
 
 	closesocket(serverSocket);
 

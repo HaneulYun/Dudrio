@@ -125,6 +125,15 @@ void GuestScene::BuildObjects()
 		bottom->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 	}
 
+	auto ui_bar = Scene::scene->CreateImage();
+	{
+		auto rt = ui_bar->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(0, 0);
+		rt->setPosAndSize(0, 0, CyanFW::Instance()->GetWidth(), 25);
+
+		ui_bar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
+	}
+
 	auto object = CreateUI();
 	{
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
@@ -134,6 +143,10 @@ void GuestScene::BuildObjects()
 
 		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
 		gameWorld->sun = directionalLight;
+
+		GuestUI* guestUI = object->AddComponent<GuestUI>(); 
+		guestUI->guestUIs.push_back(ui_bar);
+		gameWorld->guestUI = guestUI;
 	}
 
 	auto network = CreateEmpty();
@@ -154,62 +167,62 @@ void GuestScene::BuildObjects()
 		}
 	}
 
-	auto ServerButton = CreateImage();
-	{
-		auto rectTransform = ServerButton->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 1 };
-		rectTransform->anchorMax = { 0, 1 };
-		rectTransform->pivot = { 0, 1 };
-		rectTransform->posX = 1110;
-		rectTransform->posY = -10;
-		rectTransform->width = 80;
-		rectTransform->height = 30;
+	//auto ServerButton = CreateImage();
+	//{
+	//	auto rectTransform = ServerButton->GetComponent<RectTransform>();
+	//	rectTransform->anchorMin = { 0, 1 };
+	//	rectTransform->anchorMax = { 0, 1 };
+	//	rectTransform->pivot = { 0, 1 };
+	//	rectTransform->posX = 1110;
+	//	rectTransform->posY = -10;
+	//	rectTransform->width = 80;
+	//	rectTransform->height = 30;
+	//
+	//	ServerButton->AddComponent<Button>()->AddEvent(
+	//		[](void*) {
+	//			GuestNetwork::network->PressButton();
+	//		});
+	//	{
+	//		auto textobject = ServerButton->AddChildUI();
+	//		auto rectTransform = textobject->GetComponent<RectTransform>();
+	//		rectTransform->anchorMin = { 0, 0 };
+	//		rectTransform->anchorMax = { 1, 1 };
+	//
+	//		Text* text = textobject->AddComponent<Text>();
+	//		text->text = L"Connect";
+	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	//
+	//		guestNetwork->connectButtonText = text;
+	//	}
+	//}
 
-		ServerButton->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				GuestNetwork::network->PressButton();
-			});
-		{
-			auto textobject = ServerButton->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
-
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Connect";
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-
-			guestNetwork->connectButtonText = text;
-		}
-	}
-
-	auto menuSceneButton = CreateImage();
-	{
-		auto rectTransform = menuSceneButton->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 1 };
-		rectTransform->anchorMax = { 0, 1 };
-		rectTransform->pivot = { 0, 1 };
-		rectTransform->posX = 10;
-		rectTransform->posY = -10;
-		rectTransform->width = 150;
-		rectTransform->height = 30;
-
-		menuSceneButton->AddComponent<Button>()->AddEvent(
-			[](void*) {
-				SceneManager::LoadScene("MenuScene");
-			});
-		{
-			auto textobject = menuSceneButton->AddChildUI();
-			auto rectTransform = textobject->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0, 0 };
-			rectTransform->anchorMax = { 1, 1 };
-
-			Text* text = textobject->AddComponent<Text>();
-			text->text = L"Menu Scene";
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		}
-	}
+	//auto menuSceneButton = CreateImage();
+	//{
+	//	auto rectTransform = menuSceneButton->GetComponent<RectTransform>();
+	//	rectTransform->anchorMin = { 0, 1 };
+	//	rectTransform->anchorMax = { 0, 1 };
+	//	rectTransform->pivot = { 0, 1 };
+	//	rectTransform->posX = 10;
+	//	rectTransform->posY = -10;
+	//	rectTransform->width = 150;
+	//	rectTransform->height = 30;
+	//
+	//	menuSceneButton->AddComponent<Button>()->AddEvent(
+	//		[](void*) {
+	//			SceneManager::LoadScene("MenuScene");
+	//		});
+	//	{
+	//		auto textobject = menuSceneButton->AddChildUI();
+	//		auto rectTransform = textobject->GetComponent<RectTransform>();
+	//		rectTransform->anchorMin = { 0, 0 };
+	//		rectTransform->anchorMax = { 1, 1 };
+	//
+	//		Text* text = textobject->AddComponent<Text>();
+	//		text->text = L"Menu Scene";
+	//		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+	//		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+	//	}
+	//}
 
 }

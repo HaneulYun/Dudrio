@@ -46,4 +46,5 @@
 #include "ParticleManager.h"
 
 #include "GameUI.h"
+#include "GuestUI.h"
 #include "FPS.h"

@@ -12,13 +12,13 @@ using namespace std;
 class GuestNetwork : public MonoBehavior<GuestNetwork>
 {
 private:
-	GameObject* gameTime{ nullptr };
+	//GameObject* gameTime{ nullptr };
 
 	// Chat
 	InputField* chatField{ nullptr };
 	GameObject* chatting[10];
 public:
-	Text* connectButtonText{ nullptr };
+	//Text* connectButtonText{ nullptr };
 
 	WSADATA WSAData;
 	SOCKET serverSocket;
@@ -72,22 +72,22 @@ public:
 		hostId = -1;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 
-		gameTime = Scene::scene->CreateUI();
-		{
-			auto rt = gameTime->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(200, -50, 150, -30);
+		//gameTime = Scene::scene->CreateUI();
+		//{
+		//	auto rt = gameTime->GetComponent<RectTransform>();
+		//	rt->setAnchorAndPivot(0, 1);
+		//	rt->setPosAndSize(200, -50, 150, -30);
+		//
+		//	Text* text = gameTime->AddComponent<Text>();
+		//	text->text = GuestGameWorld::gameWorld->convertTimeToText();
+		//	text->fontSize = 30;
+		//	text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		//	text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+		//	text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		//}
+		//gameTime->SetActive(false);
 
-			Text* text = gameTime->AddComponent<Text>();
-			text->text = GuestGameWorld::gameWorld->convertTimeToText();
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		}
-		gameTime->SetActive(false);
-
-		auto chatFieldObject = Scene::scene->CreateImage();
+		auto chatFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = chatFieldObject->GetComponent<RectTransform>();
 			rt->setAnchorAndPivot(0, 1);
@@ -193,11 +193,11 @@ public:
 			}
 			else if (retval == 0)
 			{
-				connectButtonText->text = L"Logout";
+				//connectButtonText->text = L"Logout";
 				tryConnect = false;
 				isConnect = true;
 				flag = true;
-				gameTime->SetActive(true);
+				//gameTime->SetActive(true);
 				unsigned long on = true;
 				int nRet = ioctlsocket(serverSocket, FIONBIO, &on);
 				Login();
@@ -205,7 +205,7 @@ public:
 		}
 		if (isConnect)
 		{
-			gameTime->GetComponent<Text>()->text = GuestGameWorld::gameWorld->convertTimeToText();
+			//gameTime->GetComponent<Text>()->text = GuestGameWorld::gameWorld->convertTimeToText();
 			Receiver();
 
 			if (chatField->isFocused) {
@@ -227,7 +227,7 @@ public:
 	{
 		if (isConnect)
 		{
-			connectButtonText->text = L"Connect";
+			//connectButtonText->text = L"Connect";
 			return Logout();
 		}
 

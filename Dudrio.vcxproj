@@ -187,6 +187,7 @@
     <ClInclude Include="GameLoader.h" />
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="GameWorld.h" />
+    <ClInclude Include="GuestUI.h" />
     <ClInclude Include="HostGameWorld.h" />
     <ClInclude Include="GuestCameraController.h" />
     <ClInclude Include="GuestController.h" />

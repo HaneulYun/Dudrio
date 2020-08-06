@@ -678,6 +678,20 @@ void BuildingBuilder::pickToDelete()
 	if (0 > x || x >= gameObject->scene->spatialPartitioningManager.xSize || 0 > y || y >= gameObject->scene->spatialPartitioningManager.ySize) 
 		return;
 
+	Vector3 screenPos{ Input::mousePosition.x, Input::mousePosition.y, 1.0f };
+
+	Vector3 rayOrigin{ 0.0f, 0.0f, 0.0f };
+	Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos);
+
+	Matrix4x4 invView = Camera::main->view.Inverse();
+	Matrix4x4 invWorld = terrain->gameObject->transform->localToWorldMatrix.Inverse();
+	Matrix4x4 toLocal = invView * invWorld;
+
+	rayOrigin = rayOrigin.TransformCoord(toLocal);
+	rayDir = rayDir.TransformNormal(invWorld).Normalize();
+
+	float dist;
+
 	for (auto& tagList : gameObject->scene->spatialPartitioningManager.sectorList[x][y].list)
 	{
 		for (auto& object : tagList.second)
@@ -690,7 +704,8 @@ void BuildingBuilder::pickToDelete()
 				boundingBox.Extents = collider->boundingBox.Extents;
 				boundingBox.Orientation = object->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
 
-				if (boundingBox.Contains(XMLoadFloat3(&XMFLOAT3(mousePosInWorld.x, mousePosInWorld.y, mousePosInWorld.z))))
+				//if (boundingBox.Contains(XMLoadFloat3(&XMFLOAT3(mousePosInWorld.x, mousePosInWorld.y, mousePosInWorld.z))))
+				if (boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), dist))
 				{
 					if (Input::GetMouseButtonUp(0))
 					{

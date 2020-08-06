@@ -557,6 +557,12 @@ void BuildingBuilder::build(Vector3 position)
 	prefab = nullptr;
 }
 
+void BuildingBuilder::simBuild(Vector2 position, double angle, int type, int index, GameObject* landmark)
+{
+	if (terrainNodeData->extraData[(int)position.x + ((int)position.y * terrain->terrainData.heightmapHeight)].collision == false)
+		build(position, rand() % 360, type, index, landmark);
+}
+
 void BuildingBuilder::makePrefab(int type, int index)
 {
 	if (index < building[type].size())

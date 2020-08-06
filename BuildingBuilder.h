@@ -58,6 +58,8 @@ public:
 
 	void build(Vector3 position);
 
+	void simBuild(Vector2 position, double angle, int type, int index, GameObject* landmark);
+
 	void makePrefab(int type, int index);
 
 	void exitBuildMode();

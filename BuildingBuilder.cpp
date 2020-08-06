@@ -97,7 +97,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			prefab->transform->position = getPosOnTerrain();
 	}
 	
-	// 건물 삭제
+
 	else if (builderMode == DeleteMode && HostNetwork::network != nullptr)
 	{
 		pickToDelete();
@@ -561,8 +561,9 @@ void BuildingBuilder::makePrefab(int type, int index)
 }
 
 void BuildingBuilder::exitBuildMode()
-{
-	Scene::scene->PushDelete(prefab);
+{	
+	if (prefab)
+		Scene::scene->PushDelete(prefab);
 	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
 	prefab = nullptr;
 	builderMode = DefaultMode;

@@ -40,6 +40,8 @@ public:
 
 			buildingTypeButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
+					BuildingBuilder::buildingBuilder->exitBuildMode();
+
 					auto object = reinterpret_cast<GameObject*>(ptr);
 					object->parent->GetComponent<BuildingTypeSelector>()->InactivateChildren(object);
 					object->SetActive(!object->active);
@@ -92,6 +94,8 @@ public:
 
 			DeleteButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
+					BuildingBuilder::buildingBuilder->exitBuildMode();
+
 					auto frame = HostGameWorld::gameWorld->gameUI->gameUIs[GameUI::GameUICategory::SelectFrame];
 					auto rt = frame->GetComponent<RectTransform>();
 					auto obj_rt = reinterpret_cast<RectTransform*>(ptr);

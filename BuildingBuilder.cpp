@@ -11,6 +11,8 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	if (builderMode == BuildMode)
 	{
+		isOnLand();
+
 		// 토글 설정
 		if (Input::GetKeyDown(KeyCode::T))
 			rotationToggle = rotationToggle ? false : true;
@@ -34,9 +36,8 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				lastMousePos = Input::mousePosition;
 			}
 		}
-
 		// 건물 건설
-		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && isOnLand() != nullptr)
+		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 0)
 		{
 			GameObject* prePrefab = prefab;
 			makePrefab(curPrefabType, curPrefabIndex);
@@ -97,12 +98,10 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			prefab->transform->position = getPosOnTerrain();
 	}
 	
-
 	else if (builderMode == DeleteMode && HostNetwork::network != nullptr)
 	{
 		pickToDelete();
 	}
-
 }
 
 void BuildingBuilder::serializeBuildings()
@@ -426,12 +425,13 @@ GameObject* BuildingBuilder::isOnLand()
 		{
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
 
-			if (distance >= landmark.first->GetComponent<Village>()->radiusOfLand + LAND_SMALL)
+			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand + LAND_SMALL)
 			{
-				curLandmark = prefab;
-				return prefab;
+				return curLandmark = nullptr;
 			}
 		}
+		curLandmark = prefab;
+		return prefab;
 	}
 	else
 	{
@@ -446,7 +446,7 @@ GameObject* BuildingBuilder::isOnLand()
 			}
 		}
 	}
-	return nullptr;
+	return curLandmark = nullptr;
 }
 
 void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision)

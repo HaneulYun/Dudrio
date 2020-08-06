@@ -22,7 +22,11 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 
 		// 건물 회전
 		if (Input::GetMouseButtonDown(2))
+		{
 			lastMousePos = Input::mousePosition;
+			for (auto& child : prefab->children)
+				child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
+		}
 		else if (Input::GetMouseButton(2))
 		{
 			if (rotationToggle)
@@ -37,6 +41,12 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			{
 				prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) * Time::deltaTime * 60.0f);
 				lastMousePos = Input::mousePosition;
+			}
+
+			if (prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 1)
+			{
+				for (auto& child : prefab->children)
+					child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
 			}
 		}
 		
@@ -698,6 +708,8 @@ void BuildingBuilder::pickToDelete()
 							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z, angle);
 						}
 						HostGameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
+
+						return;
 					}
 				}
 			}

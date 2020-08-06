@@ -65,8 +65,11 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			if (curPrefabType == Landmark)
 			{
 				curLandmark = prefab;
-				prefab->AddComponent<Village>()->OnAutoDevelopment();
-				range = prefab->GetComponent<Village>()->radiusOfLand;
+				Village* village;
+				village = prefab->AddComponent<Village>();
+				village->OnAutoDevelopment();
+				village->radiusOfLand = getLandmarkRaduis(prefab);
+				range = village->radiusOfLand;
 			}
 			else {
 				for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
@@ -449,7 +452,7 @@ GameObject* BuildingBuilder::isOnLand()
 		{
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
 
-			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand + LAND_SMALL)
+			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand + getLandmarkRaduis(prefab))
 			{
 				return curLandmark = nullptr;
 			}
@@ -666,6 +669,18 @@ wstring BuildingBuilder::getBuildingName(int type, int index)
 	if (index < building[type].size())
 		return building[type][index].buildingName;
 	return L"X";
+}
+
+int BuildingBuilder::getLandmarkRaduis(GameObject* landmark)
+{
+	BoxCollider* collider = landmark->GetComponent<BoxCollider>();
+
+	if (collider->extents.x > 10.0f || collider->extents.y > 10.0f || collider->extents.z > 10.0f)
+		return LAND_LARGE;
+	else if (collider->extents.x > 5.0f || collider->extents.y > 5.0f || collider->extents.z > 5.0f)
+		return LAND_MEDIUM;
+	else
+		return LAND_SMALL;
 }
 
 void BuildingBuilder::pickToDelete()

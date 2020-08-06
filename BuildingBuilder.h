@@ -74,6 +74,8 @@ public:
 
 	wstring getBuildingName(int type, int index);
 
+	int getLandmarkRaduis(GameObject* landmark);
+
 	void pickToDelete();
 
 	Vector3 getPosOnTerrain();

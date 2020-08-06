@@ -200,7 +200,7 @@ void HostGameWorld::changeMode(GameState state)
 			gameState = CameraMode;
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(false);
 		}
-		else
+		else if(gameState != MenuMode)
 		{
 			gameState = ChatMode;
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(true);

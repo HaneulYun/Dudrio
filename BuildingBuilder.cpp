@@ -11,6 +11,9 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
 	if (builderMode == BuildMode)
 	{
+		for (auto& child : prefab->children)
+			child->GetComponent<Constant>()->v4 = { 1, 0, 0, 1 };
+
 		isOnLand();
 
 		// 토글 설정
@@ -36,9 +39,13 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				lastMousePos = Input::mousePosition;
 			}
 		}
+		
 		// 건물 건설
-		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 0)
+		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 1)
 		{
+			for (auto& child : prefab->children)
+				child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
+
 			GameObject* prePrefab = prefab;
 			makePrefab(curPrefabType, curPrefabIndex);
 			prefab->transform->localToWorldMatrix = prePrefab->GetMatrix();
@@ -95,7 +102,14 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 
 		// 미리보기 건물 이동
 		else
+		{
+			if (prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 1)
+			{
+				for (auto& child : prefab->children)
+					child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
+			}
 			prefab->transform->position = getPosOnTerrain();
+		}
 	}
 	
 	else if (builderMode == DeleteMode && HostNetwork::network != nullptr)

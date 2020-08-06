@@ -495,7 +495,7 @@ void BuildingBuilder::build(Vector2 position, double angle, int type, int index,
 		else
 		{
 			obj = Scene::scene->CreateEmpty();
-			obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+			obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->BoundsLimited;
 
 			auto child = obj->AddChild();
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -540,8 +540,8 @@ void BuildingBuilder::makePrefab(int type, int index)
 		else
 		{
 			prefab = Scene::scene->CreateEmpty();
-			prefab->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->Bounds.Center.x, data.mesh->Bounds.Center.z, data.mesh->Bounds.Center.y };
-			prefab->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->Bounds.Extents.x, data.mesh->Bounds.Extents.z, data.mesh->Bounds.Extents.y };
+			prefab->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
+			prefab->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
 
 			auto child = prefab->AddChild();
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -819,7 +819,7 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 					else
 					{
 						obj = Scene::scene->CreateEmpty();
-						obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+						obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->BoundsLimited;
 
 						auto child = obj->AddChild();
 						child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -857,7 +857,7 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 	else
 	{
 		obj = Scene::scene->CreateEmpty();
-		obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+		obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->BoundsLimited;
 
 		auto child = obj->AddChild();
 		child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);

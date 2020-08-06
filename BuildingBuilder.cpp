@@ -577,12 +577,11 @@ void BuildingBuilder::enterBuildMode(int type, int index)
 		return;
 	}
 
-	builderMode = BuildMode;
-
 	makePrefab(type, index);
 
 	if (prefab == nullptr) return;
 
+	builderMode = BuildMode;
 	prefab->tag = TAG_PREVIEW;
 	for (auto& child : prefab->children)
 	{

@@ -84,6 +84,8 @@ void HostScene::BuildObjects()
 	float TerrainSize = 1000;
 	int frequency, octaves, seed;
 	int file_pointer;
+	float gametime = 0.0f;
+	int gameday = 1;
 	wstring host_name;
 	if (!HostInformConnector::connector->load) {
 		TerrainSize = HostInformConnector::connector->terrainSize;
@@ -95,7 +97,7 @@ void HostScene::BuildObjects()
 		GameLoader::gameLoader->initFile(host_name, frequency, octaves, seed);
 	}
 	else {
-		file_pointer = GameLoader::gameLoader->Load(host_name, frequency, octaves, seed);
+		file_pointer = GameLoader::gameLoader->Load(host_name, frequency, octaves, seed, gametime, gameday);
 	}
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
@@ -246,6 +248,10 @@ void HostScene::BuildObjects()
 		HostGameWorld* gameWorld = object->AddComponent<HostGameWorld>();
 		gameWorld->simPrefab = sim;
 		gameWorld->sun = directionalLight;
+		if (HostInformConnector::connector->load) {
+			gameWorld->gameTime = gametime;
+			gameWorld->day = gameday;
+		}
 		object->AddComponent<AIManager>();
 		auto gameLoader = object->AddComponent<GameLoader>();
 		HostGameWorld::gameWorld = gameWorld;
@@ -323,7 +329,7 @@ void HostScene::BuildObjects()
 
 			gameLoadButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
-					GameLoader::gameLoader->Save();
+					GameLoader::gameLoader->SaveTime(HostGameWorld::gameWorld->gameTime, HostGameWorld::gameWorld->day);
 				});
 		}
 
@@ -343,7 +349,7 @@ void HostScene::BuildObjects()
 
 			gameExitButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
-					GameLoader::gameLoader->Save();
+					GameLoader::gameLoader->SaveTime(HostGameWorld::gameWorld->gameTime, HostGameWorld::gameWorld->day);
 					PostQuitMessage(0);
 				});
 		}

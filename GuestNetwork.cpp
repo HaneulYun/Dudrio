@@ -20,6 +20,8 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		// 호스트 이름 저장
 		hostId = my_packet->host_id;
 		wcscpy_s(host_name, my_packet->host_name);
+		std::wstring hostname = host_name;
+		guestUI->guestUIs[GuestUI::WorldNameUI]->GetComponent<Text>()->text = L"\t " + hostname + L" 님의 월드";
 
 		// 내 캐릭터 정보 지정
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();

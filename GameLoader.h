@@ -69,11 +69,6 @@ public:
 		}
 	}
 
-	void modifyLandmarkRange(int b_type, int b_idx, double x, double z, double angle, int prev_range, int new_range)
-	{
-
-	}
-
 	void initFile(std::wstring name, int frequency, int octaves, int seed)
 	{
 		std::fstream file("buildings.txt", std::ios::out);
@@ -118,22 +113,22 @@ public:
 		rewind(fp);
 	}
 
-	void Save()
+	void SaveTime(float& gametime, int& gameday)
 	{
-		//std::ofstream out("Buildings.txt");
-		//for (auto& b : GameWorld::gameWorld->buildingList) {
-		//
-		//}
-		//	out << b.first;
-		//out.close();
+		std::fstream time("time.txt", std::ios::out);
+		time << gametime << ' ' << gameday;
+		time.close();
 	}
 
-	int Load(std::wstring& name, int& frequency, int& octaves, int& seed)
+	int Load(std::wstring& name, int& frequency, int& octaves, int& seed, float& gametime, int& gameday)
 	{
 		std::fstream file("buildings.txt", std::ios::in);
 		std::string str;
 		file >> str >> frequency >> octaves >> seed;
 		name.assign(str.begin(), str.end());
+
+		std::fstream time("time.txt", std::ios::in);
+		time >> gametime >> gameday;
 
 		return file.tellp();
 	}

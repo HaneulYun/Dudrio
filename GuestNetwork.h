@@ -17,9 +17,10 @@ private:
 	// Chat
 	InputField* chatField{ nullptr };
 	GameObject* chatting[10];
+
 public:
 	//Text* connectButtonText{ nullptr };
-
+	GuestUI* guestUI{ nullptr };
 	WSADATA WSAData;
 	SOCKET serverSocket;
 	int myId;

@@ -128,6 +128,7 @@ void GuestScene::BuildObjects()
 		ui_bar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
 	}
 
+	GuestUI* guestUI;
 	auto object = CreateUI();
 	{
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
@@ -139,7 +140,7 @@ void GuestScene::BuildObjects()
 		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
 		gameWorld->sun = directionalLight;
 
-		GuestUI* guestUI = object->AddComponent<GuestUI>(); 
+		guestUI = object->AddComponent<GuestUI>(); 
 		guestUI->guestUIs.push_back(ui_bar);
 		gameWorld->guestUI = guestUI;
 	}
@@ -148,7 +149,7 @@ void GuestScene::BuildObjects()
 	GuestNetwork* guestNetwork = network->AddComponent<GuestNetwork>();
 	{
 		guestNetwork->simsPrefab = simPrefab;
-
+		guestNetwork->guestUI = guestUI;
 		auto player = guestNetwork->myCharacter = Duplicate(simPrefab);
 		player->GetComponent<Transform>()->position = { 540.0, 0.0, 540.0 };
 		player->AddComponent<CharacterController>();

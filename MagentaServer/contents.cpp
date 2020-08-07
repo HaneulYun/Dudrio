@@ -220,11 +220,25 @@ void Contents::enter_game(int user_id, wchar_t name[])
 	g_clients[user_id]->m_name[0] = '\0';
 	wcscpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
+	if (host_id != user_id) {
+		g_buildings_lock.lock();
+		if (!g_villages.empty()) {
+			auto begin = g_villages.begin();
+			int size = rand() % g_villages.size();
+			while (size > 0) {
+				begin++; size--;
+			}
+			Village* village = *begin;
+			g_clients[user_id]->m_xPos = village->m_info.m_xPos - (village->m_land_range / 2) + (rand() % village->m_land_range);
+			g_clients[user_id]->m_zPos = village->m_info.m_zPos - (village->m_land_range / 2) + (rand() % village->m_land_range);
+		}
+		g_buildings_lock.unlock();
+	}
 	iocp.send_login_ok_packet(user_id);
 	g_clients[user_id]->m_status = ST_ACTIVE;
 	g_clients[user_id]->m_cl.unlock();
 
-	if (host_id != user_id) {
+	if (host_id != user_id) {	
 		iocp.send_enter_packet(contents.host_id, user_id);
 
 		g_clients[user_id]->m_cl.lock();

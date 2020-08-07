@@ -134,6 +134,7 @@ void GuestScene::BuildObjects()
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
+		buildingBuilder->builderMode = BuildingBuilder::GuestMode;
 
 		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
 		gameWorld->sun = directionalLight;

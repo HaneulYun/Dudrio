@@ -6,7 +6,7 @@
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
 public:
-	enum BuilderMode { DefaultMode, BuildMode, DeleteMode };
+	enum BuilderMode { DefaultMode, BuildMode, DeleteMode, GuestMode };
 	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Count, None = -1 };
 private /*이 영역에 private 변수를 선언하세요.*/:
 	std::vector<BuildingBuilderData> building[BuildingType::Count];

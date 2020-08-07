@@ -242,7 +242,6 @@ void BuildingBuilder::serializeBuildings()
 
 
 	/*HandPaintedEnviroment*/
-
 	{	
 		building[Landmark].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Well", ASSET MESH("HP_Well"), ASSET MATERIAL("HP_Well")));
 		building[Landmark].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Town_Hall", ASSET MESH("HP_Town_Hall"), ASSET MATERIAL("HP_Town_Hall")));

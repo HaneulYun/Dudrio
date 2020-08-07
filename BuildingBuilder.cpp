@@ -55,7 +55,8 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 								curLandmark = object;
 								GameObject* landmakrInformUI = HostGameWorld::gameWorld->gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI];
 
-								landmakrInformUI->SetActive(!landmakrInformUI->active);
+								if (landmakrInformUI->active == false)
+									landmakrInformUI->SetActive(true);
 							}
 							// ui창. 빌드모드 들어가면 비활성화해야함.
 							// 버튼 -> 심갯수, on/off, radius  ::: curlandmark참조해서 설정 
@@ -163,6 +164,8 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			if (!Input::GetKey(KeyCode::Shift))
 			{
 				builderMode = DefaultMode;
+				curPrefabType = -1;
+				curPrefabIndex = -1;
 				prefab = nullptr;
 				Scene::scene->PushDelete(prePrefab);
 				Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
@@ -657,6 +660,8 @@ void BuildingBuilder::exitBuildMode()
 		Scene::scene->PushDelete(prefab);
 	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
 	prefab = nullptr;
+	curPrefabType = -1;
+	curPrefabIndex = -1;
 	builderMode = DefaultMode;
 }
 

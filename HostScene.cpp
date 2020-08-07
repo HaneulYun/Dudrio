@@ -402,7 +402,7 @@ void HostScene::BuildObjects()
 			Text* text = textObj->AddComponent<Text>();
 			text->fontSize = 16;
 			text->font = L"배달의민족 도현";
-			text->text = L"150m\n\n10명";
+			//text->text = L"150m\n\n10명";
 			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;

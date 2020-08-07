@@ -360,7 +360,8 @@ void HostScene::BuildObjects()
 
 		gameUI->gameUIs[GameUI::GameUICategory::TimeX1]->AddComponent<Button>()->AddEvent([](void* ptr)
 			{
-				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X1;
+				if (!HostNetwork::network->isConnect)
+					HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X1;
 			});
 	}
 
@@ -372,7 +373,8 @@ void HostScene::BuildObjects()
 
 		gameUI->gameUIs[GameUI::GameUICategory::TimeX2]->AddComponent<Button>()->AddEvent([](void* ptr)
 			{
-				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X2;
+				if (!HostNetwork::network->isConnect)
+					HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X2;
 			});
 	}
 
@@ -384,7 +386,8 @@ void HostScene::BuildObjects()
 
 		gameUI->gameUIs[GameUI::GameUICategory::TimeX4]->AddComponent<Button>()->AddEvent([](void* ptr)
 			{
-				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X4;
+				if (!HostNetwork::network->isConnect)
+					HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X4;
 			});
 	}
 

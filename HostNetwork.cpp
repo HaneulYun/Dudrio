@@ -25,17 +25,14 @@ void HostNetwork::ProcessPacket(char* ptr)
 		retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 10);
 		if (retval == SOCKET_ERROR)
 		{
-			connectButtonText->text = L"Open";
-			pressButton = false;
-			tryConnect = false;
+			connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 			isConnect = false;
 
 			closesocket(serverSocket);
 		}
 		else if (retval == 0)
 		{
-			connectButtonText->text = L"Logout";
-			tryConnect = false;
+			connectButtonText->text = L"·Î±×¾Æ¿ô";
 			isConnect = true;
 			mainConnect = true;
 			unsigned long on = true;
@@ -48,10 +45,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		ls2c_pakcet_login_fail* my_packet = reinterpret_cast<ls2c_pakcet_login_fail*>(ptr);
 
-		connectButtonText->text = L"Open";
-		pressButton = false;
+		connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 		isConnect = false;
-		tryConnect = false;
 
 		closesocket(lobbySocket);
 	}
@@ -92,10 +87,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
 		
-		connectButtonText->text = L"Open";
-		pressButton = false;
+		connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 		isConnect = false;
-		tryConnect = false;
 		mainConnect = false;
 
 		closesocket(serverSocket);
@@ -359,13 +352,11 @@ void HostNetwork::Logout()
 
 	send_packet(&l_packet);
 
-	pressButton = false;
 	isConnect = false;
-	tryConnect = false;
 	mainConnect = false;
 	logouted = true;
 
-	connectButtonText->text = L"Open";
+	connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 	closesocket(serverSocket);
 
 	for (auto& p : players)

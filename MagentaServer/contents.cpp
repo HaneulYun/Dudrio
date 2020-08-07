@@ -487,7 +487,7 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		g_sims_lock.lock();
 		g_sims[sim_index] = new Sim(sim_index, xpos, zpos);
 		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
-		if(ingame_time < night_start_time && ingame_time > dawn_start_time)
+		if(ingame_time > dawn_start_time)
 			g_sims[sim_index]->stateMachine.PushState(IdleState::Instance());
 		else
 			g_sims[sim_index]->stateMachine.PushState(SleepState::Instance());

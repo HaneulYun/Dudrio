@@ -12,8 +12,6 @@ using namespace std;
 class HostNetwork : public MonoBehavior<HostNetwork>
 {
 private:
-	InputField* inputField{ nullptr };
-	GameObject* inputIpGuide{ nullptr };
 	GameObject* chatting[10]{ nullptr };
 	//GameObject* gameTime{ nullptr };
 
@@ -33,8 +31,6 @@ public:
 	int myId;
 	wchar_t name[MAX_ID_LEN + 1];
 	bool isConnect{ false };
-	bool tryConnect{ false };
-	bool pressButton{ false };
 	bool mainConnect{ false };
 	bool logouted{ false };
 	float terrainSize;
@@ -82,34 +78,6 @@ public:
 		players.reserve(MAX_USER);
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 
-		inputIpGuide = Scene::scene->CreateUI();
-		{
-			auto rt = inputIpGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(350, -30, 300, 40);
-
-			Text* text = inputIpGuide->AddComponent<Text>();
-			text->text = L"Input Server IP : ";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		}
-
-		auto inputFieldObject = Scene::scene->CreateImage();
-		{
-			auto rt = inputFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(650, -30, 300, 40);
-
-			inputField = inputFieldObject->AddComponent<InputField>();
-			auto text = inputField->Text();
-			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
-
 		//gameTime = Scene::scene->CreateUI();
 		//{
 		//	auto rt = gameTime->GetComponent<RectTransform>();
@@ -154,9 +122,6 @@ public:
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			}
 		}
-
-		inputField->gameObject->SetActive(false);
-		inputIpGuide->SetActive(false);
 	}
 
 	void Update()
@@ -173,47 +138,6 @@ public:
 			logouted = false;
 		}
 
-		if (inputField->gameObject->active)
-		{
-			if (inputField->isFocused)
-			{
-				if (Input::GetKeyDown(KeyCode::Return))
-				{
-					std::string serverIp;
-					serverIp.assign(inputField->text.begin(), inputField->text.end());
-
-					SOCKADDR_IN serveraddr{};
-					serveraddr.sin_family = AF_INET;
-					serveraddr.sin_addr.s_addr = inet_addr(LOBBY_SERVER_IP);
-					serveraddr.sin_port = htons(CLIENT_TO_LOBBY_SERVER_PORT);
-
-					lobbySocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
-					retval = connect_nonblock(lobbySocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
-
-					PressButton();
-
-					tryConnect = true;
-				}
-			}
-		}
-
-		if (tryConnect)
-		{
-			if (retval == SOCKET_ERROR)
-			{
-				tryConnect = false;
-				isConnect = false;
-			}
-			else if (retval == 0)
-			{
-				connectButtonText->text = L"Logout";
-				tryConnect = false;
-				isConnect = true;
-				unsigned long on = true;
-				int nRet = ioctlsocket(lobbySocket, FIONBIO, &on);
-				LobbyLogin();
-			}
-		}
 		if (isConnect) {
 			Receiver();
 		}
@@ -268,23 +192,31 @@ public:
 
 	void PressButton()
 	{
-		inputField->clear();
+		if (!isConnect) {
+			SOCKADDR_IN serveraddr{};
+			serveraddr.sin_family = AF_INET;
+			serveraddr.sin_addr.s_addr = inet_addr(LOBBY_SERVER_IP);
+			serveraddr.sin_port = htons(CLIENT_TO_LOBBY_SERVER_PORT);
 
-		if (isConnect)
+			lobbySocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
+			retval = connect_nonblock(lobbySocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
+
+			if (retval == SOCKET_ERROR)
+				isConnect = false;
+			else if (retval == 0)
+			{
+				connectButtonText->text = L"·Î±×¾Æ¿ô";
+				isConnect = true;
+				unsigned long on = true;
+				int nRet = ioctlsocket(lobbySocket, FIONBIO, &on);
+				LobbyLogin();
+			}
+		}
+		else
 		{
-			connectButtonText->text = L"Open";
-			if(mainConnect)
+			connectButtonText->text = L"¿ÀÇÂÇÏ±â";
+			if (mainConnect)
 				return Logout();
 		}
-
-		if (tryConnect)
-			return;
-
-		pressButton = !pressButton;
-		inputField->gameObject->SetActive(pressButton);
-		inputIpGuide->SetActive(pressButton);
-
-		if (pressButton)
-			inputField->setFocus(true);
 	}
 };

@@ -57,6 +57,27 @@ public:
 		m_info.m_angle = angle;
 	}
 
+	virtual vector<int>	get_near_clients()
+	{
+		pair<int, int> sect_num = contents.calculate_sector_num(m_info.m_xPos, m_info.m_zPos);
+		vector<int> near_clients;
+		near_clients.clear();
+
+		for (int i = sect_num.second - 1; i <= sect_num.second + 1; ++i) {
+			if (i < 0 || i > WORLD_HEIGHT / SECTOR_WIDTH - 1) continue;
+			for (int j = sect_num.first - 1; j <= sect_num.first + 1; ++j) {
+				if (j < 0 || j > WORLD_WIDTH / SECTOR_WIDTH - 1) continue;
+				lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
+				for (auto nearObj : g_sector_clients[i][j]) {
+					if (ST_ACTIVE != nearObj->m_status)	continue;
+					if (true == m_info.is_near(nearObj->m_xPos, nearObj->m_zPos))
+						near_clients.emplace_back(nearObj->m_id);
+				}
+			}
+		}
+		return near_clients;
+	}
+
 	virtual ~Building() { update_terrain_node(false); }
 
 	virtual bool is_collide(float player_x, float player_z, float player_angle)
@@ -80,15 +101,50 @@ public:
 		return true;
 	}
 
+	virtual bool is_collide_node(float x, float z)
+	{
+		Vector2D dist_vector = getDistanceVector(m_info.m_xPos, m_info.m_zPos, x, z);
+		Vector2D vectors[4];
+		vectors[0] = getHeightVector(m_collider.m_z1, m_collider.m_z2, m_info.m_angle);
+		vectors[1] = getHeightVector(z - 0.5, z + 0.5, 0);
+		vectors[2] = getWidthVector(m_collider.m_x1, m_collider.m_x2, m_info.m_angle);
+		vectors[3] = getWidthVector(x - 0.5, x + 0.5, 0);
+
+		for (int i = 0; i < 4; ++i) {
+			double sum = 0;
+			Vector2D unit_vector = vectors[i].Normalize();
+			for (int j = 0; j < 4; ++j)
+				sum += dotproduct(vectors[j], unit_vector);
+			if (dotproduct(dist_vector, unit_vector) > sum)
+				return false;
+		}
+
+		return true;
+	}
+
 	virtual void update_terrain_node(bool create)
 	{
 		Vector2D b_right = (Vector2D(1, 0).Rotate(-m_info.m_angle)).Normalize();
 		Vector2D b_forward = (Vector2D(0, 1).Rotate(-m_info.m_angle)).Normalize();
+		
+		float x1 = m_info.m_xPos + (b_right.x * m_collider.m_x1);
+		float x2 = m_info.m_xPos + (b_right.x * m_collider.m_x2);
 
-		for (int x = m_info.m_xPos + (b_right.x * m_collider.m_x1); x <= m_info.m_xPos + (b_right.x * m_collider.m_x2); ++x) {
-			for (int z = m_info.m_zPos + (b_forward.z * m_collider.m_z1); z <= m_info.m_zPos + (b_forward.z * m_collider.m_z2); ++z)
+		float lowx, highx;
+		if (x1 >= x2) { lowx = x2; highx = x1; }
+		else { lowx = x1; highx = x2; }
+
+		float z1 = m_info.m_zPos + (b_forward.z * m_collider.m_z1);
+		float z2 = m_info.m_zPos + (b_forward.z * m_collider.m_z2);
+
+		float lowz, highz;
+		if (z1 >= z2) { lowz = z2; highz = z1; }
+		else { lowz = z1; highz = z2; }
+
+		for (int x = lowx; x <= highx; ++x) {
+			for (int z = lowz; z <= highz; ++z)
 			{
-				if (is_collide(x, z, 0)) {
+				if (is_collide_node(x, z)) {
 					terrain_data->extraData[x + (z * terrain_data->heightmapHeight)].collision = create;
 					if (create)
 						cout << "Create Node on x: " << x << ", z: " << z << endl;

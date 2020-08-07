@@ -15,7 +15,7 @@ void HostGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 	if (Input::GetKeyDown(KeyCode::Z))
 		changeMode(MenuMode);
 
-	if (gameState != MenuMode)
+	if (gameState != MenuMode || HostNetwork::network->isConnect)
 		gameTimeUpdate();
 
 	if (!HostNetwork::network->isConnect){
@@ -58,7 +58,10 @@ void HostGameWorld::aiUpdate()
 void HostGameWorld::uiUpdate()
 {
 	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = convertTimeToText() + L" ,   DAY " + to_wstring(day) + L"\t";
-	gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(simList.size());
+	if (!HostNetwork::network->isConnect)
+		gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(simList.size());
+	else
+		gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(HostNetwork::network->sims.size());
 	gameUI->gameUIs[GameUI::GameUICategory::CoinCountUI]->GetComponent<Text>()->text = to_wstring(gameMoney);
 
 	if (gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->active)
@@ -67,10 +70,13 @@ void HostGameWorld::uiUpdate()
 		{
 			gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = L". . .m\n\n. . .명";
 		}
-		else
+		else if(BuildingBuilder::buildingBuilder->curLandmark != nullptr)
 		{
 			Village* village = BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>();
-			gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->simList.size()) + L"명";
+			if(!HostNetwork::network->isConnect)
+				gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->simList.size()) + L"명";
+			else if(village != nullptr)
+				gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->serverSimList.size()) + L"명";
 		}
 	}
 	
@@ -135,6 +141,7 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 				if (object->GetComponent<Village>() != nullptr)
 					range = object->GetComponent<Village>()->radiusOfLand;
 				GameLoader::gameLoader->deleteInFile(obj_type, object->GetComponent<Building>()->index, object->transform->position.x, object->transform->position.z, angle, range);
+				GameLoader::gameLoader->SaveTime(gameTime, day);
 				Scene::scene->PushDelete(object);
 				BuildingBuilder::buildingBuilder->updateTerrainNodeData(object, false);
 
@@ -156,6 +163,7 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 		angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
 		GameLoader::gameLoader->deleteInFile(type, index, building->transform->position.x, building->transform->position.z, angle, 0);
+		GameLoader::gameLoader->SaveTime(gameTime, day);
 		Scene::scene->PushDelete(building);
 		BuildingBuilder::buildingBuilder->updateTerrainNodeData(building, false);
 		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
@@ -211,14 +219,27 @@ void HostGameWorld::changeMode(GameState state)
 	{
 		if (gameState == state)
 		{
+			auto chatField = gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>();
+			if (HostNetwork::network->isConnect && HostNetwork::network->mainConnect) {
+				if (chatField->text.size() > MAX_STR_LEN - 1) {
+					int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
+					for (int i = 0; i < oversize; ++i)
+						chatField->text.pop_back();
+				}
+				if (!chatField->text.empty())
+					HostNetwork::network->send_chat_packet(_wcsdup(chatField->text.c_str()));
+			}
 			gameState = CameraMode;
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(false);
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->isFocused = false;
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->clear();
 		}
 		else if(gameState != MenuMode)
 		{
 			gameState = ChatMode;
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(true);
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->isFocused = true;
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->clear();
 			memset(Input::buffer, 0, 8);
 		}
 	}

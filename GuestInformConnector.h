@@ -102,10 +102,14 @@ public:
 		SetField(true);
 		clearFields();
 		
-		for (auto host : hosts)
+		for (auto host : hosts) {
 			Scene::scene->PushDelete(host.second.first);
+			delete host.second.second;
+		}
 		hosts.clear();
-		// closesocket гоюз
+		
+		closesocket(connector->lobbySocket);
+		WSACleanup();
 	}
 
 	void goToNextPage()

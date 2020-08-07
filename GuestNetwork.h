@@ -17,9 +17,10 @@ private:
 	// Chat
 	InputField* chatField{ nullptr };
 	GameObject* chatting[10];
+
 public:
 	//Text* connectButtonText{ nullptr };
-
+	GuestUI* guestUI{ nullptr };
 	WSADATA WSAData;
 	SOCKET serverSocket;
 	int myId;
@@ -63,7 +64,7 @@ public:
 	void send_move_start_packet(float xVel, float zVel, float rotAngle, float run_level);
 	void send_move_packet(float xVel, float zVel, float rotAngle, float run_level);
 	void send_chat_packet(wchar_t msg[]);
-
+	void send_teleport_packet(float xpos, float zpos);
 	void Login();
 	void Logout();
 
@@ -71,21 +72,6 @@ public:
 	{
 		hostId = -1;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
-
-		//gameTime = Scene::scene->CreateUI();
-		//{
-		//	auto rt = gameTime->GetComponent<RectTransform>();
-		//	rt->setAnchorAndPivot(0, 1);
-		//	rt->setPosAndSize(200, -50, 150, -30);
-		//
-		//	Text* text = gameTime->AddComponent<Text>();
-		//	text->text = GuestGameWorld::gameWorld->convertTimeToText();
-		//	text->fontSize = 30;
-		//	text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		//	text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-		//	text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		//}
-		//gameTime->SetActive(false);
 
 		auto chatFieldObject = Scene::scene->CreateUI();
 		{
@@ -107,7 +93,7 @@ public:
 			{
 				auto rt = chatting[i]->GetComponent<RectTransform>();
 				rt->setAnchorAndPivot(0, 1);
-				rt->setPosAndSize(0, -785 + ((i + 1) * 15), 500, 15);
+				rt->setPosAndSize(0, -775 + ((i + 1) * 15), 500, 15);
 
 				Text* text = chatting[i]->AddComponent<Text>();
 				text->text = L"";
@@ -205,7 +191,6 @@ public:
 		}
 		if (isConnect)
 		{
-			//gameTime->GetComponent<Text>()->text = GuestGameWorld::gameWorld->convertTimeToText();
 			Receiver();
 
 			if (chatField->isFocused) {
@@ -215,12 +200,59 @@ public:
 						for (int i = 0; i < oversize; ++i)
 							chatField->text.pop_back();
 					}
-					send_chat_packet(_wcsdup(chatField->text.c_str()));
+
+					auto splitvec = split(chatField->text, L' ');
+					if (!splitvec.empty()) {
+						if (splitvec.size() == 3) {
+							if (splitvec[0] == L"teleport") {
+								std::string xstr;
+								xstr.assign(splitvec[1].begin(), splitvec[1].end());
+								float x = ::atof(xstr.c_str());
+								std::string zstr;
+								zstr.assign(splitvec[2].begin(), splitvec[2].end());
+								float z = ::atof(zstr.c_str());
+								if (x < WORLD_WIDTH && x > 0 && z < WORLD_HEIGHT && z > 0)
+									send_teleport_packet(x, z);
+								else
+									send_chat_packet(_wcsdup(chatField->text.c_str()));
+							}
+							else
+								send_chat_packet(_wcsdup(chatField->text.c_str()));
+						}
+						else
+							send_chat_packet(_wcsdup(chatField->text.c_str()));
+					}
+					else
+						send_chat_packet(_wcsdup(chatField->text.c_str()));
 					chatField->clear();
 					chatField->setFocus(false);
 				}
 			}
 		}
+	}
+
+	std::vector<std::wstring> split(std::wstring str, wchar_t delimiter)
+	{
+		uint64_t start_pos = 0;
+		uint64_t search_pos = 0;
+		std::vector<std::wstring> result;
+		
+		while (start_pos < str.size()) {
+			search_pos = str.find_first_of(delimiter, start_pos);
+			std::wstring tmp_str;
+
+			if (search_pos == std::wstring::npos) {
+				search_pos = str.size();
+				tmp_str = str.substr(start_pos, search_pos - start_pos);
+				result.push_back(tmp_str);
+				break;
+			}
+			tmp_str = str.substr(start_pos, search_pos - start_pos);
+			result.push_back(tmp_str);
+			start_pos = search_pos + 1;
+		}
+
+		return result;
 	}
 
 	void PressButton()

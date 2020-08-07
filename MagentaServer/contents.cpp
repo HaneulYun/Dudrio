@@ -168,7 +168,7 @@ void Contents::process_packet(int user_id, char* buf)
 	{
 		cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf);
 		if (user_id == host_id)
-			do_construct(user_id, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle, packet->landmark_range);
+			do_construct(user_id, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle, packet->landmark_range, packet->develop);
 	}
 	break;
 	case C2S_DESTRUCT:
@@ -185,10 +185,30 @@ void Contents::process_packet(int user_id, char* buf)
 			destruct_all(user_id);
 	}
 	break;
+	case C2S_LANDMARK_CHANGE:
+	{
+		cs_packet_landmark_change* packet = reinterpret_cast<cs_packet_landmark_change*>(buf);
+		if (user_id == host_id) {
+			lock_guard<mutex> lock_guard(g_buildings_lock);
+			for (auto& landmark : g_villages) {
+				if (landmark->m_info.m_xPos == packet->xpos && landmark->m_info.m_zPos == packet->zpos)	{
+					landmark->autoDevelopment = packet->development;
+					break;
+				}
+			}
+		}
+	}
+	break;
 	case C2S_CHAT:
 	{
 		cs_packet_chat* packet = reinterpret_cast<cs_packet_chat*>(buf);
 		chatting(user_id, packet->message);
+	}
+	break;
+	case C2S_TELEPORT:
+	{
+		cs_packet_teleport* packet = reinterpret_cast<cs_packet_teleport*>(buf);
+		teleport(user_id, packet->xPos, packet->zPos);
 	}
 	break;
 	default:
@@ -206,11 +226,25 @@ void Contents::enter_game(int user_id, wchar_t name[])
 	g_clients[user_id]->m_name[0] = '\0';
 	wcscpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
+	if (host_id != user_id) {
+		g_buildings_lock.lock();
+		if (!g_villages.empty()) {
+			auto begin = g_villages.begin();
+			int size = rand() % g_villages.size();
+			while (size > 0) {
+				begin++; size--;
+			}
+			Village* village = *begin;
+			g_clients[user_id]->m_xPos = village->m_info.m_xPos - (village->m_land_range / 2) + (rand() % village->m_land_range);
+			g_clients[user_id]->m_zPos = village->m_info.m_zPos - (village->m_land_range / 2) + (rand() % village->m_land_range);
+		}
+		g_buildings_lock.unlock();
+	}
 	iocp.send_login_ok_packet(user_id);
 	g_clients[user_id]->m_status = ST_ACTIVE;
 	g_clients[user_id]->m_cl.unlock();
 
-	if (host_id != user_id) {
+	if (host_id != user_id) {	
 		iocp.send_enter_packet(contents.host_id, user_id);
 
 		g_clients[user_id]->m_cl.lock();
@@ -219,8 +253,10 @@ void Contents::enter_game(int user_id, wchar_t name[])
 		vector<pair<BuildingInfo, pair<int, int>>> near_buildings = g_clients[user_id]->get_near_buildings();
 		g_buildings_lock.lock();
 		for (auto cl : near_buildings)
-			if (g_buildings[cl.second.first][cl.second.second][cl.first]->is_collide(g_clients[user_id]->m_xPos, g_clients[user_id]->m_zPos, g_clients[user_id]->m_rotAngle))
+			if (g_buildings[cl.second.first][cl.second.second][cl.first]->is_collide(g_clients[user_id]->m_xPos, g_clients[user_id]->m_zPos, g_clients[user_id]->m_rotAngle)) {
 				g_clients[user_id]->m_collide_invincible = true;
+				break;
+			}
 		g_buildings_lock.unlock();
 		g_clients[user_id]->m_cl.unlock();
 
@@ -372,6 +408,122 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 	}
 }
 
+void Contents::teleport(int user_id, float xPos, float zPos)
+{
+	float prev_x = g_clients[user_id]->m_xPos;
+	float prev_z = g_clients[user_id]->m_zPos;
+
+	if (xPos >= WORLD_WIDTH || xPos < 0 || zPos >= WORLD_HEIGHT || zPos < 0)
+		return;
+	g_clients[user_id]->m_xPos = xPos;
+	g_clients[user_id]->m_zPos = zPos;
+
+	if (true == g_clients[user_id]->is_sector_change(prev_x, prev_z)) {
+		g_clients[user_id]->erase_client_in_sector(prev_x, prev_z);
+		g_clients[user_id]->insert_client_in_sector();
+	}
+
+	vector<pair<BuildingInfo, pair<int, int>>> near_buildings = g_clients[user_id]->get_near_buildings();
+	g_buildings_lock.lock();
+	for (auto cl : near_buildings)
+		if (g_buildings[cl.second.first][cl.second.second][cl.first]->is_collide(g_clients[user_id]->m_xPos, g_clients[user_id]->m_zPos, g_clients[user_id]->m_rotAngle)) {
+			g_clients[user_id]->m_collide_invincible = true;
+			break;
+		}
+	g_buildings_lock.unlock();
+
+	g_clients[user_id]->m_cl.lock();
+	unordered_set<int> old_vl = g_clients[user_id]->view_list;
+	unordered_set<int> old_sl = g_clients[user_id]->sim_list;
+	unordered_set<int> new_vl;
+	unordered_set<int> new_sl;
+	g_clients[user_id]->m_cl.unlock();
+
+	vector<int> near_clients = g_clients[user_id]->get_near_clients();
+	for (auto cl : near_clients) new_vl.insert(cl);
+
+	iocp.send_teleport_packet(user_id, user_id);
+	iocp.send_teleport_packet(contents.host_id, user_id);
+
+	for (auto new_player : new_vl) {
+		g_clients_lock.lock();
+		if (g_clients.count(new_player) == 0) {
+			g_clients_lock.unlock();
+			continue;
+		}
+		g_clients_lock.unlock();
+		if (old_vl.count(new_player) == 0) {
+			iocp.send_enter_packet(user_id, new_player);
+			g_clients[new_player]->m_cl.lock();
+			if (g_clients[new_player]->view_list.count(user_id) == 0) {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_enter_packet(new_player, user_id);
+			}
+			else {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_teleport_packet(new_player, user_id);
+			}
+		}
+		else {
+			g_clients[new_player]->m_cl.lock();
+			if (0 != g_clients[new_player]->view_list.count(user_id)) {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_teleport_packet(new_player, user_id);
+			}
+			else {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_enter_packet(new_player, user_id);
+			}
+		}
+	}
+
+	for (auto old_player : old_vl) {
+		g_clients_lock.lock();
+		if (g_clients.count(old_player) == 0) {
+			g_clients_lock.unlock();
+			continue;
+		}
+		g_clients_lock.unlock();
+		if (new_vl.count(old_player) == 0) {
+			iocp.send_leave_packet(user_id, old_player);
+			g_clients[old_player]->m_cl.lock();
+			if (0 != g_clients[old_player]->view_list.count(user_id)) {
+				g_clients[old_player]->m_cl.unlock();
+				iocp.send_leave_packet(old_player, user_id);
+			}
+			else {
+				g_clients[old_player]->m_cl.unlock();
+			}
+		}
+	}
+
+	vector<int> near_sims = g_clients[user_id]->get_near_sims();
+	for (auto sl : near_sims) new_sl.insert(sl);
+
+	for (auto new_sim : new_sl) {
+		g_sims_lock.lock();
+		if (g_sims.count(new_sim) == 0) {
+			g_sims_lock.unlock();
+			continue;
+		}
+		g_sims_lock.unlock();
+		if (old_sl.count(new_sim) == 0)
+			iocp.send_enter_sim_packet(user_id, new_sim);
+	}
+
+	for (auto old_sim : old_sl) {
+		g_sims_lock.lock();
+		if (g_sims.count(old_sim) == 0) {
+			g_sims_lock.unlock();
+			continue;
+		}
+		g_sims_lock.unlock();
+		if (new_sl.count(old_sim) == 0)
+			iocp.send_leave_sim_packet(user_id, old_sim);
+	}
+
+}
+
 void Contents::disconnect(int user_id)
 {
 	lock_guard<mutex>lock_guard(g_clients_lock);
@@ -461,14 +613,17 @@ class Village* Contents::get_my_landmark(class Building* b)
 	return nullptr;
 }
 
-void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle, int land_range)
+void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle, int land_range, bool develop)
 {
 	BuildingInfo b{ b_type, b_name, xpos, zpos, angle };
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
 	g_buildings_lock.lock();
 	if (b_type == Landmark) {
 		Village* landmark = new Village(b_type, b_name, xpos, zpos, angle, land_range);
-		landmark->OnAutoDevelopment();
+		if(develop)
+			landmark->OnAutoDevelopment();
+		else
+			landmark->OffAutoDevelopment();
 		g_buildings[b_sectnum.second][b_sectnum.first][b] = landmark;
 		g_villages.insert(landmark);
 	}
@@ -487,7 +642,7 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		g_sims_lock.lock();
 		g_sims[sim_index] = new Sim(sim_index, xpos, zpos);
 		g_sims[sim_index]->home = g_buildings[b_sectnum.second][b_sectnum.first][b];
-		if(ingame_time < night_start_time && ingame_time > dawn_start_time)
+		if(ingame_time > dawn_start_time)
 			g_sims[sim_index]->stateMachine.PushState(IdleState::Instance());
 		else
 			g_sims[sim_index]->stateMachine.PushState(SleepState::Instance());
@@ -512,13 +667,12 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		g_sims_lock.unlock();
 	}	
 
-	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].lock();
-	for (auto cl : g_sector_clients[b_sectnum.second][b_sectnum.first]) {
-		lock_guard<mutex>lock_guard(cl->m_cl);
-		if (g_buildings[b_sectnum.second][b_sectnum.first][b]->is_collide(cl->m_xPos, cl->m_zPos, cl->m_rotAngle)) 
-			cl->m_collide_invincible = true;
+	vector<int> b_near_clients = g_buildings[b_sectnum.second][b_sectnum.first][b]->get_near_clients();
+	for (auto cl : b_near_clients) {
+		lock_guard<mutex>lock_guard(g_clients[cl]->m_cl);
+		if (g_buildings[b_sectnum.second][b_sectnum.first][b]->is_collide(g_clients[cl]->m_xPos, g_clients[cl]->m_zPos, g_clients[cl]->m_rotAngle))
+			g_clients[cl]->m_collide_invincible = true;
 	}
-	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].unlock();
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)
@@ -711,7 +865,7 @@ void Contents::update_sim()
 				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % landmark->m_land_range) - (landmark->m_land_range / 2), landmark->m_info.m_zPos + (rand() % landmark->m_land_range) - (landmark->m_land_range / 2));
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % collider_info[info->buildingType].size();
-				landmark->delayTime = rand() % 60 + 30.f;
+				landmark->delayTime = rand() % 120 + 60;
 
 				timer_event ev = { -1, SIM_Build,  high_resolution_clock::now(), rand() % landmark->simList.size(), info };
 				timer.add_event(ev);

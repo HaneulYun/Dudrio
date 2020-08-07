@@ -521,3 +521,15 @@ void IOCPServer::send_chat_packet(int user_id, int chatter, wchar_t mess[])
 
 	send_packet(user_id, &p);
 }
+
+void IOCPServer::send_teleport_packet(int user_id, int mover)
+{
+	sc_packet_teleport p;
+	p.id = mover;
+	p.size = sizeof(p);
+	p.type = S2C_TELEPORT;
+	p.xPos = g_clients[mover]->m_xPos;
+	p.zPos = g_clients[mover]->m_zPos;
+
+	send_packet(user_id, &p);
+}

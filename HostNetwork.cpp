@@ -25,17 +25,14 @@ void HostNetwork::ProcessPacket(char* ptr)
 		retval = connect_nonblock(serverSocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 10);
 		if (retval == SOCKET_ERROR)
 		{
-			connectButtonText->text = L"Open";
-			pressButton = false;
-			tryConnect = false;
+			connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 			isConnect = false;
 
 			closesocket(serverSocket);
 		}
 		else if (retval == 0)
 		{
-			connectButtonText->text = L"Logout";
-			tryConnect = false;
+			connectButtonText->text = L"·Î±×¾Æ¿ô";
 			isConnect = true;
 			mainConnect = true;
 			unsigned long on = true;
@@ -48,10 +45,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		ls2c_pakcet_login_fail* my_packet = reinterpret_cast<ls2c_pakcet_login_fail*>(ptr);
 
-		connectButtonText->text = L"Open";
-		pressButton = false;
+		connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 		isConnect = false;
-		tryConnect = false;
 
 		closesocket(lobbySocket);
 	}
@@ -82,9 +77,12 @@ void HostNetwork::ProcessPacket(char* ptr)
 					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
 					int range = 0;
-					if (r->GetComponent<Village>() != nullptr)
+					bool develop = false;
+					if (r->GetComponent<Village>() != nullptr) {
 						range = r->GetComponent<Village>()->radiusOfLand;
-					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle, range);
+						develop = r->GetComponent<Village>()->autoDevelopment;
+					}
+					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle, range, develop);
 				}
 	}
 	break;
@@ -92,10 +90,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 	{
 		sc_packet_login_fail* my_packet = reinterpret_cast<sc_packet_login_fail*>(ptr);
 		
-		connectButtonText->text = L"Open";
-		pressButton = false;
+		connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 		isConnect = false;
-		tryConnect = false;
 		mainConnect = false;
 
 		closesocket(serverSocket);
@@ -164,9 +160,17 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_sim_enter* my_packet = reinterpret_cast<sc_packet_sim_enter*>(ptr);
 		int id = my_packet->id;
 
-		sims[id] = gameObject->scene->Duplicate(simsPrefab);
-		auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
-		p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+		sims[id].first = gameObject->scene->Duplicate(simsPrefab);
+		sims[id].first->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+		auto pos = sims[id].first->transform->position;
+		for (auto landmark : HostGameWorld::gameWorld->buildingList) {
+			float dist = sqrt(pow(pos.x - landmark.first->transform->position.x, 2) + pow(pos.z - landmark.first->transform->position.z, 2));
+			if (landmark.first->GetComponent<Village>()->radiusOfLand >= dist) {
+				sims[id].second = landmark.first->GetComponent<Village>();
+				landmark.first->GetComponent<Village>()->serverSimList.push_back(id);
+				break;
+			}
+		}
 	}
 	break;
 	case S2C_SIM_MOVE:
@@ -175,7 +179,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 
 		if (0 != sims.count(id)) {
-			auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
+			auto p = sims[id].first->GetComponent<CharacterMovingBehavior>();
 			p->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, my_packet->rotAngle);
 		}
 	}
@@ -187,7 +191,9 @@ void HostNetwork::ProcessPacket(char* ptr)
 
 		if (0 != sims.count(id))
 		{
-			Scene::scene->PushDelete(sims[id]);
+			Scene::scene->PushDelete(sims[id].first);
+			if (sims[id].second != nullptr)
+				sims[id].second->eraseSimInServerList(id);
 			sims.erase(id);
 		}
 	}
@@ -207,7 +213,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 				break;
 			}
 		}
-		BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name, my_landmark);
+		if(my_landmark != nullptr)
+			BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name, my_landmark);
 	}
 		break;
 	case S2C_DESTRUCT:
@@ -234,6 +241,17 @@ void HostNetwork::ProcessPacket(char* ptr)
 		}
 	}
 		break;
+	case S2C_TELEPORT:
+	{
+		sc_packet_teleport* my_packet = reinterpret_cast<sc_packet_teleport*>(ptr);
+		int id = my_packet->id;
+		if (id != myId) {
+			if (0 != players.count(id)) {
+				players[id]->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, 0);
+			}
+		}
+	}
+	break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
@@ -287,7 +305,7 @@ void HostNetwork::send_packet(void* packet)
 		send(lobbySocket, p, (unsigned char)p[0], 0);
 }
 
-void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle, int land_range)
+void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle, int land_range, bool develop)
 {
 	cs_packet_construct m_packet;
 	m_packet.type = C2S_CONSTRUCT;
@@ -298,6 +316,7 @@ void HostNetwork::send_construct_packet(int type, int name, float x, float z, fl
 	m_packet.zpos = z;
 	m_packet.angle = angle;
 	m_packet.landmark_range = land_range;
+	m_packet.develop = develop;
 
 	send_packet(&m_packet);
 }
@@ -321,6 +340,18 @@ void HostNetwork::send_destruct_all_packet()
 	cs_packet_destruct_all m_packet;
 	m_packet.type = C2S_DESTRUCT_ALL;
 	m_packet.size = sizeof(m_packet);
+
+	send_packet(&m_packet);
+}
+
+void HostNetwork::send_landmark_change_packet(float x, float z, bool change)
+{
+	cs_packet_landmark_change m_packet;
+	m_packet.type = C2S_LANDMARK_CHANGE;
+	m_packet.size = sizeof(m_packet);
+	m_packet.xpos = x;
+	m_packet.zpos = z;
+	m_packet.development = change;
 
 	send_packet(&m_packet);
 }
@@ -359,21 +390,21 @@ void HostNetwork::Logout()
 
 	send_packet(&l_packet);
 
-	pressButton = false;
 	isConnect = false;
-	tryConnect = false;
 	mainConnect = false;
 	logouted = true;
 
-	connectButtonText->text = L"Open";
+	connectButtonText->text = L"¿ÀÇÂÇÏ±â";
 	closesocket(serverSocket);
 
 	for (auto& p : players)
 		Scene::scene->PushDelete(p.second);
 	players.clear();
 
-	for (auto& p : sims)
-		Scene::scene->PushDelete(p.second);
+	for (auto& p : sims) {
+		Scene::scene->PushDelete(p.second.first);
+		p.second.second->eraseSimInServerList(p.first);
+	}
 	sims.clear();
 }
 

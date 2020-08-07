@@ -20,6 +20,8 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		// 호스트 이름 저장
 		hostId = my_packet->host_id;
 		wcscpy_s(host_name, my_packet->host_name);
+		std::wstring hostname = host_name;
+		guestUI->guestUIs[GuestUI::WorldNameUI]->GetComponent<Text>()->text = L"\t " + hostname + L" 님의 월드";
 
 		// 내 캐릭터 정보 지정
 		auto myc = myCharacter->GetComponent<CharacterMovingBehavior>();
@@ -203,6 +205,19 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		}
 	}
 	break;
+	case S2C_TELEPORT:
+	{
+		sc_packet_teleport* my_packet = reinterpret_cast<sc_packet_teleport*>(ptr);
+		int id = my_packet->id;
+		if (id == myId) {
+			myCharacter->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, 0);
+		}
+		else if (id != hostId) {
+			if (0 != otherCharacters.count(id)) 
+				otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, 0);
+		}
+	}
+	break;
 	case S2C_GAME_TIME:
 	{
 		sc_packet_game_time* my_packet = reinterpret_cast<sc_packet_game_time*>(ptr);
@@ -285,6 +300,17 @@ void GuestNetwork::send_chat_packet(wchar_t msg[])
 	m_packet.type = C2S_CHAT;
 	m_packet.size = sizeof(m_packet);
 	wcscpy_s(m_packet.message, msg);
+
+	send_packet(&m_packet);
+}
+
+void GuestNetwork::send_teleport_packet(float xpos, float zpos)
+{
+	cs_packet_teleport m_packet;
+	m_packet.type = C2S_TELEPORT;
+	m_packet.size = sizeof(m_packet);
+	m_packet.xPos = xpos;
+	m_packet.zPos = zpos;
 
 	send_packet(&m_packet);
 }

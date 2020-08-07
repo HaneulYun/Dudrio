@@ -122,6 +122,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 
 			auto p = prefab->transform->position;
 			int range = 0;
+			bool develop = false;
 			if (curPrefabType == Landmark)
 			{
 				curLandmark = prefab;
@@ -130,6 +131,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				village->OnAutoDevelopment();
 				village->radiusOfLand = getLandmarkRaduis(prefab);
 				range = village->radiusOfLand;
+				develop = village->autoDevelopment;
 			}
 			else {
 				for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
@@ -152,10 +154,11 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			angle = XMConvertToDegrees(acos(angle));
 			angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
-			GameLoader::gameLoader->insertInFile(curPrefabType, curPrefabIndex, p.x, p.z, angle, range);
+			GameLoader::gameLoader->insertInFile(curPrefabType, curPrefabIndex, p.x, p.z, angle, range, develop);
+			GameLoader::gameLoader->SaveTime(HostGameWorld::gameWorld->gameTime, HostGameWorld::gameWorld->day);
 			if (HostNetwork::network->isConnect) {
 				
-				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle, range);
+				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle, range, develop);
 			}
 			updateTerrainNodeData(prefab, true);
 
@@ -609,7 +612,8 @@ void BuildingBuilder::build(Vector2 position, double angle, int type, int index,
 		obj->AddComponent<Building>()->setBuildingInform(landmark, type, index);
 		obj->tag = TAG_BUILDING;
 
-		GameLoader::gameLoader->insertInFile(type, index, pos.x, pos.z, angle, 0);
+		GameLoader::gameLoader->insertInFile(type, index, pos.x, pos.z, angle, 0, false);
+		GameLoader::gameLoader->SaveTime(HostGameWorld::gameWorld->gameTime, HostGameWorld::gameWorld->day);
 		updateTerrainNodeData(obj, true);
 		HostGameWorld::gameWorld->buildInGameWorld(landmark, obj, type, index);
 
@@ -810,6 +814,9 @@ void BuildingBuilder::pickToDelete()
 							angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z, angle);
 						}
+						if (object == curLandmark) {
+							curLandmark = nullptr;
+						}
 						HostGameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 
 						return;
@@ -931,7 +938,7 @@ void BuildingBuilder::IntersectVertices(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirectio
 	}
 }
 
-void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angle, int range)
+void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angle, int range, bool development)
 {
 	if (type != Landmark) {
 		for (auto landmark : HostGameWorld::gameWorld->buildingList) {
@@ -1005,7 +1012,10 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 	obj->transform->position = { x, terrain->terrainData.GetHeight(x, z),z };
 	obj->AddComponent<Building>()->setBuildingInform(obj, type, index);
 	obj->tag = TAG_BUILDING;
-	obj->AddComponent<Village>()->OnAutoDevelopment();
+	if(development)
+		obj->AddComponent<Village>()->OnAutoDevelopment();
+	else
+		obj->AddComponent<Village>()->OffAutoDevelopment();
 	obj->GetComponent<Village>()->radiusOfLand = range;
 
 	updateTerrainNodeData(obj, true);

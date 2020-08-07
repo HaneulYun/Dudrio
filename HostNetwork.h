@@ -12,8 +12,6 @@ using namespace std;
 class HostNetwork : public MonoBehavior<HostNetwork>
 {
 private:
-	InputField* inputField{ nullptr };
-	GameObject* inputIpGuide{ nullptr };
 	GameObject* chatting[10]{ nullptr };
 	//GameObject* gameTime{ nullptr };
 
@@ -33,8 +31,6 @@ public:
 	int myId;
 	wchar_t name[MAX_ID_LEN + 1];
 	bool isConnect{ false };
-	bool tryConnect{ false };
-	bool pressButton{ false };
 	bool mainConnect{ false };
 	bool logouted{ false };
 	float terrainSize;
@@ -46,7 +42,7 @@ public:
 
 public:
 	GameObject* simsPrefab = NULL;
-	unordered_map<int, GameObject*> sims;
+	unordered_map<int, pair<GameObject*, Village*>> sims;
 	unordered_map<int, GameObject*> players;
 
 private:
@@ -67,9 +63,10 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_construct_packet(int type, int name, float x, float z, float angle, int range);
+	void send_construct_packet(int type, int name, float x, float z, float angle, int range, bool develop);
 	void send_destruct_packet(int type, int name, float x, float z, float angle);
 	void send_destruct_all_packet();
+	void send_landmark_change_packet(float x, float z, bool change);
 	void send_chat_packet(wchar_t msg[]);
 
 	void LobbyLogin();
@@ -82,69 +79,12 @@ public:
 		players.reserve(MAX_USER);
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 
-		inputIpGuide = Scene::scene->CreateUI();
-		{
-			auto rt = inputIpGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(350, -30, 300, 40);
-
-			Text* text = inputIpGuide->AddComponent<Text>();
-			text->text = L"Input Server IP : ";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		}
-
-		auto inputFieldObject = Scene::scene->CreateImage();
-		{
-			auto rt = inputFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(650, -30, 300, 40);
-
-			inputField = inputFieldObject->AddComponent<InputField>();
-			auto text = inputField->Text();
-			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
-
-		//gameTime = Scene::scene->CreateUI();
-		//{
-		//	auto rt = gameTime->GetComponent<RectTransform>();
-		//	rt->setAnchorAndPivot(1, 0);
-		//	rt->setPosAndSize(0, 0, 100, 25);
-		//
-		//	Text* text = gameTime->AddComponent<Text>();
-		//	text->fontSize = 12;
-		//	text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		//	text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-		//	text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		//}
-		//gameTime->SetActive(true);
-
-		//auto chatFieldObject = Scene::scene->CreateUI();
-		//{
-		//	auto rt = chatFieldObject->GetComponent<RectTransform>();
-		//	rt->setAnchorAndPivot(0, 1);
-		//	rt->setPosAndSize(0, -785, 500, 15);
-		//
-		//	chatField = chatFieldObject->AddComponent<InputField>();
-		//	auto text = chatField->Text();
-		//	text->fontSize = 10;
-		//	text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-		//	text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-		//	text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		//}
-		//chatField->gameObject->SetActive(true);
-
 		for (int i = 0; i < 10; ++i) {
 			chatting[i] = Scene::scene->CreateUI();
 			{
 				auto rt = chatting[i]->GetComponent<RectTransform>();
 				rt->setAnchorAndPivot(0, 1);
-				rt->setPosAndSize(0, -785 + ((i + 1) * 15), 500, 15);
+				rt->setPosAndSize(0, -775 + ((i + 1) * 15), 500, 15);
 
 				Text* text = chatting[i]->AddComponent<Text>();
 				text->text = L"";
@@ -154,9 +94,6 @@ public:
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			}
 		}
-
-		inputField->gameObject->SetActive(false);
-		inputIpGuide->SetActive(false);
 	}
 
 	void Update()
@@ -173,65 +110,8 @@ public:
 			logouted = false;
 		}
 
-		if (inputField->gameObject->active)
-		{
-			if (inputField->isFocused)
-			{
-				if (Input::GetKeyDown(KeyCode::Return))
-				{
-					std::string serverIp;
-					serverIp.assign(inputField->text.begin(), inputField->text.end());
-
-					SOCKADDR_IN serveraddr{};
-					serveraddr.sin_family = AF_INET;
-					serveraddr.sin_addr.s_addr = inet_addr(LOBBY_SERVER_IP);
-					serveraddr.sin_port = htons(CLIENT_TO_LOBBY_SERVER_PORT);
-
-					lobbySocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
-					retval = connect_nonblock(lobbySocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
-
-					PressButton();
-
-					tryConnect = true;
-				}
-			}
-		}
-
-		if (tryConnect)
-		{
-			if (retval == SOCKET_ERROR)
-			{
-				tryConnect = false;
-				isConnect = false;
-			}
-			else if (retval == 0)
-			{
-				connectButtonText->text = L"Logout";
-				tryConnect = false;
-				isConnect = true;
-				unsigned long on = true;
-				int nRet = ioctlsocket(lobbySocket, FIONBIO, &on);
-				LobbyLogin();
-			}
-		}
 		if (isConnect) {
-
 			Receiver();
-			if (mainConnect) {
-				auto chatField = gameUI->gameUIs[gameUI->ChatUI]->GetComponent<InputField>();
-				if (chatField->isFocused) {
-					if (Input::GetKeyDown(KeyCode::Return)) {
-						if (chatField->text.size() > MAX_STR_LEN - 1) {
-							int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
-							for (int i = 0; i < oversize; ++i)
-								chatField->text.pop_back();
-						}
-						send_chat_packet(_wcsdup(chatField->text.c_str()));
-						chatField->clear();
-						chatField->setFocus(false);
-					}
-				}
-			}
 		}
 	}
 
@@ -284,23 +164,31 @@ public:
 
 	void PressButton()
 	{
-		inputField->clear();
+		if (!isConnect) {
+			SOCKADDR_IN serveraddr{};
+			serveraddr.sin_family = AF_INET;
+			serveraddr.sin_addr.s_addr = inet_addr(LOBBY_SERVER_IP);
+			serveraddr.sin_port = htons(CLIENT_TO_LOBBY_SERVER_PORT);
 
-		if (isConnect)
+			lobbySocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
+			retval = connect_nonblock(lobbySocket, (SOCKADDR*)&serveraddr, sizeof(serveraddr), 5);
+
+			if (retval == SOCKET_ERROR)
+				isConnect = false;
+			else if (retval == 0)
+			{
+				connectButtonText->text = L"·Î±×¾Æ¿ô";
+				isConnect = true;
+				unsigned long on = true;
+				int nRet = ioctlsocket(lobbySocket, FIONBIO, &on);
+				LobbyLogin();
+			}
+		}
+		else
 		{
-			connectButtonText->text = L"Open";
-			if(mainConnect)
+			connectButtonText->text = L"¿ÀÇÂÇÏ±â";
+			if (mainConnect)
 				return Logout();
 		}
-
-		if (tryConnect)
-			return;
-
-		pressButton = !pressButton;
-		inputField->gameObject->SetActive(pressButton);
-		inputIpGuide->SetActive(pressButton);
-
-		if (pressButton)
-			inputField->setFocus(true);
 	}
 };

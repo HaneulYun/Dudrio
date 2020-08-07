@@ -52,6 +52,7 @@ public:
 
 	void send_game_time_packet(int user_id);
 	void send_chat_packet(int user_id, int chatter, wchar_t mess[]);
+	void send_teleport_packet(int user_id, int mover);
 
 	// recv -----------------------------------
 	void recv_packet_construct(int user_id, int io_byte);

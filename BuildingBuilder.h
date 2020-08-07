@@ -6,7 +6,7 @@
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
 public:
-	enum BuilderMode { DefaultMode, BuildMode, DeleteMode };
+	enum BuilderMode { DefaultMode, BuildMode, DeleteMode, GuestMode };
 	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Count, None = -1 };
 private /*이 영역에 private 변수를 선언하세요.*/:
 	std::vector<BuildingBuilderData> building[BuildingType::Count];
@@ -86,6 +86,6 @@ public:
 
 	void IntersectVertices(XMFLOAT3 rayOrigin, XMFLOAT3 rayDirection, std::vector<XMFLOAT3>& vertices);
 
-	void hostLoad(int type, int index, float x, float z, float angle, int range);
+	void hostLoad(int type, int index, float x, float z, float angle, int range, bool development);
 	void guestBuild(int type, int index, float x, float z, float angle, int range);
 };

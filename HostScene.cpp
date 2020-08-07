@@ -84,6 +84,8 @@ void HostScene::BuildObjects()
 	float TerrainSize = 1000;
 	int frequency, octaves, seed;
 	int file_pointer;
+	float gametime = 0.0f;
+	int gameday = 1;
 	wstring host_name;
 	if (!HostInformConnector::connector->load) {
 		TerrainSize = HostInformConnector::connector->terrainSize;
@@ -95,7 +97,7 @@ void HostScene::BuildObjects()
 		GameLoader::gameLoader->initFile(host_name, frequency, octaves, seed);
 	}
 	else {
-		file_pointer = GameLoader::gameLoader->Load(host_name, frequency, octaves, seed);
+		file_pointer = GameLoader::gameLoader->Load(host_name, frequency, octaves, seed, gametime, gameday);
 	}
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
@@ -246,6 +248,10 @@ void HostScene::BuildObjects()
 		HostGameWorld* gameWorld = object->AddComponent<HostGameWorld>();
 		gameWorld->simPrefab = sim;
 		gameWorld->sun = directionalLight;
+		if (HostInformConnector::connector->load) {
+			gameWorld->gameTime = gametime;
+			gameWorld->day = gameday;
+		}
 		object->AddComponent<AIManager>();
 		auto gameLoader = object->AddComponent<GameLoader>();
 		HostGameWorld::gameWorld = gameWorld;
@@ -323,7 +329,8 @@ void HostScene::BuildObjects()
 
 			gameLoadButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
-					GameLoader::gameLoader->Save();
+					GameLoader::gameLoader->Save(HostNetwork::network->name, HostNetwork::network->frequency, HostNetwork::network->octaves, HostNetwork::network->seed);
+					GameLoader::gameLoader->SaveTime(HostGameWorld::gameWorld->gameTime, HostGameWorld::gameWorld->day);
 				});
 		}
 
@@ -343,7 +350,7 @@ void HostScene::BuildObjects()
 
 			gameExitButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
-					GameLoader::gameLoader->Save();
+					GameLoader::gameLoader->SaveTime(HostGameWorld::gameWorld->gameTime, HostGameWorld::gameWorld->day);
 					PostQuitMessage(0);
 				});
 		}
@@ -360,7 +367,8 @@ void HostScene::BuildObjects()
 
 		gameUI->gameUIs[GameUI::GameUICategory::TimeX1]->AddComponent<Button>()->AddEvent([](void* ptr)
 			{
-				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X1;
+				if (!HostNetwork::network->isConnect)
+					HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X1;
 			});
 	}
 
@@ -372,7 +380,8 @@ void HostScene::BuildObjects()
 
 		gameUI->gameUIs[GameUI::GameUICategory::TimeX2]->AddComponent<Button>()->AddEvent([](void* ptr)
 			{
-				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X2;
+				if (!HostNetwork::network->isConnect)
+					HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X2;
 			});
 	}
 
@@ -384,7 +393,8 @@ void HostScene::BuildObjects()
 
 		gameUI->gameUIs[GameUI::GameUICategory::TimeX4]->AddComponent<Button>()->AddEvent([](void* ptr)
 			{
-				HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X4;
+				if (!HostNetwork::network->isConnect)
+					HostGameWorld::gameWorld->timeSpeed = HostGameWorld::TimeSpeed::X4;
 			});
 	}
 
@@ -424,12 +434,20 @@ void HostScene::BuildObjects()
 				{
 					//Debug::Log("자동건설 on\n");
 					BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>()->OnAutoDevelopment();
+					if (HostNetwork::network->mainConnect)
+						HostNetwork::network->send_landmark_change_packet(
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.x,
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.z, true);
 				});
 
 			offButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
 					//Debug::Log("자동건설 off\n");
 					BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>()->OffAutoDevelopment();
+					if (HostNetwork::network->mainConnect)
+						HostNetwork::network->send_landmark_change_packet(
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.x,
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.z, false);
 				});
 
 		}

@@ -62,6 +62,7 @@ public:
 			ASSET AddTexture("HP_Crystals", L"Assets\\HandPaintedEnvironment\\Textures\\Crystals_texture.dds");
 			ASSET AddTexture("HP_Fence", L"Assets\\HandPaintedEnvironment\\Textures\\Fence_texture.dds");
 			ASSET AddTexture("HP_Fern", L"Assets\\HandPaintedEnvironment\\Textures\\Fern_texture.dds");
+			ASSET AddTexture("HP_Fern_m", L"Assets\\HandPaintedEnvironment\\Textures\\Fern_alpha.dds");
 			ASSET AddTexture("HP_Forge", L"Assets\\HandPaintedEnvironment\\Textures\\Forge_texture.dds");
 			ASSET AddTexture("HP_Hammer_anvil", L"Assets\\HandPaintedEnvironment\\Textures\\Hammer_anvil_texture.dds");
 			ASSET AddTexture("HP_Lampposts", L"Assets\\HandPaintedEnvironment\\Textures\\Lampposts_texture.dds");
@@ -99,7 +100,6 @@ public:
 			ASSET AddTexture("HP_Woodmill", L"Assets\\HandPaintedEnvironment\\Textures\\Woodmill.dds");
 
 		}
-		SE_Lampions_Emissive
 		/*SpringEnvironment*/
 		{
 			ASSET AddTexture("SE_Baloons_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Baloons_Diffuse.dds");
@@ -109,7 +109,7 @@ public:
 			ASSET AddTexture("SE_Birch_01b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Birch_01b_Diffuse.dds");
 			ASSET AddTexture("SE_Birch_Alpha", L"Assets\\SpringEnvironment\\Textures\\SE_Birch_Alpha.dds");
 			ASSET AddTexture("SE_Blanket_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Blanket_Diffuse.dds");
-			ASSET AddTexture("SE_Bushese_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Bushes_Diffuse.dds");
+			ASSET AddTexture("SE_Bushes_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Bushes_Diffuse.dds");
 			ASSET AddTexture("SE_Bushes_Alpha", L"Assets\\SpringEnvironment\\Textures\\SE_Bushes_Alpha.dds");
 			ASSET AddTexture("SE_Bonsai_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Bonsai_Diffuse.dds");
 			ASSET AddTexture("SE_Bonsai_Alpha", L"Assets\\SpringEnvironment\\Textures\\SE_Bonsai_Alpha.dds");
@@ -120,8 +120,9 @@ public:
 			ASSET AddTexture("SE_Cart_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Cart_Diffuse.dds");
 			ASSET AddTexture("SE_Climbers_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Climbers_Diffuse.dds");
 			ASSET AddTexture("SE_CottonCandyTree_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_CottonCandyTree_Diffuse.dds");
-			ASSET AddTexture("SE_FabricHouse_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_FabricHouse_Diffuse.dds");
+			ASSET AddTexture("SE_FabricHouse_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_FabricHouse_Diffuse.dds"); 
 			ASSET AddTexture("SE_Factory_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Factory_Diffuse.dds");
+			ASSET AddTexture("SE_Factory_Emissive", L"Assets\\SpringEnvironment\\Textures\\SE_Factory_Emissive.dds");
 			ASSET AddTexture("SE_FabricHouse_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_FabricHouse_Diffuse.dds");
 			ASSET AddTexture("SE_Fence_01a_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Fence_01a_Diffuse.dds");
 			ASSET AddTexture("SE_Fence_01b_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Fence_01b_Diffuse.dds");
@@ -131,6 +132,7 @@ public:
 			ASSET AddTexture("SE_Gate_Alpha", L"Assets\\SpringEnvironment\\Textures\\SE_Gate_Alpha.dds"); 
 			ASSET AddTexture("SE_Gazebo_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Gazebo_Diffuse.dds");
 			ASSET AddTexture("SE_Grill_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_Grill_Diffuse.dds");
+			ASSET AddTexture("SE_Grill_Emissive", L"Assets\\SpringEnvironment\\Textures\\SE_Grill_Emissive.dds");
 			ASSET AddTexture("SE_HeartHouse_Diffuse", L"Assets\\SpringEnvironment\\Textures\\SE_HeartHouse_Diffuse.dds");
 			ASSET AddTexture("SE_HeartHouse_Alpha", L"Assets\\SpringEnvironment\\Textures\\SE_HeartHouse_Alpha.dds"); 
 			ASSET AddTexture("SE_Hedges_Alpha", L"Assets\\SpringEnvironment\\Textures\\SE_Hedges_Alpha.dds"); 
@@ -235,7 +237,7 @@ public:
 			ASSET AddMaterial("HP_Chest", ASSET TEXTURE("HP_Chest"));
 			ASSET AddMaterial("HP_Crystals", ASSET TEXTURE("HP_Crystals"));
 			ASSET AddMaterial("HP_Fence", ASSET TEXTURE("HP_Fence"));
-			ASSET AddMaterial("HP_Fern", ASSET TEXTURE("HP_Fern"));
+			ASSET AddMaterial("HP_Fern", ASSET TEXTURE("HP_Fern"), 0, 0, ASSET TEXTURE("HP_Fern_m"));
 			ASSET AddMaterial("HP_Forge", ASSET TEXTURE("HP_Forge"));
 			ASSET AddMaterial("HP_Hammer_anvil", ASSET TEXTURE("HP_Hammer_anvil"));
 			ASSET AddMaterial("HP_Lampposts", ASSET TEXTURE("HP_Lampposts"));
@@ -273,13 +275,13 @@ public:
 		/*SpringEnvironment*/
 		{
 			ASSET AddMaterial("SE_Baloons", ASSET TEXTURE("SE_Baloons_Diffuse"));
-			ASSET AddMaterial("SE_Bench_01a", ASSET TEXTURE("SE_Bench_01a_Diffuse"));
+			ASSET AddMaterial("SE_Bench_01a", ASSET TEXTURE("SE_Bench_01a_Diffuse")); 
 			ASSET AddMaterial("SE_Bench_01b", ASSET TEXTURE("SE_Bench_01b_Diffuse"));
-			ASSET AddMaterial("SE_Birch", ASSET TEXTURE("SE_Birch_Diffuse"));
-			ASSET AddMaterial("SE_Birch_01b", ASSET TEXTURE("SE_Birch_01b_Diffuse"));
+			ASSET AddMaterial("SE_Birch", ASSET TEXTURE("SE_Birch_Diffuse"), 0, 0, ASSET TEXTURE("SE_Birch_Alpha"));
+			ASSET AddMaterial("SE_Birch_01b", ASSET TEXTURE("SE_Birch_01b_Diffuse"), 0, 0, ASSET TEXTURE("SE_Birch_Alpha"));
 			ASSET AddMaterial("SE_Blanket", ASSET TEXTURE("SE_Blanket_Diffuse"));
-			ASSET AddMaterial("SE_Bushese", ASSET TEXTURE("SE_Bushese_Diffuse"));
-			ASSET AddMaterial("SE_Bonsai", ASSET TEXTURE("SE_Bonsai_Diffuse"));
+			ASSET AddMaterial("SE_Bushes", ASSET TEXTURE("SE_Bushes_Diffuse"), 0, 0, ASSET TEXTURE("SE_Bushes_Alpha"));
+			ASSET AddMaterial("SE_Bonsai", ASSET TEXTURE("SE_Bonsai_Diffuse"), 0, 0, ASSET TEXTURE("SE_Bonsai_Alpha"));
 			ASSET AddMaterial("SE_Booth", ASSET TEXTURE("SE_Booth_Diffuse"));
 			ASSET AddMaterial("SE_Candies", ASSET TEXTURE("SE_Candies_Diffuse"));
 			ASSET AddMaterial("SE_Candyhouse", ASSET TEXTURE("SE_Candyhouse_Diffuse"));
@@ -288,18 +290,16 @@ public:
 			ASSET AddMaterial("SE_Climbers", ASSET TEXTURE("SE_Climbers_Diffuse"));
 			ASSET AddMaterial("SE_CottonCandyTree", ASSET TEXTURE("SE_CottonCandyTree_Diffuse"));
 			ASSET AddMaterial("SE_FabricHouse", ASSET TEXTURE("SE_FabricHouse_Diffuse"));
-			ASSET AddMaterial("SE_Factory", ASSET TEXTURE("SE_Factory_Diffuse"));
-			ASSET AddMaterial("SE_Factory_Emissive", ASSET TEXTURE("SE_Factory_Emissive"));
+			ASSET AddMaterial("SE_Factory", ASSET TEXTURE("SE_Factory_Diffuse"), 0, ASSET TEXTURE("SE_Factory_Emissive"));
 			ASSET AddMaterial("SE_Fence_01a", ASSET TEXTURE("SE_Fence_01a_Diffuse"));
-			ASSET AddMaterial("SE_Fence_01b", ASSET TEXTURE("SE_Fence_01b_Diffuse"));
-			ASSET AddMaterial("SE_Flowers", ASSET TEXTURE("SE_Flowers_Diffuse"));
-			ASSET AddMaterial("SE_Gate", ASSET TEXTURE("SE_Gate_Diffuse"));
-			ASSET AddMaterial("SE_Gazebo", ASSET TEXTURE("SE_Gazebo_Diffuse"));
-			ASSET AddMaterial("SE_Grill", ASSET TEXTURE("SE_Grill_Diffuse"));
-			ASSET AddMaterial("SE_Grill_Emissive", ASSET TEXTURE("SE_Grill_Emissive"));
-			ASSET AddMaterial("SE_HeartHouse", ASSET TEXTURE("SE_HeartHouse_Diffuse"));
-			ASSET AddMaterial("SE_Hedges", ASSET TEXTURE("SE_Hedges_Diffuse"));
-			ASSET AddMaterial("SE_HotAirBaloon", ASSET TEXTURE("SE_HotAirBaloon_Diffuse"));
+			ASSET AddMaterial("SE_Fence_01b", ASSET TEXTURE("SE_Fence_01b_Diffuse")); 
+			ASSET AddMaterial("SE_Flowers", ASSET TEXTURE("SE_Flowers_Diffuse"), 0, 0, ASSET TEXTURE("SE_Flowers_Alpha"));
+			ASSET AddMaterial("SE_Gate", ASSET TEXTURE("SE_Gate_Diffuse"), 0, 0, ASSET TEXTURE("SE_Gate_Alpha")); 
+			ASSET AddMaterial("SE_Gazebo", ASSET TEXTURE("SE_Gazebo_Diffuse")); 
+			ASSET AddMaterial("SE_Grill", ASSET TEXTURE("SE_Grill_Diffuse"), 0, ASSET TEXTURE("SE_Grill_Emissive")); 
+			ASSET AddMaterial("SE_HeartHouse", ASSET TEXTURE("SE_HeartHouse_Diffuse"), 0, 0, ASSET TEXTURE("SE_HeartHouse_Alpha"));
+			ASSET AddMaterial("SE_Hedges", ASSET TEXTURE("SE_Hedges_Diffuse"), 0, 0, ASSET TEXTURE("SE_Hedges_Alpha"));
+			ASSET AddMaterial("SE_HotAirBaloon", ASSET TEXTURE("SE_HotAirBaloon_Diffuse"), 0, 0, ASSET TEXTURE("SE_HotAirBaloon_Alpha"));
 			ASSET AddMaterial("SE_House_01a", ASSET TEXTURE("SE_House_01a_Diffuse"));
 			ASSET AddMaterial("SE_House_01b", ASSET TEXTURE("SE_House_01b_Diffuse"));
 			ASSET AddMaterial("SE_House_01c", ASSET TEXTURE("SE_House_01c_Diffuse"));
@@ -320,17 +320,17 @@ public:
 			ASSET AddMaterial("SE_Maypole_01", ASSET TEXTURE("SE_Maypole_01_Diffuse"));
 			ASSET AddMaterial("SE_Presents", ASSET TEXTURE("SE_Presents_Diffuse"));
 			ASSET AddMaterial("SE_Pump", ASSET TEXTURE("SE_Pump_Diffuse"));
-			ASSET AddMaterial("SE_Roses", ASSET TEXTURE("SE_Roses_Diffuse"));
+			ASSET AddMaterial("SE_Roses", ASSET TEXTURE("SE_Roses_Diffuse"), 0, 0, ASSET TEXTURE("SE_Roses_Alpha"));
 			ASSET AddMaterial("SE_Seesaw", ASSET TEXTURE("SE_Seesaw_Diffuse"));
 			ASSET AddMaterial("SE_Sign", ASSET TEXTURE("SE_Sign_Diffuse"));
 			ASSET AddMaterial("SE_Slide", ASSET TEXTURE("SE_Slide_Diffuse"));
 			ASSET AddMaterial("SE_Stones", ASSET TEXTURE("SE_Stones_Diffuse"));
 			ASSET AddMaterial("SE_Swing", ASSET TEXTURE("SE_Swing_Diffuse"));
-			ASSET AddMaterial("SE_Tables", ASSET TEXTURE("SE_Tables_Diffuse"));
-			ASSET AddMaterial("SE_Theater", ASSET TEXTURE("SE_Theater_Diffuse"));
+			ASSET AddMaterial("SE_Tables", ASSET TEXTURE("SE_Tables_Diffuse"), 0, 0, ASSET TEXTURE("SE_Tables_Alpha"));
+			ASSET AddMaterial("SE_Theater", ASSET TEXTURE("SE_Theater_Diffuse"), 0, 0, ASSET TEXTURE("SE_Theater_Alpha"));
 			ASSET AddMaterial("SE_TownHall", ASSET TEXTURE("SE_TownHall_Diffuse"));
-			ASSET AddMaterial("SE_Trampoline", ASSET TEXTURE("SE_Trampoline_Diffuse"));
-			ASSET AddMaterial("SE_Willow", ASSET TEXTURE("SE_Willow_Diffuse"));
+			ASSET AddMaterial("SE_Trampoline", ASSET TEXTURE("SE_Trampoline_Diffuse"), 0, 0, ASSET TEXTURE("SE_Trampoline_Alpha"));
+			ASSET AddMaterial("SE_Willow", ASSET TEXTURE("SE_Willow_Diffuse"), 0, 0, ASSET TEXTURE("SE_Willow_Alpha"));
 		}
 	}
 

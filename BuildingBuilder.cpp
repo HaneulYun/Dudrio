@@ -340,8 +340,8 @@ void BuildingBuilder::serializeBuildings()
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_HeartHouse_01_SM", ASSET MESH("SE_HeartHouse_01_SM"), ASSET MATERIAL("SE_HeartHouse")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Gazebo_01_SM", ASSET MESH("SE_Gazebo_01_SM"), ASSET MATERIAL("SE_Gazebo")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Theater_01_SM", ASSET MESH("SE_Theater_01_SM"), ASSET MATERIAL("SE_Theater")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_01_SM", ASSET MESH("SE_Blossom_01_SM"), ASSET MATERIAL("SE_Bushese")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_02_SM", ASSET MESH("SE_Blossom_02_SM"), ASSET MATERIAL("SE_Bushese")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_01_SM", ASSET MESH("SE_Blossom_01_SM"), ASSET MATERIAL("SE_Bushes")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_02_SM", ASSET MESH("SE_Blossom_02_SM"), ASSET MATERIAL("SE_Bushes")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_CottonCandy_01_SM", ASSET MESH("SE_CottonCandy_01_SM"), ASSET MATERIAL("SE_CottonCandyTree")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_CottonCandyTree_01_SM", ASSET MESH("SE_CottonCandyTree_01_SM"), ASSET MATERIAL("SE_CottonCandyTree")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_CottonCandyTree_02_SM", ASSET MESH("SE_CottonCandyTree_02_SM"), ASSET MATERIAL("SE_CottonCandyTree")));
@@ -400,8 +400,8 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03b_SM", ASSET MESH("SE_Birch_03b_SM"), ASSET MATERIAL("SE_Birch_01b")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_01_SM", ASSET MESH("SE_Bonsai_01_SM"), ASSET MATERIAL("SE_Bonsai")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_02_SM", ASSET MESH("SE_Bonsai_02_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushese")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushese")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushes")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushes")));
 
 
 		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_01_SM", ASSET MESH("SE_Lamp_01_SM"), ASSET MATERIAL("SE_Lamps")));

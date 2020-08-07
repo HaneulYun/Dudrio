@@ -9,7 +9,65 @@ void BuildingBuilder::Start(/*초기화 코드를 작성하세요.*/)
 
 void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
-	if (builderMode == BuildMode)
+	if (builderMode == DefaultMode)
+	{
+		Vector3 mousePosInWorld = getPosOnTerrain();
+
+		int x = mousePosInWorld.x / gameObject->scene->spatialPartitioningManager.sectorWidth;
+		int y = mousePosInWorld.z / gameObject->scene->spatialPartitioningManager.sectorHeight;
+
+		if (0 > x || x >= gameObject->scene->spatialPartitioningManager.xSize || 0 > y || y >= gameObject->scene->spatialPartitioningManager.ySize)
+			return;
+
+		Vector3 screenPos{ Input::mousePosition.x, Input::mousePosition.y, 1.0f };
+
+		Vector3 rayOrigin{ 0.0f, 0.0f, 0.0f };
+		Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos);
+
+		Matrix4x4 invView = Camera::main->view.Inverse();
+		Matrix4x4 invWorld = terrain->gameObject->transform->localToWorldMatrix.Inverse();
+		Matrix4x4 toLocal = invView * invWorld;
+
+		rayOrigin = rayOrigin.TransformCoord(toLocal);
+		rayDir = rayDir.TransformNormal(invWorld).Normalize();
+
+		float dist;
+
+		for (auto& tagList : gameObject->scene->spatialPartitioningManager.sectorList[x][y].list)
+		{
+			for (auto& object : tagList.second)
+			{
+				BoxCollider* collider = object->GetComponent<BoxCollider>();
+				if (collider)
+				{
+					BoundingOrientedBox boundingBox{};
+					boundingBox.Center = object->transform->position.xmf3;
+					boundingBox.Extents = collider->boundingBox.Extents;
+					boundingBox.Orientation = object->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
+
+					if (boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), dist))
+					{
+						if (Input::GetMouseButtonUp(0))
+						{
+							Building* building = object->GetComponent<Building>();
+							if (building->type == Landmark)
+							{
+								curLandmark = object;
+								GameObject* landmakrInformUI = HostGameWorld::gameWorld->gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI];
+
+								landmakrInformUI->SetActive(!landmakrInformUI->active);
+							}
+							// ui창. 빌드모드 들어가면 비활성화해야함.
+							// 버튼 -> 심갯수, on/off, radius  ::: curlandmark참조해서 설정 
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	else if (builderMode == BuildMode)
 	{
 		for (auto& child : prefab->children)
 			child->GetComponent<Constant>()->v4 = { 1, 0, 0, 1 };

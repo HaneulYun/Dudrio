@@ -388,6 +388,55 @@ void HostScene::BuildObjects()
 			});
 	}
 
+	gameUI->gameUIs.push_back(Scene::scene->CreateImage());
+	{
+		auto rt = gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponent<RectTransform>();
+		rt->setAnchorAndPivot(1, 1);
+		rt->setPosAndSize(-10, -10, 170, 220);
+
+		{
+			auto textObj = gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->AddChildUI();
+			auto trt = textObj->GetComponent<RectTransform>();
+			trt->setAnchorAndPivot(0, 0);
+			trt->setPosAndSize(111, 100, 63, 55);
+			Text* text = textObj->AddComponent<Text>();
+			text->fontSize = 16;
+			text->font = L"배달의민족 도현";
+			text->text = L"150m\n\n10명";
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		}
+
+		{
+			auto onButton = gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->AddChildUI();
+			auto onrt = onButton->GetComponent<RectTransform>();
+			onrt->setAnchorAndPivot(0, 0);
+			onrt->setPosAndSize(15, 8, 65, 25);
+
+			auto offButton = gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->AddChildUI();
+			auto offrt = offButton->GetComponent<RectTransform>();
+			offrt->setAnchorAndPivot(0, 0);
+			offrt->setPosAndSize(90, 8, 65, 25);
+
+
+			onButton->AddComponent<Button>()->AddEvent([](void* ptr)
+				{
+					//Debug::Log("자동건설 on\n");
+					BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>()->OnAutoDevelopment();
+				});
+
+			offButton->AddComponent<Button>()->AddEvent([](void* ptr)
+				{
+					//Debug::Log("자동건설 off\n");
+					BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>()->OffAutoDevelopment();
+				});
+
+		}
+		gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_landmark_Inform");
+	}
+	gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->SetActive(false);
+
 	if (HostInformConnector::connector->load)
 		GameLoader::gameLoader->LoadBuildings(file_pointer);
 }

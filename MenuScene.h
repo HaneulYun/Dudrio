@@ -27,6 +27,7 @@ public:
 			ASSET AddTexture("ui_coin", L"Textures\\icon\\coin.dds");
 			ASSET AddTexture("ui_time", L"Textures\\icon\\time.dds");
 			ASSET AddTexture("ui_world", L"Textures\\icon\\world.dds");
+			ASSET AddTexture("ui_landmark_Inform", L"Textures\\icon\\landmark_Inform.dds");
 
 			ASSET AddTexture("icon_landmark", L"Textures\\icon\\landmark.dds");
 			ASSET AddTexture("icon_house", L"Textures\\icon\\house.dds");
@@ -184,6 +185,7 @@ public:
 			ASSET AddMaterial("ui_coin", ASSET TEXTURE("ui_coin"));
 			ASSET AddMaterial("ui_time", ASSET TEXTURE("ui_time"));
 			ASSET AddMaterial("ui_world", ASSET TEXTURE("ui_world"));
+			ASSET AddMaterial("ui_landmark_Inform", ASSET TEXTURE("ui_landmark_Inform")); 
 
 			ASSET AddMaterial("icon_landmark", ASSET TEXTURE("icon_landmark"));
 			ASSET AddMaterial("icon_house", ASSET TEXTURE("icon_house"));

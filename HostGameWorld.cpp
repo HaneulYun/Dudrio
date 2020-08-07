@@ -138,8 +138,10 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
 				int range = 0;
-				if (object->GetComponent<Village>() != nullptr)
+				if (object->GetComponent<Village>() != nullptr) {
 					range = object->GetComponent<Village>()->radiusOfLand;
+					object->GetComponent<Village>()->serverSimList.clear();
+				}
 				GameLoader::gameLoader->deleteInFile(obj_type, object->GetComponent<Building>()->index, object->transform->position.x, object->transform->position.z, angle, range);
 				GameLoader::gameLoader->SaveTime(gameTime, day);
 				Scene::scene->PushDelete(object);

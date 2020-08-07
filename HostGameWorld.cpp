@@ -211,14 +211,27 @@ void HostGameWorld::changeMode(GameState state)
 	{
 		if (gameState == state)
 		{
+			auto chatField = gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>();
+			if (HostNetwork::network->isConnect && HostNetwork::network->mainConnect) {
+				if (chatField->text.size() > MAX_STR_LEN - 1) {
+					int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
+					for (int i = 0; i < oversize; ++i)
+						chatField->text.pop_back();
+				}
+				if (!chatField->text.empty())
+					HostNetwork::network->send_chat_packet(_wcsdup(chatField->text.c_str()));
+			}
 			gameState = CameraMode;
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(false);
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->isFocused = false;
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->clear();
 		}
 		else if(gameState != MenuMode)
 		{
 			gameState = ChatMode;
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->SetActive(true);
 			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->isFocused = true;
+			gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>()->clear();
 			memset(Input::buffer, 0, 8);
 		}
 	}

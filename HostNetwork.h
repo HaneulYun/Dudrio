@@ -144,7 +144,7 @@ public:
 			{
 				auto rt = chatting[i]->GetComponent<RectTransform>();
 				rt->setAnchorAndPivot(0, 1);
-				rt->setPosAndSize(0, -785 + ((i + 1) * 15), 500, 15);
+				rt->setPosAndSize(0, -775 + ((i + 1) * 15), 500, 15);
 
 				Text* text = chatting[i]->AddComponent<Text>();
 				text->text = L"";
@@ -215,23 +215,7 @@ public:
 			}
 		}
 		if (isConnect) {
-
 			Receiver();
-			if (mainConnect) {
-				auto chatField = gameUI->gameUIs[gameUI->ChatUI]->GetComponent<InputField>();
-				if (chatField->isFocused) {
-					if (Input::GetKeyDown(KeyCode::Return)) {
-						if (chatField->text.size() > MAX_STR_LEN - 1) {
-							int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
-							for (int i = 0; i < oversize; ++i)
-								chatField->text.pop_back();
-						}
-						send_chat_packet(_wcsdup(chatField->text.c_str()));
-						chatField->clear();
-						chatField->setFocus(false);
-					}
-				}
-			}
 		}
 	}
 

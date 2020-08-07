@@ -27,6 +27,7 @@ public:
 			ASSET AddTexture("ui_coin", L"Textures\\icon\\coin.dds");
 			ASSET AddTexture("ui_time", L"Textures\\icon\\time.dds");
 			ASSET AddTexture("ui_world", L"Textures\\icon\\world.dds");
+			ASSET AddTexture("ui_landmark_Inform", L"Textures\\icon\\landmark_Inform.dds");
 
 			ASSET AddTexture("icon_landmark", L"Textures\\icon\\landmark.dds");
 			ASSET AddTexture("icon_house", L"Textures\\icon\\house.dds");
@@ -184,6 +185,7 @@ public:
 			ASSET AddMaterial("ui_coin", ASSET TEXTURE("ui_coin"));
 			ASSET AddMaterial("ui_time", ASSET TEXTURE("ui_time"));
 			ASSET AddMaterial("ui_world", ASSET TEXTURE("ui_world"));
+			ASSET AddMaterial("ui_landmark_Inform", ASSET TEXTURE("ui_landmark_Inform")); 
 
 			ASSET AddMaterial("icon_landmark", ASSET TEXTURE("icon_landmark"));
 			ASSET AddMaterial("icon_house", ASSET TEXTURE("icon_house"));
@@ -612,7 +614,7 @@ public:
 			{
 				auto child = MakePrefab(ASSET MESH("AV_Well"), ASSET MATERIAL("AV_material_03"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				bb0 = ASSET MESH("AV_Well")->Bounds;
+				bb0 = ASSET MESH("AV_Well")->BoundsLimited;
 				center.xmf3 = bb0.Center; extents.xmf3 = bb0.Extents;
 				boundMin = Vector3::Min(boundMin, center - extents);
 				boundMax = Vector3::Max(boundMax, center + extents);
@@ -621,7 +623,7 @@ public:
 				auto child = MakePrefab(ASSET MESH("AV_Well_Extra02"), ASSET MATERIAL("AV_material_03"), prefab);
 				child->transform->position = { 0.0f,1.5f,0.0f };
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				bb1 = ASSET MESH("AV_Well_Extra02")->Bounds;
+				bb1 = ASSET MESH("AV_Well_Extra02")->BoundsLimited;
 				center.xmf3 = bb1.Center; extents.xmf3 = bb1.Extents;
 				boundMin = Vector3::Min(boundMin, center - extents);
 				boundMax = Vector3::Max(boundMax, center + extents);
@@ -630,7 +632,7 @@ public:
 				auto child = MakePrefab(ASSET MESH("AV_Well_Extra03"), ASSET MATERIAL("AV_material_03"), prefab);
 				child->transform->position = { 0.0f,1.0f,0.0f };
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
-				bb2 = ASSET MESH("AV_Well_Extra03")->Bounds;
+				bb2 = ASSET MESH("AV_Well_Extra03")->BoundsLimited;
 				center.xmf3 = bb2.Center; extents.xmf3 = bb2.Extents;
 				boundMin = Vector3::Min(boundMin, center - extents);
 				boundMax = Vector3::Max(boundMax, center + extents);
@@ -644,9 +646,12 @@ public:
 		{
 			auto prefab = CreateEmptyPrefab();
 			auto collider = prefab->AddComponent<BoxCollider>();
-			collider->extents = { 2.5f, 4.5f, 2.5f };
-			collider->center.y += collider->extents.y * 0.5f;
+			BoundingBox bb = ASSET MESH("AV_House_02")->BoundsLimited;;
+			collider->extents.xmf3 = bb.Extents;
+			collider->center.xmf3 = bb.Center;
 			collider->obb = true;
+			//collider->extents = { 2.5f, 4.5f, 2.5f };
+			//collider->center.y += collider->extents.y * 0.5f;
 			{
 				auto child = MakePrefab(ASSET MESH("AV_House_02"), ASSET MATERIAL("AV_house_02"), prefab);
 				child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -671,7 +676,7 @@ public:
 		{
 			auto prefab = CreateEmptyPrefab();
 			auto collider = prefab->AddComponent<BoxCollider>();
-			BoundingBox bb = ASSET MESH("HP_Mill")->Bounds;
+			BoundingBox bb = ASSET MESH("HP_Mill")->BoundsLimited;
 			collider->extents.xmf3 = bb.Extents;
 			collider->center.xmf3 = bb.Center;
 			collider->obb = true;
@@ -692,7 +697,7 @@ public:
 		{
 			auto prefab = CreateEmptyPrefab();
 			auto collider = prefab->AddComponent<BoxCollider>();
-			BoundingBox bb = ASSET MESH("HP_street_light")->Bounds;
+			BoundingBox bb = ASSET MESH("HP_street_light")->BoundsLimited;
 			collider->extents.xmf3 = bb.Extents;
 			collider->center.xmf3 = bb.Center;
 			collider->obb = true;
@@ -713,7 +718,7 @@ public:
 		{
 			auto prefab = CreateEmptyPrefab();
 			auto collider = prefab->AddComponent<BoxCollider>();
-			BoundingBox bb = ASSET MESH("HP_Lamppost")->Bounds;
+			BoundingBox bb = ASSET MESH("HP_Lamppost")->BoundsLimited;
 			collider->extents.xmf3 = bb.Extents;
 			collider->center.xmf3 = bb.Center;
 			collider->obb = true;

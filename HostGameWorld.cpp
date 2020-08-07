@@ -60,6 +60,20 @@ void HostGameWorld::uiUpdate()
 	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = convertTimeToText() + L" ,   DAY " + to_wstring(day) + L"\t";
 	gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(simList.size());
 	gameUI->gameUIs[GameUI::GameUICategory::CoinCountUI]->GetComponent<Text>()->text = to_wstring(gameMoney);
+
+	if (gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->active)
+	{
+		if (BuildingBuilder::buildingBuilder->curLandmark == nullptr || BuildingBuilder::buildingBuilder->curPrefabType == 0)
+		{
+			gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = L". . .m\n\n. . .Έν";
+		}
+		else
+		{
+			Village* village = BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>();
+			gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->simList.size()) + L"Έν";
+		}
+	}
+	
 }
 
 void HostGameWorld::gameTimeUpdate()

@@ -9,15 +9,84 @@ void BuildingBuilder::Start(/*초기화 코드를 작성하세요.*/)
 
 void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 {
-	if (builderMode == BuildMode)
+	if (builderMode == DefaultMode)
 	{
+		Vector3 mousePosInWorld = getPosOnTerrain();
+
+		int x = mousePosInWorld.x / gameObject->scene->spatialPartitioningManager.sectorWidth;
+		int y = mousePosInWorld.z / gameObject->scene->spatialPartitioningManager.sectorHeight;
+
+		if (0 > x || x >= gameObject->scene->spatialPartitioningManager.xSize || 0 > y || y >= gameObject->scene->spatialPartitioningManager.ySize)
+			return;
+
+		Vector3 screenPos{ Input::mousePosition.x, Input::mousePosition.y, 1.0f };
+
+		Vector3 rayOrigin{ 0.0f, 0.0f, 0.0f };
+		Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos);
+
+		Matrix4x4 invView = Camera::main->view.Inverse();
+		Matrix4x4 invWorld = terrain->gameObject->transform->localToWorldMatrix.Inverse();
+		Matrix4x4 toLocal = invView * invWorld;
+
+		rayOrigin = rayOrigin.TransformCoord(toLocal);
+		rayDir = rayDir.TransformNormal(invWorld).Normalize();
+
+		float dist;
+
+		for (auto& tagList : gameObject->scene->spatialPartitioningManager.sectorList[x][y].list)
+		{
+			for (auto& object : tagList.second)
+			{
+				BoxCollider* collider = object->GetComponent<BoxCollider>();
+				if (collider)
+				{
+					BoundingOrientedBox boundingBox{};
+					boundingBox.Center = object->transform->position.xmf3;
+					boundingBox.Extents = collider->boundingBox.Extents;
+					boundingBox.Orientation = object->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
+
+					if (boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), dist))
+					{
+						if (Input::GetMouseButtonUp(0))
+						{
+							Building* building = object->GetComponent<Building>();
+							if (building->type == Landmark)
+							{
+								GameObject* landmakrInformUI = HostGameWorld::gameWorld->gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI];
+
+								if (landmakrInformUI->active == false)
+									landmakrInformUI->SetActive(true);
+								else if(curLandmark == object)
+									landmakrInformUI->SetActive(false);
+
+								curLandmark = object;
+							}
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	else if (builderMode == BuildMode)
+	{
+		for (auto& child : prefab->children)
+			child->GetComponent<Constant>()->v4 = { 1, 0, 0, 1 };
+
+		isOnLand();
+
 		// 토글 설정
 		if (Input::GetKeyDown(KeyCode::T))
 			rotationToggle = rotationToggle ? false : true;
 
 		// 건물 회전
 		if (Input::GetMouseButtonDown(2))
+		{
 			lastMousePos = Input::mousePosition;
+			for (auto& child : prefab->children)
+				child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
+		}
 		else if (Input::GetMouseButton(2))
 		{
 			if (rotationToggle)
@@ -33,11 +102,20 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				prefab->transform->Rotate(Vector3{ 0.0f,1.0f,0.0f }, (lastMousePos.y - Input::mousePosition.y) * Time::deltaTime * 60.0f);
 				lastMousePos = Input::mousePosition;
 			}
-		}
 
+			if (prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 1)
+			{
+				for (auto& child : prefab->children)
+					child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
+			}
+		}
+		
 		// 건물 건설
-		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && isOnLand() != nullptr)
+		else if (Input::GetMouseButtonUp(0) && prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 1)
 		{
+			for (auto& child : prefab->children)
+				child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
+
 			GameObject* prePrefab = prefab;
 			makePrefab(curPrefabType, curPrefabIndex);
 			prefab->transform->localToWorldMatrix = prePrefab->GetMatrix();
@@ -47,8 +125,11 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			if (curPrefabType == Landmark)
 			{
 				curLandmark = prefab;
-				prefab->AddComponent<Village>()->OnAutoDevelopment();
-				range = prefab->GetComponent<Village>()->radiusOfLand;
+				Village* village;
+				village = prefab->AddComponent<Village>();
+				village->OnAutoDevelopment();
+				village->radiusOfLand = getLandmarkRaduis(prefab);
+				range = village->radiusOfLand;
 			}
 			else {
 				for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
@@ -84,6 +165,8 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 			if (!Input::GetKey(KeyCode::Shift))
 			{
 				builderMode = DefaultMode;
+				curPrefabType = -1;
+				curPrefabIndex = -1;
 				prefab = nullptr;
 				Scene::scene->PushDelete(prePrefab);
 				Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
@@ -94,15 +177,20 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 
 		// 미리보기 건물 이동
 		else
+		{
+			if (prefab->collisionType.empty() && curLandmark != nullptr && prefab->transform->position.y > 1)
+			{
+				for (auto& child : prefab->children)
+					child->GetComponent<Constant>()->v4 = { 0, 1, 0, 1 };
+			}
 			prefab->transform->position = getPosOnTerrain();
+		}
 	}
 	
-
 	else if (builderMode == DeleteMode && HostNetwork::network != nullptr)
 	{
 		pickToDelete();
 	}
-
 }
 
 void BuildingBuilder::serializeBuildings()
@@ -166,12 +254,14 @@ void BuildingBuilder::serializeBuildings()
 		building[Theme].push_back(makeBuilderDataAsPrefab(L"HP_Mill", ASSET PREFAB("HP_Mill")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Woodmill", ASSET MESH("HP_Woodmill"), ASSET MATERIAL("HP_Woodmill")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tavern", ASSET MESH("HP_Tavern"), ASSET MATERIAL("HP_Tavern")));
+		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Forge", ASSET MESH("HP_Forge"), ASSET MATERIAL("HP_Forge")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_01", ASSET MESH("HP_Tree_01"), ASSET MATERIAL("HP_Tree_01")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_02", ASSET MESH("HP_Tree_02"), ASSET MATERIAL("HP_Tree_02")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_03", ASSET MESH("HP_Tree_03"), ASSET MATERIAL("HP_Tree_03")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_04", ASSET MESH("HP_Tree_04"), ASSET MATERIAL("HP_Tree_04")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Bush_1", ASSET MESH("HP_Bush_1"), ASSET MATERIAL("HP_Plants")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Bush_2", ASSET MESH("HP_Bush_2"), ASSET MATERIAL("HP_Plants")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fern", ASSET MESH("HP_Fern"), ASSET MATERIAL("HP_Fern")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flower", ASSET MESH("HP_Flower"), ASSET MATERIAL("HP_Plants")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flowers_1", ASSET MESH("HP_Flowers_1"), ASSET MATERIAL("HP_Plants")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flowers_2", ASSET MESH("HP_Flowers_2"), ASSET MATERIAL("HP_Plants")));
@@ -205,8 +295,6 @@ void BuildingBuilder::serializeBuildings()
 		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence", ASSET MESH("HP_Fence"), ASSET MATERIAL("HP_Fence")));
 		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence_1", ASSET MESH("HP_Fence_1"), ASSET MATERIAL("HP_Fence")));
 		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fence_2", ASSET MESH("HP_Fence_2"), ASSET MATERIAL("HP_Fence")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fern", ASSET MESH("HP_Fern"), ASSET MATERIAL("HP_Fern")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Forge", ASSET MESH("HP_Forge"), ASSET MATERIAL("HP_Forge")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Hammer", ASSET MESH("HP_Hammer"), ASSET MATERIAL("HP_Hammer_anvil")));	
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Log", ASSET MESH("HP_Log"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Log_1", ASSET MESH("HP_Log_1"), ASSET MATERIAL("HP_Logs")));
@@ -303,6 +391,36 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_06_SM", ASSET MESH("SE_Stone_06_SM"), ASSET MATERIAL("SE_Stones")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Willow_01a_SM", ASSET MESH("SE_Willow_01a_SM"), ASSET MATERIAL("SE_Willow")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Willow_01b_SM", ASSET MESH("SE_Willow_01b_SM"), ASSET MATERIAL("SE_Willow")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_06_SM", ASSET MESH("SE_Bush_06_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_07_SM", ASSET MESH("SE_Bush_07_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01_SM", ASSET MESH("SE_Birch_01_SM"), ASSET MATERIAL("SE_Birch")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01b_SM", ASSET MESH("SE_Birch_01b_SM"), ASSET MATERIAL("SE_Birch_01b")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02_SM", ASSET MESH("SE_Birch_02_SM"), ASSET MATERIAL("SE_Birch")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02b_SM", ASSET MESH("SE_Birch_02b_SM"), ASSET MATERIAL("SE_Birch_01b")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03_SM", ASSET MESH("SE_Birch_03_SM"), ASSET MATERIAL("SE_Birch")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03b_SM", ASSET MESH("SE_Birch_03b_SM"), ASSET MATERIAL("SE_Birch_01b")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_01_SM", ASSET MESH("SE_Bonsai_01_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_02_SM", ASSET MESH("SE_Bonsai_02_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushese")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushese")));
+
+
+		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_01_SM", ASSET MESH("SE_Lamp_01_SM"), ASSET MATERIAL("SE_Lamps")));
+		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_02_SM", ASSET MESH("SE_Lamp_02_SM"), ASSET MATERIAL("SE_Lamps")));
+		
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07a_SM", ASSET MESH("SE_Fence_07a_SM"), ASSET MATERIAL("SE_Fence_01a")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07b_SM", ASSET MESH("SE_Fence_07b_SM"), ASSET MATERIAL("SE_Fence_01b")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08a_SM", ASSET MESH("SE_Fence_08a_SM"), ASSET MATERIAL("SE_Fence_01a")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08b_SM", ASSET MESH("SE_Fence_08b_SM"), ASSET MATERIAL("SE_Fence_01b")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_01_SM", ASSET MESH("SE_Hedge_01_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_02_SM", ASSET MESH("SE_Hedge_02_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_03_SM", ASSET MESH("SE_Hedge_03_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_04_SM", ASSET MESH("SE_Hedge_04_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_05_SM", ASSET MESH("SE_Hedge_05_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_06_SM", ASSET MESH("SE_Hedge_06_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_07_SM", ASSET MESH("SE_Hedge_07_SM"), ASSET MATERIAL("SE_Hedges")));
+		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_08_SM", ASSET MESH("SE_Hedge_08_SM"), ASSET MATERIAL("SE_Hedges")));
+		
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Baloon_01_SM", ASSET MESH("SE_Baloon_01_SM"), ASSET MATERIAL("SE_Baloons")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Baloon_02_SM", ASSET MESH("SE_Baloon_02_SM"), ASSET MATERIAL("SE_Baloons")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Baloon_03_SM", ASSET MESH("SE_Baloon_03_SM"), ASSET MATERIAL("SE_Baloons")));
@@ -310,22 +428,10 @@ void BuildingBuilder::serializeBuildings()
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Baloons_01_SM", ASSET MESH("SE_Baloons_01_SM"), ASSET MATERIAL("SE_Baloons")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bench_01a_SM", ASSET MESH("SE_Bench_01a_SM"), ASSET MATERIAL("SE_Bench_01a")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bench_01b_SM", ASSET MESH("SE_Bench_01b_SM"), ASSET MATERIAL("SE_Bench_01b")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01_SM", ASSET MESH("SE_Birch_01_SM"), ASSET MATERIAL("SE_Birch")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01b_SM", ASSET MESH("SE_Birch_01b_SM"), ASSET MATERIAL("SE_Birch_01b")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02_SM", ASSET MESH("SE_Birch_02_SM"), ASSET MATERIAL("SE_Birch")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02b_SM", ASSET MESH("SE_Birch_02b_SM"), ASSET MATERIAL("SE_Birch_01b")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03_SM", ASSET MESH("SE_Birch_03_SM"), ASSET MATERIAL("SE_Birch")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03b_SM", ASSET MESH("SE_Birch_03b_SM"), ASSET MATERIAL("SE_Birch_01b")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blanket_01_SM", ASSET MESH("SE_Blanket_01_SM"), ASSET MATERIAL("SE_Blanket")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blanket_02_SM", ASSET MESH("SE_Blanket_02_SM"), ASSET MATERIAL("SE_Blanket")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_01_SM", ASSET MESH("SE_Bonsai_01_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_02_SM", ASSET MESH("SE_Bonsai_02_SM"), ASSET MATERIAL("SE_Bonsai")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Booth_01_SM", ASSET MESH("SE_Booth_01_SM"), ASSET MATERIAL("SE_Booth")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Booth_02_SM", ASSET MESH("SE_Booth_02_SM"), ASSET MATERIAL("SE_Booth")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushese")));
-		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushese")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_06_SM", ASSET MESH("SE_Bush_06_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_07_SM", ASSET MESH("SE_Bush_07_SM"), ASSET MATERIAL("SE_Bonsai")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Candy_01_SM", ASSET MESH("SE_Candy_01_SM"), ASSET MATERIAL("SE_Candies")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Candy_02_SM", ASSET MESH("SE_Candy_02_SM"), ASSET MATERIAL("SE_Candies")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Candy_03_SM", ASSET MESH("SE_Candy_03_SM"), ASSET MATERIAL("SE_Candies")));
@@ -335,23 +441,9 @@ void BuildingBuilder::serializeBuildings()
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Chair_01a_SM", ASSET MESH("SE_Chair_01a_SM"), ASSET MATERIAL("SE_Bench_01a")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Climber_01_SM", ASSET MESH("SE_Climber_01_SM"), ASSET MATERIAL("SE_Climbers")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Climber_02_SM", ASSET MESH("SE_Climber_02_SM"), ASSET MATERIAL("SE_Climbers")));	
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07a_SM", ASSET MESH("SE_Fence_07a_SM"), ASSET MATERIAL("SE_Fence_01a")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_07b_SM", ASSET MESH("SE_Fence_07b_SM"), ASSET MATERIAL("SE_Fence_01b")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08a_SM", ASSET MESH("SE_Fence_08a_SM"), ASSET MATERIAL("SE_Fence_01a")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Fence_08b_SM", ASSET MESH("SE_Fence_08b_SM"), ASSET MATERIAL("SE_Fence_01b")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Gate_01b_SM", ASSET MESH("SE_Gate_01b_SM"), ASSET MATERIAL("SE_Gate")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Grill_02_SM", ASSET MESH("SE_Grill_02_SM"), ASSET MATERIAL("SE_Grill")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_01_SM", ASSET MESH("SE_Hedge_01_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_02_SM", ASSET MESH("SE_Hedge_02_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_03_SM", ASSET MESH("SE_Hedge_03_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_04_SM", ASSET MESH("SE_Hedge_04_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_05_SM", ASSET MESH("SE_Hedge_05_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_06_SM", ASSET MESH("SE_Hedge_06_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_07_SM", ASSET MESH("SE_Hedge_07_SM"), ASSET MATERIAL("SE_Hedges")));
-		building[Fence].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Hedge_08_SM", ASSET MESH("SE_Hedge_08_SM"), ASSET MATERIAL("SE_Hedges")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_HotAirBaloon_SM", ASSET MESH("SE_HotAirBaloon_SM"), ASSET MATERIAL("SE_HotAirBaloon")));
-		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_01_SM", ASSET MESH("SE_Lamp_01_SM"), ASSET MATERIAL("SE_Lamps")));
-		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_02_SM", ASSET MESH("SE_Lamp_02_SM"), ASSET MATERIAL("SE_Lamps")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Maypole_01_SM", ASSET MESH("SE_Maypole_01_SM"), ASSET MATERIAL("SE_Maypole_01")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Present_01_SM", ASSET MESH("SE_Present_01_SM"), ASSET MATERIAL("SE_Presents")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Present_02_SM", ASSET MESH("SE_Present_02_SM"), ASSET MATERIAL("SE_Presents")));
@@ -426,12 +518,13 @@ GameObject* BuildingBuilder::isOnLand()
 		{
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
 
-			if (distance >= landmark.first->GetComponent<Village>()->radiusOfLand + LAND_SMALL)
+			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand + getLandmarkRaduis(prefab))
 			{
-				curLandmark = prefab;
-				return prefab;
+				return curLandmark = nullptr;
 			}
 		}
+		curLandmark = prefab;
+		return prefab;
 	}
 	else
 	{
@@ -446,7 +539,7 @@ GameObject* BuildingBuilder::isOnLand()
 			}
 		}
 	}
-	return nullptr;
+	return curLandmark = nullptr;
 }
 
 void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision)
@@ -495,7 +588,7 @@ void BuildingBuilder::build(Vector2 position, double angle, int type, int index,
 		else
 		{
 			obj = Scene::scene->CreateEmpty();
-			obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+			obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->BoundsLimited;
 
 			auto child = obj->AddChild();
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -530,6 +623,12 @@ void BuildingBuilder::build(Vector3 position)
 	prefab = nullptr;
 }
 
+void BuildingBuilder::simBuild(Vector2 position, double angle, int type, int index, GameObject* landmark)
+{
+	if (terrainNodeData->extraData[(int)position.x + ((int)position.y * terrain->terrainData.heightmapHeight)].collision == false)
+		build(position, rand() % 360, type, index, landmark);
+}
+
 void BuildingBuilder::makePrefab(int type, int index)
 {
 	if (index < building[type].size())
@@ -540,8 +639,8 @@ void BuildingBuilder::makePrefab(int type, int index)
 		else
 		{
 			prefab = Scene::scene->CreateEmpty();
-			prefab->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->Bounds.Center.x, data.mesh->Bounds.Center.z, data.mesh->Bounds.Center.y };
-			prefab->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->Bounds.Extents.x, data.mesh->Bounds.Extents.z, data.mesh->Bounds.Extents.y };
+			prefab->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
+			prefab->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
 
 			auto child = prefab->AddChild();
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -566,6 +665,8 @@ void BuildingBuilder::exitBuildMode()
 		Scene::scene->PushDelete(prefab);
 	Scene::scene->spatialPartitioningManager.tagData.SetTagCollision(TAG_BUILDING, TAG_PREVIEW, false);
 	prefab = nullptr;
+	curPrefabType = -1;
+	curPrefabIndex = -1;
 	builderMode = DefaultMode;
 }
 
@@ -644,6 +745,18 @@ wstring BuildingBuilder::getBuildingName(int type, int index)
 	return L"X";
 }
 
+int BuildingBuilder::getLandmarkRaduis(GameObject* landmark)
+{
+	BoxCollider* collider = landmark->GetComponent<BoxCollider>();
+
+	if (collider->extents.x > 10.0f || collider->extents.y > 10.0f || collider->extents.z > 10.0f)
+		return LAND_LARGE;
+	else if (collider->extents.x > 5.0f || collider->extents.y > 5.0f || collider->extents.z > 5.0f)
+		return LAND_MEDIUM;
+	else
+		return LAND_SMALL;
+}
+
 void BuildingBuilder::pickToDelete()
 {
 	Vector3 mousePosInWorld = getPosOnTerrain();
@@ -653,6 +766,20 @@ void BuildingBuilder::pickToDelete()
 	
 	if (0 > x || x >= gameObject->scene->spatialPartitioningManager.xSize || 0 > y || y >= gameObject->scene->spatialPartitioningManager.ySize) 
 		return;
+
+	Vector3 screenPos{ Input::mousePosition.x, Input::mousePosition.y, 1.0f };
+
+	Vector3 rayOrigin{ 0.0f, 0.0f, 0.0f };
+	Vector3 rayDir = Camera::main->ScreenToWorldPoint(screenPos);
+
+	Matrix4x4 invView = Camera::main->view.Inverse();
+	Matrix4x4 invWorld = terrain->gameObject->transform->localToWorldMatrix.Inverse();
+	Matrix4x4 toLocal = invView * invWorld;
+
+	rayOrigin = rayOrigin.TransformCoord(toLocal);
+	rayDir = rayDir.TransformNormal(invWorld).Normalize();
+
+	float dist;
 
 	for (auto& tagList : gameObject->scene->spatialPartitioningManager.sectorList[x][y].list)
 	{
@@ -666,7 +793,8 @@ void BuildingBuilder::pickToDelete()
 				boundingBox.Extents = collider->boundingBox.Extents;
 				boundingBox.Orientation = object->transform->localToWorldMatrix.QuaternionRotationMatrix().xmf4;
 
-				if (boundingBox.Contains(XMLoadFloat3(&XMFLOAT3(mousePosInWorld.x, mousePosInWorld.y, mousePosInWorld.z))))
+				//if (boundingBox.Contains(XMLoadFloat3(&XMFLOAT3(mousePosInWorld.x, mousePosInWorld.y, mousePosInWorld.z))))
+				if (boundingBox.Intersects(XMLoadFloat3(&rayOrigin.xmf3), XMLoadFloat3(&rayDir.xmf3), dist))
 				{
 					if (Input::GetMouseButtonUp(0))
 					{
@@ -684,6 +812,8 @@ void BuildingBuilder::pickToDelete()
 							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z, angle);
 						}
 						HostGameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
+
+						return;
 					}
 				}
 			}
@@ -819,7 +949,7 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 					else
 					{
 						obj = Scene::scene->CreateEmpty();
-						obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+						obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->BoundsLimited;
 
 						auto child = obj->AddChild();
 						child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -857,7 +987,7 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 	else
 	{
 		obj = Scene::scene->CreateEmpty();
-		obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->Bounds;
+		obj->AddComponent<BoxCollider>()->boundingBox = data.mesh->BoundsLimited;
 
 		auto child = obj->AddChild();
 		child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);

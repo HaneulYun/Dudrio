@@ -16,8 +16,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	static BuildingBuilder* buildingBuilder;
 
 	GameObject* curLandmark;
-	int curPrefabType;
-	int curPrefabIndex;
+	int curPrefabType = -1;
+	int curPrefabIndex = -1;
 
 	Terrain* terrain{ nullptr };
 	TerrainNodeData* terrainNodeData; 
@@ -58,6 +58,8 @@ public:
 
 	void build(Vector3 position);
 
+	void simBuild(Vector2 position, double angle, int type, int index, GameObject* landmark);
+
 	void makePrefab(int type, int index);
 
 	void exitBuildMode();
@@ -73,6 +75,8 @@ public:
 	int getBuildingCount(int type);
 
 	wstring getBuildingName(int type, int index);
+
+	int getLandmarkRaduis(GameObject* landmark);
 
 	void pickToDelete();
 

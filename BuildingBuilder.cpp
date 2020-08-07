@@ -52,14 +52,15 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 							Building* building = object->GetComponent<Building>();
 							if (building->type == Landmark)
 							{
-								curLandmark = object;
 								GameObject* landmakrInformUI = HostGameWorld::gameWorld->gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI];
 
 								if (landmakrInformUI->active == false)
 									landmakrInformUI->SetActive(true);
+								else if(curLandmark == object)
+									landmakrInformUI->SetActive(false);
+
+								curLandmark = object;
 							}
-							// ui창. 빌드모드 들어가면 비활성화해야함.
-							// 버튼 -> 심갯수, on/off, radius  ::: curlandmark참조해서 설정 
 							return;
 						}
 					}

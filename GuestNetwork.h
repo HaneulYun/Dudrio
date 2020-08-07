@@ -72,21 +72,6 @@ public:
 		hostId = -1;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 
-		//gameTime = Scene::scene->CreateUI();
-		//{
-		//	auto rt = gameTime->GetComponent<RectTransform>();
-		//	rt->setAnchorAndPivot(0, 1);
-		//	rt->setPosAndSize(200, -50, 150, -30);
-		//
-		//	Text* text = gameTime->AddComponent<Text>();
-		//	text->text = GuestGameWorld::gameWorld->convertTimeToText();
-		//	text->fontSize = 30;
-		//	text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		//	text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-		//	text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-		//}
-		//gameTime->SetActive(false);
-
 		auto chatFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = chatFieldObject->GetComponent<RectTransform>();
@@ -107,7 +92,7 @@ public:
 			{
 				auto rt = chatting[i]->GetComponent<RectTransform>();
 				rt->setAnchorAndPivot(0, 1);
-				rt->setPosAndSize(0, -785 + ((i + 1) * 15), 500, 15);
+				rt->setPosAndSize(0, -775 + ((i + 1) * 15), 500, 15);
 
 				Text* text = chatting[i]->AddComponent<Text>();
 				text->text = L"";
@@ -205,7 +190,6 @@ public:
 		}
 		if (isConnect)
 		{
-			//gameTime->GetComponent<Text>()->text = GuestGameWorld::gameWorld->convertTimeToText();
 			Receiver();
 
 			if (chatField->isFocused) {

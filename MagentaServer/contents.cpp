@@ -168,7 +168,7 @@ void Contents::process_packet(int user_id, char* buf)
 	{
 		cs_packet_construct* packet = reinterpret_cast<cs_packet_construct*>(buf);
 		if (user_id == host_id)
-			do_construct(user_id, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle, packet->landmark_range);
+			do_construct(user_id, packet->building_type, packet->building_name, packet->xpos, packet->zpos, packet->angle, packet->landmark_range, packet->develop);
 	}
 	break;
 	case C2S_DESTRUCT:
@@ -183,6 +183,20 @@ void Contents::process_packet(int user_id, char* buf)
 		cs_packet_destruct_all* packet = reinterpret_cast<cs_packet_destruct_all*>(buf);
 		if (user_id == host_id)
 			destruct_all(user_id);
+	}
+	break;
+	case C2S_LANDMARK_CHANGE:
+	{
+		cs_packet_landmark_change* packet = reinterpret_cast<cs_packet_landmark_change*>(buf);
+		if (user_id == host_id) {
+			lock_guard<mutex> lock_guard(g_buildings_lock);
+			for (auto& landmark : g_villages) {
+				if (landmark->m_info.m_xPos == packet->xpos && landmark->m_info.m_zPos == packet->zpos)	{
+					landmark->autoDevelopment = packet->development;
+					break;
+				}
+			}
+		}
 	}
 	break;
 	case C2S_CHAT:
@@ -461,14 +475,17 @@ class Village* Contents::get_my_landmark(class Building* b)
 	return nullptr;
 }
 
-void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle, int land_range)
+void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle, int land_range, bool develop)
 {
 	BuildingInfo b{ b_type, b_name, xpos, zpos, angle };
 	pair<int, int> b_sectnum = calculate_sector_num(xpos, zpos);
 	g_buildings_lock.lock();
 	if (b_type == Landmark) {
 		Village* landmark = new Village(b_type, b_name, xpos, zpos, angle, land_range);
-		landmark->OnAutoDevelopment();
+		if(develop)
+			landmark->OnAutoDevelopment();
+		else
+			landmark->OffAutoDevelopment();
 		g_buildings[b_sectnum.second][b_sectnum.first][b] = landmark;
 		g_villages.insert(landmark);
 	}
@@ -711,7 +728,7 @@ void Contents::update_sim()
 				info->pos = Vector2D(landmark->m_info.m_xPos + (rand() % landmark->m_land_range) - (landmark->m_land_range / 2), landmark->m_info.m_zPos + (rand() % landmark->m_land_range) - (landmark->m_land_range / 2));
 				info->buildingType = rand() % 2 + 3;
 				info->buildingIndex = rand() % collider_info[info->buildingType].size();
-				landmark->delayTime = rand() % 60 + 30.f;
+				landmark->delayTime = rand() % 120 + 60;
 
 				timer_event ev = { -1, SIM_Build,  high_resolution_clock::now(), rand() % landmark->simList.size(), info };
 				timer.add_event(ev);

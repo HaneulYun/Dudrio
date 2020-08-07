@@ -3,6 +3,7 @@
 #include <fstream>
 #include <io.h>
 #include "BuildingBuilder.h"
+#include "HostGameWorld.h"
 
 struct BuildingFormat {
 	int b_type;
@@ -10,12 +11,13 @@ struct BuildingFormat {
 	double x, z;
 	double angle;
 	int radius;
+	bool development;
 
 	std::string makeInfoToString()
 	{
 		std::string info;
 		info = std::to_string(b_type) + ' ' + std::to_string(b_index) + ' ' + std::to_string(x) + ' ' + std::to_string(z)
-			+ ' ' + std::to_string(angle) + ' ' + std::to_string(radius);
+			+ ' ' + std::to_string(angle) + ' ' + std::to_string(radius) + ' ' + std::to_string(development);
 		
 		return info;
 	}
@@ -55,9 +57,9 @@ public:
 		
 	}
 
-	void insertInFile(int b_type, int b_idx, double x, double z, double angle, int range)
+	void insertInFile(int b_type, int b_idx, double x, double z, double angle, int range, bool development)
 	{
-		BuildingFormat b_info{ b_type, b_idx, x, z, angle, range };
+		BuildingFormat b_info{ b_type, b_idx, x, z, angle, range, development };
 		std::string infoToString = b_info.makeInfoToString();
 		
 		std::fstream file("buildings.txt", std::ios::in | std::ios::out | std::ios::app);
@@ -132,6 +134,60 @@ public:
 
 		return file.tellp();
 	}
+	
+	void Save(std::wstring name, int frequency, int octaves, int seed)
+	{
+		std::fstream file("buildings.txt", std::ios::out);
+		std::string str;
+		str.assign(name.begin(), name.end());
+		file << str << ' ' << frequency << ' ' << octaves << ' ' << seed << std::endl;
+		BuildingFormat bf;
+
+		for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
+			bf.b_type = BuildingBuilder::Landmark;
+			bf.b_index = landmark.first->GetComponent<Building>()->index;
+			bf.x = landmark.first->transform->position.x;
+			bf.z = landmark.first->transform->position.z;
+			Vector3 building_forward = landmark.first->transform->forward;
+			building_forward.y = 0;
+			building_forward.Normalize();
+			Vector3 forward = { 0,0,1 };
+			double angle = Vector3::DotProduct(forward, building_forward);
+			Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+			angle = XMConvertToDegrees(acos(angle));
+			angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+			bf.angle = angle;
+			bf.radius = landmark.first->GetComponent<Village>()->radiusOfLand;
+			bf.development = landmark.first->GetComponent<Village>()->autoDevelopment;
+			file << bf.makeInfoToString() << std::endl;
+		}
+
+		for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
+			for (auto& type : landmark.second) {
+				bf.b_type = type.first;
+				for (auto& building : type.second) {
+					if (building->GetComponent<Village>() != nullptr)
+						continue;
+					bf.b_index = building->GetComponent<Building>()->index;
+					bf.x = building->transform->position.x;
+					bf.z = building->transform->position.z;
+					Vector3 building_forward = building->transform->forward;
+					building_forward.y = 0;
+					building_forward.Normalize();
+					Vector3 forward = { 0,0,1 };
+					double angle = Vector3::DotProduct(forward, building_forward);
+					Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+					angle = XMConvertToDegrees(acos(angle));
+					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+					bf.angle = angle;
+					bf.radius = 0;
+					bf.development = false;
+					file << bf.makeInfoToString() << std::endl;
+				}
+			}
+		}
+		file.close();
+	}
 
 	void LoadBuildings(int pfile)
 	{
@@ -141,9 +197,9 @@ public:
 		int type, index;
 		float x, z, angle;
 		int range;
-
-		while (file >> type >> index >> x >> z >> angle >> range) {
-			BuildingBuilder::buildingBuilder->hostLoad(type, index, x, z, angle, range);
+		bool development;
+		while (file >> type >> index >> x >> z >> angle >> range >> development) {
+			BuildingBuilder::buildingBuilder->hostLoad(type, index, x, z, angle, range, development);
 		}
 	}
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.

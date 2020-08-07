@@ -42,7 +42,7 @@ public:
 	void chatting(int user_id, wchar_t mess[]);
 	void do_move(int user_id, float xVel, float zVel, float rotAngle, float run_level);
 
-	void do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle, int land_range);
+	void do_construct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle, int land_range, bool develop);
 	void do_destruct(int user_id, int b_type, int b_name, float xpos, float zpos, float angle);
 	void destruct_all(int user_id);
 

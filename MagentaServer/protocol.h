@@ -18,6 +18,7 @@ constexpr int MAX_USER = 10000;
 #define C2S_DESTRUCT		7	// Host to Server
 #define C2S_DESTRUCT_ALL	8	// Host to Server
 #define C2S_CHAT			9
+#define C2S_LANDMARK_CHANGE 10	// Host to Server
 
 #define S2C_LOGIN_OK		1
 #define S2C_LOGIN_FAIL		2
@@ -218,6 +219,7 @@ struct cs_packet_construct{
 	float xpos, zpos;
 	float angle;
 	int landmark_range;
+	bool develop;
 };
 
 struct cs_packet_destruct{
@@ -233,5 +235,12 @@ struct cs_packet_destruct{
 struct cs_packet_destruct_all{
 	unsigned char size;
 	char type;
+};
+
+struct cs_packet_landmark_change {
+	unsigned char size;
+	char type;
+	float xpos, zpos;
+	bool development;
 };
 #pragma pack (pop)

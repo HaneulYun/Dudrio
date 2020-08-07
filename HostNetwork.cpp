@@ -77,9 +77,12 @@ void HostNetwork::ProcessPacket(char* ptr)
 					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
 					int range = 0;
-					if (r->GetComponent<Village>() != nullptr)
+					bool develop = false;
+					if (r->GetComponent<Village>() != nullptr) {
 						range = r->GetComponent<Village>()->radiusOfLand;
-					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle, range);
+						develop = r->GetComponent<Village>()->autoDevelopment;
+					}
+					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle, range, develop);
 				}
 	}
 	break;
@@ -210,7 +213,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 				break;
 			}
 		}
-		BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name, my_landmark);
+		if(my_landmark != nullptr)
+			BuildingBuilder::buildingBuilder->build(building_pos, my_packet->angle, my_packet->building_type, my_packet->building_name, my_landmark);
 	}
 		break;
 	case S2C_DESTRUCT:
@@ -290,7 +294,7 @@ void HostNetwork::send_packet(void* packet)
 		send(lobbySocket, p, (unsigned char)p[0], 0);
 }
 
-void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle, int land_range)
+void HostNetwork::send_construct_packet(int type, int name, float x, float z, float angle, int land_range, bool develop)
 {
 	cs_packet_construct m_packet;
 	m_packet.type = C2S_CONSTRUCT;
@@ -301,6 +305,7 @@ void HostNetwork::send_construct_packet(int type, int name, float x, float z, fl
 	m_packet.zpos = z;
 	m_packet.angle = angle;
 	m_packet.landmark_range = land_range;
+	m_packet.develop = develop;
 
 	send_packet(&m_packet);
 }
@@ -324,6 +329,18 @@ void HostNetwork::send_destruct_all_packet()
 	cs_packet_destruct_all m_packet;
 	m_packet.type = C2S_DESTRUCT_ALL;
 	m_packet.size = sizeof(m_packet);
+
+	send_packet(&m_packet);
+}
+
+void HostNetwork::send_landmark_change_packet(float x, float z, bool change)
+{
+	cs_packet_landmark_change m_packet;
+	m_packet.type = C2S_LANDMARK_CHANGE;
+	m_packet.size = sizeof(m_packet);
+	m_packet.xpos = x;
+	m_packet.zpos = z;
+	m_packet.development = change;
 
 	send_packet(&m_packet);
 }

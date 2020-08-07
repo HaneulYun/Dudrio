@@ -329,6 +329,7 @@ void HostScene::BuildObjects()
 
 			gameLoadButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
+					GameLoader::gameLoader->Save(HostNetwork::network->name, HostNetwork::network->frequency, HostNetwork::network->octaves, HostNetwork::network->seed);
 					GameLoader::gameLoader->SaveTime(HostGameWorld::gameWorld->gameTime, HostGameWorld::gameWorld->day);
 				});
 		}
@@ -433,12 +434,20 @@ void HostScene::BuildObjects()
 				{
 					//Debug::Log("자동건설 on\n");
 					BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>()->OnAutoDevelopment();
+					if (HostNetwork::network->mainConnect)
+						HostNetwork::network->send_landmark_change_packet(
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.x,
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.z, true);
 				});
 
 			offButton->AddComponent<Button>()->AddEvent([](void* ptr)
 				{
 					//Debug::Log("자동건설 off\n");
 					BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>()->OffAutoDevelopment();
+					if (HostNetwork::network->mainConnect)
+						HostNetwork::network->send_landmark_change_packet(
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.x,
+							BuildingBuilder::buildingBuilder->curLandmark->transform->position.z, false);
 				});
 
 		}

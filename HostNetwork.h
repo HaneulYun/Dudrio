@@ -63,9 +63,10 @@ public:
 	void Receiver();
 
 	void send_packet(void* packet);
-	void send_construct_packet(int type, int name, float x, float z, float angle, int range);
+	void send_construct_packet(int type, int name, float x, float z, float angle, int range, bool develop);
 	void send_destruct_packet(int type, int name, float x, float z, float angle);
 	void send_destruct_all_packet();
+	void send_landmark_change_packet(float x, float z, bool change);
 	void send_chat_packet(wchar_t msg[]);
 
 	void LobbyLogin();

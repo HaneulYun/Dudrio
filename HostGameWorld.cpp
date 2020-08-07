@@ -75,7 +75,7 @@ void HostGameWorld::uiUpdate()
 			Village* village = BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>();
 			if(!HostNetwork::network->isConnect)
 				gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->simList.size()) + L"Έν";
-			else
+			else if(village != nullptr)
 				gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->serverSimList.size()) + L"Έν";
 		}
 	}
@@ -141,6 +141,7 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 				if (object->GetComponent<Village>() != nullptr)
 					range = object->GetComponent<Village>()->radiusOfLand;
 				GameLoader::gameLoader->deleteInFile(obj_type, object->GetComponent<Building>()->index, object->transform->position.x, object->transform->position.z, angle, range);
+				GameLoader::gameLoader->SaveTime(gameTime, day);
 				Scene::scene->PushDelete(object);
 				BuildingBuilder::buildingBuilder->updateTerrainNodeData(object, false);
 
@@ -162,6 +163,7 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 		angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
 		GameLoader::gameLoader->deleteInFile(type, index, building->transform->position.x, building->transform->position.z, angle, 0);
+		GameLoader::gameLoader->SaveTime(gameTime, day);
 		Scene::scene->PushDelete(building);
 		BuildingBuilder::buildingBuilder->updateTerrainNodeData(building, false);
 		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));

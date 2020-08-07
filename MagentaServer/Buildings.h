@@ -146,10 +146,6 @@ public:
 			{
 				if (is_collide_node(x, z)) {
 					terrain_data->extraData[x + (z * terrain_data->heightmapHeight)].collision = create;
-					if (create)
-						cout << "Create Node on x: " << x << ", z: " << z << endl;
-					else
-						cout << "Delete Node on x: " << x << ", z: " << z << endl;
 				}
 			}
 		}

@@ -810,6 +810,9 @@ void BuildingBuilder::pickToDelete()
 							angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 							HostNetwork::network->send_destruct_packet(building->type, building->index, object->transform->position.x, object->transform->position.z, angle);
 						}
+						if (object == curLandmark) {
+							curLandmark = nullptr;
+						}
 						HostGameWorld::gameWorld->deleteInGameWorld(building->landmark, object, building->type, building->index);
 
 						return;

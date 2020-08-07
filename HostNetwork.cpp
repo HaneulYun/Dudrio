@@ -157,9 +157,17 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_sim_enter* my_packet = reinterpret_cast<sc_packet_sim_enter*>(ptr);
 		int id = my_packet->id;
 
-		sims[id] = gameObject->scene->Duplicate(simsPrefab);
-		auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
-		p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+		sims[id].first = gameObject->scene->Duplicate(simsPrefab);
+		sims[id].first->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
+		auto pos = sims[id].first->transform->position;
+		for (auto landmark : HostGameWorld::gameWorld->buildingList) {
+			float dist = sqrt(pow(pos.x - landmark.first->transform->position.x, 2) + pow(pos.z - landmark.first->transform->position.z, 2));
+			if (landmark.first->GetComponent<Village>()->radiusOfLand >= dist) {
+				sims[id].second = landmark.first->GetComponent<Village>();
+				landmark.first->GetComponent<Village>()->serverSimList.push_back(id);
+				break;
+			}
+		}
 	}
 	break;
 	case S2C_SIM_MOVE:
@@ -168,7 +176,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 
 		if (0 != sims.count(id)) {
-			auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
+			auto p = sims[id].first->GetComponent<CharacterMovingBehavior>();
 			p->add_move_queue({ my_packet->xPos, 0, my_packet->zPos }, my_packet->rotAngle);
 		}
 	}
@@ -180,7 +188,9 @@ void HostNetwork::ProcessPacket(char* ptr)
 
 		if (0 != sims.count(id))
 		{
-			Scene::scene->PushDelete(sims[id]);
+			Scene::scene->PushDelete(sims[id].first);
+			if (sims[id].second != nullptr)
+				sims[id].second->eraseSimInServerList(id);
 			sims.erase(id);
 		}
 	}
@@ -363,8 +373,10 @@ void HostNetwork::Logout()
 		Scene::scene->PushDelete(p.second);
 	players.clear();
 
-	for (auto& p : sims)
-		Scene::scene->PushDelete(p.second);
+	for (auto& p : sims) {
+		Scene::scene->PushDelete(p.second.first);
+		p.second.second->eraseSimInServerList(p.first);
+	}
 	sims.clear();
 }
 

@@ -58,7 +58,10 @@ void HostGameWorld::aiUpdate()
 void HostGameWorld::uiUpdate()
 {
 	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = convertTimeToText() + L" ,   DAY " + to_wstring(day) + L"\t";
-	gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(simList.size());
+	if (!HostNetwork::network->isConnect)
+		gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(simList.size());
+	else
+		gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(HostNetwork::network->sims.size());
 	gameUI->gameUIs[GameUI::GameUICategory::CoinCountUI]->GetComponent<Text>()->text = to_wstring(gameMoney);
 
 	if (gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->active)
@@ -67,10 +70,13 @@ void HostGameWorld::uiUpdate()
 		{
 			gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = L". . .m\n\n. . .명";
 		}
-		else
+		else if(BuildingBuilder::buildingBuilder->curLandmark != nullptr)
 		{
 			Village* village = BuildingBuilder::buildingBuilder->curLandmark->GetComponent<Village>();
-			gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->simList.size()) + L"명";
+			if(!HostNetwork::network->isConnect)
+				gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->simList.size()) + L"명";
+			else
+				gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->GetComponentInChildren<Text>()->text = to_wstring(village->radiusOfLand) + L"m\n\n" + to_wstring(village->serverSimList.size()) + L"명";
 		}
 	}
 	

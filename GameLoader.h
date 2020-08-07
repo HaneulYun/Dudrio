@@ -125,11 +125,26 @@ public:
 	int Load(std::wstring& name, int& frequency, int& octaves, int& seed, float& gametime, int& gameday)
 	{
 		std::fstream file("buildings.txt", std::ios::in);
+		if (!file) {
+			file.close();
+			std::fstream file2("buildings.txt", std::ios::out);
+			file2 << "Dudrio 3 3 1" << std::endl;
+			file2.close();
+			file.open("buildings.txt", std::ios::in);
+		}
+
 		std::string str;
 		file >> str >> frequency >> octaves >> seed;
 		name.assign(str.begin(), str.end());
 
 		std::fstream time("time.txt", std::ios::in);
+		if (!time) {
+			time.close();
+			std::fstream file2("time.txt", std::ios::out);
+			file2 << "750.0 1" << std::endl;
+			file2.close();
+			time.open("time.txt", std::ios::in);
+		}
 		time >> gametime >> gameday;
 
 		return file.tellp();

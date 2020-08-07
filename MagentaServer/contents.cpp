@@ -205,6 +205,12 @@ void Contents::process_packet(int user_id, char* buf)
 		chatting(user_id, packet->message);
 	}
 	break;
+	case C2S_TELEPORT:
+	{
+		cs_packet_teleport* packet = reinterpret_cast<cs_packet_teleport*>(buf);
+		teleport(user_id, packet->xPos, packet->zPos);
+	}
+	break;
 	default:
 		cout << "Unknown Packet Type Error!\n" << user_id << ", " << buf << endl;
 		//DebugBreak();
@@ -247,8 +253,10 @@ void Contents::enter_game(int user_id, wchar_t name[])
 		vector<pair<BuildingInfo, pair<int, int>>> near_buildings = g_clients[user_id]->get_near_buildings();
 		g_buildings_lock.lock();
 		for (auto cl : near_buildings)
-			if (g_buildings[cl.second.first][cl.second.second][cl.first]->is_collide(g_clients[user_id]->m_xPos, g_clients[user_id]->m_zPos, g_clients[user_id]->m_rotAngle))
+			if (g_buildings[cl.second.first][cl.second.second][cl.first]->is_collide(g_clients[user_id]->m_xPos, g_clients[user_id]->m_zPos, g_clients[user_id]->m_rotAngle)) {
 				g_clients[user_id]->m_collide_invincible = true;
+				break;
+			}
 		g_buildings_lock.unlock();
 		g_clients[user_id]->m_cl.unlock();
 
@@ -400,6 +408,122 @@ void Contents::do_move(int user_id, float xVel, float zVel, float rotAngle, floa
 	}
 }
 
+void Contents::teleport(int user_id, float xPos, float zPos)
+{
+	float prev_x = g_clients[user_id]->m_xPos;
+	float prev_z = g_clients[user_id]->m_zPos;
+
+	if (xPos >= WORLD_WIDTH || xPos < 0 || zPos >= WORLD_HEIGHT || zPos < 0)
+		return;
+	g_clients[user_id]->m_xPos = xPos;
+	g_clients[user_id]->m_zPos = zPos;
+
+	if (true == g_clients[user_id]->is_sector_change(prev_x, prev_z)) {
+		g_clients[user_id]->erase_client_in_sector(prev_x, prev_z);
+		g_clients[user_id]->insert_client_in_sector();
+	}
+
+	vector<pair<BuildingInfo, pair<int, int>>> near_buildings = g_clients[user_id]->get_near_buildings();
+	g_buildings_lock.lock();
+	for (auto cl : near_buildings)
+		if (g_buildings[cl.second.first][cl.second.second][cl.first]->is_collide(g_clients[user_id]->m_xPos, g_clients[user_id]->m_zPos, g_clients[user_id]->m_rotAngle)) {
+			g_clients[user_id]->m_collide_invincible = true;
+			break;
+		}
+	g_buildings_lock.unlock();
+
+	g_clients[user_id]->m_cl.lock();
+	unordered_set<int> old_vl = g_clients[user_id]->view_list;
+	unordered_set<int> old_sl = g_clients[user_id]->sim_list;
+	unordered_set<int> new_vl;
+	unordered_set<int> new_sl;
+	g_clients[user_id]->m_cl.unlock();
+
+	vector<int> near_clients = g_clients[user_id]->get_near_clients();
+	for (auto cl : near_clients) new_vl.insert(cl);
+
+	iocp.send_teleport_packet(user_id, user_id);
+	iocp.send_teleport_packet(contents.host_id, user_id);
+
+	for (auto new_player : new_vl) {
+		g_clients_lock.lock();
+		if (g_clients.count(new_player) == 0) {
+			g_clients_lock.unlock();
+			continue;
+		}
+		g_clients_lock.unlock();
+		if (old_vl.count(new_player) == 0) {
+			iocp.send_enter_packet(user_id, new_player);
+			g_clients[new_player]->m_cl.lock();
+			if (g_clients[new_player]->view_list.count(user_id) == 0) {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_enter_packet(new_player, user_id);
+			}
+			else {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_teleport_packet(new_player, user_id);
+			}
+		}
+		else {
+			g_clients[new_player]->m_cl.lock();
+			if (0 != g_clients[new_player]->view_list.count(user_id)) {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_teleport_packet(new_player, user_id);
+			}
+			else {
+				g_clients[new_player]->m_cl.unlock();
+				iocp.send_enter_packet(new_player, user_id);
+			}
+		}
+	}
+
+	for (auto old_player : old_vl) {
+		g_clients_lock.lock();
+		if (g_clients.count(old_player) == 0) {
+			g_clients_lock.unlock();
+			continue;
+		}
+		g_clients_lock.unlock();
+		if (new_vl.count(old_player) == 0) {
+			iocp.send_leave_packet(user_id, old_player);
+			g_clients[old_player]->m_cl.lock();
+			if (0 != g_clients[old_player]->view_list.count(user_id)) {
+				g_clients[old_player]->m_cl.unlock();
+				iocp.send_leave_packet(old_player, user_id);
+			}
+			else {
+				g_clients[old_player]->m_cl.unlock();
+			}
+		}
+	}
+
+	vector<int> near_sims = g_clients[user_id]->get_near_sims();
+	for (auto sl : near_sims) new_sl.insert(sl);
+
+	for (auto new_sim : new_sl) {
+		g_sims_lock.lock();
+		if (g_sims.count(new_sim) == 0) {
+			g_sims_lock.unlock();
+			continue;
+		}
+		g_sims_lock.unlock();
+		if (old_sl.count(new_sim) == 0)
+			iocp.send_enter_sim_packet(user_id, new_sim);
+	}
+
+	for (auto old_sim : old_sl) {
+		g_sims_lock.lock();
+		if (g_sims.count(old_sim) == 0) {
+			g_sims_lock.unlock();
+			continue;
+		}
+		g_sims_lock.unlock();
+		if (new_sl.count(old_sim) == 0)
+			iocp.send_leave_sim_packet(user_id, old_sim);
+	}
+
+}
+
 void Contents::disconnect(int user_id)
 {
 	lock_guard<mutex>lock_guard(g_clients_lock);
@@ -543,13 +667,12 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 		g_sims_lock.unlock();
 	}	
 
-	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].lock();
-	for (auto cl : g_sector_clients[b_sectnum.second][b_sectnum.first]) {
-		lock_guard<mutex>lock_guard(cl->m_cl);
-		if (g_buildings[b_sectnum.second][b_sectnum.first][b]->is_collide(cl->m_xPos, cl->m_zPos, cl->m_rotAngle)) 
-			cl->m_collide_invincible = true;
+	vector<int> b_near_clients = g_buildings[b_sectnum.second][b_sectnum.first][b]->get_near_clients();
+	for (auto cl : b_near_clients) {
+		lock_guard<mutex>lock_guard(g_clients[cl]->m_cl);
+		if (g_buildings[b_sectnum.second][b_sectnum.first][b]->is_collide(g_clients[cl]->m_xPos, g_clients[cl]->m_zPos, g_clients[cl]->m_rotAngle))
+			g_clients[cl]->m_collide_invincible = true;
 	}
-	g_sector_clients_lock[b_sectnum.second][b_sectnum.first].unlock();
 
 	for (auto& cl : g_clients){
 		if (user_id == cl.second->m_id)

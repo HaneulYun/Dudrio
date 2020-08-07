@@ -241,6 +241,17 @@ void HostNetwork::ProcessPacket(char* ptr)
 		}
 	}
 		break;
+	case S2C_TELEPORT:
+	{
+		sc_packet_teleport* my_packet = reinterpret_cast<sc_packet_teleport*>(ptr);
+		int id = my_packet->id;
+		if (id != myId) {
+			if (0 != players.count(id)) {
+				players[id]->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, 0);
+			}
+		}
+	}
+	break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}

@@ -57,6 +57,27 @@ public:
 		m_info.m_angle = angle;
 	}
 
+	virtual vector<int>	get_near_clients()
+	{
+		pair<int, int> sect_num = contents.calculate_sector_num(m_info.m_xPos, m_info.m_zPos);
+		vector<int> near_clients;
+		near_clients.clear();
+
+		for (int i = sect_num.second - 1; i <= sect_num.second + 1; ++i) {
+			if (i < 0 || i > WORLD_HEIGHT / SECTOR_WIDTH - 1) continue;
+			for (int j = sect_num.first - 1; j <= sect_num.first + 1; ++j) {
+				if (j < 0 || j > WORLD_WIDTH / SECTOR_WIDTH - 1) continue;
+				lock_guard<mutex>lock_guard(g_sector_clients_lock[i][j]);
+				for (auto nearObj : g_sector_clients[i][j]) {
+					if (ST_ACTIVE != nearObj->m_status)	continue;
+					if (true == m_info.is_near(nearObj->m_xPos, nearObj->m_zPos))
+						near_clients.emplace_back(nearObj->m_id);
+				}
+			}
+		}
+		return near_clients;
+	}
+
 	virtual ~Building() { update_terrain_node(false); }
 
 	virtual bool is_collide(float player_x, float player_z, float player_angle)

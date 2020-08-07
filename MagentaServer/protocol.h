@@ -18,21 +18,25 @@ constexpr int MAX_USER = 10000;
 #define C2S_DESTRUCT		7	// Host to Server
 #define C2S_DESTRUCT_ALL	8	// Host to Server
 #define C2S_CHAT			9
-#define C2S_LANDMARK_CHANGE 10	// Host to Server
+#define C2S_TELEPORT		10	// Guest to Server
+#define C2S_LANDMARK_CHANGE 11	// Host to Server
+
 
 #define S2C_LOGIN_OK		1
 #define S2C_LOGIN_FAIL		2
 #define S2C_ENTER			3
 #define S2C_LEAVE			4
 #define S2C_MOVE			5
-#define S2C_CONSTRUCT		6	// Server to Guest
+#define S2C_CONSTRUCT		6
 #define S2C_DESTRUCT		7	// Server to Guest
 #define S2C_DESTRUCT_ALL	8	// Server to Guest
 #define S2C_CHAT			9
-#define S2C_SIM_ENTER		10
-#define S2C_SIM_LEAVE		11
-#define S2C_SIM_MOVE		12
-#define S2C_GAME_TIME		13
+#define S2C_TELEPORT		10
+#define S2C_SIM_ENTER		11
+#define S2C_SIM_LEAVE		12
+#define S2C_SIM_MOVE		13
+#define S2C_GAME_TIME		14
+
 
 #pragma pack(push ,1)
 
@@ -103,6 +107,13 @@ struct sc_packet_move {
 	float xVel, zVel;
 	float rotAngle;
 	unsigned move_time;
+};
+
+struct sc_packet_teleport {
+	unsigned char size;
+	char type;
+	int id;
+	float xPos, zPos;
 };
 
 // SIM -------------------------
@@ -208,6 +219,12 @@ struct cs_packet_move {
 	float rotAngle;
 	float run_level;
 	unsigned move_time;
+};
+
+struct cs_packet_teleport {
+	unsigned char size;
+	char type;
+	float xPos, zPos;
 };
 
 // CONSTRUCT ---------------------

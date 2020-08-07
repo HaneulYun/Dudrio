@@ -15,7 +15,7 @@ void HostGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 	if (Input::GetKeyDown(KeyCode::Z))
 		changeMode(MenuMode);
 
-	if (gameState != MenuMode)
+	if (gameState != MenuMode || HostNetwork::network->isConnect)
 		gameTimeUpdate();
 
 	if (!HostNetwork::network->isConnect){

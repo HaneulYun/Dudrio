@@ -38,6 +38,7 @@ void GuestGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 void GuestGameWorld::uiUpdate()
 {
 	guestUI->guestUIs[GuestUI::GuestUICategory::DayAndTimeUI]->GetComponent<Text>()->text = L"\t" + convertTimeToText();
+	guestUI->guestUIs[GameUI::GameUICategory::FPS]->GetComponent<Text>()->text = std::to_wstring(Time::Instance()->GetFrameRate()) + L"FPS";
 }
 
 void GuestGameWorld::gameTimeUpdate()

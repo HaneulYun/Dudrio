@@ -4,7 +4,7 @@
 class GuestUI : public MonoBehavior<GuestUI>
 {
 public:
-	enum GuestUICategory { UIBar, MenuUI, ChatUI, DayAndTimeUI, WorldNameUI, Count };
+	enum GuestUICategory { UIBar, MenuUI, ChatUI, DayAndTimeUI, WorldNameUI, FPS, Count };
 private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	std::vector<GameObject*> guestUIs;
@@ -73,6 +73,15 @@ public:
 			guestUIs[WorldNameUI]->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_world");
 		}
 
+		guestUIs[FPS] = Scene::scene->CreateUI();
+		{
+			auto rt = guestUIs[FPS]->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 1);
+
+			Text* text = guestUIs[FPS]->AddComponent<Text>();
+			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			text->color = { 1,1,1,1 };
+		}
 	}
 
 	void Update(/*업데이트 코드를 작성하세요.*/)

@@ -137,7 +137,13 @@ void SO(point VIn vin[1], inout PointStream<VIn> pointStream)
 	}
 }
 
-float4 PS(PIn input) : SV_TARGET
+struct MRT_VSOutput
+{
+	float4 Diffuse : SV_TARGET0;
+	float4 Normal : SV_TARGET1;
+};
+
+MRT_VSOutput PS(PIn input) : SV_TARGET
 {
 	//float x = ((gDeltaTime * 10000000) % 100) / 100;
 	//return float4(x, x, x, 1);
@@ -149,11 +155,16 @@ float4 PS(PIn input) : SV_TARGET
 	uint diffuseTexIndex = matData.DiffuseMapIndex;
 
 	//diffuseAlbedo *= 
-	float4 result = gDiffuseMap[diffuseTexIndex].Sample(gsamAnisotropicWrap, input.TexC);
-	result.a *= input.alpha;
+	float4 diffuseAlbedo = gDiffuseMap[diffuseTexIndex].Sample(gsamAnisotropicWrap, input.TexC);
+	diffuseAlbedo.a *= input.alpha;
 
-	clip(result.a - 0.01f);
+	clip(diffuseAlbedo.a - 0.01f);
 
+
+	MRT_VSOutput result;
+	result.Diffuse = diffuseAlbedo;
+	result.Normal = float4(0, 0, 0, 0);
 	return result;
+
 	//return diffuseAlbedo;
 }

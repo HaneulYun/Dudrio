@@ -2,6 +2,7 @@
 #include "..\CyanEngine\framework.h"
 #include "HostNetwork.h"
 #include "TerrainNodeData.h"
+#include "ParticleManager.h"
 
 class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
@@ -28,6 +29,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 	Vector3 lastMousePos;
 	bool rotationToggle = false;
 	BuilderMode builderMode = DefaultMode;
+
+	std::vector<ParticleManager*> particles;
 
 protected:
 	friend class GameObject;
@@ -90,4 +93,6 @@ public:
 
 	void hostLoad(int type, int index, float x, float z, float angle, int range, bool development);
 	void guestBuild(int type, int index, float x, float z, float angle, int range);
+
+	void setSmokeParticle(GameObject* obj);
 };

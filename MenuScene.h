@@ -18,7 +18,7 @@ public:
 		ASSET AddTexture("polyArtTex", L"Textures\\PolyArtTex.dds");
 
 		//ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
-		//ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
+		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
 
 		/*icon*/
 		{
@@ -190,7 +190,7 @@ public:
 		ASSET AddMaterial("PolyArt", ASSET TEXTURE("polyArtTex"), 0, 0, 0, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.01f, 0.01f, 0.01f }, 0.9f);
 
 		//ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
-		//ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
+		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
 
 		/*icon*/
 		{

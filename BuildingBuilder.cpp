@@ -161,8 +161,9 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				HostNetwork::network->send_construct_packet(curPrefabType, curPrefabIndex, p.x, p.z, angle, range, develop);
 			}
 			updateTerrainNodeData(prefab, true);
-
 			HostGameWorld::gameWorld->buildInGameWorld(curLandmark, prefab, curPrefabType, curPrefabIndex);
+
+			setSmokeParticle(prefab);
 
 			// 연속 건설
 			if (!Input::GetKey(KeyCode::Shift))
@@ -1212,4 +1213,23 @@ void BuildingBuilder::guestBuild(int type, int index, float x, float z, float an
 	obj->GetComponent<Village>()->radiusOfLand = range;
 
 	GuestGameWorld::gameWorld->buildInGameWorld(obj, obj, type, index);
+}
+
+void BuildingBuilder::setSmokeParticle(GameObject* obj)
+{
+	float objectHeight = prefab->GetComponentInChildren<MeshFilter>()->mesh->Bounds.Extents.y * 2;
+	float time = objectHeight;
+	Vector3 pos = prefab->transform->position;
+
+	prefab->GetComponent<Building>()->positionToAnimate = prefab->transform->position;
+	prefab->transform->position.y -= objectHeight;
+
+	for (auto& particle : particles)
+	{
+		if (!particle->particleSystem->enabled)
+		{
+			particle->Enable(time, pos);
+			return;
+		}
+	}
 }

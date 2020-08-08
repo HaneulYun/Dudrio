@@ -51,18 +51,6 @@ void HostScene::BuildObjects()
 		simController->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("Walking", Less, 1));
 	}
 
-	{
-		GameObject* fps = CreateUI();
-		auto rectTransform = fps->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 0 };
-		rectTransform->anchorMax = { 1, 1 };
-
-		Text* text = fps->AddComponent<Text>();
-		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-		text->color = { 1,1,1,1 };
-		fps->AddComponent<FPS>();
-	}
-
 	auto simsPrefab = CreateEmptyPrefab();
 	{
 		auto model = simsPrefab->AddChild();
@@ -188,19 +176,6 @@ void HostScene::BuildObjects()
 	//	GameLoader::gameLoader = gameload;
 	//}
 
-	/*particle*/
-	//const int particleNum = 10;
-	//for (int i = 0; i < particleNum; ++i)
-	//{
-	//	auto particleSystemObjectSmoke = CreateEmpty();
-	//	ParticleSystem* particleSystem = particleSystemObjectSmoke->AddComponent<ParticleSystem>();
-	//	particleSystem->Set();
-	//	particleSystem->enabled = false;
-	//	particleSystemObjectSmoke->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("smokeMat"));
-	//	particleSystemObjectSmoke->layer = (int)RenderLayer::Particle;
-	//	BuildManager::buildManager->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
-	//}
-
 	auto sim = CreateEmptyPrefab();
 	{
 		auto model = sim->AddChild();
@@ -284,6 +259,19 @@ void HostScene::BuildObjects()
 		hostNetwork->gameUI = gameUI;
 		wcscpy_s(hostNetwork->name, host_name.c_str());
 		HostNetwork::network = hostNetwork;
+	}
+
+	/*particle*/
+	const int particleNum = 10;
+	for (int i = 0; i < particleNum; ++i)
+	{
+		auto particleSystemObjectSmoke = CreateEmpty();
+		ParticleSystem* particleSystem = particleSystemObjectSmoke->AddComponent<ParticleSystem>();
+		particleSystem->Set();
+		particleSystem->enabled = false;
+		particleSystemObjectSmoke->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("smokeMat"));
+		particleSystemObjectSmoke->layer = (int)RenderLayer::Particle;
+		BuildingBuilder::buildingBuilder->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
 	}
 
 	gameUI->gameUIs.push_back(Scene::scene->CreateImage());

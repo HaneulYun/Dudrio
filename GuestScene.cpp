@@ -5,18 +5,6 @@ GuestGameWorld* GuestGameWorld::gameWorld;
 
 void GuestScene::BuildObjects()
 {
-	{
-		GameObject* fps = CreateUI();
-		auto rectTransform = fps->GetComponent<RectTransform>();
-		rectTransform->anchorMin = { 0, 0 };
-		rectTransform->anchorMax = { 1, 1 };
-
-		Text* text = fps->AddComponent<Text>();
-		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-		text->color = { 1,1,1,1 };
-		fps->AddComponent<FPS>();
-	}
-
 	//*** AnimatorController ***//
 	AnimatorController* controller = new AnimatorController();
 	{

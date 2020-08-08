@@ -60,12 +60,15 @@ void HostGameWorld::aiUpdate()
 
 void HostGameWorld::uiUpdate()
 {
-	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = convertTimeToText() + L" ,   DAY " + to_wstring(day) + L"\t";
 	if (!HostNetwork::network->isConnect)
 		gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(simList.size());
 	else
 		gameUI->gameUIs[GameUI::GameUICategory::SimCountUI]->GetComponent<Text>()->text = to_wstring(HostNetwork::network->sims.size());
 	gameUI->gameUIs[GameUI::GameUICategory::CoinCountUI]->GetComponent<Text>()->text = to_wstring(gameMoney);
+
+	gameUI->gameUIs[GameUI::GameUICategory::DayAndTimeUI]->GetComponent<Text>()->text = convertTimeToText() + L" ,   DAY " + to_wstring(day) + L"\t";
+	gameUI->gameUIs[GameUI::GameUICategory::FPS]->GetComponent<Text>()->text = std::to_wstring(Time::Instance()->GetFrameRate()) + L"FPS";
+
 
 	if (gameUI->gameUIs[GameUI::GameUICategory::LandMarkUI]->active)
 	{

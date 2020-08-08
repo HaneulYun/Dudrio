@@ -9,6 +9,12 @@ void GuestGameWorld::Start(/*초기화 코드를 작성하세요.*/)
 
 void GuestGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
 {
+	if (Input::GetKeyDown(KeyCode::Return))
+		changeMode(ChatMode);
+
+	if (Input::GetKeyDown(KeyCode::Z))
+		changeMode(MenuMode);
+
 	gameTimeUpdate();
 
 	//for (auto landmark : buildingList)
@@ -86,4 +92,52 @@ void GuestGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* buildin
 		Scene::scene->PushDelete(building);
 		buildingList[landmark][(BuildingType)type].erase(find(buildingList[landmark][(BuildingType)type].begin(), buildingList[landmark][(BuildingType)type].end(), building));
 	}
+}
+
+void GuestGameWorld::changeMode(GameState state)
+{
+	switch (state)
+	{
+
+	case CameraMode:
+	{
+
+	}
+	break;
+	case ChatMode:
+	{
+		if (gameState == state)
+		{
+			gameState = CameraMode;
+			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->SetActive(false);
+			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->GetComponent<InputField>()->isFocused = false;
+			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->GetComponent<InputField>()->clear();
+		}
+		else if (gameState != MenuMode)
+		{
+			gameState = ChatMode;
+			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->SetActive(true);
+			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->GetComponent<InputField>()->isFocused = true;
+			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->GetComponent<InputField>()->clear();
+			memset(Input::buffer, 0, 8);
+		}
+	}
+	break;
+	case MenuMode:
+	{
+		if (gameState == state)
+		{
+			gameState = CameraMode;
+			guestUI->guestUIs[GuestUI::GuestUICategory::MenuUI]->SetActive(false);
+		}
+		else
+		{
+			gameState = MenuMode;
+			guestUI->guestUIs[GuestUI::GuestUICategory::MenuUI]->SetActive(true);
+		}
+	}
+	break;
+
+	}
+
 }

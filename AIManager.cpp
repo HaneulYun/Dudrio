@@ -31,6 +31,7 @@ void AIManager::aiUpdate()
 
 	for (auto landmark : HostGameWorld::gameWorld->buildingList)
 	{
+		if (landmark.first == nullptr) continue;
 		Village* village = landmark.first->GetComponent<Village>();
 
 		if (village->autoDevelopment && !village->simList.empty())

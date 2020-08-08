@@ -131,15 +131,15 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				village->radiusOfLand = getLandmarkRaduis(prefab);
 				range = village->radiusOfLand;
 			}
-			else {
-				for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
-					float dist = sqrt(pow(p.x - landmark.first->transform->position.x, 2) + pow(p.z - landmark.first->transform->position.z, 2));
-					if (landmark.first->GetComponent<Village>()->radiusOfLand >= dist) {
-						curLandmark = landmark.first;
-						break;
-					}
-				}
-			}
+			//else {
+			//	for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
+			//		float dist = sqrt(pow(p.x - landmark.first->transform->position.x, 2) + pow(p.z - landmark.first->transform->position.z, 2));
+			//		if (landmark.first->GetComponent<Village>()->radiusOfLand >= dist) {
+			//			curLandmark = landmark.first;
+			//			break;
+			//		}
+			//	}
+			//}
 			prefab->AddComponent<Building>()->setBuildingInform(curLandmark, curPrefabType, curPrefabIndex);
 			prefab->tag = TAG_BUILDING;
 
@@ -518,13 +518,9 @@ GameObject* BuildingBuilder::isOnLand()
 {
 	if (curPrefabType == Landmark)
 	{
-		if (HostGameWorld::gameWorld->buildingList.empty())
-		{
-			curLandmark = prefab;
-			return prefab;
-		}
 		for (auto& landmark : HostGameWorld::gameWorld->buildingList)
 		{
+			if (landmark.first == nullptr) continue;
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
 
 			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand + getLandmarkRaduis(prefab))
@@ -539,6 +535,7 @@ GameObject* BuildingBuilder::isOnLand()
 	{
 		for (auto& landmark : HostGameWorld::gameWorld->buildingList)
 		{
+			if (landmark.first == nullptr) continue;
 			float distance = sqrt(pow(prefab->transform->position.x - landmark.first->transform->position.x, 2) + pow(prefab->transform->position.z - landmark.first->transform->position.z, 2));
 
 			if (distance <= landmark.first->GetComponent<Village>()->radiusOfLand)
@@ -555,9 +552,11 @@ void BuildingBuilder::initNature()
 {
 	TerrainData* terrainData = &terrain->terrainData;
 
-	for (int x = 50; x < terrainData->heightmapWidth - 50; x += 4)
+	//for (int x = 50; x < terrainData->heightmapWidth - 50; x += 4)
+	for (int x = 50; x < terrainData->heightmapWidth - 50; x += 40)
 	{
-		for (int z = 50; z < terrainData->heightmapHeight - 50; z += 4)
+		//for (int z = 50; z < terrainData->heightmapHeight - 50; z += 4)
+		for (int z = 50; z < terrainData->heightmapHeight - 50; z += 40)
 		{
 			float y = terrainData->GetHeight(x, z);
 			if (y < 15.0f) continue;
@@ -582,8 +581,7 @@ void BuildingBuilder::initNature()
 			else if (r > 0.03f)
 				continue;
 
-			Vector2 pos{ (float)x,(float)z };
-			build(pos, rand() % 360, Landscape, rand() % 8, nullptr);
+			build(Vector2((float)x, (float)z), rand() % 360, Landscape, rand() % 8, nullptr);
 		}
 	}
 }
@@ -649,6 +647,7 @@ void BuildingBuilder::build(Vector2 position, double angle, int type, int index,
 					renderer->materials.push_back(data.materials[i++]);
 			}
 		}
+		if (landmark == nullptr) type = Nature;
 
 		Vector3 pos{ position.x, terrain->terrainData.GetHeight(position.x,position.y), position.y };
 		obj->transform->position = pos;

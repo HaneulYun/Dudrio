@@ -152,21 +152,35 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		Vector3 p_pos{ my_packet->xPos,0, my_packet->zPos };
 		GameObject* my_landmark;
 		GameObject* dest_obj;
-		for (auto landmark : GuestGameWorld::gameWorld->buildingList) {
-			Vector3 landPos = landmark.first->transform->position;
-			float range = landmark.first->GetComponent<Village>()->radiusOfLand;
-			float dist = sqrt(pow(p_pos.x - landPos.x, 2) + pow(p_pos.z - landPos.z, 2));
-			if (range >= dist) {
-				my_landmark = landmark.first;
-				for (auto type : landmark.second) {
-					if (type.first != my_packet->building_type)
-						continue;
-					for (auto building : type.second) {
-						Vector3 b_pos { building->transform->position.x, 0, building->transform->position.z };
-						if (b_pos == p_pos) {
-							GuestGameWorld::gameWorld->deleteInGameWorld(my_landmark, building, my_packet->building_type, my_packet->building_name);
-							return;
+		if (my_packet->building_type != BuildingBuilder::Nature)
+			for (auto landmark : GuestGameWorld::gameWorld->buildingList) {
+				if (landmark.first == nullptr)
+					continue;
+				Vector3 landPos = landmark.first->transform->position;
+				float range = landmark.first->GetComponent<Village>()->radiusOfLand;
+				float dist = sqrt(pow(p_pos.x - landPos.x, 2) + pow(p_pos.z - landPos.z, 2));
+				if (range >= dist) {
+					my_landmark = landmark.first;
+					for (auto type : landmark.second) {
+						if (type.first != my_packet->building_type)
+							continue;
+						for (auto building : type.second) {
+							Vector3 b_pos{ building->transform->position.x, 0, building->transform->position.z };
+							if (b_pos == p_pos) {
+								GuestGameWorld::gameWorld->deleteInGameWorld(my_landmark, building, my_packet->building_type, my_packet->building_name);
+								return;
+							}
 						}
+					}
+				}
+			}
+		else {
+			for (auto type : GuestGameWorld::gameWorld->buildingList[nullptr]) {
+				for (auto nature : type.second) {
+					Vector3 b_pos{ nature->transform->position.x, 0, nature->transform->position.z };
+					if (b_pos == p_pos) {
+						GuestGameWorld::gameWorld->deleteInGameWorld(nullptr, nature, my_packet->building_type, my_packet->building_name);
+						return;
 					}
 				}
 			}

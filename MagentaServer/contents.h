@@ -3,7 +3,7 @@
 class Contents
 {
 public:
-	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Count, None = -1 };
+	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Nature, Count, None = -1 };
 	vector<struct Collider> collider_info[BuildingType::Count];
 
 	int		host_id;

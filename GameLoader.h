@@ -159,6 +159,8 @@ public:
 		BuildingFormat bf;
 
 		for (auto& landmark : HostGameWorld::gameWorld->buildingList) {
+			if (landmark.first == nullptr)
+				continue;
 			bf.b_type = BuildingBuilder::Landmark;
 			bf.b_index = landmark.first->GetComponent<Building>()->index;
 			bf.x = landmark.first->transform->position.x;

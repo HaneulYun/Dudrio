@@ -55,21 +55,13 @@ void GuestGameWorld::gameTimeUpdate()
 
 void GuestGameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
-	if (type == BuildingType::Prop)
-	{
-		if (building->GetComponent<Light>())
-			type = BuildingType::Lighting;
-	}
+	if (landmark == nullptr)
+		type = Nature;
 	buildingList[landmark][(BuildingType)type].push_back(building);
 }
 
 void GuestGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
-	if (type == BuildingType::Prop)
-	{
-		if (building->GetComponent<Light>())
-			type = BuildingType::Lighting;
-	}
 	if (type == BuildingType::Landmark)
 	{
 		for (auto& list : GuestGameWorld::gameWorld->buildingList[building])

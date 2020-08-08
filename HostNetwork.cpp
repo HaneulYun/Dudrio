@@ -164,6 +164,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sims[id].first->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 		auto pos = sims[id].first->transform->position;
 		for (auto landmark : HostGameWorld::gameWorld->buildingList) {
+			if (landmark.first == nullptr)
+				continue;
 			float dist = sqrt(pow(pos.x - landmark.first->transform->position.x, 2) + pow(pos.z - landmark.first->transform->position.z, 2));
 			if (landmark.first->GetComponent<Village>()->radiusOfLand >= dist) {
 				sims[id].second = landmark.first->GetComponent<Village>();

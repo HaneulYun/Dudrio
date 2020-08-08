@@ -182,7 +182,6 @@
     <ClInclude Include="CharacterController.h" />
     <ClInclude Include="CharacterMovingBehavior.h" />
     <ClInclude Include="Dudrio.h" />
-    <ClInclude Include="FPS.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameLoader.h" />
     <ClInclude Include="GameUI.h" />

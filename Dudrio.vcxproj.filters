@@ -90,9 +90,6 @@
     <ClInclude Include="GuestScene.h">
       <Filter>Assets\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="FPS.h">
-      <Filter>Assets\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="CharacterController.h">
       <Filter>Assets\Scripts\Controller</Filter>
     </ClInclude>

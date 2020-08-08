@@ -4,12 +4,16 @@
 
 class GuestGameWorld : public MonoBehavior<GuestGameWorld, GameWorld>
 {
+public:
+	enum GameState { CameraMode, ChatMode, MenuMode };
 private /*이 영역에 private 변수를 선언하세요.*/:
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static GuestGameWorld* gameWorld;
 
-	GuestUI* guestUI;
+
+	GameState	gameState = CameraMode;
+	GuestUI*	guestUI;
 
 private:
 	friend class GameObject;
@@ -26,4 +30,5 @@ public:
 	void gameTimeUpdate(); 
 	void buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
 	void deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index);
+	void changeMode(GameState state);
 };

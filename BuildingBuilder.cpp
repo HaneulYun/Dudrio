@@ -205,12 +205,12 @@ void BuildingBuilder::serializeBuildings()
 		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_03", ASSET MESH("AV_Tree_03"), { ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
 		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_04", ASSET MESH("AV_Tree_04"), { ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
 		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterials(L"Tree_05", ASSET MESH("AV_Tree_05"), { ASSET MATERIAL("TreeLeafs"), ASSET MATERIAL("TreeTrunks") }));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_01", ASSET MESH("AV_Mushroom_01"), ASSET MATERIAL("AV_material_02")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_02", ASSET MESH("AV_Mushroom_02"), ASSET MATERIAL("AV_material_02")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_03", ASSET MESH("AV_Mushroom_03"), ASSET MATERIAL("AV_material_02")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_04", ASSET MESH("AV_Mushroom_04"), ASSET MATERIAL("AV_material_02")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_05", ASSET MESH("AV_Mushroom_05"), ASSET MATERIAL("AV_material_02")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_06", ASSET MESH("AV_Mushroom_06"), ASSET MATERIAL("AV_material_02")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_01", ASSET MESH("AV_Mushroom_01"), ASSET MATERIAL("AV_material_02")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_02", ASSET MESH("AV_Mushroom_02"), ASSET MATERIAL("AV_material_02")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_03", ASSET MESH("AV_Mushroom_03"), ASSET MATERIAL("AV_material_02")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_04", ASSET MESH("AV_Mushroom_04"), ASSET MATERIAL("AV_material_02")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_05", ASSET MESH("AV_Mushroom_05"), ASSET MATERIAL("AV_material_02")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_06", ASSET MESH("AV_Mushroom_06"), ASSET MATERIAL("AV_material_02")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Fence_01", ASSET MESH("AV_Fence_01"), ASSET MATERIAL("AV_material_01")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Fence_02", ASSET MESH("AV_Fence_02"), ASSET MATERIAL("AV_material_01")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Fence_03", ASSET MESH("AV_Fence_03"), ASSET MATERIAL("AV_material_01")));
@@ -258,24 +258,32 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_02", ASSET MESH("HP_Tree_02"), ASSET MATERIAL("HP_Tree_02")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_03", ASSET MESH("HP_Tree_03"), ASSET MATERIAL("HP_Tree_03")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_04", ASSET MESH("HP_Tree_04"), ASSET MATERIAL("HP_Tree_04")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Bush_1", ASSET MESH("HP_Bush_1"), ASSET MATERIAL("HP_Plants")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Bush_2", ASSET MESH("HP_Bush_2"), ASSET MATERIAL("HP_Plants")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fern", ASSET MESH("HP_Fern"), ASSET MATERIAL("HP_Fern")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flower", ASSET MESH("HP_Flower"), ASSET MATERIAL("HP_Plants")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flowers_1", ASSET MESH("HP_Flowers_1"), ASSET MATERIAL("HP_Plants")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flowers_2", ASSET MESH("HP_Flowers_2"), ASSET MATERIAL("HP_Plants")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Pine_tree_01", ASSET MESH("HP_Pine_tree_01"), ASSET MATERIAL("HP_Pine_tree_01")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Pine_tree_02", ASSET MESH("HP_Pine_tree_02"), ASSET MATERIAL("HP_Pine_tree_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Stump", ASSET MESH("HP_Stump"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_1", ASSET MESH("HP_Mushroom_1"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_2", ASSET MESH("HP_Mushroom_2"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_3", ASSET MESH("HP_Mushroom_3"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_4", ASSET MESH("HP_Mushroom_4"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Pine_tree_01", ASSET MESH("HP_Pine_tree_01"), ASSET MATERIAL("HP_Pine_tree_01")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Pine_tree_02", ASSET MESH("HP_Pine_tree_02"), ASSET MATERIAL("HP_Pine_tree_02")));
+
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_01", ASSET MESH("AV_Mushroom_01"), ASSET MATERIAL("AV_material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_02", ASSET MESH("AV_Mushroom_02"), ASSET MATERIAL("AV_material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_03", ASSET MESH("AV_Mushroom_03"), ASSET MATERIAL("AV_material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_04", ASSET MESH("AV_Mushroom_04"), ASSET MATERIAL("AV_material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_05", ASSET MESH("AV_Mushroom_05"), ASSET MATERIAL("AV_material_02")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_06", ASSET MESH("AV_Mushroom_06"), ASSET MATERIAL("AV_material_02")));
+
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Bush_1", ASSET MESH("HP_Bush_1"), ASSET MATERIAL("HP_Plants")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Bush_2", ASSET MESH("HP_Bush_2"), ASSET MATERIAL("HP_Plants")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Fern", ASSET MESH("HP_Fern"), ASSET MATERIAL("HP_Fern")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flower", ASSET MESH("HP_Flower"), ASSET MATERIAL("HP_Plants")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flowers_1", ASSET MESH("HP_Flowers_1"), ASSET MATERIAL("HP_Plants")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Flowers_2", ASSET MESH("HP_Flowers_2"), ASSET MATERIAL("HP_Plants")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Plant", ASSET MESH("HP_Plant"), ASSET MATERIAL("HP_Plant")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Rock_1", ASSET MESH("HP_Rock_1"), ASSET MATERIAL("HP_Rocks_1_2")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Rock_2", ASSET MESH("HP_Rock_2"), ASSET MATERIAL("HP_Rocks_1_2")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Rock_3", ASSET MESH("HP_Rock_3"), ASSET MATERIAL("HP_Rocks_3_4")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Rock_4", ASSET MESH("HP_Rock_4"), ASSET MATERIAL("HP_Rocks_3_4")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Stump", ASSET MESH("HP_Stump"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Lighting].push_back(makeBuilderDataAsPrefab(L"HP_Street_light", ASSET PREFAB("HP_Street_light")));
 		building[Lighting].push_back(makeBuilderDataAsPrefab(L"HP_Lamppost", ASSET PREFAB("HP_Lamppost")));
 		building[Prop].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Altar", ASSET MESH("HP_Altar"), ASSET MATERIAL("HP_Lampposts")));
@@ -340,8 +348,30 @@ void BuildingBuilder::serializeBuildings()
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_HeartHouse_01_SM", ASSET MESH("SE_HeartHouse_01_SM"), ASSET MATERIAL("SE_HeartHouse")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Gazebo_01_SM", ASSET MESH("SE_Gazebo_01_SM"), ASSET MATERIAL("SE_Gazebo")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Theater_01_SM", ASSET MESH("SE_Theater_01_SM"), ASSET MATERIAL("SE_Theater")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_01_SM", ASSET MESH("SE_Blossom_01_SM"), ASSET MATERIAL("SE_Bushes")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_02_SM", ASSET MESH("SE_Blossom_02_SM"), ASSET MATERIAL("SE_Bushes")));
+
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_01_SM", ASSET MESH("SE_Stone_01_SM"), ASSET MATERIAL("SE_Stones")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_02_SM", ASSET MESH("SE_Stone_02_SM"), ASSET MATERIAL("SE_Stones")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_03_SM", ASSET MESH("SE_Stone_03_SM"), ASSET MATERIAL("SE_Stones")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_04_SM", ASSET MESH("SE_Stone_04_SM"), ASSET MATERIAL("SE_Stones")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_05_SM", ASSET MESH("SE_Stone_05_SM"), ASSET MATERIAL("SE_Stones")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_06_SM", ASSET MESH("SE_Stone_06_SM"), ASSET MATERIAL("SE_Stones")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01_SM", ASSET MESH("SE_Birch_01_SM"), ASSET MATERIAL("SE_Birch")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01b_SM", ASSET MESH("SE_Birch_01b_SM"), ASSET MATERIAL("SE_Birch_01b")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02_SM", ASSET MESH("SE_Birch_02_SM"), ASSET MATERIAL("SE_Birch")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02b_SM", ASSET MESH("SE_Birch_02b_SM"), ASSET MATERIAL("SE_Birch_01b")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03_SM", ASSET MESH("SE_Birch_03_SM"), ASSET MATERIAL("SE_Birch")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03b_SM", ASSET MESH("SE_Birch_03b_SM"), ASSET MATERIAL("SE_Birch_01b")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Willow_01a_SM", ASSET MESH("SE_Willow_01a_SM"), ASSET MATERIAL("SE_Willow")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Willow_01b_SM", ASSET MESH("SE_Willow_01b_SM"), ASSET MATERIAL("SE_Willow")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_06_SM", ASSET MESH("SE_Bush_06_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_07_SM", ASSET MESH("SE_Bush_07_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_01_SM", ASSET MESH("SE_Bonsai_01_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_02_SM", ASSET MESH("SE_Bonsai_02_SM"), ASSET MATERIAL("SE_Bonsai")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushes")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushes")));
+
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_01_SM", ASSET MESH("SE_Blossom_01_SM"), ASSET MATERIAL("SE_Bushes")));
+		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_02_SM", ASSET MESH("SE_Blossom_02_SM"), ASSET MATERIAL("SE_Bushes")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_CottonCandy_01_SM", ASSET MESH("SE_CottonCandy_01_SM"), ASSET MATERIAL("SE_CottonCandyTree")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_CottonCandyTree_01_SM", ASSET MESH("SE_CottonCandyTree_01_SM"), ASSET MATERIAL("SE_CottonCandyTree")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_CottonCandyTree_02_SM", ASSET MESH("SE_CottonCandyTree_02_SM"), ASSET MATERIAL("SE_CottonCandyTree")));
@@ -382,26 +412,6 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Rose_04_SM", ASSET MESH("SE_Rose_04_SM"), ASSET MATERIAL("SE_Roses")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Rose_05_SM", ASSET MESH("SE_Rose_05_SM"), ASSET MATERIAL("SE_Roses")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Rose_06_SM", ASSET MESH("SE_Rose_06_SM"), ASSET MATERIAL("SE_Roses")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_01_SM", ASSET MESH("SE_Stone_01_SM"), ASSET MATERIAL("SE_Stones")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_02_SM", ASSET MESH("SE_Stone_02_SM"), ASSET MATERIAL("SE_Stones")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_03_SM", ASSET MESH("SE_Stone_03_SM"), ASSET MATERIAL("SE_Stones")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_04_SM", ASSET MESH("SE_Stone_04_SM"), ASSET MATERIAL("SE_Stones")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_05_SM", ASSET MESH("SE_Stone_05_SM"), ASSET MATERIAL("SE_Stones")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_06_SM", ASSET MESH("SE_Stone_06_SM"), ASSET MATERIAL("SE_Stones")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Willow_01a_SM", ASSET MESH("SE_Willow_01a_SM"), ASSET MATERIAL("SE_Willow")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Willow_01b_SM", ASSET MESH("SE_Willow_01b_SM"), ASSET MATERIAL("SE_Willow")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_06_SM", ASSET MESH("SE_Bush_06_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bush_07_SM", ASSET MESH("SE_Bush_07_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01_SM", ASSET MESH("SE_Birch_01_SM"), ASSET MATERIAL("SE_Birch")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_01b_SM", ASSET MESH("SE_Birch_01b_SM"), ASSET MATERIAL("SE_Birch_01b")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02_SM", ASSET MESH("SE_Birch_02_SM"), ASSET MATERIAL("SE_Birch")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_02b_SM", ASSET MESH("SE_Birch_02b_SM"), ASSET MATERIAL("SE_Birch_01b")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03_SM", ASSET MESH("SE_Birch_03_SM"), ASSET MATERIAL("SE_Birch")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Birch_03b_SM", ASSET MESH("SE_Birch_03b_SM"), ASSET MATERIAL("SE_Birch_01b")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_01_SM", ASSET MESH("SE_Bonsai_01_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_02_SM", ASSET MESH("SE_Bonsai_02_SM"), ASSET MATERIAL("SE_Bonsai")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushes")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushes")));
 
 
 		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_01_SM", ASSET MESH("SE_Lamp_01_SM"), ASSET MATERIAL("SE_Lamps")));
@@ -539,6 +549,43 @@ GameObject* BuildingBuilder::isOnLand()
 		}
 	}
 	return curLandmark = nullptr;
+}
+
+void BuildingBuilder::initNature()
+{
+	TerrainData* terrainData = &terrain->terrainData;
+
+	for (int x = 50; x < terrainData->heightmapWidth - 50; x += 4)
+	{
+		for (int z = 50; z < terrainData->heightmapHeight - 50; z += 4)
+		{
+			float y = terrainData->GetHeight(x, z);
+			if (y < 15.0f) continue;
+
+			float r = Random::Instance()->Range(0.0f, 1.0f);
+
+			if (y > 50.0f)
+			{
+				if (r > 0.5f)
+					continue;
+			}
+			else if (y > 40.0f)
+			{
+				if (r > 0.4f)
+					continue;
+			}
+			else if (y > 30.0f)
+			{
+				if (r > 0.3f)
+					continue;
+			}
+			else if (r > 0.03f)
+				continue;
+
+			Vector2 pos{ (float)x,(float)z };
+			build(pos, rand() % 360, Landscape, rand() % 8, nullptr);
+		}
+	}
 }
 
 void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision)

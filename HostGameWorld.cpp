@@ -5,6 +5,9 @@ void HostGameWorld::Start(/*초기화 코드를 작성하세요.*/)
 {
 	GameWorld::Start();
 	gameWorld = this;
+
+	if (!HostInformConnector::connector->load)
+		BuildingBuilder::buildingBuilder->initNature();
 }
 
 void HostGameWorld::Update(/*업데이트 코드를 작성하세요.*/)
@@ -97,11 +100,8 @@ void HostGameWorld::gameTimeUpdate()
 
 void HostGameWorld::buildInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
-	if (type == BuildingType::Prop)
-	{
-		if (building->GetComponent<Light>())
-			type = BuildingType::Lighting;
-	}
+	if (landmark == nullptr)
+		type = Nature;
 	buildingList[landmark][(BuildingType)type].push_back(building);
 
 	if (type == BuildingType::House && !HostNetwork::network->isConnect)
@@ -110,11 +110,6 @@ void HostGameWorld::buildInGameWorld(GameObject* landmark, GameObject* building,
 
 void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building, int type, int index)
 {
-	if (type == BuildingType::Prop)
-	{
-		if (building->GetComponent<Light>())
-			type = BuildingType::Lighting;
-	}
 	if (type == BuildingType::Landmark)
 	{
 		for (auto& list : HostGameWorld::gameWorld->buildingList[building])

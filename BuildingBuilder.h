@@ -7,7 +7,7 @@ class BuildingBuilder : public MonoBehavior<BuildingBuilder>
 {
 public:
 	enum BuilderMode { DefaultMode, BuildMode, DeleteMode };
-	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Count, None = -1 };
+	enum BuildingType { Landmark, House, Theme, Landscape, Lighting, Fence, Prop, Nature, Count, None = -1 };
 private /*이 영역에 private 변수를 선언하세요.*/:
 	std::vector<BuildingBuilderData> building[BuildingType::Count];
 	GameObject* prefab{ nullptr };
@@ -53,6 +53,8 @@ public:
 	GameObject* isOnLand();
 
 	void updateTerrainNodeData(GameObject* building, bool collision);
+
+	void initNature();
 
 	void build(Vector2 position, double angle, int type, int index, GameObject* landmark = nullptr);
 

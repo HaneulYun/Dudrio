@@ -164,6 +164,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sims[id].first->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 		auto pos = sims[id].first->transform->position;
 		for (auto landmark : HostGameWorld::gameWorld->buildingList) {
+			if (landmark.first == nullptr)
+				continue;
 			float dist = sqrt(pow(pos.x - landmark.first->transform->position.x, 2) + pow(pos.z - landmark.first->transform->position.z, 2));
 			if (landmark.first->GetComponent<Village>()->radiusOfLand >= dist) {
 				sims[id].second = landmark.first->GetComponent<Village>();
@@ -205,6 +207,8 @@ void HostNetwork::ProcessPacket(char* ptr)
 		Vector2 building_pos{ my_packet->xPos, my_packet->zPos };
 		GameObject* my_landmark;
 		for (auto landmark : HostGameWorld::gameWorld->buildingList) {
+			if (landmark.first == nullptr)
+				continue;
 			Vector3 landPos = landmark.first->transform->position;
 			float range = landmark.first->GetComponent<Village>()->radiusOfLand;
 			float dist = sqrt(pow(building_pos.x - landPos.x, 2) + pow(building_pos.y - landPos.z, 2));

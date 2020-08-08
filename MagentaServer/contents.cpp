@@ -89,6 +89,9 @@ void Contents::init_colliders_inform()
 		cout << type << " " << name << " " << x1 << " " << z1 << " " << x2 << " " << z2<< endl;
 	}
 	in.close();
+	for (auto info : collider_info[Landscape]) {
+		collider_info[Nature].push_back(info);
+	}
 }
 
 void Contents::process_packet(int user_id, char* buf)
@@ -629,8 +632,10 @@ void Contents::do_construct(int user_id, int b_type, int b_name, float xpos, flo
 	}
 	else {
 		g_buildings[b_sectnum.second][b_sectnum.first][b] = new Building(b_type, b_name, xpos, zpos, angle);
-		Village* v = get_my_landmark(g_buildings[b_sectnum.second][b_sectnum.first][b]);
-		v->buildingList.emplace_back(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+		if (b_type != Nature) {
+			Village* v = get_my_landmark(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+			v->buildingList.emplace_back(g_buildings[b_sectnum.second][b_sectnum.first][b]);
+		}
 	}
 	g_buildings[b_sectnum.second][b_sectnum.first][b]->m_collider = collider_info[b_type][b_name];
 	g_buildings[b_sectnum.second][b_sectnum.first][b]->update_terrain_node(true);
@@ -757,6 +762,11 @@ void Contents::do_destruct(int user_id, int b_type, int b_name, float xpos, floa
 			delete g_buildings[b_sectnum.second][b_sectnum.first][b];
 			g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
 			cout << "Building " << b_type << ", " << b_name << "is deleted" << endl;
+		}
+		else if (b_type == Nature) {
+			delete g_buildings[b_sectnum.second][b_sectnum.first][b];
+			g_buildings[b_sectnum.second][b_sectnum.first].erase(b);
+			cout << "Natrue " << b_type << ", " << b_name << "is deleted" << endl;
 		}
 		else {
 			// 그냥 건물이면?

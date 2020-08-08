@@ -260,11 +260,11 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Tree_04", ASSET MESH("HP_Tree_04"), ASSET MATERIAL("HP_Tree_04")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Pine_tree_01", ASSET MESH("HP_Pine_tree_01"), ASSET MATERIAL("HP_Pine_tree_01")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Pine_tree_02", ASSET MESH("HP_Pine_tree_02"), ASSET MATERIAL("HP_Pine_tree_02")));
-		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Stump", ASSET MESH("HP_Stump"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_1", ASSET MESH("HP_Mushroom_1"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_2", ASSET MESH("HP_Mushroom_2"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_3", ASSET MESH("HP_Mushroom_3"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Mushroom_4", ASSET MESH("HP_Mushroom_4"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
+		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"HP_Stump", ASSET MESH("HP_Stump"), ASSET MATERIAL("HP_Log_stump_mushrooms")));
 
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_01", ASSET MESH("AV_Mushroom_01"), ASSET MATERIAL("AV_material_02")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"AV_Mushroom_02", ASSET MESH("AV_Mushroom_02"), ASSET MATERIAL("AV_material_02")));
@@ -551,12 +551,10 @@ GameObject* BuildingBuilder::isOnLand()
 void BuildingBuilder::initNature()
 {
 	TerrainData* terrainData = &terrain->terrainData;
-
-	//for (int x = 50; x < terrainData->heightmapWidth - 50; x += 4)
-	for (int x = 50; x < terrainData->heightmapWidth - 50; x += 40)
+	int cnt = 0;
+	for (int x = 50; x < terrainData->heightmapWidth - 50; x += 5)
 	{
-		//for (int z = 50; z < terrainData->heightmapHeight - 50; z += 4)
-		for (int z = 50; z < terrainData->heightmapHeight - 50; z += 40)
+		for (int z = 50; z < terrainData->heightmapHeight - 50; z += 5)
 		{
 			float y = terrainData->GetHeight(x, z);
 			if (y < 15.0f) continue;
@@ -565,25 +563,27 @@ void BuildingBuilder::initNature()
 
 			if (y > 50.0f)
 			{
-				if (r > 0.5f)
+				if (r > 0.4f)
 					continue;
 			}
 			else if (y > 40.0f)
 			{
-				if (r > 0.4f)
+				if (r > 0.3f)
 					continue;
 			}
 			else if (y > 30.0f)
 			{
-				if (r > 0.3f)
+				if (r > 0.5f)
 					continue;
 			}
-			else if (r > 0.03f)
+			else if (r > 0.02f)
 				continue;
 
-			build(Vector2((float)x, (float)z), rand() % 360, Landscape, rand() % 8, nullptr);
+			build(Vector2((float)x, (float)z), rand() % 360, Landscape, rand() % 7, nullptr);
+			++cnt;
 		}
 	}
+	Debug::Log(to_wstring(cnt).c_str());
 }
 
 void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision)

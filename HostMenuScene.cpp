@@ -53,66 +53,32 @@ void HostMenuScene::BuildObjects()
 		auto newVillage = CreateImage();
 		{
 			auto rectTransform = newVillage->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0.5, 0.5 };
-			rectTransform->anchorMax = { 0.5, 0.5 };
-			rectTransform->pivot = { 0.5, 0.5 };
-			rectTransform->posX = -250;
-			rectTransform->posY = 20;
-			rectTransform->width = 300;
-			rectTransform->height = 400;
+			rectTransform->setAnchorAndPivot(0.5, 0.5);
+			rectTransform->setPosAndSize(-250, 0, 420, 550);
 
 			newVillage->AddComponent<Button>()->AddEvent(
 				[](void*) {		
 					HostInformConnector::connector->load = false;
 					HostInformConnector::connector->goToNextPage();
 				});
-			{
-				auto textobject = newVillage->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
 
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"New Village";
-				text->font = L"메이플스토리";
-				text->fontSize = 30;
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
-			newVillage->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("none");
+			newVillage->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("start_world");
 			informConnector->newVillageButton = newVillage;
 		}
 
 		auto loadVillage = CreateImage();
 		{
 			auto rectTransform = loadVillage->GetComponent<RectTransform>();
-			rectTransform->anchorMin = { 0.5, 0.5 };
-			rectTransform->anchorMax = { 0.5, 0.5 };
-			rectTransform->pivot = { 0.5, 0.5 };
-			rectTransform->posX = 250;
-			rectTransform->posY = 20;
-			rectTransform->width = 300;
-			rectTransform->height = 400;
+			rectTransform->setAnchorAndPivot(0.5, 0.5);
+			rectTransform->setPosAndSize(250, 0, 420, 550);
 
 			loadVillage->AddComponent<Button>()->AddEvent(
 				[](void*) {
 					HostInformConnector::connector->load = true;
 					SceneManager::LoadScene("HostScene");
 				});
-			{
-				auto textobject = loadVillage->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
 
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"Load Village";
-				text->font = L"메이플스토리";
-				text->fontSize = 30;
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
-			loadVillage->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("none");
+			loadVillage->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("load_world");
 			informConnector->loadVillageButton = loadVillage;
 		}
 	}

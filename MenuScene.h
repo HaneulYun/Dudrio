@@ -20,6 +20,15 @@ public:
 		//ASSET AddTexture("fireTexD", L"Textures\\fire.dds");
 		ASSET AddTexture("smokeTexD", L"Textures\\smoke.dds");
 
+		ASSET AddTexture("menuBackgroundTex", L"Textures\\icon\\main.dds");
+		ASSET AddTexture("dudrio", L"Textures\\icon\\dudrio.dds");
+		ASSET AddTexture("start_guest", L"Textures\\icon\\start_guest.dds");
+		ASSET AddTexture("start_host", L"Textures\\icon\\start_host.dds");
+		ASSET AddTexture("load_world", L"Textures\\icon\\load_world.dds");
+		ASSET AddTexture("start_world", L"Textures\\icon\\start_world.dds");
+		ASSET AddTexture("host_worldCreate", L"Textures\\icon\\host_worldCreate.dds");
+		ASSET AddTexture("Input_name", L"Textures\\icon\\Input_name.dds");
+
 		/*icon*/
 		{
 			ASSET AddTexture("ui_chatInput", L"Textures\\icon\\chatInput.dds");
@@ -191,6 +200,15 @@ public:
 
 		//ASSET AddMaterial("fireMat", ASSET TEXTURE("fireTexD"));
 		ASSET AddMaterial("smokeMat", ASSET TEXTURE("smokeTexD"));
+
+		ASSET AddMaterial("menuBackgroundMat", ASSET TEXTURE("menuBackgroundTex"));
+		ASSET AddMaterial("dudrio", ASSET TEXTURE("dudrio"));
+		ASSET AddMaterial("start_guest", ASSET TEXTURE("start_guest"));
+		ASSET AddMaterial("start_host", ASSET TEXTURE("start_host"));
+		ASSET AddMaterial("load_world", ASSET TEXTURE("load_world"));
+		ASSET AddMaterial("start_world", ASSET TEXTURE("start_world"));
+		ASSET AddMaterial("host_worldCreate", ASSET TEXTURE("host_worldCreate"));
+		ASSET AddMaterial("Input_name", ASSET TEXTURE("Input_name"));
 
 		/*icon*/
 		{

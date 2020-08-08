@@ -12,6 +12,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 
 	GameObject* nameGuide{ nullptr };
 
+	GameObject* createStatus{ nullptr };
 	GameObject* frequencyGuide{ nullptr };
 	GameObject* octavesGuide{ nullptr };
 	GameObject* seedGuide{ nullptr };
@@ -125,10 +126,11 @@ public:
 		octavesField->gameObject->SetActive(flag);
 		seedField->gameObject->SetActive(flag);
 
+		createStatus->SetActive(flag);
 		nameGuide->SetActive(flag);
 		frequencyGuide->SetActive(flag);
 		octavesGuide->SetActive(flag);
-		seedGuide->SetActive(flag);
+		seedGuide->SetActive(flag); 
 
 		button->SetActive(flag);
 		prevButton->SetActive(flag);
@@ -161,123 +163,135 @@ public:
 			}
 		}
 
-		nameGuide = Scene::scene->CreateUI();
+		createStatus = Scene::scene->CreateImage();
 		{
-			auto rt = nameGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -50, 300, 40);
+			auto rt = createStatus->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(0, 0, 610, 560);
 
-			Text* text = nameGuide->AddComponent<Text>();
-			text->text = L"Input your name";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			createStatus->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("host_worldCreate");
 		}
 
-		auto nameFieldObject = Scene::scene->CreateImage();
+
+		nameGuide = Scene::scene->CreateUI();
+		{
+			//auto rt = nameGuide->GetComponent<RectTransform>();
+			//rt->setAnchorAndPivot(0.5, 0.5);
+			//rt->setPosAndSize(100, -50, 300, 40);
+			//
+			////Text* text = nameGuide->AddComponent<Text>();
+			////text->text = L"Input your name";
+			////text->fontSize = 30;
+			////text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			////text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+			////text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			//createStatus->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("host_worldCreate");
+		}
+
+		auto nameFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = nameFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -100, 300, 40);
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(140, 130, 180, 35);
 
 			nameField = nameFieldObject->AddComponent<InputField>();
 			auto text = nameField->Text();
 			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+
 		}
 
 		frequencyGuide = Scene::scene->CreateUI();
 		{
-			auto rt = frequencyGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -200, 1000, 40);
-
-			Text* text = frequencyGuide->AddComponent<Text>();
-			text->text = L"Input the frequency of your village's terrain (0 ~ 64)";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			//auto rt = frequencyGuide->GetComponent<RectTransform>();
+			//rt->setAnchorAndPivot(0, 1);
+			//rt->setPosAndSize(100, -200, 1000, 40);
+			//
+			//Text* text = frequencyGuide->AddComponent<Text>();
+			//text->text = L"Input the frequency of your village's terrain (0 ~ 64)";
+			//text->fontSize = 30;
+			//text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			//text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+			//text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 
-		auto frequencyFieldObject = Scene::scene->CreateImage();
+		auto frequencyFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = frequencyFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -250, 300, 40);
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(140, -26, 180, 35);
 
 			frequencyField = frequencyFieldObject->AddComponent<InputField>();
 			auto text = frequencyField->Text();
 			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 
 		octavesGuide = Scene::scene->CreateUI();
 		{
-			auto rt = octavesGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -350, 1000, 40);
-
-			Text* text = octavesGuide->AddComponent<Text>();
-			text->text = L"Input the octaves of your village's terrain (0 ~ 16)";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			//auto rt = octavesGuide->GetComponent<RectTransform>();
+			//rt->setAnchorAndPivot(0, 1);
+			//rt->setPosAndSize(100, -350, 1000, 40);
+			//
+			//Text* text = octavesGuide->AddComponent<Text>();
+			//text->text = L"Input the octaves of your village's terrain (0 ~ 16)";
+			//text->fontSize = 30;
+			//text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			//text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+			//text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 
-		auto octavesFieldObject = Scene::scene->CreateImage();
+		auto octavesFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = octavesFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -400, 300, 40);
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(140, -86, 180, 35);
 
 			octavesField = octavesFieldObject->AddComponent<InputField>();
 			auto text = octavesField->Text();
 			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
-
-		seedGuide = Scene::scene->CreateUI();
-		{
-			auto rt = seedGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -500, 1000, 40);
-
-			Text* text = seedGuide->AddComponent<Text>();
-			text->text = L"Input the seed of your village's terrain (0 ~ MAX_INT)";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 
-		auto seedFieldObject = Scene::scene->CreateImage();
+		seedGuide = Scene::scene->CreateUI();
+		{
+			//auto rt = seedGuide->GetComponent<RectTransform>();
+			//rt->setAnchorAndPivot(0, 1);
+			//rt->setPosAndSize(100, -500, 1000, 40);
+			//
+			//Text* text = seedGuide->AddComponent<Text>();
+			//text->text = L"Input the seed of your village's terrain (0 ~ MAX_INT)";
+			//text->fontSize = 30;
+			//text->color = {  0.9140625f, 0.796875f, 0.37890625f, 1.0f };
+			//text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
+			//text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		}
+
+		auto seedFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = seedFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(100, -550, 300, 40);
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(140, -146, 180, 35);
 
 			seedField = seedFieldObject->AddComponent<InputField>();
 			auto text = seedField->Text();
 			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
+			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
 
-		button = Scene::scene->CreateImage();
+		button = Scene::scene->CreateUI();
 		{
 			auto rt = button->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(700, -700, 380, 40);
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->setPosAndSize(180, -235, 225, 55);
 
 			button->AddComponent<Button>()->AddEvent(
 				[](void*) {
@@ -287,19 +301,6 @@ public:
 						Debug::Log("범위 초과");
 					connector->clearFields();
 				});
-			{
-				auto textobject = button->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
-
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"Set my village's information";
-				text->fontSize = 30;
-				text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
 		}
 		SetField(false);
 	}

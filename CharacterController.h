@@ -38,6 +38,9 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
+		if (GuestGameWorld::gameWorld->gameState == GuestGameWorld::GameState::ChatMode)
+			return;
+
 		Vector3 tmpVel = { 0,0,0 };
 		if (Input::GetKey(KeyCode::W))
 			tmpVel += gameObject->transform->forward;

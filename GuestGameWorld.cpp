@@ -100,6 +100,39 @@ void GuestGameWorld::changeMode(GameState state)
 	{
 		if (gameState == state)
 		{
+			auto chatField = guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->GetComponent<InputField>();
+			if (!chatField->text.empty() && GuestNetwork::network->isConnect) {
+				if (chatField->text.size() > MAX_STR_LEN - 1) {
+					int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
+					for (int i = 0; i < oversize; ++i)
+						chatField->text.pop_back();
+				}
+
+				auto splitvec = GuestNetwork::network->split(chatField->text, L' ');
+				if (!splitvec.empty()) {
+					if (splitvec.size() == 3) {
+						if (splitvec[0] == L"teleport") {
+							std::string xstr;
+							xstr.assign(splitvec[1].begin(), splitvec[1].end());
+							float x = ::atof(xstr.c_str());
+							std::string zstr;
+							zstr.assign(splitvec[2].begin(), splitvec[2].end());
+							float z = ::atof(zstr.c_str());
+							if (x < WORLD_WIDTH && x > 0 && z < WORLD_HEIGHT && z > 0)
+								GuestNetwork::network->send_teleport_packet(x, z);
+							else
+								GuestNetwork::network->send_chat_packet(_wcsdup(chatField->text.c_str()));
+						}
+						else
+							GuestNetwork::network->send_chat_packet(_wcsdup(chatField->text.c_str()));
+					}
+					else
+						GuestNetwork::network->send_chat_packet(_wcsdup(chatField->text.c_str()));
+				}
+				else
+					GuestNetwork::network->send_chat_packet(_wcsdup(chatField->text.c_str()));
+			}
+			
 			gameState = CameraMode;
 			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->SetActive(false);
 			guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->GetComponent<InputField>()->isFocused = false;

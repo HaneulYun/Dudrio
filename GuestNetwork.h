@@ -15,7 +15,6 @@ private:
 	//GameObject* gameTime{ nullptr };
 
 	// Chat
-	InputField* chatField{ nullptr };
 	GameObject* chatting[10];
 
 public:
@@ -72,21 +71,6 @@ public:
 	{
 		hostId = -1;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
-
-		auto chatFieldObject = Scene::scene->CreateUI();
-		{
-			auto rt = chatFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(0, -785, 500, 15);
-
-			chatField = chatFieldObject->AddComponent<InputField>();
-			auto text = chatField->Text();
-			text->fontSize = 10;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
-		chatField->gameObject->SetActive(true);
 
 		for (int i = 0; i < 10; ++i) {
 			chatting[i] = Scene::scene->CreateUI();
@@ -192,42 +176,6 @@ public:
 		if (isConnect)
 		{
 			Receiver();
-
-			if (chatField->isFocused) {
-				if (Input::GetKeyDown(KeyCode::Return)) {
-					if (chatField->text.size() > MAX_STR_LEN - 1) {
-						int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
-						for (int i = 0; i < oversize; ++i)
-							chatField->text.pop_back();
-					}
-
-					auto splitvec = split(chatField->text, L' ');
-					if (!splitvec.empty()) {
-						if (splitvec.size() == 3) {
-							if (splitvec[0] == L"teleport") {
-								std::string xstr;
-								xstr.assign(splitvec[1].begin(), splitvec[1].end());
-								float x = ::atof(xstr.c_str());
-								std::string zstr;
-								zstr.assign(splitvec[2].begin(), splitvec[2].end());
-								float z = ::atof(zstr.c_str());
-								if (x < WORLD_WIDTH && x > 0 && z < WORLD_HEIGHT && z > 0)
-									send_teleport_packet(x, z);
-								else
-									send_chat_packet(_wcsdup(chatField->text.c_str()));
-							}
-							else
-								send_chat_packet(_wcsdup(chatField->text.c_str()));
-						}
-						else
-							send_chat_packet(_wcsdup(chatField->text.c_str()));
-					}
-					else
-						send_chat_packet(_wcsdup(chatField->text.c_str()));
-					chatField->clear();
-					chatField->setFocus(false);
-				}
-			}
 		}
 	}
 

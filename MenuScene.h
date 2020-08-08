@@ -28,6 +28,7 @@ public:
 		ASSET AddTexture("start_world", L"Textures\\icon\\start_world.dds");
 		ASSET AddTexture("host_worldCreate", L"Textures\\icon\\host_worldCreate.dds");
 		ASSET AddTexture("Input_name", L"Textures\\icon\\Input_name.dds");
+		ASSET AddTexture("set_chracter_button", L"Textures\\icon\\set_chracter_button.dds"); 
 
 		/*icon*/
 		{
@@ -205,10 +206,11 @@ public:
 		ASSET AddMaterial("dudrio", ASSET TEXTURE("dudrio"));
 		ASSET AddMaterial("start_guest", ASSET TEXTURE("start_guest"));
 		ASSET AddMaterial("start_host", ASSET TEXTURE("start_host"));
-		ASSET AddMaterial("load_world", ASSET TEXTURE("load_world"));
+		ASSET AddMaterial("load_world", ASSET TEXTURE("load_world")); 
 		ASSET AddMaterial("start_world", ASSET TEXTURE("start_world"));
 		ASSET AddMaterial("host_worldCreate", ASSET TEXTURE("host_worldCreate"));
 		ASSET AddMaterial("Input_name", ASSET TEXTURE("Input_name"));
+		ASSET AddMaterial("set_chracter_button", ASSET TEXTURE("set_chracter_button"));
 
 		/*icon*/
 		{

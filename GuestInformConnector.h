@@ -37,9 +37,6 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	InputField* nameField{ nullptr };
 	GameObject* nameGuide{ nullptr };
 
-	InputField* lobbyServerIPField{ nullptr };
-	GameObject* lobbyServerIPGuide{ nullptr };
-
 	GameObject* characterCustomizePrevButton{ nullptr };
 	GameObject* characterCustomizeNextButton{ nullptr };
 
@@ -83,7 +80,6 @@ public:
 	void clearFields()
 	{
 		nameField->clear();
-		lobbyServerIPField->clear();
 	}
 
 	bool insertInform()
@@ -125,8 +121,6 @@ public:
 		nameField->gameObject->SetActive(flag);
 		nameGuide->SetActive(flag);
 
-		lobbyServerIPField->gameObject->SetActive(flag);
-		lobbyServerIPGuide->SetActive(flag);
 
 		characterCustomizePrevButton->SetActive(flag);
 		characterCustomizeNextButton->SetActive(flag);
@@ -215,86 +209,44 @@ public:
 			}
 		}
 
-		nameGuide = Scene::scene->CreateUI();
+		nameGuide = Scene::scene->CreateImage();
 		{
 			auto rt = nameGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(650, -50, 300, 40);
+			rt->setAnchorAndPivot(0.75, 0.5);
+			rt->setPosAndSize(0, 152, 350, 100);
 
-			Text* text = nameGuide->AddComponent<Text>();
-			text->text = L"Input your name";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+			nameGuide->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("Input_name");
 		}
 
-		auto nameFieldObject = Scene::scene->CreateImage();
+		auto nameFieldObject = Scene::scene->CreateUI();
 		{
 			auto rt = nameFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(650, -100, 300, 40);
+			rt->setAnchorAndPivot(0.75, 0.5);
+			rt->setPosAndSize(0, 137, 325, 40);
 
 			nameField = nameFieldObject->AddComponent<InputField>();
 			auto text = nameField->Text();
 			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
-
-		lobbyServerIPGuide = Scene::scene->CreateUI();
-		{
-			auto rt = lobbyServerIPGuide->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(650, -350, 500, 40);
-
-			Text* text = lobbyServerIPGuide->AddComponent<Text>();
-			text->text = L"Input lobby server's IP";
-			text->fontSize = 30;
-			text->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+
 		}
 
-		auto lobbyServerIPFieldObject = Scene::scene->CreateImage();
-		{
-			auto rt = lobbyServerIPFieldObject->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(650, -400, 300, 40);
-
-			lobbyServerIPField = lobbyServerIPFieldObject->AddComponent<InputField>();
-			auto text = lobbyServerIPField->Text();
-			text->fontSize = 30;
-			text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-		}
 
 		SetMyCharacterbutton = Scene::scene->CreateImage();
 		{
 			auto rt = SetMyCharacterbutton->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(970, -700, 200, 70);
+			rt->setAnchorAndPivot(1, 0);
+			rt->setPosAndSize(-200, 45, 240, 70);
 
 			SetMyCharacterbutton->AddComponent<Button>()->AddEvent(
 				[](void*) {
 					connector->login();
 				});
-			{
-				auto textobject = SetMyCharacterbutton->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
 
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"Set my character";
-				text->fontSize = 30;
-				text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
 		}
+		SetMyCharacterbutton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("set_chracter_button");
 		SetField(true);
 	}
 

@@ -105,7 +105,7 @@ public:
 			rt->setPosAndSize(0, 0, 800, 35);
 
 			enterMessage = enterMsgObj->AddComponent<Text>();
-			//enterMessage->text = L"두드리오 님이 방문했어요!";
+			enterMessage->text = L" ";
 			enterMessage->font = L"배달의민족 도현";
 			enterMessage->fontSize = 25;
 			enterMessage->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };

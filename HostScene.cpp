@@ -238,7 +238,12 @@ void HostScene::BuildObjects()
 
 
 		gameUI->gameUIs.push_back(CreateUI());
-		gameUI->gameUIs[GameUI::BuildUI]->GetComponent<RectTransform>()->setAnchorAndPivot(0.5, 0);
+		//gameUI->gameUIs[GameUI::BuildUI]->GetComponent<RectTransform>()->setAnchorAndPivot(0.5, 0);
+		{
+			auto rt = gameUI->gameUIs[GameUI::BuildUI]->GetComponent<RectTransform>();
+			rt->anchorMin = { 0,0 };
+			rt->anchorMax = { 1,1 };
+		}
 
 		auto buildingTypeSelector = gameUI->gameUIs[GameUI::BuildUI]->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;

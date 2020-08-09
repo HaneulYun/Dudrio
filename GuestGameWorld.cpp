@@ -103,16 +103,17 @@ void GuestGameWorld::changeMode(GameState state)
 		{
 			auto chatField = guestUI->guestUIs[GuestUI::GuestUICategory::ChatUI]->GetComponent<InputField>();
 			if (!chatField->text.empty() && GuestNetwork::network->isConnect) {
-				if (chatField->text.size() > MAX_STR_LEN - 1) {
-					int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
+				if (chatField->text.size() > MAX_STR_LEN - 2) {
+					int oversize = chatField->text.size() - (MAX_STR_LEN - 2);
 					for (int i = 0; i < oversize; ++i)
 						chatField->text.pop_back();
 				}
+				chatField->text.push_back(L' ');
 
 				auto splitvec = GuestNetwork::network->split(chatField->text, L' ');
 				if (!splitvec.empty()) {
 					if (splitvec.size() == 3) {
-						if (splitvec[0] == L"teleport") {
+						if (splitvec[0] == L"tp") {
 							std::string xstr;
 							xstr.assign(splitvec[1].begin(), splitvec[1].end());
 							float x = ::atof(xstr.c_str());

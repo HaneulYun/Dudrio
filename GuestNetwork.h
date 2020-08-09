@@ -90,14 +90,12 @@ public:
 		}
 	}
 
-	void add_chat(wchar_t chatter[], wchar_t chat[])
+	void add_chat(wchar_t chat[])
 	{
 		for (int i = 8; i >= 0; --i) {
 			chatting[i + 1]->GetComponent<Text>()->text = chatting[i]->GetComponent<Text>()->text;
 		}
-		wstring name = chatter;
-		wstring msg = chat;
-		chatting[0]->GetComponent<Text>()->text = name + L": " + msg;
+		chatting[0]->GetComponent<Text>()->text = chat;
 	}
 
 	int connect_nonblock(SOCKET sockfd, const struct sockaddr FAR* name, int namelen, int timeout)

@@ -516,10 +516,12 @@ void IOCPServer::send_game_time_packet(int user_id)
 void IOCPServer::send_chat_packet(int user_id, int chatter, wchar_t mess[])
 {
 	sc_packet_chat p;
-	p.id = chatter;
 	p.size = sizeof(p);
 	p.type = S2C_CHAT;
-	wcscpy_s(p.mess, mess);
+	std::wstring message = mess;
+	std::wstring name = g_clients[chatter]->m_name;
+	std::wstring chat = name + L": " + message;
+	wcscpy_s(p.mess, chat.c_str());
 
 	send_packet(user_id, &p);
 }

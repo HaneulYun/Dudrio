@@ -208,16 +208,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 	case S2C_CHAT:
 	{
 		sc_packet_chat* my_packet = reinterpret_cast<sc_packet_chat*>(ptr);
-		int id = my_packet->id;
-		if (id == myId){
-			add_chat(myCharacter->GetComponent<CharacterMovingBehavior>()->name, my_packet->mess);
-		}
-		else if (id == hostId){
-			add_chat(host_name, my_packet->mess);
-		}
-		else{
-			add_chat(otherCharacters[id]->GetComponent<CharacterMovingBehavior>()->name, my_packet->mess);
-		}
+		add_chat(my_packet->mess);
 	}
 	break;
 	case S2C_TELEPORT:

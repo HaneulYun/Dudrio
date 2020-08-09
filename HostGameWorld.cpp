@@ -225,11 +225,13 @@ void HostGameWorld::changeMode(GameState state)
 		{
 			auto chatField = gameUI->gameUIs[GameUI::GameUICategory::ChatUI]->GetComponent<InputField>();
 			if (HostNetwork::network->isConnect && HostNetwork::network->mainConnect) {
-				if (chatField->text.size() > MAX_STR_LEN - 1) {
-					int oversize = chatField->text.size() - (MAX_STR_LEN - 1);
+				if (chatField->text.size() > MAX_STR_LEN - 2) {
+					int oversize = chatField->text.size() - (MAX_STR_LEN - 2);
 					for (int i = 0; i < oversize; ++i)
 						chatField->text.pop_back();
 				}
+				chatField->text.push_back(L' ');
+
 				if (!chatField->text.empty())
 					HostNetwork::network->send_chat_packet(_wcsdup(chatField->text.c_str()));
 			}

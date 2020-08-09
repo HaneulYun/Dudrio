@@ -74,7 +74,6 @@ struct sc_packet_game_time {
 struct sc_packet_chat {
 	unsigned char size;
 	char type;
-	int	 id;
 	wchar_t mess[MAX_STR_LEN];
 };
 

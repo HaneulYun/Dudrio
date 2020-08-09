@@ -257,8 +257,11 @@ void HostScene::BuildObjects()
 	auto object = CreateUI();
 	{
 		auto rt = object->GetComponent<RectTransform>();
-		rt->width = CyanFW::Instance()->GetWidth();
-		rt->height = CyanFW::Instance()->GetHeight();
+		rt->anchorMin = { 0, 0 };
+		rt->anchorMax = { 1, 1 };
+
+		//rt->width = CyanFW::Instance()->GetWidth();
+		//rt->height = CyanFW::Instance()->GetHeight();
 		auto buildingBuilder = object->AddComponent<BuildingBuilder>();
 		buildingBuilder->serializeBuildings();
 		buildingBuilder->terrain = terrainData;

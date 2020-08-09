@@ -13,6 +13,8 @@ public  /*이 영역에 public 변수를 선언하세요.*/:
 
 	GameObject* buildingButtons[10]{};
 
+	std::vector<GameObject*> previewer;
+
 protected:
 	friend class GameObject;
 	friend class MonoBehavior<BuildingSelector>;
@@ -55,6 +57,18 @@ public:
 	{
 	}
 
+	void OnDisable()
+	{
+		releasePreview();
+	}
+
+	void releasePreview()
+	{
+		for (auto gameObject : previewer)
+			Scene::scene->PushDelete(gameObject);
+		previewer.clear();
+	}
+
 	// 필요한 경우 함수를 선언 및 정의 하셔도 됩니다.
 	void invokeBuilder(int index)
 	{
@@ -66,6 +80,7 @@ public:
 		if (page > 0)
 		{
 			--page;
+			releasePreview();
 			setBuildingButtonName();
 		}
 	}
@@ -75,6 +90,7 @@ public:
 		if (page < maxPage)
 		{
 			++page;
+			releasePreview();
 			setBuildingButtonName();
 		}
 	}
@@ -84,7 +100,53 @@ public:
 		for (int i = 0; i < 10; ++i)
 		{
 			wstring text = buildingBuilder->getBuildingName(type, page * 10 + i);
-			buildingButtons[i]->GetComponent<Text>()->text = text;
+
+			auto buildingData = buildingBuilder->getBuildingData(type, page * 10 + i);
+			if (buildingData.mesh)
+			{
+				auto gameObject = Scene::scene->CreateEmpty();
+				{
+					auto bx = buildingData.mesh->Bounds;
+					Matrix4x4 projection = Matrix4x4::MatrixOrthographicOffCenterLH(
+						bx.Center.x - bx.Extents.x * 1.25, bx.Center.x + bx.Extents.x * 1.25,
+						bx.Center.z - bx.Extents.z * 1.25, bx.Center.z + bx.Extents.z * 1.25,
+						-10, 10);
+
+					Vector3 pos = Vector3(1, 1, -1).Normalize();
+					Vector3 lookAt = Vector3(0);
+					Vector3 up{ 0, 1, 0 };
+					Matrix4x4 view = Matrix4x4::MatrixLookAtLH(pos, lookAt, up);
+
+					gameObject->transform->Scale({ 1, 1, 1 });
+					gameObject->transform->Rotate({ 1, 0, 0 }, -90);
+					//gameObject->transform->position = { 0, 0, 0 };
+					gameObject->transform->localToWorldMatrix = gameObject->transform->localToWorldMatrix * view * projection;
+					gameObject->AddComponent<MeshFilter>()->mesh = buildingData.mesh;
+					gameObject->AddComponent<Renderer>()->materials.push_back(buildingData.material);
+					gameObject->layer = (int)RenderLayer::OnUI;
+
+					auto onUI = gameObject->AddComponent<OnUI>();
+
+					auto mat = RectTransform::Transform(buildingButtons[i]->GetMatrix());
+					Vector3 leftTop{ mat._41, mat._22 + mat._42, 0 };
+					Vector3 rightBottom{ mat._11 + mat._41, mat._42, 0 };
+
+					UINT width = CyanFW::Instance()->GetWidth();
+					UINT height = CyanFW::Instance()->GetHeight();
+
+					onUI->leftTop.x = (leftTop.x / 2.0f + 0.5f) * width;
+					onUI->leftTop.y = (leftTop.y / -2.0f + 0.5f) * height;
+					onUI->rightBottom.x = (rightBottom.x / 2.0f + 0.5f) * width - onUI->leftTop.x;
+					onUI->rightBottom.y = (rightBottom.y / -2.0f + 0.5f) * height - onUI->leftTop.y;
+				}
+
+				buildingButtons[i]->GetComponent<Text>()->text = L"";
+				previewer.push_back(gameObject);
+			}
+			else
+			{
+				buildingButtons[i]->GetComponent<Text>()->text = text;
+			}
 		}
 	}
 

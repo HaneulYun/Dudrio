@@ -3,10 +3,12 @@
 
 class HostCameraController : public MonoBehavior<HostCameraController>
 {
+private:
+	float radiusMax = 100;
 private /*이 영역에 private 변수를 선언하세요.*/:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = 0.2f * XM_PI;
-	float mRadius = 100.0f;
+	float mRadius = 80.0f;
 	Vector3 lookAtPos = { 0,0,0 };
 
 	Vector3 lastMousePos;
@@ -83,6 +85,8 @@ public:
 		else if (Input::GetMouseWheelDelta())
 		{
 			tRadius = mRadius - Input::GetMouseWheelDelta() * 0.05f;
+			if (tRadius > radiusMax)
+				tRadius = radiusMax;
 		}
 
 		float terrainHeight = terrainData->GetHeight(tlookAtPos.x + tRadius * sinf(tPhi) * cosf(tTheta), tlookAtPos.z + tRadius * sinf(tPhi) * sinf(tTheta));

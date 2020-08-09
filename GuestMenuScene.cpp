@@ -138,10 +138,11 @@ void GuestMenuScene::BuildObjects()
 			Text* text = textobject->AddComponent<Text>();
 			text->text = L"Guest Scene";
 			text->fontSize = 20;
+			text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 			text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 			text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 		}
-		hostButtonPrefab->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("none");
+		hostButtonPrefab->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("host_name");
 		informConnector->buttonPrefab = hostButtonPrefab;
 	}
 }

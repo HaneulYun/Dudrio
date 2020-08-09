@@ -167,19 +167,7 @@ public:
 				[](void*) {
 					connector->backToPrevPage();
 				});
-			{
-				auto textobject = prevButton->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
-
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"<-";
-				text->fontSize = 30;
-				text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
+			prevButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("prev_icon");
 		}
 
 		characterCustomizePrevButton = Scene::scene->CreateImage();
@@ -193,19 +181,8 @@ public:
 					// 커스터마이징 버튼
 					connector->prevCharacter();
 				});
-			{
-				auto textobject = characterCustomizePrevButton->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
 
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"<-";
-				text->fontSize = 30;
-				text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
+			characterCustomizePrevButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("prev_icon");
 		}
 
 		characterCustomizeNextButton = Scene::scene->CreateImage();
@@ -219,19 +196,8 @@ public:
 					// 커스터마이징 버튼
 					connector->nextCharacter();
 				});
-			{
-				auto textobject = characterCustomizeNextButton->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
 
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"->";
-				text->fontSize = 30;
-				text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
+			characterCustomizeNextButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("next_icon");
 		}
 
 		nameGuide = Scene::scene->CreateImage();
@@ -294,7 +260,7 @@ public:
 					i = 0;
 					j++;
 				}
-				host.second.first->GetComponent<RectTransform>()->setPosAndSize(50 + (i * 260), -50 - (j * 50), 100, 40);
+				host.second.first->GetComponent<RectTransform>()->setPosAndSize(100 + (i * 170), -100 - (j * 60), 160, 50);
 				i++;
 			}
 		}

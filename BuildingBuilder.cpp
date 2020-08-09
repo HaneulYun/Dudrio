@@ -352,7 +352,7 @@ void BuildingBuilder::serializeBuildings()
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_HeartHouse_01_SM", ASSET MESH("SE_HeartHouse_01_SM"), ASSET MATERIAL("SE_HeartHouse")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Gazebo_01_SM", ASSET MESH("SE_Gazebo_01_SM"), ASSET MATERIAL("SE_Gazebo")));
 		building[Theme].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Theater_01_SM", ASSET MESH("SE_Theater_01_SM"), ASSET MATERIAL("SE_Theater")));
-
+		
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_01_SM", ASSET MESH("SE_Stone_01_SM"), ASSET MATERIAL("SE_Stones")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_02_SM", ASSET MESH("SE_Stone_02_SM"), ASSET MATERIAL("SE_Stones")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Stone_03_SM", ASSET MESH("SE_Stone_03_SM"), ASSET MATERIAL("SE_Stones")));
@@ -373,7 +373,7 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Bonsai_02_SM", ASSET MESH("SE_Bonsai_02_SM"), ASSET MATERIAL("SE_Bonsai")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_01_SM", ASSET MESH("SE_Branch_01_SM"), ASSET MATERIAL("SE_Bushes")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Branch_02_SM", ASSET MESH("SE_Branch_02_SM"), ASSET MATERIAL("SE_Bushes")));
-
+		
 		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_01_SM", ASSET MESH("SE_Blossom_01_SM"), ASSET MATERIAL("SE_Bushes")));
 		//building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Blossom_02_SM", ASSET MESH("SE_Blossom_02_SM"), ASSET MATERIAL("SE_Bushes")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_CottonCandy_01_SM", ASSET MESH("SE_CottonCandy_01_SM"), ASSET MATERIAL("SE_CottonCandyTree")));
@@ -416,8 +416,8 @@ void BuildingBuilder::serializeBuildings()
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Rose_04_SM", ASSET MESH("SE_Rose_04_SM"), ASSET MATERIAL("SE_Roses")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Rose_05_SM", ASSET MESH("SE_Rose_05_SM"), ASSET MATERIAL("SE_Roses")));
 		building[Landscape].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Rose_06_SM", ASSET MESH("SE_Rose_06_SM"), ASSET MATERIAL("SE_Roses")));
-
-
+		
+		
 		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_01_SM", ASSET MESH("SE_Lamp_01_SM"), ASSET MATERIAL("SE_Lamps")));
 		building[Lighting].push_back(makeBuilderDataAsMeshAndMaterial(L"SE_Lamp_02_SM", ASSET MESH("SE_Lamp_02_SM"), ASSET MATERIAL("SE_Lamps")));
 		
@@ -922,6 +922,10 @@ Vector3 BuildingBuilder::getPosOnTerrain()
 
 		point = rayOrigin + rayDir * distance;
 		point = point.TransformCoord(terrain->gameObject->transform->localToWorldMatrix);
+
+		point.x = MathHelper::Clamp<float>(point.x, 1, 999);
+		point.z = MathHelper::Clamp<float>(point.z, 1, 999);
+		point.y = terrain->terrainData.GetHeight(point.x, point.z);
 
 		return point;
 	}

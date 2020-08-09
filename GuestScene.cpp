@@ -134,8 +134,9 @@ void GuestScene::BuildObjects()
 	auto ui_bar = Scene::scene->CreateImage();
 	{
 		auto rt = ui_bar->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(0, 0);
-		rt->setPosAndSize(0, 0, CyanFW::Instance()->GetWidth(), 25);
+		rt->anchorMin = { 0, 0 };
+		rt->anchorMax = { 1, 0 };
+		rt->height = 50;
 
 		ui_bar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
 	}

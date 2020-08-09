@@ -44,6 +44,11 @@ public:
 		res.z = z * lhs;
 		return res;
 	}
+	
+	bool operator==(const Vector2D rhs)
+	{
+		return (rhs.x == x) && (rhs.z == z);
+	}
 };
 
 

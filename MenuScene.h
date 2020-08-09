@@ -211,7 +211,7 @@ public:
 		ASSET AddMaterial("host_worldCreate", ASSET TEXTURE("host_worldCreate"));
 		ASSET AddMaterial("Input_name", ASSET TEXTURE("Input_name"));
 		ASSET AddMaterial("set_chracter_button", ASSET TEXTURE("set_chracter_button"));
-
+		
 		/*icon*/
 		{
 			ASSET AddMaterial("ui_bar", ASSET TEXTURE("none"), 0, 0, 0, { 0.23828125f, 0.1484375f, 0.08984375f, 1 });

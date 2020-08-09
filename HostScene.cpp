@@ -201,8 +201,9 @@ void HostScene::BuildObjects()
 	auto ui_bar = Scene::scene->CreateImage();
 	{
 		auto rt = ui_bar->GetComponent<RectTransform>();
-		rt->setAnchorAndPivot(0, 0);
-		rt->setPosAndSize(0, 0, CyanFW::Instance()->GetWidth(), 25);
+		rt->anchorMin = { 0, 0 };
+		rt->anchorMax = { 1, 0 };
+		rt->height = 50;
 
 		ui_bar->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("ui_bar");
 	}
@@ -231,7 +232,15 @@ void HostScene::BuildObjects()
 		auto gameLoader = object->AddComponent<GameLoader>();
 		HostGameWorld::gameWorld = gameWorld;
 
-		auto buildingTypeSelector = object->AddComponent<BuildingTypeSelector>();
+		gameUI = object->AddComponent<GameUI>();
+		gameUI->gameUIs.push_back(ui_bar);
+		gameWorld->gameUI = gameUI;
+
+
+		gameUI->gameUIs.push_back(CreateUI());
+		gameUI->gameUIs[GameUI::BuildUI]->GetComponent<RectTransform>()->setAnchorAndPivot(0.5, 0);
+
+		auto buildingTypeSelector = gameUI->gameUIs[GameUI::BuildUI]->AddComponent<BuildingTypeSelector>();
 		buildingTypeSelector->builder = buildingBuilder;
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Landmark, -140, 0, ASSET MATERIAL("icon_landmark"));
 		buildingTypeSelector->addBuildingType(BuildingBuilder::House, -100, 0, ASSET MATERIAL("icon_house"));
@@ -241,10 +250,6 @@ void HostScene::BuildObjects()
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Fence, 60, 0, ASSET MATERIAL("icon_fence"));
 		buildingTypeSelector->addBuildingType(BuildingBuilder::Prop, 100, 0, ASSET MATERIAL("icon_prop"));
 		buildingTypeSelector->addDeleteButton(140, 0, ASSET MATERIAL("icon_delete"));
-
-		gameUI = object->AddComponent<GameUI>();
-		gameUI->gameUIs.push_back(ui_bar);
-		gameWorld->gameUI = gameUI;
 	}
 
 	auto network = CreateEmpty();

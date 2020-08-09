@@ -4,7 +4,7 @@
 class GameUI : public MonoBehavior<GameUI>
 {
 public :
-	enum GameUICategory{UIBar, MenuUI, TimeX1, TimeX2, TimeX4, LandMarkUI, ChatUI, SimCountUI, CoinCountUI, DayAndTimeUI, SelectFrame, FPS, Count};
+	enum GameUICategory{UIBar, BuildUI, MenuUI, TimeX1, TimeX2, TimeX4, LandMarkUI, ChatUI, SimCountUI, CoinCountUI, DayAndTimeUI, SelectFrame, FPS, Count};
 private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	std::vector<GameObject*> gameUIs;

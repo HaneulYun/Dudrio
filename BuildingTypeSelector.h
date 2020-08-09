@@ -65,7 +65,7 @@ public:
 		{
 			buildingSelectorObject->GetComponent<RectTransform>()->setAnchorAndPivot(0.5, 0);
 			buildingSelectorObject->GetComponent<RectTransform>()->setPosAndSize(0, 60, 510, 60);
-			buildingSelectorObject->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("gray");
+			buildingSelectorObject->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("host_name");
 		}
 		auto buildingSelector = buildingSelectorObject->AddComponent<BuildingSelector>();
 		buildingSelector->type = type;

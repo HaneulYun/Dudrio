@@ -34,6 +34,11 @@ public:
 		ASSET AddTexture("prev_icon", L"Textures\\icon\\prev_icon.dds");
 		ASSET AddTexture("host_name", L"Textures\\icon\\host_name.dds");
 
+		ASSET AddTexture("page_background", L"Textures\\icon\\page_background.dds");
+		ASSET AddTexture("buiding_background", L"Textures\\icon\\buiding_background.dds");
+		ASSET AddTexture("next_page", L"Textures\\icon\\next_page.dds");
+		ASSET AddTexture("prev_page", L"Textures\\icon\\prev_page.dds");
+
 		/*icon*/
 		{
 			ASSET AddTexture("ui_chatInput", L"Textures\\icon\\chatInput.dds");
@@ -219,6 +224,11 @@ public:
 		ASSET AddMaterial("next_icon", ASSET TEXTURE("next_icon"));
 		ASSET AddMaterial("prev_icon", ASSET TEXTURE("prev_icon"));
 		ASSET AddMaterial("host_name", ASSET TEXTURE("host_name"));
+
+		ASSET AddMaterial("page_background", ASSET TEXTURE("page_background"));
+		ASSET AddMaterial("buiding_background", ASSET TEXTURE("buiding_background"));
+		ASSET AddMaterial("next_page", ASSET TEXTURE("next_page"));
+		ASSET AddMaterial("prev_page", ASSET TEXTURE("prev_page"));
 
 		/*icon*/
 		{

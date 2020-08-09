@@ -124,6 +124,7 @@ void GuestScene::BuildObjects()
 		buildingBuilder->terrain = terrainData;
 		buildingBuilder->terrainNodeData = terrainNodeData;
 		buildingBuilder->builderMode = BuildingBuilder::GuestMode;
+		BuildingBuilder::buildingBuilder = buildingBuilder;
 
 		GuestGameWorld* gameWorld = object->AddComponent<GuestGameWorld>();
 		gameWorld->sun = directionalLight;
@@ -131,6 +132,19 @@ void GuestScene::BuildObjects()
 		guestUI = object->AddComponent<GuestUI>(); 
 		guestUI->guestUIs.push_back(ui_bar);
 		gameWorld->guestUI = guestUI;
+	}
+
+	/*particle*/
+	const int particleNum = 10;
+	for (int i = 0; i < particleNum; ++i)
+	{
+		auto particleSystemObjectSmoke = CreateEmpty();
+		ParticleSystem* particleSystem = particleSystemObjectSmoke->AddComponent<ParticleSystem>();
+		particleSystem->Set();
+		particleSystem->enabled = false;
+		particleSystemObjectSmoke->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("smokeMat"));
+		particleSystemObjectSmoke->layer = (int)RenderLayer::Particle;
+		BuildingBuilder::buildingBuilder->particles.push_back(particleSystemObjectSmoke->AddComponent<ParticleManager>());
 	}
 
 	auto network = CreateEmpty();

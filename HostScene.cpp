@@ -177,9 +177,8 @@ void HostScene::BuildObjects()
 	auto bottom = CreateEmpty();
 	{
 		bottom->transform->Scale({ 10000, 1, 10000 });
-		bottom->transform->Rotate({ 0, 0, 1 }, 180);
-		bottom->transform->position = { 500, 1, 500 };
-		bottom->AddComponent<MeshFilter>()->mesh = ASSET MESH("Plane");
+		bottom->transform->position = { 500, -0.5, 500 };
+		bottom->AddComponent<MeshFilter>()->mesh = ASSET MESH("Cube");
 		bottom->AddComponent<Renderer>()->materials.push_back(ASSET MATERIAL("none"));
 	}
 

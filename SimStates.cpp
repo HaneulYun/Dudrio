@@ -40,7 +40,7 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		Vector2 targetPos;
 		do
 		{
-			targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
+			targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 20) + 10, sim->gameObject->transform->position.z - (rand() % 20) + 10);
 		} while (PathFinder::Instance()->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1000].collision);
 
 		sim->targetPos.emplace_back(targetPos, 0);
@@ -56,7 +56,7 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 		// 집 주변까지 이동 + 집 안으로 이동
 		TargetInfo targetInfo;
 		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
-		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.y * 2.0f;
+		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.z * 2.0f;
 
 		sim->targetPos.push_back(targetInfo);
 		sim->stateMachine.PushState(MoveState::Instance());
@@ -70,7 +70,9 @@ bool IdleState::OnMessage(Sim* sim, const Telegram& telegram)
 	}
 	case Msg_Build:
 	{
+		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
+		sim->path.clear();
 		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extraInfo);
 
 		sim->targetPos.emplace_back(info->pos, BuildingBuilder::buildingBuilder->getBoundingBox(sim->buildInfo.buildingType, sim->buildInfo.buildingIndex) + 1);
@@ -130,7 +132,7 @@ void MoveState::Execute(Sim* sim)
 	Vector2 distanceV{ sim->gameObject->transform->position.x - sim->path.front().x, sim->gameObject->transform->position.z - sim->path.front().y };
 	float distance = sqrt(pow(distanceV.x, 2) + pow(distanceV.y, 2));
 	
-	if (distance < 0.1f)
+	if (distance < 0.35f)
 	{
 		sim->path.pop_front();
 	}
@@ -159,7 +161,7 @@ bool MoveState::OnMessage(Sim* sim, const Telegram& telegram)
 		// 집 주변까지 이동 + 집 안으로 이동
 		TargetInfo targetInfo;
 		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
-		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.y * 2.0f;
+		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.z * 2.0f;
 
 		sim->targetPos.push_back(targetInfo);
 		sim->stateMachine.PushState(MoveState::Instance());
@@ -231,12 +233,12 @@ bool SleepState::OnMessage(Sim* sim, const Telegram& telegram)
 			sim->stateMachine.ChangeState();
 		else
 		{
-			Vector2 targetPos;
-			do
-			{
-				targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
-			} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1000].collision);
-			sim->targetPos.emplace_back(targetPos, 0);
+			//Vector2 targetPos;
+			//do
+			//{
+			//	targetPos = Vector2(sim->gameObject->transform->position.x - (rand() % 16) + 8, sim->gameObject->transform->position.z - (rand() % 16) + 8);
+			//} while (BuildingBuilder::buildingBuilder->terrainNodeData->extraData[(int)targetPos.x + (int)targetPos.y * 1000].collision);
+			//sim->targetPos.emplace_back(targetPos, 0);
 			sim->stateMachine.ChangeState(IdleState::Instance());
 		}
 		return true;
@@ -285,7 +287,7 @@ bool BuildState::OnMessage(Sim* sim, const Telegram& telegram)
 		// 집 주변까지 이동 + 집 안으로 이동
 		TargetInfo targetInfo;
 		targetInfo.pos = Vector2(sim->home->transform->position.x, sim->home->transform->position.z);
-		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.y * 2.0f;
+		targetInfo.posOffset = sim->home->GetComponent<BoxCollider>()->extents.z * 2.0f;
 
 		sim->targetPos.push_back(targetInfo);
 		sim->stateMachine.PushState(MoveState::Instance());

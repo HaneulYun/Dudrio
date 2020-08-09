@@ -51,13 +51,14 @@ Vector2D PathFinder::Escape(Vector2D startPos, deque<Vector2D>& path)
 			escapePath[1].push_back(Vector2D(escapePath[1].back().x + 1, escapePath[1].back().z));
 		if (escapePath[2].back().z > 0)
 			escapePath[2].push_back(Vector2D(escapePath[2].back().x, escapePath[2].back().z - 1));
-		if (escapePath[3].back().z > height - 1)
+		if (escapePath[3].back().z < height - 1)
 			escapePath[3].push_back(Vector2D(escapePath[3].back().x, escapePath[3].back().z + 1));
 
 		// 장애물이 아니면 해당 경로를 저장하고 마지막 위치 반환
 		for (int i = 0; i < 4; ++i)
 		{
-			if (terrainData->extraData[(int)escapePath[i].back().x + (int)escapePath[i].back().z * width].collision == false)
+			if (terrainData->extraData[(int)escapePath[i].back().x + (int)escapePath[i].back().z * width].collision == false &&
+				std::find(path.begin(), path.end(), escapePath[i].back()) == path.end())
 			{
 				while (!escapePath[i].empty())
 				{

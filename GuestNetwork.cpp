@@ -65,6 +65,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 
 					auto text = uiBox->AddComponent<Text>();
 					text->text = behavior->name;
+					text->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
 					text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 					text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 				}

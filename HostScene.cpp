@@ -110,7 +110,7 @@ void HostScene::BuildObjects()
 	}
 
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
-	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
+	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"circle");
 	delete terrainGenerator;
 
 	GameObject* terrain = CreateEmpty();

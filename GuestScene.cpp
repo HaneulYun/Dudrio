@@ -95,7 +95,7 @@ void GuestScene::BuildObjects()
 	int seed = connect_inform->seed;
 	// 지형 생성
 	TerrainGenerator* terrainGenerator = new TerrainGenerator(TerrainSize, TerrainSize);
-	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"square");
+	string fileName = terrainGenerator->createHeightMap(frequency, octaves, seed, (char*)"circle");
 	delete terrainGenerator;
 
 	GameObject* terrain = CreateEmpty();

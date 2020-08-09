@@ -117,7 +117,7 @@ void Contents::process_packet(int user_id, char* buf)
 			host_id = user_id;
 
 			TerrainGenerator terrainGenerator(packet->terrainSize, packet->terrainSize);
-			string fileName = terrainGenerator.createHeightMap(packet->frequency, packet->octaves, packet->seed, (char*)"square");
+			string fileName = terrainGenerator.createHeightMap(packet->frequency, packet->octaves, packet->seed, (char*)"circle");
 			terrain_data = new Terrain;
 			terrain_data->frequency = packet->frequency;
 			terrain_data->terrain_size = packet->terrainSize;

@@ -63,10 +63,34 @@ void HostNetwork::ProcessPacket(char* ptr)
 		}
 		HostGameWorld::gameWorld->simList.clear();
 
+		for (auto& p : HostGameWorld::gameWorld->buildingList) {
+			if (p.first != nullptr) {
+				Vector3 building_forward = p.first->transform->forward;
+				building_forward.y = 0;
+				building_forward.Normalize();
+				Vector3 forward = { 0,0,1 };
+				float angle = Vector3::DotProduct(forward, building_forward);
+				Vector3 dir = Vector3::CrossProduct(forward, building_forward);
+				angle = XMConvertToDegrees(acos(angle));
+				angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
+
+				int range = 0;
+				bool develop = false;
+			
+				range = p.first->GetComponent<Village>()->radiusOfLand;
+				develop = p.first->GetComponent<Village>()->autoDevelopment;
+				
+				send_construct_packet(BuildingBuilder::Landmark, p.first->GetComponent<Building>()->index, p.first->transform->position.x, p.first->transform->position.z, angle, range, develop);
+			}
+		}
+
 		// 빌딩 정보 전송
 		for (auto& p : HostGameWorld::gameWorld->buildingList)
 			for(auto& q: p.second)
 				for (auto& r : q.second) {
+					if (r->GetComponent<Village>() != nullptr)
+						continue;
+
 					Vector3 building_forward = r->transform->forward;
 					building_forward.y = 0;
 					building_forward.Normalize();
@@ -76,13 +100,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 					angle = XMConvertToDegrees(acos(angle));
 					angle *= (dir.y > 0.0f) ? 1.0f : -1.0f;
 
-					int range = 0;
-					bool develop = false;
-					if (r->GetComponent<Village>() != nullptr) {
-						range = r->GetComponent<Village>()->radiusOfLand;
-						develop = r->GetComponent<Village>()->autoDevelopment;
-					}
-					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle, range, develop);
+					send_construct_packet(q.first, r->GetComponent<Building>()->index, r->transform->position.x, r->transform->position.z, angle, 0, 0);
 				}
 	}
 	break;

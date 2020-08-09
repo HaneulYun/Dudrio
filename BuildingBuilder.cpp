@@ -594,7 +594,10 @@ void BuildingBuilder::updateTerrainNodeData(GameObject* building, bool collision
 {
 	BoundingBox boundingBox = building->GetComponent<BoxCollider>()->boundingBox;
 
-	Vector3 pos = building->transform->position;
+	Vector3 center;
+	center.xmf3 = boundingBox.Center;
+	center = center.TransformCoord(building->GetMatrix());
+	Vector3 pos = center;
 	float length = sqrt(pow(boundingBox.Extents.x, 2) + pow(boundingBox.Extents.z, 2));
 
 	for (int x = (pos - length).x; x <= (pos + length).x; ++x)
@@ -1006,8 +1009,10 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 		else
 		{
 			obj = Scene::scene->CreateEmpty();
-			obj->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
-			obj->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
+			BoxCollider* collider = obj->AddComponent<BoxCollider>();
+			collider->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
+			collider->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
+			collider->obb = true;
 
 			auto child = obj->AddChild();
 			child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -1050,8 +1055,10 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 					else
 					{
 						obj = Scene::scene->CreateEmpty();
-						obj->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
-						obj->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
+						BoxCollider* collider = obj->AddComponent<BoxCollider>();
+						collider->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
+						collider->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
+						collider->obb = true;
 
 						auto child = obj->AddChild();
 						child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);
@@ -1089,8 +1096,10 @@ void BuildingBuilder::hostLoad(int type, int index, float x, float z, float angl
 	else
 	{
 		obj = Scene::scene->CreateEmpty();
-		obj->AddComponent<BoxCollider>()->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
-		obj->GetComponent<BoxCollider>()->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
+		BoxCollider* collider = obj->AddComponent<BoxCollider>();
+		collider->boundingBox.Center = { data.mesh->BoundsLimited.Center.x, data.mesh->BoundsLimited.Center.z, data.mesh->BoundsLimited.Center.y };
+		collider->boundingBox.Extents = { data.mesh->BoundsLimited.Extents.x, data.mesh->BoundsLimited.Extents.z, data.mesh->BoundsLimited.Extents.y };
+		collider->obb = true;
 
 		auto child = obj->AddChild();
 		child->transform->Rotate({ 1.0,0.0,0.0 }, -90.0f);

@@ -46,6 +46,7 @@ public:
 			auto buildingButton = gameObject->AddChildUI(Scene::scene->CreateImagePrefab());
 			addChildAsTextButton(L"", 0.1 * i + 0.05, 0.5, 40, 40, buildingButton)->AddEvent(events[i], this);
 			buildingButtons[i] = buildingButton;
+			buildingButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("buiding_background");
 		}
 		addChildAsTextButton(L"¢¸", -0.025, 0.5, 20, 20)->AddEvent([](void* ptr) { reinterpret_cast<BuildingSelector*>(ptr)->prevPage(); }, this);
 		addChildAsTextButton(L"¢º", 1.025, 0.5, 20, 20)->AddEvent([](void* ptr) { reinterpret_cast<BuildingSelector*>(ptr)->nextPage(); }, this);
@@ -163,6 +164,17 @@ public:
 		text->fontSize = 10;
 		text->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
 		text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+
+		if (wcscmp(str.c_str(), L"¢¸") == 0)
+		{
+			child->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("prev_page");
+			text->text = L"";
+		}
+		else if (wcscmp(str.c_str(), L"¢º") == 0)
+		{
+			child->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("next_page");
+			text->text = L"";
+		}
 
 		return child->AddComponent<Button>();
 	}

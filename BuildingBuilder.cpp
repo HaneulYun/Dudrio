@@ -764,7 +764,6 @@ int BuildingBuilder::enterDeleteMode()
 	return true;
 }
 
-
 float BuildingBuilder::getBoundingBox(int type, int index)
 {
 	if (index < building[type].size())
@@ -793,6 +792,13 @@ wstring BuildingBuilder::getBuildingName(int type, int index)
 	if (index < building[type].size())
 		return building[type][index].buildingName;
 	return L"X";
+}
+
+BuildingBuilderData BuildingBuilder::getBuildingData(int type, int index)
+{
+	if (index < building[type].size())
+		return building[type][index];
+	return {};
 }
 
 int BuildingBuilder::getLandmarkRaduis(GameObject* landmark)

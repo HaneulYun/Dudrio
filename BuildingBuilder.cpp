@@ -128,7 +128,7 @@ void BuildingBuilder::Update(/*업데이트 코드를 작성하세요.*/)
 				curLandmark = prefab;
 				Village* village;
 				village = prefab->AddComponent<Village>();
-				village->OnAutoDevelopment();
+				village->OffAutoDevelopment();
 				village->radiusOfLand = getLandmarkRaduis(prefab);
 				range = village->radiusOfLand;
 				develop = village->autoDevelopment;

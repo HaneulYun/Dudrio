@@ -383,6 +383,10 @@ public:
 
 	void login()
 	{
+		std::string ip_str;
+		std::fstream serverIP("ServerIP.txt", std::ios::in);
+		serverIP >> ip_str;
+		serverIP.close();
 		WSAData WSAData;
 		WSAStartup(MAKEWORD(2, 0), &WSAData);
 		if (!connector->insertInform())
@@ -390,7 +394,7 @@ public:
 
 		SOCKADDR_IN serveraddr{};
 		serveraddr.sin_family = AF_INET;
-		serveraddr.sin_addr.s_addr = inet_addr(LOBBY_SERVER_IP);
+		serveraddr.sin_addr.s_addr = inet_addr(ip_str.c_str());
 		serveraddr.sin_port = htons(CLIENT_TO_LOBBY_SERVER_PORT);
 
 		lobbySocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);

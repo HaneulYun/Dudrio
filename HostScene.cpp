@@ -51,22 +51,43 @@ void HostScene::BuildObjects()
 		simController->AddTransition("Walk", "Idle", TransitionCondition::CreateFloat("Walking", Less, 1));
 	}
 
-	auto simsPrefab = CreateEmptyPrefab();
-	{
-		auto model = simsPrefab->AddChild();
+	GameObject* simsPrefab[21];
+	for (int i = 0; i < 21; ++i) {
+		simsPrefab[i] = CreateEmptyPrefab();
 		{
-			model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
-			auto mesh = model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
-			auto renderer = model->GetComponent<SkinnedMeshRenderer>();
-			for (auto& sm : mesh->DrawArgs)
-				renderer->materials.push_back(ASSET MATERIAL("PolyArt"));
+			auto model = simsPrefab[i]->AddChild();
+			{
+				model->GetComponent<Transform>()->Rotate({ 1, 0, 0 }, -90);
+				if (i == 0)		 model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
+				else if (i == 1) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("BattleMageSK");
+				else if (i == 2) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("CommonerSK");
+				else if (i == 3) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("CountSK");
+				else if (i == 4) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("DarkKnightSK");
+				else if (i == 5) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("DukeSK");
+				else if (i == 6) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("EliteSK");
+				else if (i == 7) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("EngineerSK");
+				else if (i == 8) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ExecutionerSK");
+				else if (i == 9) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("FootmanSK");
+				else if (i == 10)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("HeavyKnightSK");
+				else if (i == 11)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ImmortalSK");
+				else if (i == 12)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("IronMaskSK");
+				else if (i == 13)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("KnightSK");
+				else if (i == 14)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("MageSK");
+				else if (i == 15)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("PrinceSK");
+				else if (i == 16)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ShinobiSK");
+				else if (i == 17)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("SoldierSK");
+				else if (i == 18)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("TemplarSK");
+				else if (i == 19)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("WarriorSK");
+				else if (i == 20)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("WizardSK");
+				model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+			}
+			auto behavior = simsPrefab[i]->AddComponent<CharacterMovingBehavior>();
+			auto anim = simsPrefab[i]->AddComponent<Animator>();
+			anim->controller = controller;
+			anim->state = &controller->states["Idle"];
+			anim->TimePos = 0;
+			behavior->anim = anim;
 		}
-		auto behavior = simsPrefab->AddComponent<CharacterMovingBehavior>();
-		auto anim = simsPrefab->AddComponent<Animator>();
-		anim->controller = controller;
-		anim->state = &controller->states["Idle"];
-		anim->TimePos = 0;
-		behavior->anim = anim;
 	}
 
 	float TerrainSize = 1000;
@@ -94,7 +115,8 @@ void HostScene::BuildObjects()
 
 	GameObject* terrain = CreateEmpty();
 	auto terrainData = terrain->AddComponent<Terrain>();
-	simsPrefab->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
+	for (int i = 0; i < 21; ++i)
+		simsPrefab[i]->GetComponent<CharacterMovingBehavior>()->heightmap = &terrainData->terrainData;
 	{
 		wstring name;
 		name.assign(fileName.begin(), fileName.end());
@@ -256,7 +278,8 @@ void HostScene::BuildObjects()
 	HostNetwork* hostNetwork = network->AddComponent<HostNetwork>();
 	{
 		HostNetwork::network = hostNetwork;
-		hostNetwork->simsPrefab = simsPrefab;
+		for(int i=0;i<21;++i)
+			hostNetwork->simsPrefab[i] = simsPrefab[i];
 		hostNetwork->terrainSize = TerrainSize;
 		hostNetwork->frequency = frequency;
 		hostNetwork->octaves = octaves;

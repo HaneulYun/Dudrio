@@ -34,6 +34,7 @@ class GuestInformConnector : public MonoBehavior<GuestInformConnector>
 {
 private /*이 영역에 private 변수를 선언하세요.*/:
 	// page 1
+	bool flag{ false };
 	InputField* nameField{ nullptr };
 	GameObject* nameGuide{ nullptr };
 
@@ -50,10 +51,14 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 	bool is_connect{ false };
 
 public  /*이 영역에 public 변수를 선언하세요.*/:
+
+	GameObject* characters[21]{ nullptr };
 	GameObject* background{ nullptr };
 	GameObject* buttonPrefab{ nullptr };
+	GameObject* curCharacter{ nullptr };
 
 	// 게스트 이름
+	static int characterIndex;
 	static wchar_t name[MAX_ID_LEN + 1];
 
 	// 선택한 방 정보
@@ -132,8 +137,26 @@ public:
 		prevButton->SetActive(!flag);
 	}
 
+	void prevCharacter() {
+		Scene::scene->PushDelete(curCharacter);
+		--characterIndex;
+		if (characterIndex < 0)
+			characterIndex = 20;
+		flag = true;
+	}
+
+	void nextCharacter() {
+		Scene::scene->PushDelete(curCharacter);
+		++characterIndex;
+		if (characterIndex > 20)
+			characterIndex = 0;
+		flag = true;
+	}
+
 	void Start(/*초기화 코드를 작성하세요.*/)
 	{
+		characterIndex = 0;
+
 		prevButton = Scene::scene->CreateImage();
 		{
 			auto rt = prevButton->GetComponent<RectTransform>();
@@ -168,6 +191,7 @@ public:
 			characterCustomizePrevButton->AddComponent<Button>()->AddEvent(
 				[](void*) {
 					// 커스터마이징 버튼
+					connector->prevCharacter();
 				});
 			{
 				auto textobject = characterCustomizePrevButton->AddChildUI();
@@ -193,6 +217,7 @@ public:
 			characterCustomizeNextButton->AddComponent<Button>()->AddEvent(
 				[](void*) {
 					// 커스터마이징 버튼
+					connector->nextCharacter();
 				});
 			{
 				auto textobject = characterCustomizeNextButton->AddChildUI();
@@ -233,7 +258,6 @@ public:
 
 		}
 
-
 		SetMyCharacterbutton = Scene::scene->CreateImage();
 		{
 			auto rt = SetMyCharacterbutton->GetComponent<RectTransform>();
@@ -252,6 +276,14 @@ public:
 
 	void Update(/*업데이트 코드를 작성하세요.*/)
 	{
+		if (flag) {
+			curCharacter = Scene::scene->Duplicate(characters[characterIndex]);
+			flag = false;
+		}
+
+		if(curCharacter != nullptr)
+			curCharacter->GetComponent<Animator>()->SetFloat("Walking", 0);
+
 		if (is_connect) {
 			Receiver();
 

@@ -48,7 +48,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		int o_type = my_packet->o_type;
 
 		if (id != myId && o_type == O_GUEST){
-			auto player = gameObject->scene->Duplicate(simsPrefab);
+			auto player = gameObject->scene->Duplicate(simsPrefab[my_packet->appearance]);
 			auto behavior = player->GetComponent<CharacterMovingBehavior>();
 			wcscpy_s(behavior->name, my_packet->name);
 			behavior->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
@@ -111,7 +111,7 @@ void GuestNetwork::ProcessPacket(char* ptr)
 		sc_packet_sim_enter* my_packet = reinterpret_cast<sc_packet_sim_enter*>(ptr);
 		int id = my_packet->id;
 
-		sims[id] = gameObject->scene->Duplicate(simsPrefab);
+		sims[id] = gameObject->scene->Duplicate(simsPrefab[my_packet->appearance]);
 		auto p = sims[id]->GetComponent<CharacterMovingBehavior>();
 		p->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 	}
@@ -335,7 +335,8 @@ void GuestNetwork::Login()
 	l_packet.size = sizeof(l_packet);
 	l_packet.type = C2S_LOGIN_GUEST;
 	wcscpy_s(l_packet.name, myCharacter->GetComponent<CharacterMovingBehavior>()->name);
-	
+	l_packet.appearance = myType;
+
 	send_packet(&l_packet);
 }
 

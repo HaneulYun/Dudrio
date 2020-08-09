@@ -41,7 +41,7 @@ public:
 	static HostNetwork* network;
 
 public:
-	GameObject* simsPrefab = NULL;
+	GameObject* simsPrefab[21]{ nullptr };
 	unordered_map<int, pair<GameObject*, Village*>> sims;
 	unordered_map<int, GameObject*> players;
 

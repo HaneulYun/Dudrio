@@ -17,6 +17,7 @@ public:
 	unordered_set<int> view_list;
 	unordered_set<int> sim_list;
 
+	char	m_appearance;
 	float	m_xPos, m_yPos, m_zPos;
 	float	m_rotAngle;
 	float	m_xVel, m_zVel;

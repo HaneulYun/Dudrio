@@ -30,7 +30,13 @@ public:
 
 public:
 	Sim() {}
-	Sim(int idx, float x, float z) :id(idx), pos(x, z), forward(0, 1), rotAngle(0) { stateMachine.SetOwner(this); appearance = rand() % 21; }
+	Sim(int idx, float x, float z) :id(idx), pos(x, z), forward(0, 1), rotAngle(0) 
+	{
+		stateMachine.SetOwner(this); 
+		int ix = std::floor(x);
+		int iz = std::floor(z);
+		appearance = (ix + iz) % 21;
+	}
 	~Sim() {}
 
 	bool is_near(const Client& other);

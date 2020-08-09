@@ -11,7 +11,7 @@ private /*이 영역에 private 변수를 선언하세요.*/:
 public  /*이 영역에 public 변수를 선언하세요.*/:
 	static HostGameWorld* gameWorld;
 
-	GameObject*	simPrefab;
+	GameObject* simPrefab[21]{ nullptr };
 	int			simIndex = 0;
 
 	/*Time*/

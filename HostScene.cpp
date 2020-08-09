@@ -198,20 +198,43 @@ void HostScene::BuildObjects()
 	//	GameLoader::gameLoader = gameload;
 	//}
 
-	auto sim = CreateEmptyPrefab();
-	{
-		auto model = sim->AddChild();
+	GameObject* sim[21];
+	for (int i = 0; i < 21; ++i) {
+		sim[i] = CreateEmptyPrefab();
 		{
-			model->transform->Rotate({ 1, 0, 0 }, -90);
-			model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
-			model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
-		}
-		sim->AddComponent<Sim>();
+			auto model = sim[i]->AddChild();
+			{
+				model->transform->Rotate({ 1, 0, 0 }, -90);
+				if (i == 0)		 model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ApprenticeSK");
+				else if (i == 1) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("BattleMageSK");
+				else if (i == 2) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("CommonerSK");
+				else if (i == 3) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("CountSK");
+				else if (i == 4) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("DarkKnightSK");
+				else if (i == 5) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("DukeSK");
+				else if (i == 6) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("EliteSK");
+				else if (i == 7) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("EngineerSK");
+				else if (i == 8) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ExecutionerSK");
+				else if (i == 9) model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("FootmanSK");
+				else if (i == 10)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("HeavyKnightSK");
+				else if (i == 11)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ImmortalSK");
+				else if (i == 12)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("IronMaskSK");
+				else if (i == 13)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("KnightSK");
+				else if (i == 14)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("MageSK");
+				else if (i == 15)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("PrinceSK");
+				else if (i == 16)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("ShinobiSK");
+				else if (i == 17)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("SoldierSK");
+				else if (i == 18)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("TemplarSK");
+				else if (i == 19)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("WarriorSK");
+				else if (i == 20)model->AddComponent<SkinnedMeshRenderer>()->mesh = ASSET MESH("WizardSK");
+				model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
+			}
+			sim[i]->AddComponent<Sim>();
 
-		auto anim = sim->AddComponent<Animator>();
-		anim->controller = simController;
-		anim->state = &simController->states["Idle"];
-		anim->TimePos = 0;
+			auto anim = sim[i]->AddComponent<Animator>();
+			anim->controller = simController;
+			anim->state = &simController->states["Idle"];
+			anim->TimePos = 0;
+		}
 	}
 
 	GameObject* node = CreateEmpty();
@@ -244,7 +267,8 @@ void HostScene::BuildObjects()
 		BuildingBuilder::buildingBuilder = buildingBuilder;
 
 		HostGameWorld* gameWorld = object->AddComponent<HostGameWorld>();
-		gameWorld->simPrefab = sim;
+		for (int i = 0; i < 21; ++i)
+			gameWorld->simPrefab[i] = sim[i];
 		gameWorld->sun = directionalLight;
 		if (HostInformConnector::connector->load) {
 			gameWorld->gameTime = gametime;

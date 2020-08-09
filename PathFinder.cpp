@@ -52,13 +52,14 @@ Vector2 PathFinder::Escape(Vector2 startPos, std::deque<Vector2>& path)
 			escapePath[1].push_back(Vector2(escapePath[1].back().x + 1, escapePath[1].back().y));
 		if (escapePath[2].back().y > 0)
 			escapePath[2].push_back(Vector2(escapePath[2].back().x, escapePath[2].back().y - 1));
-		if (escapePath[3].back().y > height - 1)
+		if (escapePath[3].back().y < height - 1)
 			escapePath[3].push_back(Vector2(escapePath[3].back().x, escapePath[3].back().y + 1));
 
 		// 장애물이 아니면 해당 경로를 저장하고 마지막 위치 반환
 		for (int i = 0; i < 4; ++i)
 		{
-			if (terrainNodeData->extraData[(int)escapePath[i].back().x + (int)escapePath[i].back().y * width].collision == false)
+			if (terrainNodeData->extraData[(int)escapePath[i].back().x + (int)escapePath[i].back().y * width].collision == false &&
+				std::find(path.begin(), path.end(), escapePath[i].back()) == path.end())
 			{
 				while (!escapePath[i].empty())
 				{
@@ -198,7 +199,7 @@ bool PathFinder::FindPath(Vector2 targetPos, Vector2 startPos, std::deque<Vector
 		}
 	}
 
-	Debug::Log("길 못찾음");
+	//Debug::Log("길 못찾음\n");
 }
 
 void PathFinder::MoveToDestination(Vector2& targetPos, Transform* object, float speed)

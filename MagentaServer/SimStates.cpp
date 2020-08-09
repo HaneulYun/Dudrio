@@ -41,7 +41,7 @@ bool IdleState::OnMessage(Sim* sim, const SIM_Message& telegram)
 		Vector2D targetPos;
 		do
 		{
-			targetPos = Vector2D(sim->pos.x - (rand() % 16) + 8, sim->pos.z - (rand() % 16) + 8);
+			targetPos = Vector2D(sim->pos.x - (rand() % 20) + 10, sim->pos.z - (rand() % 20) + 10);
 		} while (PathFinder::Instance()->terrainData->extraData[(int)targetPos.x + (int)targetPos.z * 1000].collision);
 
 		sim->targetPos.emplace_back(targetPos, 0);
@@ -71,7 +71,9 @@ bool IdleState::OnMessage(Sim* sim, const SIM_Message& telegram)
 	}
 	case SIM_Build:
 	{
+		sim->stateMachine.ClearStack();
 		sim->targetPos.clear();
+		sim->path.clear();
 		BuildMessageInfo* info = static_cast<BuildMessageInfo*>(telegram.extra_info);
 
 		sim->targetPos.emplace_back(info->pos, contents.collider_info[sim->buildInfo.buildingType][sim->buildInfo.buildingIndex].getMaxBound() + 1);
@@ -229,12 +231,12 @@ bool SleepState::OnMessage(Sim* sim, const SIM_Message& telegram)
 			sim->stateMachine.ChangeState();
 		else
 		{
-			Vector2D targetPos;
-			do
-			{
-				targetPos = Vector2D(sim->pos.x - (rand() % 16) + 8, sim->pos.z - (rand() % 16) + 8);
-			} while (terrain_data->extraData[(int)targetPos.x + (int)targetPos.z * 1000].collision);
-			sim->targetPos.emplace_back(targetPos, 0);
+			//Vector2D targetPos;
+			//do
+			//{
+			//	targetPos = Vector2D(sim->pos.x - (rand() % 16) + 8, sim->pos.z - (rand() % 16) + 8);
+			//} while (terrain_data->extraData[(int)targetPos.x + (int)targetPos.z * 1000].collision);
+			//sim->targetPos.emplace_back(targetPos, 0);
 			sim->stateMachine.ChangeState(IdleState::Instance());
 		}
 		return true;

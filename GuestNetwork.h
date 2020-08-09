@@ -77,8 +77,8 @@ public:
 			chatting[i] = Scene::scene->CreateUI();
 			{
 				auto rt = chatting[i]->GetComponent<RectTransform>();
-				rt->setAnchorAndPivot(0, 1);
-				rt->setPosAndSize(0, -775 + ((i + 1) * 15), 500, 15);
+				rt->setAnchorAndPivot(0, 0);
+				rt->setPosAndSize(0, 30 + i * 15, 500, 15);
 
 				Text* text = chatting[i]->AddComponent<Text>();
 				text->text = L"";

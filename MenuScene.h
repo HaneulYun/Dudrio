@@ -628,6 +628,7 @@ public:
 			ASSET AddFbxForMesh("SE_Willow_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01a_SM.FBX");
 			ASSET AddFbxForMesh("SE_Willow_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01b_SM.FBX");
 		}
+
 		ASSET AddFbxForAnimation("ApprenticeSK", "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\ApprenticeSK.fbx");
 
 		//*** Animation ***//

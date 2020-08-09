@@ -20,6 +20,9 @@ public:
 	GameUI* gameUI{ nullptr };
 	Text* connectButtonText{ nullptr };
 
+	Text* enterMessage{ nullptr };
+	float enterMsgTime{ 0 };
+
 	WSADATA WSAData;
 	SOCKET lobbySocket;
 	SOCKET serverSocket;
@@ -94,6 +97,22 @@ public:
 				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
 			}
 		}
+
+		auto enterMsgObj = Scene::scene->CreateUI();
+		{
+			auto rt = enterMsgObj->GetComponent<RectTransform>();
+			rt->setAnchorAndPivot(0.5, 0.8);
+			rt->setPosAndSize(0, 0, 800, 35);
+
+			enterMessage = enterMsgObj->AddComponent<Text>();
+			//enterMessage->text = L"두드리오 님이 방문했어요!";
+			enterMessage->font = L"배달의민족 도현";
+			enterMessage->fontSize = 25;
+			enterMessage->color = { 0.9140625f, 0.796875f, 0.37890625f, 1.0f };
+			enterMessage->textAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
+			enterMessage->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
+		}
+		enterMsgTime = 5.0f;
 	}
 
 	void Update()
@@ -112,6 +131,14 @@ public:
 
 		if (isConnect) {
 			Receiver();
+		}
+
+		if (enterMsgTime > 0.f)
+		{
+			enterMsgTime -= HostGameWorld::gameWorld->gameDeltaTime;
+
+			if (enterMsgTime < 0.f)
+				enterMessage->text = L" ";
 		}
 	}
 
@@ -190,5 +217,14 @@ public:
 			if (mainConnect)
 				return Logout();
 		}
+	}
+
+	void setEnterMsg(wchar_t* name)
+	{
+		std::wstring wstr{ name };
+		wstr += L"님이 방문했어요!";
+
+		enterMessage->text = wstr.c_str();
+		enterMsgTime = 4;
 	}
 };

@@ -123,6 +123,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 			}
 
 			players[id] = player;
+			setEnterMsg(my_packet->name);
 		}
 	}
 	break;

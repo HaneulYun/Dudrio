@@ -31,12 +31,6 @@ void GuestMenuScene::BuildObjects()
 		controller->AddTransition("WalkLeft", "Idle", TransitionCondition::CreateFloat("VelocityX", Less, 0.3));
 		controller->AddTransition("WalkRight", "Idle", TransitionCondition::CreateFloat("VelocityX", Greater, -0.3));
 	}
-	///*** Asset ***///
-	//*** Texture ***//
-
-	//*** Material ***//
-
-	//*** Mesh ***//
 
 	///*** Game Object ***///
 	{
@@ -61,7 +55,6 @@ void GuestMenuScene::BuildObjects()
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
 		mainCamera->transform->position = { 1.3, 1.5, -3 };
-		//mainCamera->AddComponent<CameraController>();
 	}
 
 	GameObject* simPrefab[21];

@@ -173,8 +173,9 @@ public:
 		characterCustomizePrevButton = Scene::scene->CreateImage();
 		{
 			auto rt = characterCustomizePrevButton->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(30, -380, 40, 40);
+			rt->setAnchorAndPivot(0, 0.5);
+			rt->pivot = { 0, 0.5 };
+			rt->setPosAndSize(30, 0, 40, 40);
 
 			characterCustomizePrevButton->AddComponent<Button>()->AddEvent(
 				[](void*) {
@@ -188,8 +189,9 @@ public:
 		characterCustomizeNextButton = Scene::scene->CreateImage();
 		{
 			auto rt = characterCustomizeNextButton->GetComponent<RectTransform>();
-			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(530, -380, 40, 40);
+			rt->setAnchorAndPivot(0.5, 0.5);
+			rt->pivot = { 1, 0.5 };
+			rt->setPosAndSize(-30, 0, 40, 40);
 
 			characterCustomizeNextButton->AddComponent<Button>()->AddEvent(
 				[](void*) {

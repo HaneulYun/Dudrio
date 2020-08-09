@@ -78,7 +78,7 @@ bool PathFinder::FindPath(Vector2D targetPos, Vector2D startPos, deque<Vector2D>
 
 	std::vector<Node> openList;
 	std::vector<Node> closedList;
-	closedList.reserve(400);
+	closedList.reserve(1000);
 
 	Node start;
 	start.posX = (int)startPos.x;

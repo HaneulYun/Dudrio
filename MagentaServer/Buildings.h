@@ -124,25 +124,10 @@ public:
 
 	virtual void update_terrain_node(bool create)
 	{
-		Vector2D b_right = (Vector2D(1, 0).Rotate(-m_info.m_angle)).Normalize();
-		Vector2D b_forward = (Vector2D(0, 1).Rotate(-m_info.m_angle)).Normalize();
-		
-		float x1 = m_info.m_xPos + (b_right.x * m_collider.m_x1);
-		float x2 = m_info.m_xPos + (b_right.x * m_collider.m_x2);
+		float length = sqrt(pow(m_collider.m_x2 - m_collider.m_x1, 2) + pow(m_collider.m_z2 - m_collider.m_z1, 2));
 
-		float lowx, highx;
-		if (x1 >= x2) { lowx = x2; highx = x1; }
-		else { lowx = x1; highx = x2; }
-
-		float z1 = m_info.m_zPos + (b_forward.z * m_collider.m_z1);
-		float z2 = m_info.m_zPos + (b_forward.z * m_collider.m_z2);
-
-		float lowz, highz;
-		if (z1 >= z2) { lowz = z2; highz = z1; }
-		else { lowz = z1; highz = z2; }
-
-		for (int x = lowx; x <= highx; ++x) {
-			for (int z = lowz; z <= highz; ++z)
+		for (int x = m_info.m_xPos - length; x <= m_info.m_xPos + length; ++x) {
+			for (int z = m_info.m_zPos - length; z <= m_info.m_zPos + length; ++z)
 			{
 				if (is_collide_node(x, z)) {
 					terrain_data->extraData[x + (z * terrain_data->heightmapHeight)].collision = create;

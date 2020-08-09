@@ -11,11 +11,11 @@ void GuestScene::BuildObjects()
 		controller->AddParameterFloat("VelocityX");
 		controller->AddParameterFloat("VelocityZ");
 
-		controller->AddState("Idle", ASSET animationClips["Idle_BowAnim"].get());
-		controller->AddState("Walk", ASSET animationClips["Walk_BowAnim"].get());
-		controller->AddState("WalkBack", ASSET animationClips["WalkBack_BowAnim"].get());
-		controller->AddState("WalkRight", ASSET animationClips["WalkRight_BowAnim"].get());
-		controller->AddState("WalkLeft", ASSET animationClips["WalkLeft_BowAnim"].get());
+		controller->AddState("Idle", ASSET animationClips["Idle"].get());
+		controller->AddState("Walk", ASSET animationClips["Walk"].get());
+		controller->AddState("WalkBack", ASSET animationClips["WalkBack"].get());
+		controller->AddState("WalkRight", ASSET animationClips["WalkRight"].get());
+		controller->AddState("WalkLeft", ASSET animationClips["WalkLeft"].get());
 
 		controller->AddTransition("Idle", "Walk", TransitionCondition::CreateFloat("VelocityZ", Greater, 0.3));
 		controller->AddTransition("Idle", "WalkBack", TransitionCondition::CreateFloat("VelocityZ", Less, -0.3));

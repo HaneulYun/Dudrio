@@ -627,17 +627,15 @@ public:
 			ASSET AddFbxForMesh("SE_Trampoline_01_SM", "Assets\\SpringEnvironment\\Models\\SE_Trampoline_01_SM.FBX");
 			ASSET AddFbxForMesh("SE_Willow_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01a_SM.FBX");
 			ASSET AddFbxForMesh("SE_Willow_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01b_SM.FBX");
-
-
 		}
-		ASSET AddFbxForAnimation("ApprenticeSK", "Models\\modelTest.fbx");
+		ASSET AddFbxForAnimation("ApprenticeSK", "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\ApprenticeSK.fbx");
 
 		//*** Animation ***//
-		ASSET AddFbxForAnimation("Walk_BowAnim", "Models\\BowStance\\Walk_BowAnim.fbx");
-		ASSET AddFbxForAnimation("WalkBack_BowAnim", "Models\\BowStance\\WalkBack_BowAnim.fbx");
-		ASSET AddFbxForAnimation("WalkRight_BowAnim", "Models\\BowStance\\WalkRight_BowAnim.fbx");
-		ASSET AddFbxForAnimation("WalkLeft_BowAnim", "Models\\BowStance\\WalkLeft_BowAnim.fbx");
-		ASSET AddFbxForAnimation("Idle_BowAnim", "Models\\BowStance\\Idle_BowAnim.fbx");
+		ASSET AddFbxForAnimation("Walk", "Assets\\ModularRPGHeroesPolyart\\Animations\\NoWeaponStance\\NormalWalk_noWeaponAnim.fbx");
+		ASSET AddFbxForAnimation("WalkBack", "Assets\\ModularRPGHeroesPolyart\\Animations\\NoWeaponStance\\NormalRunBack_noWeaponAnim.fbx");
+		ASSET AddFbxForAnimation("WalkRight", "Assets\\ModularRPGHeroesPolyart\\Animations\\NoWeaponStance\\BattleWalkLeft_noWeaponAnim.fbx");
+		ASSET AddFbxForAnimation("WalkLeft", "Assets\\ModularRPGHeroesPolyart\\Animations\\NoWeaponStance\\BattleWalkRight_noWeaponAnim.fbx");
+		ASSET AddFbxForAnimation("Idle", "Assets\\ModularRPGHeroesPolyart\\Animations\\NoWeaponStance\\StandingIdle_noWeaponAnim.fbx");
 	}
 
 	void LoadPrefab()

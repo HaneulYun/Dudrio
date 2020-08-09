@@ -15,6 +15,11 @@ LobbyServer::~LobbyServer()
 
 void LobbyServer::init_server()
 {
+	std::string ip_str;
+	std::fstream serverIP("ServerIP.txt", std::ios::in);
+	serverIP >> ip_str;
+	serverIP.close();
+
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 0), &WSAData);
 
@@ -24,7 +29,7 @@ void LobbyServer::init_server()
 	memset(&serveraddr, 0, sizeof(SOCKADDR_IN));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_port = htons(SERVER_TO_LOBBY_SERVER_PORT);
-	serveraddr.sin_addr.S_un.S_addr = inet_addr(LOBBY_SERVER_IP);
+	serveraddr.sin_addr.S_un.S_addr = inet_addr(ip_str.c_str());
 
 	int retval = connect_nonblock(l_socket, (struct sockaddr*) & serveraddr, sizeof(serveraddr), 5);
 	if (retval == SOCKET_ERROR) {

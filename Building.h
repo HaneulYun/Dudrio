@@ -30,8 +30,14 @@ public:
 	{
 		if (!IsZero(positionToAnimate.y))
 		{
-			gameObject->transform->position += {0.0f, 0.5f * HostGameWorld::gameWorld->gameDeltaTime, 0.0f};
-			time += HostGameWorld::gameWorld->gameDeltaTime;
+			if (HostGameWorld::gameWorld != nullptr) {
+				gameObject->transform->position += {0.0f, 0.5f * HostGameWorld::gameWorld->gameDeltaTime, 0.0f};
+				time += HostGameWorld::gameWorld->gameDeltaTime;
+			}
+			else {
+				gameObject->transform->position += {0.0f, 0.5f * GuestGameWorld::gameWorld->gameDeltaTime, 0.0f};
+				time += GuestGameWorld::gameWorld->gameDeltaTime;
+			}
 			if (time >= 0.1f)
 			{
 				time -= 0.1f;

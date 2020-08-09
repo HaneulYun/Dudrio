@@ -361,6 +361,7 @@ void IOCPServer::send_enter_packet(int user_id, int o_id)
 	p.id = o_id;
 	p.size = sizeof(p);
 	p.type = S2C_ENTER;
+	p.appearance = g_clients[o_id]->m_appearance;
 	p.xPos = g_clients[o_id]->m_xPos;
 	p.zPos = g_clients[o_id]->m_zPos;
 	p.xVel = g_clients[o_id]->m_xVel;
@@ -422,6 +423,7 @@ void IOCPServer::send_enter_sim_packet(int user_id, int o_id)
 	p.id = o_id;
 	p.size = sizeof(p);
 	p.type = S2C_SIM_ENTER;
+	p.appearance = g_sims[o_id]->appearance;
 	p.xPos = g_sims[o_id]->pos.x;
 	p.zPos = g_sims[o_id]->pos.z;
 	p.xVel = g_sims[o_id]->forward.x;

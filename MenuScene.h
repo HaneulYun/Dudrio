@@ -628,8 +628,28 @@ public:
 			ASSET AddFbxForMesh("SE_Willow_01a_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01a_SM.FBX");
 			ASSET AddFbxForMesh("SE_Willow_01b_SM", "Assets\\SpringEnvironment\\Models\\SE_Willow_01b_SM.FBX");
 		}
+		ASSET AddFbxForAnimation("ApprenticeSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\ApprenticeSK.fbx");
+		ASSET AddFbxForAnimation("BattleMageSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\BattleMageSK.fbx");
+		ASSET AddFbxForAnimation("CommonerSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\CommonerSK.fbx");
+		ASSET AddFbxForAnimation("CountSK"		, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\CountSK.fbx");
+		ASSET AddFbxForAnimation("DarkKnightSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\DarkKnightSK.fbx");
+		ASSET AddFbxForAnimation("DukeSK"		, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\DukeSK.fbx");
+		ASSET AddFbxForAnimation("EliteSK"		, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\EliteSK.fbx");
+		ASSET AddFbxForAnimation("EngineerSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\EngineerSK.fbx");
+		ASSET AddFbxForAnimation("ExecutionerSK", "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\ExecutionerSK.fbx");
+		ASSET AddFbxForAnimation("FootmanSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\FootmanSK.fbx");
+		ASSET AddFbxForAnimation("HeavyKnightSK", "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\HeavyKnightSK.fbx");
+		ASSET AddFbxForAnimation("ImmortalSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\ImmortalSK.fbx");
+		ASSET AddFbxForAnimation("IronMaskSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\IronMaskSK.fbx");
+		ASSET AddFbxForAnimation("KnightSK"		, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\KnightSK.fbx");
+		ASSET AddFbxForAnimation("MageSK"		, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\MageSK.fbx");
+		ASSET AddFbxForAnimation("PrinceSK"		, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\PrinceSK.fbx");
+		ASSET AddFbxForAnimation("ShinobiSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\ShinobiSK.fbx");
+		ASSET AddFbxForAnimation("SoldierSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\SoldierSK.fbx");
+		ASSET AddFbxForAnimation("TemplarSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\TemplarSK.fbx");
+		ASSET AddFbxForAnimation("WarriorSK"	, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\WarriorSK.fbx");
+		ASSET AddFbxForAnimation("WizardSK"		, "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\WizardSK.fbx");
 
-		ASSET AddFbxForAnimation("ApprenticeSK", "Assets\\ModularRPGHeroesPolyart\\Meshes\\OneMeshCharacters\\ApprenticeSK.fbx");
 
 		//*** Animation ***//
 		ASSET AddFbxForAnimation("Walk", "Assets\\ModularRPGHeroesPolyart\\Animations\\NoWeaponStance\\NormalWalk_noWeaponAnim.fbx");

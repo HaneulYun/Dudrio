@@ -37,7 +37,7 @@ public:
 	void process_packet(int user_id, char* buf);
 
 	void login_fail(int user_id);
-	void enter_game(int user_id, wchar_t name[]);
+	void enter_game(int user_id, wchar_t name[], char appearance);
 	void disconnect(int user_id);
 	void chatting(int user_id, wchar_t mess[]);
 	void do_move(int user_id, float xVel, float zVel, float rotAngle, float run_level);

@@ -15,7 +15,7 @@ class Sim
 {
 public:
 	int id;
-
+	char appearance;
 	Vector2D pos;
 	Vector2D forward;
 	float rotAngle;
@@ -30,7 +30,13 @@ public:
 
 public:
 	Sim() {}
-	Sim(int idx, float x, float z) :id(idx), pos(x, z), forward(0, 1), rotAngle(0) { stateMachine.SetOwner(this); }
+	Sim(int idx, float x, float z) :id(idx), pos(x, z), forward(0, 1), rotAngle(0) 
+	{
+		stateMachine.SetOwner(this); 
+		int ix = std::floor(x);
+		int iz = std::floor(z);
+		appearance = (ix + iz) % 21;
+	}
 	~Sim() {}
 
 	bool is_near(const Client& other);

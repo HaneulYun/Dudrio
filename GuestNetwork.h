@@ -23,6 +23,7 @@ public:
 	WSADATA WSAData;
 	SOCKET serverSocket;
 	int myId;
+	int myType;
 	int hostId;
 	int retval;
 	wchar_t host_name[MAX_ID_LEN + 1];
@@ -35,7 +36,7 @@ public:
 	static GuestNetwork* network;
 
 public:
-	GameObject* simsPrefab = NULL;
+	GameObject* simsPrefab[21]{ nullptr };
 	GameObject* myCharacter = NULL;
 
 	unordered_map<int, GameObject*> otherCharacters;

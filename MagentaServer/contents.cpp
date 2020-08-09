@@ -101,7 +101,7 @@ void Contents::process_packet(int user_id, char* buf)
 		if (host_id != -1) {
 			cout << "The Guest " << user_id << " is connected" << endl;
 			cs_packet_login_guest* packet = reinterpret_cast<cs_packet_login_guest*>(buf);
-			enter_game(user_id, packet->name);
+			enter_game(user_id, packet->name, packet->appearance);
 		}
 		else {
 			cout << "Host does not exist" << endl;
@@ -137,7 +137,7 @@ void Contents::process_packet(int user_id, char* buf)
 			server_time = GetTickCount64();
 			ingame_time = packet->game_time;
 			update();
-			enter_game(user_id, packet->name);
+			enter_game(user_id, packet->name, 0);
 		}
 		else {
 			cout << "Host is already exist" << endl;
@@ -223,12 +223,14 @@ void Contents::process_packet(int user_id, char* buf)
 }
 
 
-void Contents::enter_game(int user_id, wchar_t name[])
+void Contents::enter_game(int user_id, wchar_t name[], char appearance)
 {
 	g_clients[user_id]->m_cl.lock();
 	g_clients[user_id]->m_name[0] = '\0';
 	wcscpy_s(g_clients[user_id]->m_name, name);
 	g_clients[user_id]->m_name[MAX_ID_LEN] = NULL;
+	g_clients[user_id]->m_appearance = appearance;
+
 	if (host_id != user_id) {
 		g_buildings_lock.lock();
 		if (!g_villages.empty()) {

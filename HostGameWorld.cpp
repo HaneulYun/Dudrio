@@ -174,8 +174,12 @@ void HostGameWorld::deleteInGameWorld(GameObject* landmark, GameObject* building
 
 int HostGameWorld::addSim(GameObject* landmark, GameObject* house)
 {
-	GameObject* sim = Scene::scene->Duplicate(simPrefab);
-	sim->transform->position = house->transform->position;
+	auto housePos = house->transform->position;
+	int x = std::floor(housePos.x);
+	int z = std::floor(housePos.z);
+	int seed = (x + z) % 21;
+	GameObject* sim = Scene::scene->Duplicate(simPrefab[seed]);
+	sim->transform->position = housePos;
 
 	auto simComponent = sim->GetComponent<Sim>();
 	simComponent->animator = sim->GetComponent<Animator>();

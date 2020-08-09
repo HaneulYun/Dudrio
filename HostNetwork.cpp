@@ -103,7 +103,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		int id = my_packet->id;
 
 		if (id != myId) {
-			auto player = gameObject->scene->Duplicate(simsPrefab);
+			auto player = gameObject->scene->Duplicate(simsPrefab[my_packet->appearance]);
 			auto behavior = player->GetComponent<CharacterMovingBehavior>();
 			behavior->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 			wcscpy_s(behavior->name, my_packet->name);
@@ -161,7 +161,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		sc_packet_sim_enter* my_packet = reinterpret_cast<sc_packet_sim_enter*>(ptr);
 		int id = my_packet->id;
 
-		sims[id].first = gameObject->scene->Duplicate(simsPrefab);
+		sims[id].first = gameObject->scene->Duplicate(simsPrefab[my_packet->appearance]);
 		sims[id].first->GetComponent<CharacterMovingBehavior>()->move(my_packet->xPos, my_packet->zPos, my_packet->rotAngle);
 		auto pos = sims[id].first->transform->position;
 		for (auto landmark : HostGameWorld::gameWorld->buildingList) {

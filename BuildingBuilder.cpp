@@ -1136,6 +1136,7 @@ void BuildingBuilder::guestBuild(int type, int index, float x, float z, float an
 		obj->transform->position = pos;
 		obj->transform->Rotate(Vector3(0, 1, 0), angle);
 		obj->AddComponent<Building>()->setBuildingInform(nullptr, type, index);
+		setSmokeParticle(obj);
 
 		GuestGameWorld::gameWorld->buildInGameWorld(nullptr, obj, type, index);
 		return;
@@ -1176,6 +1177,7 @@ void BuildingBuilder::guestBuild(int type, int index, float x, float z, float an
 					obj->transform->position = pos;
 					obj->transform->Rotate(Vector3(0, 1, 0), angle);
 					obj->AddComponent<Building>()->setBuildingInform(landmark.first, type, index);
+					setSmokeParticle(obj);
 
 					GuestGameWorld::gameWorld->buildInGameWorld(landmark.first, obj, type, index);
 					return;
@@ -1211,18 +1213,19 @@ void BuildingBuilder::guestBuild(int type, int index, float x, float z, float an
 	obj->AddComponent<Building>()->setBuildingInform(obj, type, index);
 	obj->AddComponent<Village>()->OffAutoDevelopment();
 	obj->GetComponent<Village>()->radiusOfLand = range;
+	setSmokeParticle(obj);
 
 	GuestGameWorld::gameWorld->buildInGameWorld(obj, obj, type, index);
 }
 
 void BuildingBuilder::setSmokeParticle(GameObject* obj)
 {
-	float objectHeight = prefab->GetComponentInChildren<MeshFilter>()->mesh->Bounds.Extents.y * 2;
+	float objectHeight = obj->GetComponentInChildren<MeshFilter>()->mesh->Bounds.Extents.y * 2;
 	float time = objectHeight;
-	Vector3 pos = prefab->transform->position;
+	Vector3 pos = obj->transform->position;
 
-	prefab->GetComponent<Building>()->positionToAnimate = prefab->transform->position;
-	prefab->transform->position.y -= objectHeight;
+	obj->GetComponent<Building>()->positionToAnimate = obj->transform->position;
+	obj->transform->position.y -= objectHeight;
 
 	for (auto& particle : particles)
 	{

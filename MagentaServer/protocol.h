@@ -88,6 +88,7 @@ struct sc_packet_enter {
 	int id;
 	wchar_t name[MAX_ID_LEN + 1];
 	char o_type;
+	char appearance;
 	float xPos, zPos;
 	float xVel, zVel;
 	float rotAngle;
@@ -121,6 +122,7 @@ struct sc_packet_sim_enter {
 	unsigned char size;
 	char type;
 	int id;
+	char appearance;
 	float xPos, zPos;
 	float xVel, zVel;
 	float rotAngle;
@@ -178,6 +180,7 @@ struct cs_packet_login_guest {
 	unsigned char	size;
 	char	type;
 	wchar_t	name[MAX_ID_LEN + 1];
+	char appearance;
 };
 
 struct cs_packet_login_host {

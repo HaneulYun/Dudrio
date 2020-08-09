@@ -923,8 +923,8 @@ Vector3 BuildingBuilder::getPosOnTerrain()
 		point = rayOrigin + rayDir * distance;
 		point = point.TransformCoord(terrain->gameObject->transform->localToWorldMatrix);
 
-		point.x = MathHelper::Clamp<float>(point.x, 0, 999);
-		point.z = MathHelper::Clamp<float>(point.z, 0, 999);
+		point.x = MathHelper::Clamp<float>(point.x, 1, 999);
+		point.z = MathHelper::Clamp<float>(point.z, 1, 999);
 		point.y = terrain->terrainData.GetHeight(point.x, point.z);
 
 		return point;

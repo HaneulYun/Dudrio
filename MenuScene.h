@@ -30,6 +30,10 @@ public:
 		ASSET AddTexture("Input_name", L"Textures\\icon\\Input_name.dds");
 		ASSET AddTexture("set_chracter_button", L"Textures\\icon\\set_chracter_button.dds"); 
 
+		ASSET AddTexture("next_icon", L"Textures\\icon\\next_icon.dds");
+		ASSET AddTexture("prev_icon", L"Textures\\icon\\prev_icon.dds");
+		ASSET AddTexture("host_name", L"Textures\\icon\\host_name.dds");
+
 		/*icon*/
 		{
 			ASSET AddTexture("ui_chatInput", L"Textures\\icon\\chatInput.dds");
@@ -211,7 +215,11 @@ public:
 		ASSET AddMaterial("host_worldCreate", ASSET TEXTURE("host_worldCreate"));
 		ASSET AddMaterial("Input_name", ASSET TEXTURE("Input_name"));
 		ASSET AddMaterial("set_chracter_button", ASSET TEXTURE("set_chracter_button"));
-		
+
+		ASSET AddMaterial("next_icon", ASSET TEXTURE("next_icon"));
+		ASSET AddMaterial("prev_icon", ASSET TEXTURE("prev_icon"));
+		ASSET AddMaterial("host_name", ASSET TEXTURE("host_name"));
+
 		/*icon*/
 		{
 			ASSET AddMaterial("ui_bar", ASSET TEXTURE("none"), 0, 0, 0, { 0.23828125f, 0.1484375f, 0.08984375f, 1 });

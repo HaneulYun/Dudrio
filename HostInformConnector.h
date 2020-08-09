@@ -142,25 +142,14 @@ public:
 		{
 			auto rt = prevButton->GetComponent<RectTransform>();
 			rt->setAnchorAndPivot(0, 1);
-			rt->setPosAndSize(30, -50, 40, 40);
+			rt->setPosAndSize(30, -30, 50, 50);
 
 			prevButton->AddComponent<Button>()->AddEvent(
 				[](void*) {
 					connector->backToPrevPage();
 				});
-			{
-				auto textobject = prevButton->AddChildUI();
-				auto rectTransform = textobject->GetComponent<RectTransform>();
-				rectTransform->anchorMin = { 0, 0 };
-				rectTransform->anchorMax = { 1, 1 };
 
-				Text* text = textobject->AddComponent<Text>();
-				text->text = L"<-";
-				text->fontSize = 30;
-				text->color = { 0.0f, 0.0f, 0.0f, 1.0f };
-				text->textAlignment = DWRITE_TEXT_ALIGNMENT_LEADING;
-				text->paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-			}
+			prevButton->GetComponent<Renderer>()->materials[0] = ASSET MATERIAL("prev_icon");
 		}
 
 		createStatus = Scene::scene->CreateImage();

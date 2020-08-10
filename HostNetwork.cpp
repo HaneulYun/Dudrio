@@ -88,9 +88,7 @@ void HostNetwork::ProcessPacket(char* ptr)
 		for (auto& p : HostGameWorld::gameWorld->buildingList)
 			for(auto& q: p.second)
 				for (auto& r : q.second) {
-					if (r->GetComponent<Village>() != nullptr)
-						continue;
-
+					if (p.first == r) continue;
 					Vector3 building_forward = r->transform->forward;
 					building_forward.y = 0;
 					building_forward.Normalize();

@@ -54,7 +54,7 @@ void GuestMenuScene::BuildObjects()
 	auto mainCamera = CreateEmpty();
 	{
 		camera = camera->main = mainCamera->AddComponent<Camera>();
-		mainCamera->transform->position = { 1.3, 1.5, -3 };
+		mainCamera->transform->position = { 1.6, 1.0, -3 };
 	}
 
 	GameObject* simPrefab[21];
@@ -88,7 +88,7 @@ void GuestMenuScene::BuildObjects()
 				model->GetComponent<SkinnedMeshRenderer>()->materials.push_back(ASSET MATERIAL("PolyArt"));
 			}
 
-			simPrefab[i]->GetComponent<Transform>()->Rotate({ 0, 1, 0 }, 170);
+			simPrefab[i]->GetComponent<Transform>()->Rotate({ 0, 1, 0 }, 150);
 			auto anim = simPrefab[i]->AddComponent<Animator>();
 			anim->controller = controller;
 			anim->state = &controller->states["Idle"];

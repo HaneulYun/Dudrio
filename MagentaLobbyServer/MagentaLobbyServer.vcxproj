@@ -145,12 +145,19 @@
     <ClInclude Include="LobbyProtocol.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IOCPServer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MagentaLobbyServer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="MagentaLobbyServer.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

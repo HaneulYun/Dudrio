@@ -166,6 +166,7 @@
     </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="protocol.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Sim.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -185,6 +186,12 @@
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="Timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MagentaServer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="MagentaServer.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
